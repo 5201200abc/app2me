@@ -6,7 +6,7 @@ import type {
   BotOutboundMessage,
   BotProviderCallbackResult,
   Locale,
-} from "@zcode/shared";
+} from "@mycode/shared";
 
 export interface BotTypingTarget {
   providerUserId: string;

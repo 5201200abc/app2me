@@ -7,12 +7,12 @@ import {
   sanitizeTelemetryEventDetail,
   type BuiltinModelProviderId,
   type IPlatformService,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import { logger } from "@/logger.js";
 
 export function resolveProviderTelemetryLabel(providerId: string): string {
   if (providerId === ZAI_PROVIDER_ID || isZaiCodingPlanProviderId(providerId)) {
-    return "z.ai";
+    return "removed-provider";
   }
 
   if (
@@ -21,7 +21,7 @@ export function resolveProviderTelemetryLabel(providerId: string): string {
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan ||
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
   ) {
-    return "bigmodel";
+    return "removed-provider";
   }
 
   return providerId;

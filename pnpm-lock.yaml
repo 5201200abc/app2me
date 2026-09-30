@@ -10,13 +10,13 @@ overrides:
 
 patchedDependencies:
   '@ai-sdk/anthropic@3.0.81':
-    hash: d3a7c381eba7f5157f765a0528003af17cf84544911dfb7412c7800168e01c18
+    hash: 1babbd18b5f31224bb972cb358069344f8ad3e6006614a53d3a3723cd119002b
     path: patches/@ai-sdk__anthropic@3.0.81.patch
   '@ai-sdk/openai-compatible@2.0.60':
-    hash: 9632fe9d821b3dc20939ae509cc35b968d90d018bbd1d812390718898182a38b
+    hash: 7e5caed2d616b058ca70cb586ae58dde575868fafb44eadd4de8850e520c8a6f
     path: patches/@ai-sdk__openai-compatible@2.0.60.patch
   '@arms/rum-electron@0.0.3':
-    hash: 36855354851ea495bc47a03340b0484ff62836b739cad56904b8a69f18e2ae97
+    hash: 73b419d97b7caee96975c130a52caa65de072ec21a372aa9836ecfa928847085
     path: patches/@arms__rum-electron@0.0.3.patch
 
 importers:
@@ -91,7 +91,7 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
-  apps/zcode-cli:
+  apps/mycode-cli:
     dependencies:
       dotenv:
         specifier: ^17.4.2
@@ -131,38 +131,38 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
 
-  apps/zcode-cli/packages/adapters:
+  apps/mycode-cli/packages/adapters:
     dependencies:
       '@ai-sdk/anthropic':
         specifier: 3.0.81
-        version: 3.0.81(patch_hash=d3a7c381eba7f5157f765a0528003af17cf84544911dfb7412c7800168e01c18)(zod@4.6.5)
+        version: 3.0.81(patch_hash=1babbd18b5f31224bb972cb358069344f8ad3e6006614a53d3a3723cd119002b)(zod@4.6.5)
       '@ai-sdk/openai':
         specifier: ^3.0.58
         version: 3.0.65(zod@4.6.5)
       '@ai-sdk/openai-compatible':
         specifier: ^2.0.58
-        version: 2.0.60(patch_hash=9632fe9d821b3dc20939ae509cc35b968d90d018bbd1d812390718898182a38b)(zod@4.6.5)
+        version: 2.0.60(patch_hash=7e5caed2d616b058ca70cb586ae58dde575868fafb44eadd4de8850e520c8a6f)(zod@4.6.5)
       '@modelcontextprotocol/client':
         specifier: 2.0.0
         version: 2.0.0
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@zcode/dynamic-workflow':
+      '@mycode/dynamic-workflow':
         specifier: workspace:*
         version: link:../dynamic-workflow
-      '@zcode/model-option-map':
+      '@mycode/model-option-map':
         specifier: workspace:*
         version: link:../../../../packages/model-option-map
-      '@zcode/provider':
+      '@mycode/mycode-cua':
+        specifier: workspace:*
+        version: link:../../../../packages/mycode-cua
+      '@mycode/provider':
         specifier: workspace:*
         version: link:../../../../packages/provider
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
-      '@zcode/zcode-cua':
-        specifier: workspace:*
-        version: link:../../../../packages/zcode-cua
       ai:
         specifier: 6.0.193
         version: 6.0.193(zod@4.6.5)
@@ -207,36 +207,36 @@ importers:
         specifier: ^2.10.3
         version: 2.10.3
 
-  apps/zcode-cli/packages/bootstrap:
+  apps/mycode-cli/packages/bootstrap:
     dependencies:
-      '@zcode/adapters':
+      '@mycode/adapters':
         specifier: workspace:*
         version: link:../adapters
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@zcode/core':
+      '@mycode/core':
         specifier: workspace:*
         version: link:../core
-      '@zcode/dynamic-workflow':
+      '@mycode/dynamic-workflow':
         specifier: workspace:*
         version: link:../dynamic-workflow
-      '@zcode/dynamic-workflow-runtime':
+      '@mycode/dynamic-workflow-runtime':
         specifier: workspace:*
         version: link:../dynamic-workflow-runtime
-      '@zcode/i18n':
+      '@mycode/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@zcode/provider':
+      '@mycode/provider':
         specifier: workspace:*
         version: link:../../../../packages/provider
-      '@zcode/provider-node':
+      '@mycode/provider-node':
         specifier: workspace:*
         version: link:../../../../packages/provider-node
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
-      '@zcode/telemetry':
+      '@mycode/telemetry':
         specifier: workspace:*
         version: link:../telemetry
       diff:
@@ -246,34 +246,34 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
     devDependencies:
+      '@mycode/formal-proof':
+        specifier: workspace:*
+        version: link:../../../../packages/formal-proof
       '@types/node':
         specifier: ^24.0.0
         version: 24.12.2
       '@types/yazl':
         specifier: ^3.3.1
         version: 3.3.1
-      '@zcode/formal-proof':
-        specifier: workspace:*
-        version: link:../../../../packages/formal-proof
       yazl:
         specifier: ^3.3.1
         version: 3.3.1
 
-  apps/zcode-cli/packages/browser-use-plugin:
+  apps/mycode-cli/packages/browser-use-plugin:
     dependencies:
       '@modelcontextprotocol/server':
         specifier: 2.0.0
         version: 2.0.0
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@zcode/core':
+      '@mycode/core':
         specifier: workspace:*
         version: link:../core
-      '@zcode/node-repl-host':
+      '@mycode/node-repl-host':
         specifier: workspace:*
         version: link:../node-repl-host
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
       zod:
@@ -283,15 +283,15 @@ importers:
       '@modelcontextprotocol/client':
         specifier: 2.0.0
         version: 2.0.0
+      '@mycode/adapters':
+        specifier: workspace:*
+        version: link:../adapters
+      '@mycode/bootstrap':
+        specifier: workspace:*
+        version: link:../bootstrap
       '@types/node':
         specifier: ^24.0.0
         version: 24.12.2
-      '@zcode/adapters':
-        specifier: workspace:*
-        version: link:../adapters
-      '@zcode/bootstrap':
-        specifier: workspace:*
-        version: link:../bootstrap
       esbuild:
         specifier: ^0.25.0
         version: 0.25.12
@@ -302,36 +302,36 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
 
-  apps/zcode-cli/packages/cli:
+  apps/mycode-cli/packages/cli:
     dependencies:
-      '@zcode/adapters':
+      '@mycode/adapters':
         specifier: workspace:*
         version: link:../adapters
-      '@zcode/bootstrap':
+      '@mycode/bootstrap':
         specifier: workspace:*
         version: link:../bootstrap
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@zcode/core':
+      '@mycode/core':
         specifier: workspace:*
         version: link:../core
-      '@zcode/dynamic-workflow-runtime':
+      '@mycode/dynamic-workflow-runtime':
         specifier: workspace:*
         version: link:../dynamic-workflow-runtime
-      '@zcode/i18n':
+      '@mycode/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@zcode/provider-node':
+      '@mycode/provider-node':
         specifier: workspace:*
         version: link:../../../../packages/provider-node
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
-      '@zcode/shared-types':
+      '@mycode/shared-types':
         specifier: workspace:*
         version: link:../shared-types
-      '@zcode/tui':
+      '@mycode/tui':
         specifier: workspace:*
         version: link:../tui
       dotenv:
@@ -341,9 +341,9 @@ importers:
         specifier: 1.59.1
         version: 1.59.1
 
-  apps/zcode-cli/packages/contracts:
+  apps/mycode-cli/packages/contracts:
     dependencies:
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
       zod:
@@ -357,23 +357,23 @@ importers:
         specifier: ^24.0.0
         version: 24.12.2
 
-  apps/zcode-cli/packages/core:
+  apps/mycode-cli/packages/core:
     dependencies:
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@zcode/dynamic-workflow':
+      '@mycode/dynamic-workflow':
         specifier: workspace:*
         version: link:../dynamic-workflow
-      '@zcode/shared':
+      '@mycode/mycode-cua':
+        specifier: workspace:*
+        version: link:../../../../packages/mycode-cua
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
-      '@zcode/shared-types':
+      '@mycode/shared-types':
         specifier: workspace:*
         version: link:../shared-types
-      '@zcode/zcode-cua':
-        specifier: workspace:*
-        version: link:../../../../packages/zcode-cua
       cheerio:
         specifier: ^1.0.0
         version: 1.2.0
@@ -400,7 +400,7 @@ importers:
         specifier: ^24.0.0
         version: 24.12.2
 
-  apps/zcode-cli/packages/debug:
+  apps/mycode-cli/packages/debug:
     dependencies:
       '@hono/node-server':
         specifier: ^1.14.4
@@ -446,7 +446,7 @@ importers:
         specifier: ^7.2.6
         version: 7.3.3(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.9.0)
 
-  apps/zcode-cli/packages/dynamic-workflow:
+  apps/mycode-cli/packages/dynamic-workflow:
     dependencies:
       typescript:
         specifier: ^5.9.0
@@ -456,9 +456,9 @@ importers:
         specifier: ^24.0.0
         version: 24.12.2
 
-  apps/zcode-cli/packages/dynamic-workflow-runtime:
+  apps/mycode-cli/packages/dynamic-workflow-runtime:
     dependencies:
-      '@zcode/dynamic-workflow':
+      '@mycode/dynamic-workflow':
         specifier: workspace:*
         version: link:../dynamic-workflow
     devDependencies:
@@ -466,29 +466,29 @@ importers:
         specifier: ^24.0.0
         version: 24.12.2
 
-  apps/zcode-cli/packages/i18n:
+  apps/mycode-cli/packages/i18n:
     dependencies:
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
 
-  apps/zcode-cli/packages/node-repl-host:
+  apps/mycode-cli/packages/node-repl-host:
     dependencies:
       '@modelcontextprotocol/server':
         specifier: 2.0.0
         version: 2.0.0
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@zcode/core':
+      '@mycode/core':
         specifier: workspace:*
         version: link:../core
-      '@zcode/shared':
+      '@mycode/mycode-cua':
+        specifier: workspace:*
+        version: link:../../../../packages/mycode-cua
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
-      '@zcode/zcode-cua':
-        specifier: workspace:*
-        version: link:../../../../packages/zcode-cua
       zod:
         specifier: ^4.4.3
         version: 4.6.5
@@ -506,20 +506,23 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
 
-  apps/zcode-cli/packages/shared-types:
+  apps/mycode-cli/packages/shared-types:
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
         version: 24.12.2
 
-  apps/zcode-cli/packages/swift-bridge:
+  apps/mycode-cli/packages/swift-bridge:
     dependencies:
-      '@zcode/shared-types':
+      '@mycode/shared-types':
         specifier: workspace:*
         version: link:../shared-types
 
-  apps/zcode-cli/packages/telemetry:
+  apps/mycode-cli/packages/telemetry:
     dependencies:
+      '@mycode/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.1
@@ -544,15 +547,12 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 2.6.1
         version: 2.6.1(@opentelemetry/api@1.9.1)
-      '@zcode/contracts':
-        specifier: workspace:*
-        version: link:../contracts
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
         version: 24.12.2
 
-  apps/zcode-cli/packages/tui:
+  apps/mycode-cli/packages/tui:
     dependencies:
       '@mbears/opentui-core':
         specifier: 0.2.15
@@ -560,13 +560,13 @@ importers:
       '@mbears/opentui-react':
         specifier: 0.2.15
         version: 0.2.15(react-devtools-core@7.0.1)(react@19.2.7)(typescript@6.0.2)(web-tree-sitter@0.25.10)(ws@8.18.0)
-      '@zcode/contracts':
+      '@mycode/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@zcode/i18n':
+      '@mycode/i18n':
         specifier: workspace:*
         version: link:../i18n
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
       react:
@@ -592,7 +592,7 @@ importers:
         specifier: ^4.20.0
         version: 4.21.0
 
-  apps/zcode-cli/tools/prompt-trajectory:
+  apps/mycode-cli/tools/prompt-trajectory:
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
@@ -604,17 +604,17 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
 
-  apps/zcode-cli/tools/typescript: {}
+  apps/mycode-cli/tools/typescript: {}
 
   packages/client:
     dependencies:
-      '@zcode/rpc':
+      '@mycode/rpc':
         specifier: workspace:*
         version: link:../rpc
-      '@zcode/services':
+      '@mycode/services':
         specifier: workspace:*
         version: link:../services
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../shared
     devDependencies:
@@ -626,7 +626,7 @@ importers:
     dependencies:
       '@arms/rum-electron':
         specifier: ^0.0.3
-        version: 0.0.3(patch_hash=36855354851ea495bc47a03340b0484ff62836b739cad56904b8a69f18e2ae97)(@babel/runtime@7.29.7)(electron@41.0.3)
+        version: 0.0.3(patch_hash=73b419d97b7caee96975c130a52caa65de072ec21a372aa9836ecfa928847085)(@babel/runtime@7.29.7)(electron@41.0.3)
       '@babel/runtime':
         specifier: ^7.24.5
         version: 7.29.7
@@ -642,6 +642,33 @@ importers:
       '@lydell/node-pty-linux-x64':
         specifier: 1.2.0-beta.10
         version: 1.2.0-beta.10
+      '@mycode/client':
+        specifier: workspace:*
+        version: link:../client
+      '@mycode/mycode-cua':
+        specifier: workspace:*
+        version: link:../mycode-cua
+      '@mycode/provider':
+        specifier: workspace:*
+        version: link:../provider
+      '@mycode/provider-node':
+        specifier: workspace:*
+        version: link:../provider-node
+      '@mycode/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@mycode/server':
+        specifier: workspace:*
+        version: link:../server
+      '@mycode/services':
+        specifier: workspace:*
+        version: link:../services
+      '@mycode/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@mycode/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@opentelemetry/api':
         specifier: 1.9.1
         version: 1.9.1
@@ -660,33 +687,9 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 2.6.1
         version: 2.6.1(@opentelemetry/api@1.9.1)
-      '@zcode/client':
-        specifier: workspace:*
-        version: link:../client
-      '@zcode/provider':
-        specifier: workspace:*
-        version: link:../provider
-      '@zcode/provider-node':
-        specifier: workspace:*
-        version: link:../provider-node
-      '@zcode/rpc':
-        specifier: workspace:*
-        version: link:../rpc
-      '@zcode/server':
-        specifier: workspace:*
-        version: link:../server
-      '@zcode/services':
-        specifier: workspace:*
-        version: link:../services
-      '@zcode/shared':
-        specifier: workspace:*
-        version: link:../shared
-      '@zcode/ui':
-        specifier: workspace:*
-        version: link:../ui
-      '@zcode/zcode-cua':
-        specifier: workspace:*
-        version: link:../zcode-cua
+      '@trycua/cua-driver':
+        specifier: 0.30.4
+        version: 0.30.4
       electron-updater:
         specifier: ^6.8.3
         version: 6.8.3
@@ -729,6 +732,9 @@ importers:
       yazl:
         specifier: ^3.3.1
         version: 3.3.1
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
     devDependencies:
       '@electron/asar':
         specifier: ^3.4.1
@@ -807,12 +813,63 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
+  packages/mycode-cua: {}
+
+  packages/mycode-server-cli:
+    dependencies:
+      '@hono/node-server':
+        specifier: ^1.19.11
+        version: 1.19.14(hono@4.12.12)
+      '@hono/node-ws':
+        specifier: ^1.3.0
+        version: 1.3.0(@hono/node-server@1.19.14(hono@4.12.12))(hono@4.12.12)
+      '@mycode/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@mycode/services':
+        specifier: workspace:*
+        version: link:../services
+      '@mycode/shared':
+        specifier: workspace:*
+        version: link:../shared
+      hono:
+        specifier: ^4.12.9
+        version: 4.12.12
+      ws:
+        specifier: ^8.20.0
+        version: 8.20.0
+      yauzl:
+        specifier: ^3.3.0
+        version: 3.3.0
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@types/node':
+        specifier: ^25.5.0
+        version: 25.6.0
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
+      '@types/yauzl':
+        specifier: ^2.10.3
+        version: 2.10.3
+      tsup:
+        specifier: ^8.4.0
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.9.0)
+      tsx:
+        specifier: ^4.19.4
+        version: 4.21.0
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/provider:
     dependencies:
-      '@zcode/model-option-map':
+      '@mycode/model-option-map':
         specifier: workspace:*
         version: link:../model-option-map
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../shared
       zod:
@@ -825,22 +882,22 @@ importers:
 
   packages/provider-node:
     dependencies:
-      '@zcode/provider':
+      '@mycode/provider':
         specifier: workspace:*
         version: link:../provider
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../shared
       zod:
         specifier: 4.6.5
         version: 4.6.5
     devDependencies:
+      '@mycode/model-option-map':
+        specifier: workspace:*
+        version: link:../model-option-map
       '@types/node':
         specifier: ^25.5.0
         version: 25.6.0
-      '@zcode/model-option-map':
-        specifier: workspace:*
-        version: link:../model-option-map
       typescript:
         specifier: ^6.0.2
         version: 6.0.2
@@ -874,16 +931,16 @@ importers:
       '@lydell/node-pty-linux-x64':
         specifier: 1.2.0-beta.10
         version: 1.2.0-beta.10
-      '@zcode/client':
+      '@mycode/client':
         specifier: workspace:*
         version: link:../client
-      '@zcode/rpc':
+      '@mycode/rpc':
         specifier: workspace:*
         version: link:../rpc
-      '@zcode/services':
+      '@mycode/services':
         specifier: workspace:*
         version: link:../services
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../shared
       axios:
@@ -956,21 +1013,21 @@ importers:
       '@larksuiteoapi/node-sdk':
         specifier: 1.64.0
         version: 1.64.0
-      '@zcode/provider':
+      '@mycode/mycode-cua':
+        specifier: workspace:*
+        version: link:../mycode-cua
+      '@mycode/provider':
         specifier: workspace:*
         version: link:../provider
-      '@zcode/provider-node':
+      '@mycode/provider-node':
         specifier: workspace:*
         version: link:../provider-node
-      '@zcode/rpc':
+      '@mycode/rpc':
         specifier: workspace:*
         version: link:../rpc
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../shared
-      '@zcode/zcode-cua':
-        specifier: workspace:*
-        version: link:../zcode-cua
       croner:
         specifier: ^10.0.1
         version: 10.0.1
@@ -1014,7 +1071,7 @@ importers:
 
   packages/shared:
     dependencies:
-      '@zcode/model-option-map':
+      '@mycode/model-option-map':
         specifier: workspace:*
         version: link:../model-option-map
       zod:
@@ -1057,6 +1114,18 @@ importers:
       '@lexical/react':
         specifier: ^0.42.0
         version: 0.42.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(yjs@13.6.30)
+      '@mycode/provider':
+        specifier: workspace:*
+        version: link:../provider
+      '@mycode/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@mycode/services':
+        specifier: workspace:*
+        version: link:../services
+      '@mycode/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@pierre/diffs':
         specifier: ^1.1.22
         version: 1.1.22(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1099,18 +1168,6 @@ importers:
       '@xyflow/react':
         specifier: ^12.10.1
         version: 12.10.2(@types/react@19.2.14)(immer@11.1.8)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@zcode/provider':
-        specifier: workspace:*
-        version: link:../provider
-      '@zcode/rpc':
-        specifier: workspace:*
-        version: link:../rpc
-      '@zcode/services':
-        specifier: workspace:*
-        version: link:../services
-      '@zcode/shared':
-        specifier: workspace:*
-        version: link:../shared
       ai:
         specifier: ^6.0.138
         version: 6.0.159(zod@4.6.5)
@@ -1247,13 +1304,13 @@ importers:
 
   packages/web:
     dependencies:
-      '@zcode/client':
+      '@mycode/client':
         specifier: workspace:*
         version: link:../client
-      '@zcode/shared':
+      '@mycode/shared':
         specifier: workspace:*
         version: link:../shared
-      '@zcode/ui':
+      '@mycode/ui':
         specifier: workspace:*
         version: link:../ui
       react:
@@ -1287,57 +1344,6 @@ importers:
       ws:
         specifier: ^8.20.0
         version: 8.20.0
-
-  packages/zcode-cua: {}
-
-  packages/zcode-server-cli:
-    dependencies:
-      '@hono/node-server':
-        specifier: ^1.19.11
-        version: 1.19.14(hono@4.12.12)
-      '@hono/node-ws':
-        specifier: ^1.3.0
-        version: 1.3.0(@hono/node-server@1.19.14(hono@4.12.12))(hono@4.12.12)
-      '@zcode/rpc':
-        specifier: workspace:*
-        version: link:../rpc
-      '@zcode/services':
-        specifier: workspace:*
-        version: link:../services
-      '@zcode/shared':
-        specifier: workspace:*
-        version: link:../shared
-      hono:
-        specifier: ^4.12.9
-        version: 4.12.12
-      ws:
-        specifier: ^8.20.0
-        version: 8.20.0
-      yauzl:
-        specifier: ^3.3.0
-        version: 3.3.0
-      zod:
-        specifier: 4.6.5
-        version: 4.6.5
-    devDependencies:
-      '@types/node':
-        specifier: ^25.5.0
-        version: 25.6.0
-      '@types/ws':
-        specifier: ^8.18.1
-        version: 8.18.1
-      '@types/yauzl':
-        specifier: ^2.10.3
-        version: 2.10.3
-      tsup:
-        specifier: ^8.4.0
-        version: 8.5.1(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.9.0)
-      tsx:
-        specifier: ^4.19.4
-        version: 4.21.0
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.2
 
 packages:
 
@@ -4879,6 +4885,41 @@ packages:
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
 
+  '@trycua/cua-driver-darwin-arm64@0.30.4':
+    resolution: {integrity: sha512-ceIRKOYtsL5mRTivFjctvDEjCuZSddzv6wsaN8fO3/U6bLLOEEXVEBxwmbF5hJLu0Eb33lybVeqZpc0hr9tdtg==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@trycua/cua-driver-darwin-x64@0.30.4':
+    resolution: {integrity: sha512-sy7Fj4y+fuWQcjYILWtLNTdPOQE1HZUwHg8Q2E97RaGRMKw1EA413g/HPru4FtVjaMgOJZFSGUdkQPNMIFdn0Q==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@trycua/cua-driver-linux-arm64-gnu@0.30.4':
+    resolution: {integrity: sha512-SycwQiI909YzOys7HpsW4AUBX/pSWftZ97lPqrI7ttYElWySLRu+f5rsUJ01Vit2i73oTw9jt/uUNXBtXCobmA==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@trycua/cua-driver-linux-x64-gnu@0.30.4':
+    resolution: {integrity: sha512-DLkgZkI1rNHXtSGZUUHZ9uhq0J1CsGQZew+QNu4ZuXC1RLu4hwa83jfKPCHg5Rs95ki6a5yX6XIP8fSjYzErkw==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@trycua/cua-driver-win32-arm64-msvc@0.30.4':
+    resolution: {integrity: sha512-L1AFSgZF61IuB9EM4/RE9N1BjlSqSK542LzHQW/lYPKtHdzgADOVbFO9nzMs6ZM9jU18UYoXagsiJcwFWkIiHQ==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@trycua/cua-driver-win32-x64-msvc@0.30.4':
+    resolution: {integrity: sha512-ZrCOUCHwKNwPT8cx96pfOLQ12Dz2WJqfbx9RZ41WkhKTXYf0HrRKrMQ2u2xvic78WC4AB4qaWwI+TvDNgb/C9Q==}
+    cpu: [x64]
+    os: [win32]
+
+  '@trycua/cua-driver@0.30.4':
+    resolution: {integrity: sha512-0v1IhX151BvULRiHzuKoV4D39O6A1CY1UteSZRR3NHPimaj7zd5p8rqgl9N27eldY+cPGloVykAlzPds8KMNSA==}
+
   '@ts-morph/common@0.27.0':
     resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
 
@@ -5165,6 +5206,56 @@ packages:
 
   '@types/yazl@3.3.1':
     resolution: {integrity: sha512-DIWfCKpsTp6hE5BDBHV3+fIL/bLUF9Bv13iDrWnMlmhQpH67buNvI291ZauQ1xcccxK3FqQ9honnXpq4R8NMuQ==}
+
+  '@ubjs/core@0.31.0-3':
+    resolution: {integrity: sha512-39XrJgUZ2VVb561sSnkXPhczNoeBsNiSRArecsV0JE7CJq69ajFkcn9/tBAUS2NpgHkLIDU+z6Ks2+1wXnboxg==}
+
+  '@ubjs/node-darwin-arm64@0.31.0-3':
+    resolution: {integrity: sha512-GGQVPLkVo4Gc8qVLW4IGvS8bjl8eHXyeP4a97ntGmsAdXwE5gsS29o8xUEFROjhwHKD+9sgVeblCSWVG3CpHsw==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@ubjs/node-darwin-x64@0.31.0-3':
+    resolution: {integrity: sha512-2sc47u4XFYOsbmP5EW+Gx8m/yGrYnfFDFQm6+kz7goSWTNg84eEiz3COs9HKJDVuNJ5Khv5XipTO8CFadMLXCw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@ubjs/node-linux-arm64-gnu@0.31.0-3':
+    resolution: {integrity: sha512-YStVXhYz/5jvlWf/p4fhiVT72unYAbGugifFC9QmO/+hnroQDAQ5t8SARbsc15G4olMcamdIB+GETiUB7gmaYg==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@ubjs/node-linux-arm64-musl@0.31.0-3':
+    resolution: {integrity: sha512-Izp4nvfy/LmibzFowAztkoDOksCR2fb2zl6fh1ojR1HEsg0rAGruxtI8d3fn8DI0lBXwqmn6SF///oD4mFNJPQ==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@ubjs/node-linux-x64-gnu@0.31.0-3':
+    resolution: {integrity: sha512-Xdm21blyg5U/kW6s7OMvgrr8coGTkUlt26DVR9x8gKISif+E3YwdEskbFScWqystAiJnfjw7xHEc8UMu0Qlz7Q==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@ubjs/node-linux-x64-musl@0.31.0-3':
+    resolution: {integrity: sha512-fFQ9BWS6i2LUH9SJgD9oEiKXXo/say59vHy7usFe1t7C2xvwvP34f5SuxXmWP9R8fHyA0aC4kIZ+TTwyHSv1Kw==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@ubjs/node-win32-arm64-msvc@0.31.0-3':
+    resolution: {integrity: sha512-ID6rSz1NmPsWTNBBNAw4OnJ5Dj8pcbtNJtdPB3OxcGigLBd/e0x7buhSI7os6Mo5iYtEdCynBRQHFJwub5XSPg==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@ubjs/node-win32-x64-msvc@0.31.0-3':
+    resolution: {integrity: sha512-wevs+Y+szwcCUT8IJFbB4/1nfxyRv/51l8oG7FGUPWD1xLPyuHfJBG27C+PDeC7KRzes/2n6aLo4DGZbr/LYTw==}
+    cpu: [x64]
+    os: [win32]
+
+  '@ubjs/node@0.31.0-3':
+    resolution: {integrity: sha512-qNMpi2LICNwxGXZyRF8fSDBSpbezyZbEsydrbiMPJOmtOWr4tmZIEl7jkWGHVGShoBvHfFo4eHp5B4UVP928Cg==}
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
@@ -9959,7 +10050,7 @@ snapshots:
 
   7zip-bin@5.2.0: {}
 
-  '@ai-sdk/anthropic@3.0.81(patch_hash=d3a7c381eba7f5157f765a0528003af17cf84544911dfb7412c7800168e01c18)(zod@4.6.5)':
+  '@ai-sdk/anthropic@3.0.81(patch_hash=1babbd18b5f31224bb972cb358069344f8ad3e6006614a53d3a3723cd119002b)(zod@4.6.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.10
       '@ai-sdk/provider-utils': 4.0.27(zod@4.6.5)
@@ -9979,7 +10070,7 @@ snapshots:
       '@vercel/oidc': 3.1.0
       zod: 4.6.5
 
-  '@ai-sdk/openai-compatible@2.0.60(patch_hash=9632fe9d821b3dc20939ae509cc35b968d90d018bbd1d812390718898182a38b)(zod@4.6.5)':
+  '@ai-sdk/openai-compatible@2.0.60(patch_hash=7e5caed2d616b058ca70cb586ae58dde575868fafb44eadd4de8850e520c8a6f)(zod@4.6.5)':
     dependencies:
       '@ai-sdk/provider': 3.0.14
       '@ai-sdk/provider-utils': 4.0.39(zod@4.6.5)
@@ -10047,7 +10138,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.7
 
-  '@arms/rum-electron@0.0.3(patch_hash=36855354851ea495bc47a03340b0484ff62836b739cad56904b8a69f18e2ae97)(@babel/runtime@7.29.7)(electron@41.0.3)':
+  '@arms/rum-electron@0.0.3(patch_hash=73b419d97b7caee96975c130a52caa65de072ec21a372aa9836ecfa928847085)(@babel/runtime@7.29.7)(electron@41.0.3)':
     dependencies:
       '@arms/rum-browser': 0.1.8(@babel/runtime@7.29.7)
       '@arms/rum-core': 0.1.4(@babel/runtime@7.29.7)
@@ -13317,6 +13408,36 @@ snapshots:
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
+  '@trycua/cua-driver-darwin-arm64@0.30.4':
+    optional: true
+
+  '@trycua/cua-driver-darwin-x64@0.30.4':
+    optional: true
+
+  '@trycua/cua-driver-linux-arm64-gnu@0.30.4':
+    optional: true
+
+  '@trycua/cua-driver-linux-x64-gnu@0.30.4':
+    optional: true
+
+  '@trycua/cua-driver-win32-arm64-msvc@0.30.4':
+    optional: true
+
+  '@trycua/cua-driver-win32-x64-msvc@0.30.4':
+    optional: true
+
+  '@trycua/cua-driver@0.30.4':
+    dependencies:
+      '@ubjs/core': 0.31.0-3
+      '@ubjs/node': 0.31.0-3
+    optionalDependencies:
+      '@trycua/cua-driver-darwin-arm64': 0.30.4
+      '@trycua/cua-driver-darwin-x64': 0.30.4
+      '@trycua/cua-driver-linux-arm64-gnu': 0.30.4
+      '@trycua/cua-driver-linux-x64-gnu': 0.30.4
+      '@trycua/cua-driver-win32-arm64-msvc': 0.30.4
+      '@trycua/cua-driver-win32-x64-msvc': 0.30.4
+
   '@ts-morph/common@0.27.0':
     dependencies:
       fast-glob: 3.3.3
@@ -13638,6 +13759,43 @@ snapshots:
   '@types/yazl@3.3.1':
     dependencies:
       '@types/node': 25.6.0
+
+  '@ubjs/core@0.31.0-3': {}
+
+  '@ubjs/node-darwin-arm64@0.31.0-3':
+    optional: true
+
+  '@ubjs/node-darwin-x64@0.31.0-3':
+    optional: true
+
+  '@ubjs/node-linux-arm64-gnu@0.31.0-3':
+    optional: true
+
+  '@ubjs/node-linux-arm64-musl@0.31.0-3':
+    optional: true
+
+  '@ubjs/node-linux-x64-gnu@0.31.0-3':
+    optional: true
+
+  '@ubjs/node-linux-x64-musl@0.31.0-3':
+    optional: true
+
+  '@ubjs/node-win32-arm64-msvc@0.31.0-3':
+    optional: true
+
+  '@ubjs/node-win32-x64-msvc@0.31.0-3':
+    optional: true
+
+  '@ubjs/node@0.31.0-3':
+    optionalDependencies:
+      '@ubjs/node-darwin-arm64': 0.31.0-3
+      '@ubjs/node-darwin-x64': 0.31.0-3
+      '@ubjs/node-linux-arm64-gnu': 0.31.0-3
+      '@ubjs/node-linux-arm64-musl': 0.31.0-3
+      '@ubjs/node-linux-x64-gnu': 0.31.0-3
+      '@ubjs/node-linux-x64-musl': 0.31.0-3
+      '@ubjs/node-win32-arm64-msvc': 0.31.0-3
+      '@ubjs/node-win32-x64-msvc': 0.31.0-3
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -16172,11 +16330,11 @@ snapshots:
 
   lodash.merge@4.6.2: {}
 
+  lodash.pickby@4.6.0: {}
+
   lodash.uniqby@4.7.0: {}
 
   lodash@4.18.1: {}
-
-  lodash.pickby@4.6.0: {}
 
   log-symbols@4.1.0:
     dependencies:

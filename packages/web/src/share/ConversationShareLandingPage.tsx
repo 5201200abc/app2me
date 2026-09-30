@@ -9,13 +9,10 @@ import {
   type MouseEvent,
 } from "react";
 import { ArrowUpRightIcon, MoonIcon, SunIcon } from "lucide-react";
-import { BIGMODEL_PROVIDER_ID, ZAI_PROVIDER_ID } from "@zcode/shared";
-import type { ConversationSharePreview } from "@zcode/shared";
-import { ConversationShareReadonlyTimeline } from "@zcode/ui/conversation-share-readonly";
-import { renderOAuthProviderIcon } from "@zcode/ui/oauth-provider-icon";
-import { applyTheme, resolveTheme, type Theme } from "@zcode/ui/useTheme";
+import type { ConversationSharePreview } from "@mycode/shared";
+import { ConversationShareReadonlyTimeline } from "@mycode/ui/conversation-share-readonly";
+import { applyTheme, resolveTheme, type Theme } from "@mycode/ui/useTheme";
 import "./conversationShareLandingPage.css";
-import type { WebOAuthProviderId } from "../auth/browserOAuthCredentialRepo.js";
 import {
   buildShareImportDeepLink,
   type ConversationSharePreviewClientError,
@@ -23,16 +20,9 @@ import {
 } from "./conversationSharePreviewClient.js";
 import { resolveShareHeaderView, type ShareHeaderView } from "./shareHeaderLayout.js";
 
-/** 登录入口的展示顺序，与桌面端登录卡片一致（z.ai 在上）。 */
-const SHARE_LOGIN_PROVIDERS: readonly WebOAuthProviderId[] = [
-  ZAI_PROVIDER_ID,
-  BIGMODEL_PROVIDER_ID,
-];
-
 type ConversationShareLandingLocale = "zh-CN" | "en-US";
 type ConversationShareLandingState =
   | { kind: "loading" }
-  | { kind: "login_required" }
   | { kind: "ready"; preview: ConversationSharePreview }
   | { kind: "error"; error: ConversationSharePreviewErrorKind };
 
@@ -55,17 +45,10 @@ interface Copy {
   brand: string;
   loading: string;
   loadingDescription: string;
-  loginTitle: string;
-  loginDescription: string;
-  login: string;
-  /** 每个 provider 的登录按钮文案与区域徽标，对齐桌面端 login.oauth.* 口径。 */
-  loginWith: Record<WebOAuthProviderId, string>;
-  loginRegion: Record<WebOAuthProviderId, string>;
   expiredTitle: string;
   expiredDescription: string;
   notFoundTitle: string;
   notFoundDescription: string;
-  notFoundAccountHint: string;
   backToHome: string;
   networkTitle: string;
   networkDescription: string;
@@ -76,11 +59,11 @@ interface Copy {
   unavailableTitle: string;
   unavailableDescription: string;
   retry: string;
-  continueInZCode: string;
+  continueInMyCode: string;
   switchToDarkTheme: string;
   switchToLightTheme: string;
   continueHelp: string;
-  downloadZCode: string;
+  downloadMyCode: string;
   retryOpen: string;
   /** 结果物计数；{count} 占位。中文无复数，英文分单复数。 */
   artifactCountOne: string;
@@ -88,82 +71,62 @@ interface Copy {
 }
 
 // 站点首页本身就是下载入口，没有 /download 这个 path（单独的下载链接会 404）。
-const ZCODE_DOWNLOAD_URL = "https://zcode.z.ai";
+const MYCODE_HOME_PATH = "/";
 
 const COPY: Record<ConversationShareLandingLocale, Copy> = {
   "zh-CN": {
-    brand: "ZCode 会话分享",
+    brand: "MyCode 会话分享",
     loading: "正在加载分享内容",
     loadingDescription: "请稍候，我们正在验证分享链接。",
-    loginTitle: "登录后查看分享",
-    loginDescription: "请登录后确认你是否有权限查看这个分享。",
-    login: "登录",
-    loginWith: {
-      zai: "连接 Z.ai 继续使用",
-      bigmodel: "连接 BigModel 继续使用",
-    },
-    loginRegion: { zai: "全球", bigmodel: "中国" },
     expiredTitle: "分享已过期",
     expiredDescription: "这个分享链接已经过期，请让分享者重新生成链接。",
     notFoundTitle: "找不到分享内容",
-    notFoundDescription: "链接可能无效、分享已被移除，或当前登录账号无法访问。",
-    notFoundAccountHint:
-      "Z.ai 与 BigModel 的账号数据不互通。请检查是否选错了登录平台或使用了其他账号。",
+    notFoundDescription: "链接可能无效、分享已被移除，或当前无法访问。",
     backToHome: "回到首页",
     networkTitle: "暂时无法加载分享",
     networkDescription: "请检查网络后重试。",
     invalidTitle: "分享格式无效",
     invalidDescription: "服务返回的分享内容无法通过安全校验。",
-    outdatedTitle: "需要更新 ZCode",
-    outdatedDescription: "这个分享由更新版本的 ZCode 创建，请升级后再查看。",
+    outdatedTitle: "需要更新 MyCode",
+    outdatedDescription: "这个分享由更新版本的 MyCode 创建，请升级后再查看。",
     unavailableTitle: "分享不可访问",
     unavailableDescription: "当前账号没有权限，或者分享内容已不存在。",
     retry: "重试",
-    continueInZCode: "去 ZCode 继续",
+    continueInMyCode: "去 MyCode 继续",
     switchToDarkTheme: "切换到深色主题",
     switchToLightTheme: "切换到浅色主题",
-    continueHelp: "如果没有自动打开 ZCode，请先下载客户端，或再次尝试打开。",
-    downloadZCode: "下载 ZCode",
+    continueHelp: "如果没有自动打开 MyCode，可前往 Web 首页或再次尝试打开。",
+    downloadMyCode: "打开 MyCode Web",
     artifactCountOne: "{count} 个结果物",
     artifactCountOther: "{count} 个结果物",
     retryOpen: "再次打开",
   },
   "en-US": {
-    brand: "ZCode Conversation Share",
+    brand: "MyCode Conversation Share",
     loading: "Loading shared conversation",
     loadingDescription: "Please wait while we verify this share link.",
-    loginTitle: "Sign in to view this share",
-    loginDescription: "Sign in to check whether you can view this shared conversation.",
-    login: "Sign in",
-    loginWith: {
-      zai: "Connect to Z.ai",
-      bigmodel: "Connect to BigModel",
-    },
-    loginRegion: { zai: "Global", bigmodel: "CN" },
     expiredTitle: "Share expired",
     expiredDescription: "This share link has expired. Ask the author to create a new one.",
     notFoundTitle: "Share not found",
     notFoundDescription:
-      "The link may be invalid, the share may have been removed, or your current account may not have access.",
-    notFoundAccountHint:
-      "Z.ai and BigModel do not share account data. Check whether you selected the wrong sign-in platform or used a different account.",
+      "The link may be invalid, the share may have been removed, or it may not be accessible.",
     backToHome: "Back to home",
     networkTitle: "Unable to load share",
     networkDescription: "Check your network connection and try again.",
     invalidTitle: "Invalid share content",
     invalidDescription: "The shared content failed the public safety contract.",
-    outdatedTitle: "Update ZCode to continue",
+    outdatedTitle: "Update MyCode to continue",
     outdatedDescription:
-      "This share was created by a newer version of ZCode. Please update to view it.",
+      "This share was created by a newer version of MyCode. Please update to view it.",
     unavailableTitle: "Share unavailable",
     unavailableDescription:
       "This account is not allowed to view the share, or it no longer exists.",
     retry: "Try again",
-    continueInZCode: "Continue in ZCode",
+    continueInMyCode: "Continue in MyCode",
     switchToDarkTheme: "Switch to dark theme",
     switchToLightTheme: "Switch to light theme",
-    continueHelp: "If ZCode did not open, download the app or try opening it again.",
-    downloadZCode: "Download ZCode",
+    continueHelp: "If MyCode did not open, visit the Web home page or try opening it again.",
+    downloadMyCode: "Open MyCode Web",
     artifactCountOne: "{count} artifact",
     artifactCountOther: "{count} artifacts",
     retryOpen: "Try again",
@@ -202,7 +165,7 @@ function ShareThemeToggle({
   onThemeChange?: (theme: Theme) => void;
 }) {
   const resolvedTheme = resolveTheme(theme);
-  const nextTheme = resolvedTheme === "dark" ? "zai-light" : "zai-dark";
+  const nextTheme = resolvedTheme === "dark" ? "mycode-light" : "mycode-dark";
   const label = resolvedTheme === "dark" ? copy.switchToLightTheme : copy.switchToDarkTheme;
   const Icon = resolvedTheme === "dark" ? SunIcon : MoonIcon;
 
@@ -272,7 +235,7 @@ export function ConversationShareLandingPage({
 }) {
   const resolvedLocale = localeOf(locale);
   const copy = COPY[resolvedLocale];
-  const activeTheme = theme ?? "zai-light";
+  const activeTheme = theme ?? "mycode-light";
   // preview 到手后把会话标题写进浏览器标签；main.tsx 只能先给一个语言正确的兜底标题。
   const shareTitle = preview.share.title;
   useEffect(() => {
@@ -408,9 +371,9 @@ export function ConversationShareLandingPage({
                   ref={brandRef}
                   data-share-brand="true"
                   className="shrink-0 text-ui-lg font-semibold text-foreground"
-                  aria-label="ZCode"
+                  aria-label="MyCode"
                 >
-                  ZCode
+                  MyCode
                 </div>
                 <h1
                   ref={titleRef}
@@ -451,12 +414,12 @@ export function ConversationShareLandingPage({
                             : SHARE_CONTINUE_LINK_CLASS
                         }
                         href={importLink}
-                        aria-label={copy.continueInZCode}
-                        title={copy.continueInZCode}
+                        aria-label={copy.continueInMyCode}
+                        title={copy.continueInMyCode}
                         onClick={handleContinue}
                       >
                         <span className={headerView.continueCompact ? "sr-only" : "truncate"}>
-                          {copy.continueInZCode}
+                          {copy.continueInMyCode}
                         </span>
                         <ArrowUpRightIcon
                           className={
@@ -481,7 +444,7 @@ export function ConversationShareLandingPage({
                     </span>
                     {importLink ? (
                       <span className={SHARE_CONTINUE_MEASURE_CLASS}>
-                        <span>{copy.continueInZCode}</span>
+                        <span>{copy.continueInMyCode}</span>
                         <ArrowUpRightIcon
                           className="size-4 shrink-0 sm:size-5"
                           aria-hidden="true"
@@ -542,8 +505,8 @@ export function ConversationShareLandingPage({
               >
                 {copy.retryOpen}
               </a>
-              <a className="text-brand underline underline-offset-2" href={ZCODE_DOWNLOAD_URL}>
-                {copy.downloadZCode}
+              <a className="text-brand underline underline-offset-2" href={MYCODE_HOME_PATH}>
+                {copy.downloadMyCode}
               </a>
             </div>
           </ShareContentInset>
@@ -568,7 +531,7 @@ export function ConversationShareLandingPage({
                 href={importLink}
                 onClick={handleContinue}
               >
-                <span className="truncate">{copy.continueInZCode}</span>
+                <span className="truncate">{copy.continueInMyCode}</span>
                 <ArrowUpRightIcon className="size-4 shrink-0 sm:size-5" aria-hidden="true" />
               </a>
             </div>
@@ -582,21 +545,17 @@ export function ConversationShareLandingPage({
 export function ConversationShareLandingStatus({
   state,
   locale,
-  onLogin,
   onRetry,
 }: {
   state: Exclude<ConversationShareLandingState, { kind: "ready" }>;
   locale?: ConversationShareLandingLocale;
-  onLogin?: (provider: WebOAuthProviderId) => void;
   onRetry?: () => void;
 }) {
   const copy = COPY[localeOf(locale)];
   const content =
     state.kind === "loading"
       ? { title: copy.loading, description: copy.loadingDescription }
-      : state.kind === "login_required"
-        ? { title: copy.loginTitle, description: copy.loginDescription }
-        : state.error === "expired"
+      : state.error === "expired"
           ? { title: copy.expiredTitle, description: copy.expiredDescription }
           : state.error === "not_found"
             ? { title: copy.notFoundTitle, description: copy.notFoundDescription }
@@ -605,11 +564,8 @@ export function ConversationShareLandingStatus({
               : state.error === "invalid_contract"
                 ? { title: copy.invalidTitle, description: copy.invalidDescription }
                 : state.error === "authentication_required"
-                  ? { title: copy.loginTitle, description: copy.loginDescription }
+                  ? { title: copy.unavailableTitle, description: copy.unavailableDescription }
                   : { title: copy.networkTitle, description: copy.networkDescription };
-  const showLogin =
-    state.kind === "login_required" ||
-    (state.kind === "error" && state.error === "authentication_required");
   const isNotFound = state.kind === "error" && state.error === "not_found";
   /**
    * 只在「重发同一个请求有可能得到不同结果」时给重试。
@@ -620,10 +576,11 @@ export function ConversationShareLandingStatus({
   const canRetry =
     Boolean(onRetry) &&
     state.kind !== "loading" &&
-    !showLogin &&
     !(
       state.kind === "error" &&
-      (state.error === "expired" || state.error === "unsupported_schema_version")
+      (state.error === "expired" ||
+        state.error === "unsupported_schema_version" ||
+        state.error === "authentication_required")
     );
   return (
     <main className="flex h-full min-h-0 items-center justify-center overflow-y-auto bg-background px-4 py-8 text-foreground">
@@ -631,36 +588,6 @@ export function ConversationShareLandingStatus({
         <div className="mb-4 text-ui-sm font-medium text-brand">{copy.brand}</div>
         <h1 className="text-ui-xl font-semibold">{content.title}</h1>
         <p className="mt-3 text-ui-base leading-6 text-foreground-subtle">{content.description}</p>
-        {/* 服务端会隐匿无权限分享的存在性，账号提示仅作排查建议，不能断言用户登录错了。 */}
-        {isNotFound ? (
-          <p className="mt-4 text-ui-base leading-6 text-foreground-subtle">
-            {copy.notFoundAccountHint}
-          </p>
-        ) : null}
-        {/*
-          两个 provider 竖排全宽，对齐桌面端登录卡片（图标 + 文案 + 区域徽标）。
-          必须两个都给：private 分享的 owner 身份是 provider 特定的，页面无法预先知道
-          这份分享属于哪一边——猜错就等于把用户挡在自己的分享外面。
-        */}
-        {showLogin && onLogin ? (
-          <div className="mt-5 space-y-2">
-            {SHARE_LOGIN_PROVIDERS.map((provider) => (
-              <button
-                key={provider}
-                type="button"
-                data-share-login-provider={provider}
-                className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-ui-base text-primary-foreground"
-                onClick={() => onLogin(provider)}
-              >
-                {renderOAuthProviderIcon(provider, "size-4")}
-                <span className="min-w-0 truncate">{copy.loginWith[provider]}</span>
-                <span className="ml-1 inline-flex h-5 shrink-0 items-center rounded-full border border-primary-foreground/30 px-2 text-ui-xs font-medium leading-none text-primary-foreground/60">
-                  {copy.loginRegion[provider]}
-                </span>
-              </button>
-            ))}
-          </div>
-        ) : null}
         {canRetry || isNotFound ? (
           <div className="mt-5 flex flex-wrap gap-2">
             {canRetry ? (
@@ -675,7 +602,7 @@ export function ConversationShareLandingStatus({
             {isNotFound ? (
               <a
                 className="rounded-md bg-primary px-4 py-2 text-ui-base text-primary-foreground"
-                href={ZCODE_DOWNLOAD_URL}
+                href={MYCODE_HOME_PATH}
               >
                 {copy.backToHome}
               </a>
@@ -691,8 +618,6 @@ export function ConversationShareLandingLoader({
   shareCode,
   client,
   getAccessToken,
-  onLogin,
-  onLogout,
   locale,
   theme,
 }: {
@@ -701,15 +626,13 @@ export function ConversationShareLandingLoader({
     getPreview: (shareCode: string, accessToken?: string) => Promise<ConversationSharePreview>;
   };
   getAccessToken?: () => string | null;
-  onLogin?: (provider: WebOAuthProviderId) => void;
-  onLogout?: () => void;
   locale?: ConversationShareLandingLocale;
   theme?: Theme;
 }) {
   const [state, setState] = useState<ConversationShareLandingState>({ kind: "loading" });
-  const [activeTheme, setActiveTheme] = useState<Theme>(theme ?? "zai-light");
+  const [activeTheme, setActiveTheme] = useState<Theme>(theme ?? "mycode-light");
   const handleThemeChange = useCallback((nextTheme: Theme) => {
-    localStorage.setItem("zcode-theme", nextTheme);
+    localStorage.setItem("mycode-theme", nextTheme);
     setActiveTheme(nextTheme);
     applyTheme(nextTheme);
   }, []);
@@ -740,15 +663,14 @@ export function ConversationShareLandingLoader({
         // 要么服务端确实不认这个访问者。
         if (initialToken) {
           setState({ kind: "error", error: kind });
-          if (kind === "authentication_required") onLogout?.();
           return;
         }
-        setState({ kind: "login_required" });
+        setState({ kind: "error", error: kind });
         return;
       }
       setState({ kind: "error", error: kind });
     }
-  }, [client, getAccessToken, onLogout, shareCode]);
+  }, [client, getAccessToken, shareCode]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -766,7 +688,6 @@ export function ConversationShareLandingLoader({
     <ConversationShareLandingStatus
       state={state}
       locale={locale}
-      onLogin={onLogin}
       onRetry={() => void load()}
     />
   );

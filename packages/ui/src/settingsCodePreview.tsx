@@ -3,6 +3,7 @@ import { useState } from "react";
 import { resolveTheme } from "@/useTheme.js";
 import { Card, CardContent } from "@/components/ui/card.js";
 import { Input } from "@/components/ui/input.js";
+import { Button } from "@/components/ui/button.js";
 import { Switch } from "@/components/ui/switch.js";
 import {
   Select,
@@ -18,10 +19,11 @@ import {
   ThemeSelect,
 } from "@/settings/SettingsPageParts.js";
 import { getCodePreviewTheme } from "@/lib/codePreviewPreferences.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type { CodePreviewSettings } from "@/store/index.js";
 import { THEME_MODES } from "@/settings/settingsPageConfig.js";
 import { MAX_UI_FONT_SIZE_PX, MIN_UI_FONT_SIZE_PX } from "@/lib/uiFontSize.js";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 function FontSizeInput({
   value,
@@ -29,14 +31,52 @@ function FontSizeInput({
   max,
   ariaLabel,
   onChange,
+  stepper = false,
 }: {
   value: number;
   min: number;
   max: number;
   ariaLabel: string;
   onChange: (value: number) => void;
+  stepper?: boolean;
 }) {
   const [draft, setDraft] = useState(String(value));
+
+  if (stepper) {
+    return (
+      <div
+        role="group"
+        aria-label={ariaLabel}
+        className="flex h-9 w-24 items-center rounded-lg border border-input-border bg-input"
+      >
+        <output className="min-w-0 flex-1 text-center text-ui-base tabular-nums">
+          {value} <span className="text-foreground-subtle">px</span>
+        </output>
+        <div className="flex h-full flex-col border-l border-input-border">
+          <Button
+            type="button"
+            variant="ghost"
+            disabled={value >= max}
+            aria-label={`${ariaLabel} +1 px`}
+            className="h-4 flex-1 rounded-none px-1.5"
+            onClick={() => onChange(Math.min(max, value + 1))}
+          >
+            <ChevronUp className="size-3" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            disabled={value <= min}
+            aria-label={`${ariaLabel} -1 px`}
+            className="h-4 flex-1 rounded-none px-1.5"
+            onClick={() => onChange(Math.max(min, value - 1))}
+          >
+            <ChevronDown className="size-3" />
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const commit = () => {
     const parsed = draft.trim() === "" ? Number.NaN : Number(draft);
@@ -93,7 +133,7 @@ export function AppearanceSectionContent({
   uiFontSizePx: number;
   setUiFontSizePx: (fontSizePx: number) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const activePreviewMode = resolveTheme(theme);
 
   return (
@@ -149,6 +189,7 @@ export function AppearanceSectionContent({
                   value={uiFontSizePx}
                   onChange={setUiFontSizePx}
                   ariaLabel={intl.formatMessage({ id: "settings.uiFontSize" })}
+                  stepper
                 />
               }
             />

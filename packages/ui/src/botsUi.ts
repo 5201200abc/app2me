@@ -2,8 +2,8 @@ import type {
   BotConfig,
   BotProvider,
   BotReplyGranularity,
-} from "@zcode/shared";
-import { getSupportedBotReplyGranularities } from "@zcode/shared";
+} from "@mycode/shared";
+import { getSupportedBotReplyGranularities } from "@mycode/shared";
 
 export type BotProviderEntryId = BotProvider | "dingding";
 

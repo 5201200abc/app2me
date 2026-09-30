@@ -1,6 +1,9 @@
 import { z } from "zod";
-import { compileModelOptionMap } from "@zcode/model-option-map";
+import { compileModelOptionMap } from "@mycode/model-option-map";
 import { sparseShape } from "./config-schema.js";
+
+// 旧压缩与会话默认值停留在 200K；统一为产品默认 500K，显式模型容量仍优先。
+export const DEFAULT_MODEL_CONTEXT_WINDOW = 500_000;
 
 function optionMapSchema(variableName: "reasoningLevel" | "maxOutputTokens") {
   return z

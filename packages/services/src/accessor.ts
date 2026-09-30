@@ -8,9 +8,9 @@ import type { ITerminalService } from "./terminal/terminal.js";
 import type { ISettingService } from "./setting/setting.js";
 import type { ICredentialService } from "./credential/credential.js";
 import type { IBroadcastService } from "./broadcast/broadcast.js";
-import type { IZCodeTaskService } from "./session/zcodeTaskService.js";
-import type { IZCodeAgentService } from "./zcode-agent/zcodeAgent.js";
-import type { IZCodeSessionService } from "./zcode-session/zcodeSession.js";
+import type { IMyCodeTaskService } from "./session/mycodeTaskService.js";
+import type { IMyCodeAgentService } from "./mycode-agent/mycodeAgent.js";
+import type { IMyCodeSessionService } from "./mycode-session/mycodeSession.js";
 import type { ICuaPermissionService } from "./cua-permission-broker/cuaPermissionService.js";
 import type { IBotsService } from "./bots/bots.js";
 import type { IFileWatcherService } from "./fileWatcher/fileWatcher.js";
@@ -21,7 +21,6 @@ import type {
 } from "./model-provider/providerFacadeServices.js";
 import type { IUsageStatsService } from "./usage-stats/usageStats.js";
 import type { ICodingPlanSubscriptionService } from "./coding-plan-subscription/codingPlanSubscription.js";
-import type { IClientConfigService } from "./client-config/clientConfig.js";
 import type { IClientScenesService } from "./client-scenes/clientScenes.js";
 import type { ISkillsService } from "./skills/skills.js";
 import type { ISkillSyncService } from "./skill-sync/skillSync.js";
@@ -53,11 +52,11 @@ export interface IServiceAccessor {
   readonly onboardingRecordService?: IOnboardingRecordService;
   readonly credentialService: ICredentialService;
   readonly broadcastService: IBroadcastService;
-  readonly zcodeTaskService: IZCodeTaskService;
+  readonly mycodeTaskService: IMyCodeTaskService;
   /** 窗口 Host 聚合面；旧 server wire 或测试 double 可暂不提供。 */
   readonly windowControllerService?: IWindowControllerService;
-  readonly zcodeAgentService: IZCodeAgentService;
-  readonly zcodeSessionService: IZCodeSessionService;
+  readonly mycodeAgentService: IMyCodeAgentService;
+  readonly mycodeSessionService: IMyCodeSessionService;
   // CUA 是 opt-in 内测特性：local macOS host 提供，远端 等 host 没有。可选避免连锁必填。
   readonly cuaPermissionService?: ICuaPermissionService;
   readonly conversationShareService: IConversationShareService;
@@ -70,7 +69,6 @@ export interface IServiceAccessor {
   readonly modelSelectionService: IModelSelectionService;
   readonly usageStatsService: IUsageStatsService;
   readonly codingPlanSubscriptionService: ICodingPlanSubscriptionService;
-  readonly clientConfigService: IClientConfigService;
   readonly clientScenesService: IClientScenesService;
   /** 闲时任务管理（独立服务面）。 */
   readonly offPeakTaskService: IOffPeakTaskService;
@@ -79,7 +77,7 @@ export interface IServiceAccessor {
   readonly mcpSyncService: IMcpSyncService;
   readonly pluginSyncService: IPluginSyncService;
   readonly pluginsService: IPluginsService;
-  /** 设置页插件管理（UI 不再直触 zcodeAgentService 的 plugins/* 面） */
+  /** 设置页插件管理（UI 不再直触 mycodeAgentService 的 plugins/* 面） */
   readonly pluginManagementService: IPluginManagementService;
   readonly subagentsService: ISubagentsService;
   readonly commandsService: ICommandsService;

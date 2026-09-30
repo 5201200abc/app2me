@@ -1,21 +1,21 @@
 /* eslint-disable max-lines -- 远端部署入口集中编排 server/node/agent/tool 资源，拆分需单独整理边界。 */
 import { join } from "node:path";
 import {
-  ZCODE_VERSION,
+  MYCODE_VERSION,
   formatLogPrefix,
   normalizeRemoteResourcePackageSelection,
   type RemoteAssetInstallMode,
   type RemoteResourcePackageId,
   type RemoteResourcePackageSelection,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import type { IRemoteBackend, RemoteEnvironment } from "./backend.js";
-import { deployZCodeAgentRuntime } from "./zcodeAgentDeploy.js";
+import { deployMyCodeAgentRuntime } from "./mycodeAgentDeploy.js";
 import {
   deployNodePtyPrebuilds,
   deployNodeRuntime,
   createRemoteComponentVersionResolver,
   logDeployRequired,
-} from "@zcode/server/remote/remoteAssetDeployDecision.js";
+} from "@mycode/server/remote/remoteAssetDeployDecision.js";
 import {
   REMOTE_BASE,
   fileExists,
@@ -23,34 +23,34 @@ import {
   formatOptionalValues,
   type DeployLoggers,
   type RemoteAssetDeployOptions,
-} from "@zcode/server/remote/deployShared.js";
-import { quotePosixPathArg } from "@zcode/server/remote/posixShell.js";
-import { checkServerBundleRequiredMarkers } from "@zcode/server/remote/serverBundleDeployCheck.js";
-import { deployRuntimeTools } from "@zcode/server/remote/runtimeToolDeploy.js";
-import { REMOTE_AGENT_OFFICIAL_PLUGIN_REQUIRED_RELATIVE_PATHS } from "@zcode/server/remote/zcodeAgentOfficialPluginAssets.js";
+} from "@mycode/server/remote/deployShared.js";
+import { quotePosixPathArg } from "@mycode/server/remote/posixShell.js";
+import { checkServerBundleRequiredMarkers } from "@mycode/server/remote/serverBundleDeployCheck.js";
+import { deployRuntimeTools } from "@mycode/server/remote/runtimeToolDeploy.js";
+import { REMOTE_AGENT_OFFICIAL_PLUGIN_REQUIRED_RELATIVE_PATHS } from "@mycode/server/remote/mycodeAgentOfficialPluginAssets.js";
 import {
   ensureRemoteReleaseDirFromCdn,
   selectRemoteAssetManifestComponents,
   type RemoteAssetManifestRef,
-} from "@zcode/server/remote/remoteAssetCache.js";
+} from "@mycode/server/remote/remoteAssetCache.js";
 import {
   fetchRemoteDownloadManifest,
   LocalUploadAssetInstaller,
   RemoteDownloadAssetInstaller,
   type RemoteAssetInstaller,
   type RemoteManifestRef,
-} from "@zcode/server/remote/remoteAssetInstaller.js";
+} from "@mycode/server/remote/remoteAssetInstaller.js";
 import {
   checkRemoteAssetComponentIdentity,
   createFreshRemoteAssetManifestRefResolver,
   hasRemoteAssetComponentRefreshPending,
   markRemoteAssetComponentRefreshPending,
   writeRemoteAssetComponentMeta,
-} from "@zcode/server/remote/remoteAssetLiveIdentity.js";
-import { detectRemoteAssetTools } from "@zcode/server/remote/remoteAssetPreflight.js";
-import { assertSupportedRemoteEnvironment } from "@zcode/server/remote/remotePlatformSupport.js";
-import { acquireRemoteDeployLock } from "@zcode/server/remote/remoteDeployLock.js";
-import type { RemoteAssetNetworkPort } from "@zcode/server/remote/remoteAssetNetwork.js";
+} from "@mycode/server/remote/remoteAssetLiveIdentity.js";
+import { detectRemoteAssetTools } from "@mycode/server/remote/remoteAssetPreflight.js";
+import { assertSupportedRemoteEnvironment } from "@mycode/server/remote/remotePlatformSupport.js";
+import { acquireRemoteDeployLock } from "@mycode/server/remote/remoteDeployLock.js";
+import type { RemoteAssetNetworkPort } from "@mycode/server/remote/remoteAssetNetwork.js";
 
 const log = (...args: unknown[]) => console.log(formatLogPrefix("deploy", process.pid), ...args);
 const logWarn = (...args: unknown[]) =>
@@ -87,7 +87,7 @@ export interface DeployOptions {
 }
 
 /**
- * Deploy the zcode server to the remote machine.
+ * Deploy the mycode server to the remote machine.
  * Uploads Node.js binary, server bundle, and node-pty prebuild.
  *
  * Returns true if a deploy was performed, false if skipped (version matches).
@@ -127,7 +127,7 @@ export async function deployServer(
   const getRemoteManifestRef = (): Promise<RemoteManifestRef> => {
     remoteManifestPromise ??= fetchRemoteDownloadManifest(
       {
-        version: ZCODE_VERSION,
+        version: MYCODE_VERSION,
         platformArch,
         remoteCdnBaseUrl: options?.remoteCdnBaseUrl,
         remoteCdnBaseUrls: options?.remoteCdnBaseUrls,
@@ -221,7 +221,7 @@ export async function deployServer(
     {
       ...assetDeployOptions,
       platformArch,
-      version: ZCODE_VERSION,
+      version: MYCODE_VERSION,
       assetInstallMode: options?.assetInstallMode,
     },
     { log, logWarn },
@@ -267,14 +267,14 @@ export async function deployServer(
       await markRemoteAssetComponentRefreshPending(backend, {
         componentId: "glm",
         platformArch,
-        appVersion: ZCODE_VERSION,
+        appVersion: MYCODE_VERSION,
       });
     }
 
     // Check if deploy is needed
     if (!serverDeployDecision.shouldDeploy) {
       log("skipped — remote version matches");
-      // 主 server 版本相同只证明 node/zcode-server.cjs 可启动，不代表随包工具仍存在。
+      // 主 server 版本相同只证明 node/mycode-server.cjs 可启动，不代表随包工具仍存在。
       // glm 内容跟随 app/server 版本刷新；但 wrapper/bundle 被清理或开发态 bundle 变化时仍要按实体检查修复。
       if (shouldDeployResourcePackage("node-pty")) {
         await deployNodePtyPrebuilds(
@@ -289,7 +289,7 @@ export async function deployServer(
           { log, logWarn },
         );
       }
-      await deployZCodeAgentRuntime(
+      await deployMyCodeAgentRuntime(
         backend,
         env,
         {
@@ -335,8 +335,8 @@ export async function deployServer(
     });
     await installer.installFile({
       componentId: SERVER_BUNDLE_COMPONENT_ID,
-      sourceRelativePath: "server/zcode-server.cjs",
-      remotePath: `${REMOTE_BASE}/zcode-server.cjs`,
+      sourceRelativePath: "server/mycode-server.cjs",
+      remotePath: `${REMOTE_BASE}/mycode-server.cjs`,
       // App 版本变化是新的发布边界，不能只凭历史 cache 的 `.ready`
       // 判断 server-bundle 可复用；与 GLM 一致，必须重新下载并校验当前 manifest 制品。
       forceRefresh: shouldForceRefreshContentAddressedAssets,
@@ -370,8 +370,8 @@ export async function deployServer(
 
     log("all uploads complete");
 
-    // 部署 ZCode Agent runtime 到远程，历史资源包选择已在入口统一忽略。
-    await deployZCodeAgentRuntime(
+    // 部署 MyCode Agent runtime 到远程，历史资源包选择已在入口统一忽略。
+    await deployMyCodeAgentRuntime(
       backend,
       env,
       {
@@ -497,7 +497,7 @@ async function checkServerDeployDecision(
       };
     }
 
-    const serverPath = `${REMOTE_BASE}/zcode-server.cjs`;
+    const serverPath = `${REMOTE_BASE}/mycode-server.cjs`;
     const serverExists = await backend.exists(serverPath);
     log("remote server exists:", serverExists);
     if (!serverExists) {
@@ -513,11 +513,11 @@ async function checkServerDeployDecision(
       `${quotePosixPathArg(nodePath)} ${quotePosixPathArg(serverPath)} --version`,
     );
     const version = (await collectStdout(stream)).trim();
-    log("remote version:", JSON.stringify(version), "local:", ZCODE_VERSION);
-    if (version !== ZCODE_VERSION) {
+    log("remote version:", JSON.stringify(version), "local:", MYCODE_VERSION);
+    if (version !== MYCODE_VERSION) {
       return {
         shouldDeploy: true,
-        reason: `remote server version mismatch remote=${version} expected=${ZCODE_VERSION}`,
+        reason: `remote server version mismatch remote=${version} expected=${MYCODE_VERSION}`,
         appVersionChanged: true,
       };
     }
@@ -620,7 +620,7 @@ function resolveMockCdnReleaseDir(mockCdnDir?: string): string | null {
     return null;
   }
 
-  return join(mockCdnDir, "releases", ZCODE_VERSION);
+  return join(mockCdnDir, "releases", MYCODE_VERSION);
 }
 
 async function resolveReleaseDir(
@@ -669,7 +669,7 @@ async function resolveReleaseDir(
       remoteCdnBaseUrl: options?.remoteCdnBaseUrl,
       remoteCdnBaseUrls: options?.remoteCdnBaseUrls,
       remoteCacheDir: options?.remoteCacheDir,
-      version: ZCODE_VERSION,
+      version: MYCODE_VERSION,
       platformArch,
       componentIds,
       manifestRef,
@@ -717,7 +717,7 @@ function resolveRequiredMockReleasePaths(
   for (const componentId of ids) {
     switch (componentId) {
       case SERVER_BUNDLE_COMPONENT_ID:
-        requiredPaths.add("server/zcode-server.cjs");
+        requiredPaths.add("server/mycode-server.cjs");
         break;
       case "node-runtime":
         requiredPaths.add(`node/${platformArch}/node`);
@@ -729,7 +729,7 @@ function resolveRequiredMockReleasePaths(
         }
         break;
       case "glm":
-        requiredPaths.add(`glm/${platformArch}/zcode.cjs`);
+        requiredPaths.add(`glm/${platformArch}/mycode.cjs`);
         for (const relativePath of REMOTE_AGENT_OFFICIAL_PLUGIN_REQUIRED_RELATIVE_PATHS) {
           requiredPaths.add(`glm/${platformArch}/packages/${relativePath}`);
         }

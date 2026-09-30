@@ -2,18 +2,15 @@ import { useMemo } from "react";
 import {
   sortPluginStoreEntries,
   isPublicStoreMarketplaceId,
-  type PluginStoreModeOrder,
   resolvePluginDisplayName,
   resolveLocalizedText,
-  type ZCodePluginReferenceCatalogEntry,
-} from "@zcode/shared";
+  type MyCodePluginReferenceCatalogEntry,
+} from "@mycode/shared";
 import type { MentionCategoryResult, MentionItem } from "@/mentions/mentionTypes.js";
 import { filterMentionItemsWithOptions } from "@/mentions/mentionSearch.js";
 import { buildPluginMentionMarkdown } from "@/mentions/mentionMarkdown.js";
 import { usePluginReferenceCatalog } from "@/hooks/usePluginReferenceCatalog.js";
-import { usePluginStoreOrder } from "@/hooks/usePluginStoreOrder.js";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 
 interface PluginMentionLabels {
   conflictReason: string;
@@ -28,36 +25,31 @@ interface PluginMentionLabels {
 // - keywords 并入 listing 的全部语言显示名（无论当前 locale）：英文界面下打中文
 //   也能搜到官方插件（插件 @ 引用中文搜索）。
 function mapPluginCatalogToMentionItemsForTest(
-  entries: ZCodePluginReferenceCatalogEntry[],
+  entries: MyCodePluginReferenceCatalogEntry[],
   labels: PluginMentionLabels,
   locale: string,
-  order?: PluginStoreModeOrder,
 ): MentionItem[] {
-  const sorted =
-    order && entries.some((entry) => entry.category !== undefined)
-      ? [
-          ...sortPluginStoreEntries(
-            entries.filter((entry) => isPublicStoreMarketplaceId(entry.marketplace)),
-            (entry) => ({
-              id: entry.pluginId,
-              category: entry.category,
-              displayName: resolvePluginDisplayName(
-                {
-                  name: entry.name,
-                  listing: {
-                    displayName: entry.displayName,
-                    displayNameI18n: entry.displayNameI18n,
-                  },
-                },
-                locale,
-              ),
-            }),
-            locale,
-            order,
-          ),
-          ...entries.filter((entry) => !isPublicStoreMarketplaceId(entry.marketplace)),
-        ]
-      : entries;
+  const sorted = [
+    ...sortPluginStoreEntries(
+      entries.filter((entry) => isPublicStoreMarketplaceId(entry.marketplace)),
+      (entry) => ({
+        id: entry.pluginId,
+        category: entry.category,
+        displayName: resolvePluginDisplayName(
+          {
+            name: entry.name,
+            listing: {
+              displayName: entry.displayName,
+              displayNameI18n: entry.displayNameI18n,
+            },
+          },
+          locale,
+        ),
+      }),
+      locale,
+    ),
+    ...entries.filter((entry) => !isPublicStoreMarketplaceId(entry.marketplace)),
+  ];
   return sorted
     .filter((entry) => entry.enabled)
     .map((entry) => {
@@ -109,10 +101,7 @@ export function usePluginsMentionProvider(
   emptyText: string,
   title: string,
 ): MentionCategoryResult {
-  const { intl, locale } = useZCodeIntl();
-  const { order } = usePluginStoreOrder(enabled);
-  const isOfficeMode = useIsOfficeMode();
-  const modeOrder = isOfficeMode ? order?.work : order?.code;
+  const { intl, locale } = useMyCodeIntl();
   const catalog = usePluginReferenceCatalog(workspacePath, workspaceIdentity, sessionId, enabled);
 
   const allItems = useMemo(
@@ -123,9 +112,8 @@ export function usePluginsMentionProvider(
           conflictReason: intl.formatMessage({ id: "chat.mention.plugins.conflict" }),
         },
         locale,
-        modeOrder,
       ),
-    [catalog.entries, intl, locale, modeOrder],
+    [catalog.entries, intl, locale],
   );
 
   const items = useMemo(

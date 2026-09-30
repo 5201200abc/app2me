@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { resolveModelProviderFamilyIdByProviderId } from "@zcode/shared";
+import { resolveModelProviderFamilyIdByProviderId } from "@mycode/shared";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
 import { useServices } from "@/hooks/useServices.js";
 import { type CodingPlanProviderId } from "@/settings/model-provider-section/constants.js";
@@ -31,7 +31,7 @@ interface CodingPlanUpgradeDialogProps {
   onReopen?: (target: CodingPlanUpgradeDialogTarget) => void;
 }
 
-// 完成刷新：官网页通过 window.zcodeBridge.notifyPurchaseComplete 回传购买成功后调用。
+// 完成刷新：官网页通过 window.mycodeBridge.notifyPurchaseComplete 回传购买成功后调用。
 async function refreshCodingPlanUpgradeCompletion(params: {
   productsProviderId: CodingPlanProviderId | null;
   providerId: CodingPlanProviderId | null;
@@ -128,25 +128,6 @@ export function CodingPlanUpgradeDialog({
     teamPlanFamily,
   ]);
 
-  if (!target || !providerId || !productsProviderId) {
-    return null;
-  }
-
-  return (
-    <CodingPlanEmbeddedWebviewDialog
-      open
-      onOpenResult={onOpenResult}
-      credentialService={credentialService}
-      providerId={providerId}
-      funnelContext={target.funnelContext}
-      audience={target.initialAudience}
-      teamPlanKey={target.initialTeamPlanKey}
-      onPurchaseComplete={handlePurchaseComplete}
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose();
-        }
-      }}
-    />
-  );
+  return null;
 }
+

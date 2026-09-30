@@ -27,8 +27,8 @@ export const THEME_MODES: Array<{
   icon: typeof Sun;
 }> = [
   { mode: "system", icon: Monitor },
-  { mode: "zai-dark", icon: Moon },
-  { mode: "zai-light", icon: Sun },
+  { mode: "mycode-dark", icon: Moon },
+  { mode: "mycode-light", icon: Sun },
 ];
 
 type SettingsSectionGroupId = "basics" | "agentCapabilities" | "dataAndStats";
@@ -143,7 +143,7 @@ const BASE_SETTINGS_SECTIONS: SettingsSectionDefinition[] = [
     titleId: "settings.shortcuts.title",
     groupId: "basics",
   },
-  // 工作区搜索范围（.zcodeignore）：面向所有用户的基础工作区行为配置，收在基础设置末尾。
+  // 工作区搜索范围（.mycodeignore）：面向所有用户的基础工作区行为配置，收在基础设置末尾。
   {
     id: "workspaceFileSearch",
     icon: FileSearch,

@@ -1,8 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { PlatformChannels } from "@zcode/shared";
+import { PlatformChannels } from "@mycode/shared";
 import { installEmbeddedBrowserWheelForwarding } from "./embeddedBrowserWheel.js";
 
-const BRIDGE_KEY = "__zcodeEmbeddedBrowserJavaScriptDialog__";
+const BRIDGE_KEY = "__mycodeEmbeddedBrowserJavaScriptDialog__";
 
 if (typeof window !== "undefined") {
   installEmbeddedBrowserWheelForwarding(window, (channel, payload) => {

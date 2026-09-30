@@ -1,0 +1,7 @@
+{
+  "name": "computer-use",
+  "version": "0.30.4",
+  "description": "Native desktop automation with Cua Driver. MyCode's built-in browser remains available separately.",
+  "author": { "name": "MyCode" },
+  "license": "MIT"
+}

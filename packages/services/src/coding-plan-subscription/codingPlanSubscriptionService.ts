@@ -1,75 +1,73 @@
-import type { ApiClient } from "@zcode/shared";
-import type { ICredentialService } from "../credential/credential.js";
-import type { ICodingPlanSubscriptionService } from "./codingPlanSubscription.js";
-import { BigModelCodingPlanSubscriptionProvider } from "./bigmodelCodingPlanSubscriptionProvider.js";
-import type { ModelSelectionView } from "@zcode/provider";
-import { ZaiCodingPlanSubscriptionProvider } from "./zaiCodingPlanSubscriptionProvider.js";
+import {
+  DEFAULT_MYCODE_MODEL_CONTEXT_BUDGET_STRATEGY,
+  resolveDynamicWorkflowClientConfig,
+} from "@mycode/shared";
+import type { ModelSelectionView } from "@mycode/provider";
+import type {
+  ICodingPlanSubscriptionService,
+  OffPeakClientConfig,
+} from "./codingPlanSubscription.js";
 
 interface CodingPlanSubscriptionServiceDependencies {
-  apiClient: ApiClient;
-  credentialService: Pick<ICredentialService, "load">;
   resolveOffPeakModelSelectionView?: () => Promise<ModelSelectionView>;
 }
 
-/**
- * 原 service 把所有调用直接绑定到单一 BigModelCodingPlanSubscriptionProvider，
- * zai family 没有独立的 Team Plan 定价来源（死代码）。
- *
- * zai 与 bigmodel Team Plan 全链路对称化：
- * 同时持有 bigmodel 和 zai 两个 provider 实例；enterprise 读路径（getEnterprisePricing）按
- * request.family 路由到对应实例；缺省 family 时保持 bigmodel，向后兼容既有调用点。
- *
- * 其余方法（购买/staticConfigs/preview 等）语义与 family 无关或已在 provider 内部按
- * request.providerId 动态路由，统一委托给 bigmodel provider 即可：
- *   - 企业购买闭环（balance/order/pending/cancel/continue/status）按产品决策仍只走 bigmodel 域。
- *   - staticConfigs 是平台级 client/configs，与 family 无关。
- *   - 购买类（Stripe/PayPal/preview/createSign 等）已通过 request.providerId 在 provider 内路由。
- */
+function retiredSubscription<T>(): Promise<T> {
+  // Bug 原因：历史 RPC 调用仍可进入购买服务。退役后在服务边界拒绝，防止触达官方支付接口。
+  return Promise.reject(new Error("Coding Plan subscription integration has been removed"));
+}
+
 export function createCodingPlanSubscriptionService(
-  dependencies: CodingPlanSubscriptionServiceDependencies,
+  dependencies: CodingPlanSubscriptionServiceDependencies = {},
 ): ICodingPlanSubscriptionService {
-  const bigmodelProvider = new BigModelCodingPlanSubscriptionProvider(dependencies);
-  const zaiProvider = new ZaiCodingPlanSubscriptionProvider(dependencies);
-
-  // 按 family 选择 enterprise 读路径 provider；缺省（含未指定 family 的历史调用）走 bigmodel。
-  const resolveEnterprisePricingProvider = (
-    family?: "bigmodel" | "zai",
-  ): BigModelCodingPlanSubscriptionProvider => (family === "zai" ? zaiProvider : bigmodelProvider);
-
   return {
-    batchPreview: (request) => bigmodelProvider.batchPreview(request),
-    getStaticProducts: () => bigmodelProvider.getStaticProducts(),
-    getStaticTeamProducts: () => bigmodelProvider.getStaticTeamProducts(),
-    getStartPlanPreview: () => bigmodelProvider.getStartPlanPreview(),
-    getOffPeakClientConfig: (options) => bigmodelProvider.getOffPeakClientConfig(options),
-    // 动态工作流灰度：与 client/configs 同源，
-    // 因此和其它平台级配置一样固定走 bigmodel provider，与 family 无关。
-    getDynamicWorkflowClientConfig: (options) =>
-      bigmodelProvider.getDynamicWorkflowClientConfig(options),
-    getModelContextBudgetStrategy: () => bigmodelProvider.getModelContextBudgetStrategy(),
-    getForceUpdateConfig: () => bigmodelProvider.getForceUpdateConfig(),
-    productInfo: (request) => bigmodelProvider.productInfo(request),
-    preview: (request) => bigmodelProvider.preview(request),
-    createSign: (request) => bigmodelProvider.createSign(request),
-    updateSign: (request) => bigmodelProvider.updateSign(request),
-    checkPayment: (request) => bigmodelProvider.checkPayment(request),
-    checkPendingOrders: (request) => bigmodelProvider.checkPendingOrders(request),
-    queryStripeCards: (request) => bigmodelProvider.queryStripeCards(request),
-    bindStripeCard: (request) => bigmodelProvider.bindStripeCard(request),
-    unbindStripeCard: (request) => bigmodelProvider.unbindStripeCard(request),
-    payStripe: (request) => bigmodelProvider.payStripe(request),
-    checkPaypalSupport: (request) => bigmodelProvider.checkPaypalSupport(request),
-    createPaypalSetupToken: (request) => bigmodelProvider.createPaypalSetupToken(request),
-    subscribePaypal: (request) => bigmodelProvider.subscribePaypal(request),
-    getEnterprisePricing: (request) =>
-      resolveEnterprisePricingProvider(request?.family).getEnterprisePricing(request),
-    getEnterpriseBalance: () => bigmodelProvider.getEnterpriseBalance(),
-    calculateEnterpriseOrder: (request) => bigmodelProvider.calculateEnterpriseOrder(request),
-    createEnterpriseOrder: (request) => bigmodelProvider.createEnterpriseOrder(request),
-    getEnterprisePendingOrders: () => bigmodelProvider.getEnterprisePendingOrders(),
-    cancelEnterpriseOrder: (request) => bigmodelProvider.cancelEnterpriseOrder(request),
-    continueEnterpriseOrderPayment: (request) =>
-      bigmodelProvider.continueEnterpriseOrderPayment(request),
-    checkEnterpriseOrderStatus: (request) => bigmodelProvider.checkEnterpriseOrderStatus(request),
+    batchPreview: () => retiredSubscription(),
+    getStaticProducts: async () => ({}),
+    getStaticTeamProducts: async () => ({}),
+    getStartPlanPreview: async () => null,
+    getOffPeakClientConfig: async (): Promise<OffPeakClientConfig> => {
+      const modelSelectionView =
+        (await dependencies.resolveOffPeakModelSelectionView?.()) ??
+        EMPTY_OFF_PEAK_MODEL_SELECTION_VIEW;
+      const hasModels = modelSelectionView.providers.some((provider) => provider.models.length > 0);
+      if (process.env["MYCODE_OFFPEAK_MOCK"] === "1") {
+        return {
+          enabled: hasModels,
+          modelSelectionView,
+          codingPlanActive: process.env["MYCODE_OFFPEAK_MOCK_NO_PLAN"] !== "1",
+        };
+      }
+      return { enabled: false, modelSelectionView };
+    },
+    getDynamicWorkflowClientConfig: async () =>
+      resolveDynamicWorkflowClientConfig({ remote: undefined, env: process.env }),
+    getModelContextBudgetStrategy: async () =>
+      DEFAULT_MYCODE_MODEL_CONTEXT_BUDGET_STRATEGY,
+    productInfo: () => retiredSubscription(),
+    preview: () => retiredSubscription(),
+    createSign: () => retiredSubscription(),
+    updateSign: () => retiredSubscription(),
+    checkPayment: () => retiredSubscription(),
+    checkPendingOrders: () => retiredSubscription(),
+    queryStripeCards: () => retiredSubscription(),
+    bindStripeCard: () => retiredSubscription(),
+    unbindStripeCard: () => retiredSubscription(),
+    payStripe: () => retiredSubscription(),
+    checkPaypalSupport: () => retiredSubscription(),
+    createPaypalSetupToken: () => retiredSubscription(),
+    subscribePaypal: () => retiredSubscription(),
+    getEnterprisePricing: async () => ({ productList: [] }),
+    getEnterpriseBalance: () => retiredSubscription(),
+    calculateEnterpriseOrder: () => retiredSubscription(),
+    createEnterpriseOrder: () => retiredSubscription(),
+    getEnterprisePendingOrders: () => retiredSubscription(),
+    cancelEnterpriseOrder: () => retiredSubscription(),
+    continueEnterpriseOrderPayment: () => retiredSubscription(),
+    checkEnterpriseOrderStatus: () => retiredSubscription(),
   };
 }
+
+const EMPTY_OFF_PEAK_MODEL_SELECTION_VIEW: ModelSelectionView = Object.freeze({
+  revision: 0,
+  providers: Object.freeze([]),
+});

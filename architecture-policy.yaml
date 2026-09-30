@@ -37,8 +37,8 @@ modules:
   - id: server
     roots: [packages/server/src]
     managed: false
-  - id: zcode-server-cli
-    roots: [packages/zcode-server-cli/src]
+  - id: mycode-server-cli
+    roots: [packages/mycode-server-cli/src]
     managed: false
   - id: ui
     roots: [packages/ui/src]
@@ -52,8 +52,8 @@ modules:
   - id: formal-proof
     roots: [packages/formal-proof/src]
     managed: false
-  - id: zcode-cli
-    roots: [apps/zcode-cli]
+  - id: mycode-cli
+    roots: [apps/mycode-cli]
     managed: false
 
 global:

@@ -1,5 +1,5 @@
-import type { AppSettings, RemoteWorkspaceSessionEntry } from "@zcode/shared";
-import { resolveStartupLocalWorkspaceSessionIndex } from "@zcode/shared";
+import type { AppSettings, RemoteWorkspaceSessionEntry } from "@mycode/shared";
+import { resolveStartupLocalWorkspaceSessionIndex } from "@mycode/shared";
 import {
   buildPersistedWorkspaceSessionEntries,
   buildRemoteWorkspaceSessionEntryMap,

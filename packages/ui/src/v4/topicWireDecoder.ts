@@ -4,7 +4,7 @@ import {
   type TopicWireAssemblyFault,
   type TopicFrameDeliveryKind,
   type TopicWireFrameCandidate,
-} from "@zcode/shared/zcode-protocol-v4";
+} from "@mycode/shared/mycode-protocol-v4";
 import { logger } from "@/logger.js";
 
 interface TopicWireDecoder {

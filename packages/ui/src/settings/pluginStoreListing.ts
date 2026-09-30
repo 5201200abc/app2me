@@ -1,11 +1,11 @@
 import type {
   PluginStoreModeOrder,
-  ZCodeAvailablePluginSummary,
-  ZCodeInstalledPluginSummary,
-  ZCodePluginInfo,
-  ZCodePluginMarketplaceSummary,
-  ZCodePluginStoreListing,
-} from "@zcode/shared";
+  MyCodeAvailablePluginSummary,
+  MyCodeInstalledPluginSummary,
+  MyCodePluginInfo,
+  MyCodePluginMarketplaceSummary,
+  MyCodePluginStoreListing,
+} from "@mycode/shared";
 import {
   sortPluginStoreEntries,
   compareDocumentPluginPriority,
@@ -14,15 +14,16 @@ import {
   isPublicStoreMarketplaceId,
   resolveLocalizedText,
   resolvePluginDisplayName,
-  ZCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID,
-} from "@zcode/shared";
+  MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID,
+  MYCODE_NODE_REPL_HOST_PLUGIN_ID,
+} from "@mycode/shared";
 import { pluginSearchMatches } from "@/settings/pluginSearch.js";
 
 export {
   formatCanonicalPluginName,
   resolveLocalizedText,
   resolvePluginDisplayName,
-} from "@zcode/shared";
+} from "@mycode/shared";
 
 export { isTrustedImageUrl } from "@/lib/trustedImageUrl.js";
 export { isPublicStoreMarketplaceId };
@@ -33,11 +34,11 @@ export { isPublicStoreMarketplaceId };
  * 会把第三方条目的品牌和图标误挂到另一个 marketplace，安全降级为 slug 更可靠。
  */
 export function resolveUniquePluginListingByName(
-  plugins: readonly Pick<ZCodeAvailablePluginSummary, "name" | "listing">[],
+  plugins: readonly Pick<MyCodeAvailablePluginSummary, "name" | "listing">[],
   name: string,
-): ZCodePluginStoreListing | undefined {
+): MyCodePluginStoreListing | undefined {
   const normalizedName = name.trim().toLocaleLowerCase();
-  let match: ZCodePluginStoreListing | undefined;
+  let match: MyCodePluginStoreListing | undefined;
   let count = 0;
   for (const plugin of plugins) {
     if (plugin.name.trim().toLocaleLowerCase() !== normalizedName) continue;
@@ -60,14 +61,14 @@ export interface StorePluginItem {
   restorable: boolean;
   /** 已安装但原 marketplace 已移除；仍可运行和管理，但不能更新。 */
   orphaned: boolean;
-  listing?: ZCodePluginStoreListing;
-  summary?: ZCodeAvailablePluginSummary;
+  listing?: MyCodePluginStoreListing;
+  summary?: MyCodeAvailablePluginSummary;
   /** 运行时信息（仅已发现的已安装插件有）：启用态、组件、manifest 回退字段。 */
-  info?: ZCodePluginInfo;
-  installedMeta?: ZCodeInstalledPluginSummary;
+  info?: MyCodePluginInfo;
+  installedMeta?: MyCodeInstalledPluginSummary;
 }
 
-export type PluginUpdateStatus = NonNullable<ZCodeInstalledPluginSummary["updateStatus"]>;
+export type PluginUpdateStatus = NonNullable<MyCodeInstalledPluginSummary["updateStatus"]>;
 
 export function isPluginUpdatePending(
   updateStatus: PluginUpdateStatus | undefined,
@@ -114,7 +115,7 @@ export function resolveItemDescription(item: StorePluginItem, locale: string): s
 
 /** 管理列表与商店复用完整 ID 关联的展示信息，避免英文 manifest 绕过本地化。 */
 export function resolveManagedPluginDisplay(
-  plugin: ZCodePluginInfo,
+  plugin: MyCodePluginInfo,
   item: StorePluginItem | undefined,
   locale: string,
 ): { name: string; description: string | undefined } {
@@ -140,7 +141,7 @@ export {
   FALLBACK_PLUGIN_STORE_CATEGORY as FALLBACK_CATEGORY,
   PLUGIN_STORE_CATEGORY_ORDER as KNOWN_CATEGORY_ORDER,
   resolvePluginStoreCategory as resolveStoreCategory,
-} from "@zcode/shared";
+} from "@mycode/shared";
 
 interface StoreCategoryGroup {
   category: string;
@@ -154,16 +155,16 @@ export interface PersonalMarketplaceGroup {
   items: StorePluginItem[];
 }
 
-const OFFICIAL_MARKETPLACE_ORDER: readonly string[] = [ZCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID];
+const OFFICIAL_MARKETPLACE_ORDER: readonly string[] = [MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID];
 
 /**
  * 市场源管理排序：官方源固定置顶；自定义源按最近刷新时间倒序，未刷新过的沉底。
  * 同一时间使用本地化名称稳定兜底，避免市场源顺序随持久化数组历史漂移。
  */
 export function sortMarketplaceSources(
-  marketplaces: readonly ZCodePluginMarketplaceSummary[],
+  marketplaces: readonly MyCodePluginMarketplaceSummary[],
   locale: string,
-): ZCodePluginMarketplaceSummary[] {
+): MyCodePluginMarketplaceSummary[] {
   const officialRank = new Map(OFFICIAL_MARKETPLACE_ORDER.map((id, index) => [id, index]));
   return marketplaces.toSorted((left, right) => {
     const leftRank = officialRank.get(left.id);
@@ -189,7 +190,7 @@ export function sortMarketplaceSources(
  */
 export function sortPersonalMarketplaceGroups(
   groups: PersonalMarketplaceGroup[],
-  marketplaces: readonly ZCodePluginMarketplaceSummary[],
+  marketplaces: readonly MyCodePluginMarketplaceSummary[],
   locale: string,
 ): PersonalMarketplaceGroup[] {
   const lastUpdatedById = new Map(
@@ -211,12 +212,12 @@ export function sortPersonalMarketplaceGroups(
  * 条目宇宙 = availablePlugins ∪ restorableBuiltins ∪ 实际发现的插件包（覆盖 inline/孤儿插件）。
  */
 export function buildStoreItems(input: {
-  marketplaces: ZCodePluginMarketplaceSummary[];
+  marketplaces: MyCodePluginMarketplaceSummary[];
   marketplaceAvailabilityKnown: boolean;
-  availablePlugins: ZCodeAvailablePluginSummary[];
-  installedPlugins: ZCodeInstalledPluginSummary[];
-  plugins: ZCodePluginInfo[];
-  restorableBuiltins: ZCodeAvailablePluginSummary[];
+  availablePlugins: MyCodeAvailablePluginSummary[];
+  installedPlugins: MyCodeInstalledPluginSummary[];
+  plugins: MyCodePluginInfo[];
+  restorableBuiltins: MyCodeAvailablePluginSummary[];
 }): StorePluginItem[] {
   const infoById = new Map(input.plugins.map((plugin) => [plugin.id, plugin]));
   const metaById = new Map(input.installedPlugins.map((item) => [item.id, item]));
@@ -224,6 +225,8 @@ export function buildStoreItems(input: {
   const items = new Map<string, StorePluginItem>();
 
   for (const summary of input.availablePlugins) {
+    // 内部 node_repl 宿主没有面向用户的能力；运行时仍通过官方 manifest 发现它。
+    if (summary.id === MYCODE_NODE_REPL_HOST_PLUGIN_ID) continue;
     const info = infoById.get(summary.id);
     items.set(summary.id, {
       id: summary.id,
@@ -240,6 +243,7 @@ export function buildStoreItems(input: {
     });
   }
   for (const summary of input.restorableBuiltins) {
+    if (summary.id === MYCODE_NODE_REPL_HOST_PLUGIN_ID) continue;
     const existing = items.get(summary.id);
     if (existing) {
       // 内置卸载态同时存在于完整 Catalog 和 restorable 列表：只有没有实际
@@ -272,6 +276,7 @@ export function buildStoreItems(input: {
   }
   // 运行时发现、但不在任何目录里的插件（inline、被移除市场的遗留安装）也要可见/可搜索。
   for (const info of input.plugins) {
+    if (info.id === MYCODE_NODE_REPL_HOST_PLUGIN_ID) continue;
     if (items.has(info.id)) continue;
     // 旧插件拆分/下架后，配置仍会生成缺包诊断；它不是可安装目录来源。
     // 保留原 plugins 给设置页诊断，但不凭此生成商店安装入口；有目录/恢复来源的条目已在上面保留。
@@ -298,7 +303,7 @@ export function buildStoreItems(input: {
 /** 公开分段：Featured（CDN featured 名单按序）+ 分类聚合（无分类归 other，排最后）。 */
 export function selectFeaturedItems(
   publicItems: StorePluginItem[],
-  marketplaces: ZCodePluginMarketplaceSummary[],
+  marketplaces: MyCodePluginMarketplaceSummary[],
 ): StorePluginItem[] {
   const byName = new Map<string, StorePluginItem>();
   for (const item of publicItems) {

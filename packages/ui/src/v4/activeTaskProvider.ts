@@ -1,16 +1,16 @@
-import type { ZCodeProvider } from "@zcode/shared";
-import { selectWorkspaceZCodeState, useZCodeSessionStore } from "@/store/zcodeSessionStore.js";
-import type { WorkspaceZCodeUIState } from "@/store/zcodeSessionStoreTypes.js";
+import type { MyCodeProvider } from "@mycode/shared";
+import { selectWorkspaceMyCodeState, useMyCodeSessionStore } from "@/store/mycodeSessionStore.js";
+import type { WorkspaceMyCodeUIState } from "@/store/mycodeSessionStoreTypes.js";
 import { useTabStore } from "@/store/TabStoreProvider.js";
 import { isWorkspaceTab } from "@/store/tabStore.js";
 
 function resolveChatViewActiveTaskProvider(
   taskId: string | null,
   workspaceState: Pick<
-    WorkspaceZCodeUIState,
+    WorkspaceMyCodeUIState,
     "selectedProvider" | "taskListCache" | "optimisticTaskListByTaskId"
   >,
-): ZCodeProvider {
+): MyCodeProvider {
   if (!taskId) {
     return workspaceState.selectedProvider;
   }
@@ -47,8 +47,8 @@ export function useChatViewActiveTaskProvider(
   });
   const resolvedWorkspaceIdentity = workspaceIdentity ?? activeTabWorkspaceIdentity;
 
-  return useZCodeSessionStore((state) => {
-    const workspaceState = selectWorkspaceZCodeState(
+  return useMyCodeSessionStore((state) => {
+    const workspaceState = selectWorkspaceMyCodeState(
       state,
       workspacePath,
       resolvedWorkspaceIdentity,

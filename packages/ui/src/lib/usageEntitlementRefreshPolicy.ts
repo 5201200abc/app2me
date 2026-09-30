@@ -1,15 +1,15 @@
-import type { IUsageStatsService } from "@zcode/services";
+import type { IUsageStatsService } from "@mycode/services";
 import type {
   UsageEntitlementSnapshot,
-  ZCodeAccountAccess,
-  ZCodeProviderAccountAccess,
-} from "@zcode/shared";
+  MyCodeAccountAccess,
+  MyCodeProviderAccountAccess,
+} from "@mycode/shared";
 
 export interface UsageEntitlementRequestOptions {
   invalidateBalanceCache?: boolean;
   includeSubscription: boolean;
   preferredProviderId?: string;
-  accountAccess?: ZCodeProviderAccountAccess | ZCodeAccountAccess;
+  accountAccess?: MyCodeProviderAccountAccess | MyCodeAccountAccess;
   allowDisabledPreferredProvider: boolean;
   requirePreferredProvider: boolean;
   allowEnvApiKey?: boolean;

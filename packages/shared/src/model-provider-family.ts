@@ -1,7 +1,5 @@
 import { BIGMODEL_PROVIDER_ID, type OAuthProviderId, ZAI_PROVIDER_ID } from "./oauth.js";
 import { BUILTIN_MODEL_PROVIDER_IDS, type BuiltinModelProviderId } from "./model-provider-types.js";
-import { ZCODE_ENV } from "./env.js";
-import { buildBigModelCodingPlanTeamManageUrl } from "./zcodeEndpoint.js";
 
 export type ModelProviderFamilyId = "zai" | "bigmodel";
 export type ProviderFamilyDomain = ModelProviderFamilyId;
@@ -20,29 +18,26 @@ export interface ModelProviderFamilySpec {
   teamCodingPlanProviderId:
     | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
     | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan;
-  teamCodingPlanManageUrl: string;
 }
 
 export const MODEL_PROVIDER_FAMILY_SPECS = [
   {
     id: "zai",
-    label: "Z.ai",
-    rootDomain: "z.ai",
+    label: "Removed provider",
+    rootDomain: "retired-zai.invalid",
     oauthProviderId: ZAI_PROVIDER_ID,
     startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
     individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
     teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
-    teamCodingPlanManageUrl: "https://z.ai/manage-apikey/subscription",
   },
   {
     id: "bigmodel",
-    label: "BigModel",
-    rootDomain: "bigmodel.cn",
+    label: "Removed provider",
+    rootDomain: "retired-bigmodel.invalid",
     oauthProviderId: BIGMODEL_PROVIDER_ID,
     startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
     individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
     teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
-    teamCodingPlanManageUrl: buildBigModelCodingPlanTeamManageUrl({ ZCODE_ENV }),
   },
 ] as const satisfies readonly ModelProviderFamilySpec[];
 

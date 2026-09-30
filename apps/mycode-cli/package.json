@@ -1,0 +1,50 @@
+{
+  "name": "mycode-cli",
+  "version": "0.16.9",
+  "private": true,
+  "description": "A cross-platform TypeScript Node.js CLI with a small TUI and optional SEA packaging.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/run-turbo.mjs run build",
+    "build:sea": "pnpm --filter @mycode/cli build:sea",
+    "check": "pnpm registry:check && node scripts/run-turbo.mjs run typecheck",
+    "clean": "node scripts/run-turbo.mjs run clean",
+    "cli:build": "pnpm --filter @mycode/cli build",
+    "cli:dev": "pnpm --filter @mycode/cli dev",
+    "cli:upload-sea": "pnpm --filter @mycode/cli upload:sea",
+    "dev": "pnpm --filter @mycode/cli dev",
+    "format": "oxfmt --write package.json \"packages/**/*.json\" \"packages/**/*.ts\" \"packages/**/*.mjs\"",
+    "format:check": "oxfmt --check package.json \"packages/**/*.json\" \"packages/**/*.ts\" \"packages/**/*.mjs\"",
+    "lint": "node scripts/run-turbo.mjs run lint",
+    "lint:count": "node scripts/count-ts-lines.mjs",
+    "lint:fix": "node scripts/run-turbo.mjs run lint:fix",
+    "prompt-trajectory:model-io": "pnpm --filter @mycode/prompt-trajectory model-io --",
+    "prompt-trajectory:prompt": "pnpm --filter @mycode/prompt-trajectory record:prompt --",
+    "registry:check": "node scripts/generate-bash-command-registry.mjs --check",
+    "registry:generate": "node scripts/generate-bash-command-registry.mjs",
+    "release": "node ../../node_modules/release-it/bin/release-it.js --config .release-it.json",
+    "release:dry": "pnpm run release --release-version",
+    "sea": "pnpm --filter @mycode/cli sea",
+    "typecheck": "node scripts/run-turbo.mjs run typecheck"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "proxy-agent": "^8.0.1"
+  },
+  "devDependencies": {
+    "@withfig/autocomplete": "2.692.3",
+    "@types/node": "^24.0.0",
+    "c8": "^11.0.0",
+    "esbuild": "^0.25.0",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
+    "postject": "^1.0.0-alpha.6",
+    "tsx": "^4.20.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": "24.14.0"
+  },
+  "packageManager": "pnpm@10.33.2"
+}

@@ -34,7 +34,7 @@
  */
 
 /*
- * styles.css 是从 @zcode/ui 包里被 web/desktop 间接引入的，Tailwind v4 在这种工作区场景下
+ * styles.css 是从 @mycode/ui 包里被 web/desktop 间接引入的，Tailwind v4 在这种工作区场景下
  * 仅靠 source(".") 不能稳定把 UI 包里的 TSX 组件都加入扫描，像 Select 这类新组件用到的
  * bg-popover、shadow-md、overflow-x-hidden 等 utility 会直接缺席，页面就只剩下一部分“碰巧命中”的通用类。
  * 这里显式补一条 @source，让 Tailwind 始终扫描 UI 包源码，避免下拉框、菜单这类组件渲染成半残状态。
@@ -458,7 +458,7 @@ body {
   --color-plugin-paid-plan-badge-foreground: #ffd8b8;
 }
 
-.theme-zai-light {
+.theme-mycode-light {
   --animated-gradient-text-strong: rgba(13, 13, 13, 1);
   --animated-gradient-text-soft: rgba(13, 13, 13, 0.22);
   --color-background: #f8f8f8;
@@ -603,7 +603,7 @@ body {
   --color-plugin-paid-plan-badge-foreground: #4b280f;
 }
 
-.theme-zai-dark {
+.theme-mycode-dark {
   --animated-gradient-text-strong: rgba(255, 255, 255, 1);
   --animated-gradient-text-soft: rgba(255, 255, 255, 0.22);
   --color-background: #161616;
@@ -800,11 +800,11 @@ body {
  * 会命中上面的全局滚动条样式，在幻灯片内部露出滚动条。幻灯片内容不存在用户滚动交互，
  * 这里整体隐藏渲染表面内部的原生滚动条。
  */
-[data-zcode-pptx-render-surface] * {
+[data-mycode-pptx-render-surface] * {
   scrollbar-width: none;
 }
 
-[data-zcode-pptx-render-surface] *::-webkit-scrollbar {
+[data-mycode-pptx-render-surface] *::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
@@ -897,7 +897,7 @@ body {
   }
 }
 
-@keyframes zcode-stream-text-in {
+@keyframes mycode-stream-text-in {
   0% {
     opacity: 0;
   }
@@ -907,7 +907,7 @@ body {
   }
 }
 
-@keyframes zcode-draft-prompt-waterfall {
+@keyframes mycode-draft-prompt-waterfall {
   from {
     opacity: 0;
     clip-path: inset(0 0 100% 0);
@@ -921,13 +921,13 @@ body {
   }
 }
 
-.zcode-draft-prompt-waterfall {
-  animation: zcode-draft-prompt-waterfall 260ms cubic-bezier(0.22, 1, 0.36, 1)
-    var(--zcode-draft-prompt-waterfall-delay, 0ms) both;
+.mycode-draft-prompt-waterfall {
+  animation: mycode-draft-prompt-waterfall 260ms cubic-bezier(0.22, 1, 0.36, 1)
+    var(--mycode-draft-prompt-waterfall-delay, 0ms) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-draft-prompt-waterfall {
+  .mycode-draft-prompt-waterfall {
     animation: none;
   }
 }
@@ -960,7 +960,7 @@ body {
   }
 }
 
-@keyframes zcode-stream-marker-in {
+@keyframes mycode-stream-marker-in {
   0% {
     color: transparent;
   }
@@ -970,35 +970,35 @@ body {
   }
 }
 
-[data-zcode-stream-animate="true"] {
-  animation: zcode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
-    var(--zcode-stream-animation-delay, 0ms) both;
+[data-mycode-stream-animate="true"] {
+  animation: mycode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
+    var(--mycode-stream-animation-delay, 0ms) both;
   will-change: opacity;
 }
 
-[data-zcode-stream-marker-animate="true"]::marker {
-  animation: zcode-stream-marker-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
-    var(--zcode-stream-animation-delay, 0ms) both;
+[data-mycode-stream-marker-animate="true"]::marker {
+  animation: mycode-stream-marker-in 900ms cubic-bezier(0.16, 1, 0.3, 1)
+    var(--mycode-stream-animation-delay, 0ms) both;
 }
 
-[data-zcode-tool-stream-animate="true"],
-[data-zcode-chat-loading-animate="true"] {
-  animation: zcode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+[data-mycode-tool-stream-animate="true"],
+[data-mycode-chat-loading-animate="true"] {
+  animation: mycode-stream-text-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: opacity;
 }
 
 /*  Radix Collapsible 在测量 closed 高度时会写入 inline animation-name:none。
    assistant 历史区自动结束收起需要在延迟卸载期间继续播放高度动画，
    所以这里用 !important 覆盖 Radix 的 inline style，只作用于显式标记的收起窗口。 */
-[data-zcode-collapsible-animate-close="true"][data-state="closed"] {
-  animation: zcode-collapsible-up 300ms ease-in-out forwards !important;
+[data-mycode-collapsible-animate-close="true"][data-state="closed"] {
+  animation: mycode-collapsible-up 300ms ease-in-out forwards !important;
 }
 
-[data-zcode-collapsible-animate-close="true"][data-state="closed"] > * {
-  animation: zcode-collapsible-fade-out 300ms ease-in-out forwards !important;
+[data-mycode-collapsible-animate-close="true"][data-state="closed"] > * {
+  animation: mycode-collapsible-fade-out 300ms ease-in-out forwards !important;
 }
 
-@keyframes zcode-collapsible-up {
+@keyframes mycode-collapsible-up {
   from {
     height: var(--radix-collapsible-content-height);
   }
@@ -1008,7 +1008,7 @@ body {
   }
 }
 
-@keyframes zcode-collapsible-fade-out {
+@keyframes mycode-collapsible-fade-out {
   from {
     opacity: 1;
   }
@@ -1019,28 +1019,28 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-zcode-stream-animate="true"],
-  [data-zcode-stream-marker-animate="true"]::marker,
-  [data-zcode-tool-stream-animate="true"],
-  [data-zcode-chat-loading-animate="true"],
-  [data-zcode-collapsible-animate-close="true"][data-state="closed"],
-  [data-zcode-collapsible-animate-close="true"][data-state="closed"] > * {
+  [data-mycode-stream-animate="true"],
+  [data-mycode-stream-marker-animate="true"]::marker,
+  [data-mycode-tool-stream-animate="true"],
+  [data-mycode-chat-loading-animate="true"],
+  [data-mycode-collapsible-animate-close="true"][data-state="closed"],
+  [data-mycode-collapsible-animate-close="true"][data-state="closed"] > * {
     animation: none;
   }
 }
 
 /* 点赞/点踩选中时的反馈动画：参考微信/X 的做法，只做图标回弹 + 细小粒子飞散两段，
    粒子用 box-shadow 画在 ::after 上且跟随 currentColor，零额外 DOM、不引入新颜色。 */
-.zcode-reaction-burst {
+.mycode-reaction-burst {
   position: relative;
   display: inline-flex;
 }
 
-.zcode-reaction-burst > svg {
-  animation: zcode-reaction-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+.mycode-reaction-burst > svg {
+  animation: mycode-reaction-pop 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.zcode-reaction-burst::after {
+.mycode-reaction-burst::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -1052,14 +1052,14 @@ body {
   background: transparent;
   opacity: 0;
   pointer-events: none;
-  animation: zcode-reaction-particles 560ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards;
+  animation: mycode-reaction-particles 560ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards;
 }
 
-.animate-zcode-alarm-ring {
-  animation: zcode-alarm-ring 600ms ease-in-out infinite;
+.animate-mycode-alarm-ring {
+  animation: mycode-alarm-ring 600ms ease-in-out infinite;
 }
 
-@keyframes zcode-alarm-ring {
+@keyframes mycode-alarm-ring {
   0%,
   100% {
     transform: rotate(-10deg);
@@ -1070,7 +1070,7 @@ body {
   }
 }
 
-@keyframes zcode-reaction-pop {
+@keyframes mycode-reaction-pop {
   0% {
     transform: scale(0);
   }
@@ -1088,7 +1088,7 @@ body {
   }
 }
 
-@keyframes zcode-reaction-particles {
+@keyframes mycode-reaction-particles {
   0% {
     opacity: 0;
     box-shadow:
@@ -1117,8 +1117,8 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-reaction-burst > svg,
-  .zcode-reaction-burst::after {
+  .mycode-reaction-burst > svg,
+  .mycode-reaction-burst::after {
     animation: none;
   }
 }
@@ -1136,24 +1136,24 @@ body {
   }
 }
 
-@keyframes zcode-task-interaction-countdown {
+@keyframes mycode-task-interaction-countdown {
   from {
-    transform: scaleX(var(--zcode-interaction-progress, 1));
+    transform: scaleX(var(--mycode-interaction-progress, 1));
   }
   to {
     transform: scaleX(0);
   }
 }
 
-.zcode-task-interaction-countdown-fill {
-  animation: zcode-task-interaction-countdown var(--zcode-interaction-remaining-ms, 240000ms) linear
-    forwards;
+.mycode-task-interaction-countdown-fill {
+  animation: mycode-task-interaction-countdown var(--mycode-interaction-remaining-ms, 240000ms)
+    linear forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-task-interaction-countdown-fill {
+  .mycode-task-interaction-countdown-fill {
     animation: none;
-    transform: scaleX(var(--zcode-interaction-progress, 1));
+    transform: scaleX(var(--mycode-interaction-progress, 1));
   }
 }
 
@@ -1161,12 +1161,12 @@ body {
   animation: workspace-remote-connecting-breathe 1.8s ease-in-out infinite;
 }
 
-.zcode-update-charge-progress [data-slot="progress-indicator"] {
+.mycode-update-charge-progress [data-slot="progress-indicator"] {
   position: relative;
   overflow: hidden;
 }
 
-.zcode-update-charge-progress [data-slot="progress-indicator"]::after {
+.mycode-update-charge-progress [data-slot="progress-indicator"]::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -1179,11 +1179,11 @@ body {
     color-mix(in oklab, var(--color-primary-foreground) 62%, transparent),
     transparent
   );
-  animation: zcode-update-charge-sweep 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: mycode-update-charge-sweep 1.15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
   transform: translateX(-120%);
 }
 
-@keyframes zcode-update-charge-sweep {
+@keyframes mycode-update-charge-sweep {
   0% {
     opacity: 0.35;
     transform: translateX(-120%);
@@ -1200,7 +1200,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .zcode-update-charge-progress [data-slot="progress-indicator"]::after {
+  .mycode-update-charge-progress [data-slot="progress-indicator"]::after {
     animation: none;
     opacity: 0.2;
     transform: none;
@@ -2050,4 +2050,40 @@ body {
 
 .prompt-mention[data-mention-category="plugins"]::before {
   border-radius: var(--radius-sm);
+}
+
+/* 用户指定的思考强度强调色；不改变应用全局品牌色。 */
+:root {
+  --color-reasoning-accent: #f47d32;
+}
+.thought-strength-slider {
+  appearance: none;
+  height: 1.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+}
+.thought-strength-slider:focus-visible {
+  outline: 2px solid var(--color-reasoning-accent);
+  outline-offset: 5px;
+}
+.thought-strength-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 5px #0002;
+}
+.thought-strength-slider::-moz-range-thumb {
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 5px #0002;
+}
+.thought-strength-slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }

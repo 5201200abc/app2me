@@ -1,6 +1,6 @@
 import type { TaskChatMessage as ChatMessage } from "@/lib/taskChatMessageTypes.js";
 import { shouldExposeE2EStoreBridge } from "@/lib/e2eStoreBridge.js";
-import type { IZCodeAgentService } from "@zcode/services";
+import type { IMyCodeAgentService } from "@mycode/services";
 import type { TaskListE2EActions } from "@/lib/taskListE2EActions.js";
 import { useEffect } from "react";
 
@@ -19,7 +19,7 @@ export interface TestActions extends TaskListE2EActions {
   /** 获取当前主题 */
   getTheme: () => string;
   /** 设置主题 */
-  setTheme: (theme: "light" | "dark" | "zai-light" | "zai-dark" | "system") => void;
+  setTheme: (theme: "light" | "dark" | "mycode-light" | "mycode-dark" | "system") => void;
   /** 获取当前语言，仅供跨语言展示 E2E */
   getLocale: () => "zh-CN" | "en-US";
   /** 设置当前语言，仅供跨语言展示 E2E */
@@ -28,18 +28,18 @@ export interface TestActions extends TaskListE2EActions {
   setChatMessages: (messages: ChatMessage[]) => void;
   /** 获取当前 mock 消息数量 */
   getChatMessageCount: () => number;
-  /** E2E 通过真实 zcodeAgentService 拉取插件 overview */
-  getPluginsOverview: IZCodeAgentService["getPluginsOverview"];
-  /** E2E 通过真实 zcodeAgentService 添加 marketplace */
-  addPluginMarketplace: IZCodeAgentService["addPluginMarketplace"];
-  /** E2E 通过真实 zcodeAgentService 刷新 marketplace */
-  updatePluginMarketplace: IZCodeAgentService["updatePluginMarketplace"];
-  /** E2E 通过真实 zcodeAgentService 安装 marketplace plugin */
-  installPlugin: IZCodeAgentService["installPlugin"];
-  /** E2E 通过真实 zcodeAgentService 触发插件 discover */
-  listPlugins: IZCodeAgentService["listPlugins"];
-  /** E2E 通过真实 zcodeAgentService 查询 Workspace/Session Plugin catalog */
-  getPluginReferenceCatalog: IZCodeAgentService["getPluginReferenceCatalog"];
+  /** E2E 通过真实 mycodeAgentService 拉取插件 overview */
+  getPluginsOverview: IMyCodeAgentService["getPluginsOverview"];
+  /** E2E 通过真实 mycodeAgentService 添加 marketplace */
+  addPluginMarketplace: IMyCodeAgentService["addPluginMarketplace"];
+  /** E2E 通过真实 mycodeAgentService 刷新 marketplace */
+  updatePluginMarketplace: IMyCodeAgentService["updatePluginMarketplace"];
+  /** E2E 通过真实 mycodeAgentService 安装 marketplace plugin */
+  installPlugin: IMyCodeAgentService["installPlugin"];
+  /** E2E 通过真实 mycodeAgentService 触发插件 discover */
+  listPlugins: IMyCodeAgentService["listPlugins"];
+  /** E2E 通过真实 mycodeAgentService 查询 Workspace/Session Plugin catalog */
+  getPluginReferenceCatalog: IMyCodeAgentService["getPluginReferenceCatalog"];
 }
 
 declare global {

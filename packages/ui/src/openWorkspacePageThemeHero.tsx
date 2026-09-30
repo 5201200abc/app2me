@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/components/lib/utils.js";
-import { useZCodeStore } from "@/store/StoreProvider.js";
+import { useMyCodeStore } from "@/store/StoreProvider.js";
 import { resolveTheme } from "@/useTheme.js";
 import type { Theme } from "@/useTheme.js";
 
@@ -27,7 +27,7 @@ function getThemeHeroPalette(theme: Theme): ThemeHeroPalette {
         heading: "text-slate-900",
         description: "text-slate-700/80",
       };
-    case "zai-light":
+    case "mycode-light":
       return {
         meshBase: "#f8f8f8",
         meshLight: "#80beff",
@@ -38,7 +38,7 @@ function getThemeHeroPalette(theme: Theme): ThemeHeroPalette {
         heading: "text-[#0D0D0D]",
         description: "text-[#5C5C5C]",
       };
-    case "zai-dark":
+    case "mycode-dark":
       return {
         meshBase: "#001d3d",
         meshLight: "#80beff",
@@ -66,7 +66,7 @@ function getThemeHeroPalette(theme: Theme): ThemeHeroPalette {
 }
 
 export function useResolvedThemeHeroPalette(): ThemeHeroPalette {
-  const theme = useZCodeStore((state) => state.theme);
+  const theme = useMyCodeStore((state) => state.theme);
   const resolvedTheme =
     theme === "system" ? (resolveTheme(theme) === "dark" ? "dark" : "light") : theme;
 

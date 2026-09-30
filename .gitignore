@@ -1,6 +1,6 @@
 node_modules/
 dist/
-# zcode-server-cli 发行包 staging 输出，本地组装产物不入库。
+# mycode-server-cli 发行包 staging 输出，本地组装产物不入库。
 dist-release/
 # macOS CI 按架构隔离 electron-builder 输出目录，这些仍是构建产物。
 packages/desktop/dist-*/
@@ -65,7 +65,8 @@ __pycache__/
 
 # 本地工具运行产物，均可再生：桌面端 e2e 的截图/缓存/网络抓包，以及桌面
 # 开发运行器的 Electron 下载缓存。
+.artifacts/
 packages/desktop/.e2e-artifacts/
 packages/desktop/.e2e-cache/
 packages/desktop/.e2e-network-capture/
-.zcode-runtime/
+.mycode-runtime/

@@ -1,6 +1,6 @@
 /* oxlint-disable eslint(max-lines) -- Resolver 同时产出 Settings 分层结果与唯一 Registry 完整类型证明。 */
 import type { z } from "zod";
-import type { completeModelConfigDataSchema } from "@zcode/shared/model-config";
+import type { completeModelConfigDataSchema } from "@mycode/shared/model-config";
 import type {
   completeApiKeyAccessDataSchema,
   completeZhipuAccountAccessDataSchema,
@@ -126,10 +126,10 @@ export function createRegistryModelConfig(
 }
 
 export interface ProviderConfigResolverInput {
-  readonly zcodeBuiltinProviders: ProviderConfigMap;
-  readonly zcodeBuiltinProviderTemplates?: ProviderTemplateMap;
+  readonly mycodeBuiltinProviders: ProviderConfigMap;
+  readonly mycodeBuiltinProviderTemplates?: ProviderTemplateMap;
   readonly personalProviders: ProviderConfigMap;
-  readonly zcodeBuiltinModelRules: ModelConfigRules;
+  readonly mycodeBuiltinModelRules: ModelConfigRules;
   readonly personalModels: ModelConfigRules;
   readonly accountProviders: ProviderConfigMap;
   readonly accountStates?: AccountProviderStates;
@@ -184,11 +184,11 @@ export class ProviderConfigResolver {
     const accountProviders = new ProviderConfigMap(
       input.accountProviders
         .entries()
-        .filter(([providerId]) => input.zcodeBuiltinProviders.has(providerId))
+        .filter(([providerId]) => input.mycodeBuiltinProviders.has(providerId))
         .map(([providerId, config]) => [providerId, config.withoutGroup()] as const),
     );
-    const concreteBuiltinProviders = input.zcodeBuiltinProviders.overlay(accountProviders);
-    const providerTemplates = input.zcodeBuiltinProviderTemplates;
+    const concreteBuiltinProviders = input.mycodeBuiltinProviders.overlay(accountProviders);
+    const providerTemplates = input.mycodeBuiltinProviderTemplates;
     const effectiveBuiltinProviders = concreteBuiltinProviders.mapConfigs((concrete, _id, rule) => {
       const template = rule.templateId
         ? providerTemplates?.get(rule.templateId)?.config
@@ -207,7 +207,7 @@ export class ProviderConfigResolver {
     });
     const effectiveProviders = effectiveBuiltinProviders.overlay(templatePersonalProviders);
     const effectiveModelRules = ModelConfigRules.composeEffective(
-      input.zcodeBuiltinModelRules,
+      input.mycodeBuiltinModelRules,
       input.personalModels,
     );
     const issues: ConfigValidationIssue[] = [];
@@ -217,8 +217,9 @@ export class ProviderConfigResolver {
     for (const providerId of resolveProviderOrder(input, effectiveProviders)) {
       const rule = effectiveProviders.getRule(providerId)!;
       const { config, providerName } = rule;
-      // 账号不再支持总禁用；旧覆盖值不能让无开关的账号永久失效，其他资格仍正常校验。
-      const enabled = config.access?.type === "zhipu-account" || (rule.enabled ?? true);
+      // 智谱账号集成已退役；历史配置只供文件迁移读取，不能重新进入模型列表或执行 Registry。
+      if (config.access?.type === "zhipu-account") continue;
+      const enabled = rule.enabled ?? true;
       const providerPath = ["providers", providerId];
       const registryProviderResult = createRegistryProviderConfig(config, providerPath);
       const providerIssues: ConfigValidationIssue[] = registryProviderResult.ok
@@ -246,13 +247,7 @@ export class ProviderConfigResolver {
         personalIdsInOrder,
         config.modelOrder ?? [],
       );
-      const accessEntitled =
-        config.access?.type !== "zhipu-account" || config.access.entitled === true;
-      // 账号权益与当前连接是两件事。非当前账号仍保留设置展示，不向普通 Registry 发布模型。
-      // Off-Peak 不定义 current，沿用其独立调度、隐藏和鉴权规则。
-      const accountCurrent = input.accountStates?.[providerId]?.current !== false;
-      const providerExecutable =
-        enabled && accessEntitled && accountCurrent && providerIssues.length === 0;
+      const providerExecutable = enabled && providerIssues.length === 0;
       const models = orderedModelIds.map((modelId): ResolvedProviderModel => {
         const modelConfig = effectiveModelRules.resolve({
           providerId,
@@ -261,7 +256,7 @@ export class ProviderConfigResolver {
           apiType: config.api?.type,
           baseUrl: config.api?.baseUrl,
         });
-        const effectiveBuiltinConfig = input.zcodeBuiltinModelRules.resolve({
+        const effectiveBuiltinConfig = input.mycodeBuiltinModelRules.resolve({
           providerId,
           templateId,
           modelId,
@@ -362,7 +357,7 @@ function resolveProviderOrder(
     return group === "zai-family" || group === "bigmodel-family";
   });
   const familySet = new Set(familyIds);
-  const builtinIds = input.zcodeBuiltinProviders
+  const builtinIds = input.mycodeBuiltinProviders
     .keys()
     .filter((providerId) => !familySet.has(providerId));
   const builtinSet = new Set(builtinIds);

@@ -5,8 +5,8 @@ import {
   ChannelClient,
   type IMessagePassingProtocol,
   type ISocket,
-} from "@zcode/rpc";
-import type { IServiceAccessor } from "@zcode/services";
+} from "@mycode/rpc";
+import type { IServiceAccessor } from "@mycode/services";
 import { RemoteServiceAccess } from "./remoteServiceAccess.js";
 
 export interface WebSocketConnectionCloseEvent {

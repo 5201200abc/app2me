@@ -21,10 +21,10 @@ import {
   FolderOpen,
   Hash,
   ListFilter,
-  Maximize2,
+  ChevronsUpDown,
   MessageCircleCheck,
   MessageCirclePlus,
-  Minimize2,
+  ChevronsDownUp,
   Plus,
   Search,
   X,
@@ -46,8 +46,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { Locale, RemoteTarget, UserInfo, ZCodeTaskMeta } from "@zcode/shared";
-import { BUILTIN_MODEL_PROVIDER_IDS } from "@zcode/shared";
+import type { Locale, RemoteTarget, UserInfo, MyCodeTaskMeta } from "@mycode/shared";
 import {
   TID_CONVERSATION_NEW_TASK,
   TID_CONVERSATION_SECTION,
@@ -56,7 +55,7 @@ import {
   TID_PROJECT_SECTION,
   TID_SIDEBAR,
   TID_WORKSPACE_LIST,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { Button } from "@/components/ui/button.js";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs.js";
@@ -70,11 +69,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { logger } from "@/logger.js";
 import { NewTaskButtonGroup } from "@/NewTaskButtonGroup.js";
-import { selectWorkspaceZCodeState, useZCodeSessionStore } from "@/store/zcodeSessionStore.js";
-import { useZCodeStore } from "@/store/StoreProvider.js";
+import { selectWorkspaceMyCodeState, useMyCodeSessionStore } from "@/store/mycodeSessionStore.js";
+import { useMyCodeStore } from "@/store/StoreProvider.js";
 import { useTabStore } from "@/store/TabStoreProvider.js";
 import { isWorkspaceReadOnly, isWorkspaceTab, type WorkspaceTabState } from "@/store/tabStore.js";
 import { useWorkspaceTaskLists } from "@/hooks/useWorkspaceTaskLists.js";
@@ -90,7 +89,7 @@ import {
   reorderSidebarPurposeSections,
 } from "@/lib/sidebarPurposeSectionPreferences.js";
 import { useShortcutCommandLabel } from "@/shortcuts/useShortcutBindings.js";
-import { setPendingSettingsSectionIntent } from "@/lib/settingsNavigation.js";
+import { setPendingSettingsUsageIntent } from "@/lib/settingsNavigation.js";
 import { buildTaskWorkspaceKey } from "@/lib/taskQueryCache.js";
 import {
   increaseWorkspaceTaskVisibleLimit,
@@ -129,7 +128,6 @@ import {
 } from "@/WorkspaceSidebar/taskGroupTogglePresentation.js";
 import { WorkspacePurposeSection } from "@/WorkspaceSidebar/WorkspacePurposeSection.js";
 import { cn } from "@/components/lib/utils.js";
-import { useCodingPlanUpgradeDialog } from "@/settings/CodingPlanUpgradeDialogProvider.js";
 import {
   resolveWorkspaceDragGlobalIndices,
   resolveWorkspaceDragExpanded,
@@ -171,7 +169,7 @@ interface SidebarFileTreeTarget {
 
 // 流式 task 事件会让 sidebar 父级频繁刷新；缺任务分组时如果传新的 []
 // 会让 memo 的 workspace 行误判 taskItems 变化，穿透到 TaskList/TaskListItem 重渲染。
-const EMPTY_WORKSPACE_TASK_ITEMS: ZCodeTaskMeta[] = [];
+const EMPTY_WORKSPACE_TASK_ITEMS: MyCodeTaskMeta[] = [];
 // WorkspaceSidebar 是 memo 组件，默认参数里的 {} 每次调用都会创建新引用；
 // 缺省远程重连日志时必须复用同一个对象，避免浅比较被默认值打穿。
 const EMPTY_RECONNECTING_REMOTE_WORKSPACE_LOGS_BY_WORKSPACE_KEY: Record<
@@ -315,7 +313,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
   pluginStoreActive?: boolean;
   onFileTreeOpenChange?: (open: boolean) => void;
 }) {
-  const { intl, localePreference, setLocalePreference } = useZCodeIntl();
+  const { intl, localePreference, setLocalePreference } = useMyCodeIntl();
   const handleTaskRowSelect = useCallback(
     (
       targetWorkspacePath: string,
@@ -335,8 +333,6 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
     },
     [onSelectTask],
   );
-  const { openCodingPlanUpgrade } = useCodingPlanUpgradeDialog();
-  const bumpTaskListVersion = useZCodeSessionStore((state) => state.bumpTaskListVersion);
   const workspaceIdentity = useTabStore((state) => {
     if (!state.activeTabId) {
       return undefined;
@@ -357,7 +353,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
         id: "workspaceSidebar.unavailableLocalDirectory",
       })
     : undefined;
-  const setTheme = useZCodeStore((state) => state.setTheme);
+  const setTheme = useMyCodeStore((state) => state.setTheme);
   const commandCenterShortcutLabel = useShortcutCommandLabel("openCommandCenter");
   const tabs = useTabStore((state) => state.tabs);
   const activateTab = useTabStore((state) => state.activateTab);
@@ -726,8 +722,8 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
       if (
         value === "light" ||
         value === "dark" ||
-        value === "zai-light" ||
-        value === "zai-dark" ||
+        value === "mycode-light" ||
+        value === "mycode-dark" ||
         value === "system"
       ) {
         setTheme(value);
@@ -755,24 +751,16 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
   const handleOpenAutomationsMain = useCallback(() => {
     onOpenAutomations?.();
   }, [onOpenAutomations]);
-  const handleOpenCodingPlanUpgrade = useCallback(
-    (
-      providerId: string,
-      funnelContext?: import("@/lib/codingPlanFunnelTelemetry.js").CodingPlanFunnelContext,
-    ) => {
-      openCodingPlanUpgrade({
-        providerId,
-        funnelContext,
-      });
-    },
-    [openCodingPlanUpgrade],
-  );
-  const activeTaskId = useZCodeSessionStore(
+  const openUsageSettings = useCallback(() => {
+    setPendingSettingsUsageIntent();
+    openSettingsTab();
+  }, [openSettingsTab]);
+  const activeTaskId = useMyCodeSessionStore(
     (state) =>
       // Web 远程控制从全局 task 入口进入远端 workspace 时，会先按
       // workspaceIdentity 写入 activeTaskId；如果侧栏仍然只读 path-only 桶，
       // 当前任务高亮会丢失，也会把后续选择误判成未激活。
-      selectWorkspaceZCodeState(state, workspacePath, workspaceIdentity).activeTaskId,
+      selectWorkspaceMyCodeState(state, workspacePath, workspaceIdentity).activeTaskId,
   );
 
   useEffect(() => {
@@ -1045,7 +1033,6 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
                   value="grouped"
                   className="relative z-10 h-6 flex-none gap-1 rounded-full border-transparent bg-transparent py-0 pl-1.5 pr-2 text-ui-sm font-medium text-foreground-subtle transition-colors data-active:border-transparent data-active:bg-transparent data-active:text-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-transparent"
                 >
-                  <Hash aria-hidden="true" className="size-3 shrink-0" />
                   <span>
                     {intl.formatMessage({
                       id: "workspaceSidebar.organizeGrouped",
@@ -1059,7 +1046,6 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
                   value="workspace"
                   className="relative z-10 h-6 flex-none gap-1 rounded-full border-transparent bg-transparent py-0 pl-1.5 pr-2 text-ui-sm font-medium text-foreground-subtle transition-colors data-active:border-transparent data-active:bg-transparent data-active:text-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-transparent"
                 >
-                  <Folder aria-hidden="true" className="size-3 shrink-0" />
                   <span>
                     {intl.formatMessage({
                       id: "workspaceSidebar.organizeByProject",
@@ -1086,9 +1072,9 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
                   onClick={handleToggleAllTaskGroups}
                 >
                   {toggleAllTaskGroupsPresentation.areAllExpanded ? (
-                    <Minimize2 className="size-3.5" />
+                    <ChevronsDownUp className="size-3.5" />
                   ) : (
-                    <Maximize2 className="size-3.5" />
+                    <ChevronsUpDown className="size-3.5" />
                   )}
                 </Button>
               </ControlHintTooltip>
@@ -1649,8 +1635,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
             onLocaleChange={handleLocaleChange}
             onThemeChange={handleThemeChange}
             onSettingsButtonClick={openSettingsTab}
-            onUsageClick={openSettingsTab}
-            onUpgradeClick={handleOpenCodingPlanUpgrade}
+            onUsageClick={openUsageSettings}
             onLogin={onLogin}
             onLogout={onLogout}
             user={user}

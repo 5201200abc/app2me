@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { prepareDevElectronAppBundle } from "./devElectronAppBundle.mjs";
+import { createMacDevElectronLaunch } from "./devElectronLaunch.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const mainBundle = resolve(root, "out/main/index.js");
@@ -111,25 +112,35 @@ console.log("[dev] Starting Electron...");
 
 const electronBinary = resolveLocalElectronBinary();
 let electronCommand = existsSync(electronBinary) ? electronBinary : "electron";
+let electronArgs = ["."];
+let macLaunch;
 
 if (process.platform === "darwin" && existsSync(electronBinary)) {
   // macOS 命令行启动的 raw Electron 没有 CFBundleURLTypes，LaunchServices 会把
-  // zcode:// 交给一个没有项目入口的 Electron 默认壳。给本地启动副本补齐产品
+  // mycode:// 交给一个没有项目入口的 Electron 默认壳。给本地启动副本补齐产品
   // Info.plist 后，线上 Share 页面无需感知 Dev，仍可把链接投递给已运行的 Dev 实例。
   const electronPackageJsonPath = require.resolve("electron/package.json");
   const electronPackage = JSON.parse(await readFile(electronPackageJsonPath, "utf8"));
   const electronAppPath = resolve(electronBinary, "../../..");
   const devBundle = await prepareDevElectronAppBundle({
     electronAppPath,
-    runtimeRoot: resolve(root, "../../.zcode-runtime/desktop-dev"),
+    runtimeRoot: resolve(root, "../../.mycode-runtime/desktop-dev"),
     electronVersion: electronPackage.version,
     arch: process.arch,
   });
-  electronCommand = devBundle.executablePath;
-  console.log(`[dev] Prepared macOS ZCode Dev bundle: ${devBundle.appPath}`);
+  macLaunch = await createMacDevElectronLaunch({
+    appPath: devBundle.appPath,
+    entryPath: resolve(root, "dev-launch-entry.mjs"),
+    logDirectory: resolve(root, "../../.mycode-runtime/desktop-dev/logs"),
+    env: { ...process.env, ELECTRON_RENDERER_URL: rendererUrl },
+  });
+  electronCommand = macLaunch.command;
+  electronArgs = macLaunch.args;
+  console.log(`[dev] Prepared macOS MyCode Dev bundle: ${devBundle.appPath}`);
+  console.log(`[dev] App output: ${macLaunch.logPath}`);
 }
 
-const electron = spawn(electronCommand, ["."], {
+const electron = spawn(electronCommand, electronArgs, {
   cwd: root,
   stdio: "inherit",
   env: { ...process.env, ELECTRON_RENDERER_URL: rendererUrl },
@@ -149,6 +160,12 @@ function signalElectronTree(signal) {
 
   if (process.platform === "win32") {
     electron.kill(signal);
+    return;
+  }
+
+  if (macLaunch) {
+    // Main 会改 process.title；使用本次私有连接绑定的 PID，而不是模糊进程名匹配。
+    macLaunch.signal(signal);
     return;
   }
 
@@ -188,22 +205,27 @@ function shutdownFromSignal(signal) {
   // 这里把 Electron 放进独立进程组并由 dev 脚本统一回收，超时后强制清掉整棵开发进程树。
   signalElectronTree("SIGTERM");
   forceKillTimer = setTimeout(forceKillElectronTree, 1_500);
-  hardExitTimer = setTimeout(() => process.exit(0), 5_000);
+  hardExitTimer = setTimeout(async () => {
+    await macLaunch?.cleanup();
+    process.exit(0);
+  }, 5_000);
 }
 
 for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
   process.once(signal, () => shutdownFromSignal(signal));
 }
 
-electron.on("error", (error) => {
+electron.on("error", async (error) => {
   console.error("[dev] Failed to start Electron:", error);
+  await macLaunch?.cleanup();
   process.exit(1);
 });
 
-electron.on("close", (code, signal) => {
+electron.on("close", async (code, signal) => {
   electronClosed = true;
   clearTimeout(forceKillTimer);
   clearTimeout(hardExitTimer);
+  await macLaunch?.cleanup();
   if (shuttingDown) {
     process.exit(0);
   }

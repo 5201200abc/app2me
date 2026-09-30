@@ -1,8 +1,8 @@
-import type { ProviderConfigObject } from "@zcode/provider";
+import type { ProviderConfigObject } from "@mycode/provider";
 import { PackageIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/components/lib/utils.js";
-import { useZCodeStoreWithDefault } from "@/store/StoreProvider.js";
+import { useMyCodeStoreWithDefault } from "@/store/StoreProvider.js";
 import { resolveTheme, type ResolvedTheme } from "@/useTheme.js";
 import alibabaModelStudioLogo from "@/assets/provider-icons/model-provider-alibaba-cloud.png";
 import anthropicLogo from "@/assets/provider-icons/model-provider-anthropic.png";
@@ -14,7 +14,7 @@ import openAiLogo from "@/assets/provider-icons/model-provider-openai.png";
 import xAiLogo from "@/assets/provider-icons/model-provider-xai.png";
 import xiaomiMimoLogo from "@/assets/provider-icons/model-provider-xiaomi-mimo.png";
 import startPlanLogo from "@/assets/provider-icons/model-provider-start-plan.png";
-import zaiLogo from "@/assets/provider-icons/model-provider-zai-app.png";
+import zaiLogo from "@/assets/mycode-mark.svg";
 import openrouterLight from "@/assets/provider-icons/model-provider-openrouter-light.svg";
 import openrouterDark from "@/assets/provider-icons/model-provider-openrouter-dark.svg";
 import opencodeLight from "@/assets/provider-icons/model-provider-opencode-light.svg";
@@ -63,7 +63,7 @@ export function ProviderLogo({
   logo?: ProviderLogoRef | null;
   className?: string;
 }) {
-  const theme = useZCodeStoreWithDefault((state) => state.theme, "zai-dark");
+  const theme = useMyCodeStoreWithDefault((state) => state.theme, "mycode-dark");
   const src = resolveBuiltinProviderLogoAsset(logo, resolveTheme(theme));
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   if (!src || failedSrc === src) {

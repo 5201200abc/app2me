@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "revision": 5,
+  "config": {
+    "providerConfigRules": {
+      "templateRules": [
+        {
+          "templateId": "deepseek",
+          "templateNameMap": {
+            "zh-CN": "DeepSeek",
+            "en-US": "DeepSeek"
+          },
+          "config": {
+            "access": {
+              "type": "api-key",
+              "apiKeyManagementUrl": "https://platform.deepseek.com/api_keys"
+            },
+            "api": {
+              "type": "openai-chat-completions",
+              "baseUrl": "https://api.deepseek.com"
+            },
+            "builtinModelIds": ["deepseek-flash", "deepseek-v4-pro"],
+            "logo": {
+              "type": "builtin",
+              "key": "deepseek"
+            }
+          }
+        }
+      ],
+      "providerRules": [
+        {
+          "providerId": "local-llama-models",
+          "providerName": "Local Models (llama.cpp)",
+          "config": {
+            "group": "standard-personal",
+            "builtinModelIds": [],
+            "access": {
+              "type": "api-key",
+              "apiKey": "local"
+            },
+            "api": {
+              "type": "openai-chat-completions",
+              "baseUrl": "http://127.0.0.1:8080/v1"
+            },
+            "logo": {
+              "type": "builtin",
+              "key": "opencode"
+            }
+          }
+        }
+      ]
+    },
+    "modelConfigRules": {
+      "modelRules": [
+        {
+          "modelMatch": ".*",
+          "config": {
+            "enabled": true,
+            "properties": {
+              "contextWindow": 500000,
+              "inputFormat": {
+                "supportsText": true,
+                "supportsImage": false,
+                "supportsVideo": false,
+                "supportsAudio": false,
+                "supportsPdf": false
+              },
+              "outputFormat": {
+                "supportsText": true
+              },
+              "supportsToolCall": true,
+              "supportsJsonSchemaOutput": false,
+              "supportsNativeWebSearch": false,
+              "supportsMidConversationSystem": false,
+              "requiresMfjsToolSchema": false
+            },
+            "optionSpecs": {
+              "maxOutputTokens": {
+                "max": 16384,
+                "map": "{\"max_tokens\": maxOutputTokens}"
+              },
+              "reasoningLevel": {
+                "values": ["disabled", "enabled"],
+                "map": "{\"thinking\": {\"type\": reasoningLevel == \"enabled\" ? \"enabled\" : \"disabled\"}}"
+              }
+            }
+          }
+        }
+      ],
+      "modelApiRules": [],
+      "providerSiteRules": [],
+      "templateModelRules": [
+        {
+          "templateId": "deepseek",
+          "modelId": "deepseek-flash",
+          "config": {
+            "enabled": true
+          }
+        },
+        {
+          "templateId": "deepseek",
+          "modelId": "deepseek-v4-pro",
+          "config": {
+            "enabled": true
+          }
+        }
+      ],
+      "builtinProviderModelRules": []
+    }
+  }
+}

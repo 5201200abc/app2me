@@ -1,7 +1,8 @@
+import { discoverLocalModels } from "@mycode/provider-node";
 import {
   NodeModelSelectionConfigRepository,
   createNodeModelSelectionFacade,
-} from "@zcode/provider-node";
+} from "@mycode/provider-node";
 import {
   ProviderRegistryService,
   ProviderSettingsFacade,
@@ -10,7 +11,7 @@ import {
   type ProviderConfigSnapshot,
   type ProviderSettingsMutationTarget,
   type ProviderSource,
-} from "@zcode/provider";
+} from "@mycode/provider";
 import {
   createProviderConfigRuntime,
   type ProviderConfigRuntime,
@@ -81,12 +82,15 @@ export class ProviderRuntime {
     this.configService = this.#configRuntime.configService;
     const accountSource: RefreshableProviderSource<AccountProviderConfigSnapshot> =
       dependencies.accountSource ?? new EmptyAccountProviderConfigSource(this.configService);
-    this.#disposeBuiltinRecovery = this.#configRuntime.onDidCheckZCodeBuiltin(async () => {
+    this.#disposeBuiltinRecovery = this.#configRuntime.onDidCheckMyCodeBuiltin(async () => {
       const [config, account] = await Promise.all([
         this.configService.read(),
         accountSource.read(),
       ]);
-      if (!this.#disposed && config.zcodeBuiltinRevision !== account.basedOnZCodeBuiltinRevision) {
+      if (
+        !this.#disposed &&
+        config.mycodeBuiltinRevision !== account.basedOnMyCodeBuiltinRevision
+      ) {
         await accountSource.refresh?.("builtin-account-recovery");
       }
     });
@@ -105,6 +109,7 @@ export class ProviderRuntime {
       settingsFacade,
       ensureReady,
       dependencies.testConnectivity,
+      discoverLocalModels,
     );
     this.#modelSelectionRuntime = createModelSelectionService(
       createNodeModelSelectionFacade(this.registryService),
@@ -180,7 +185,7 @@ function createSettingsMutationTarget(
     refresh: (reason) => registryService.refresh(reason),
     refreshSources: async (reason) => {
       const sourceResults = await Promise.allSettled([
-        configRuntime.refreshZCodeBuiltin({ force: true }),
+        configRuntime.refreshMyCodeBuiltin({ force: true }),
         accountSource.refresh?.(reason) ?? Promise.resolve(),
       ]);
       const snapshot = await registryService.refresh(reason);

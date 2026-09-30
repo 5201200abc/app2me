@@ -1,0 +1,184 @@
+import { findOfficialMcpReservedHeaders } from "@mycode/shared";
+import type {
+  McpServerConfig,
+  McpServerRuntimeSource,
+  PluginDiagnostic,
+  PluginOptionValues,
+} from "@mycode/contracts";
+import { MYCODE_OFFICIAL_PLUGIN_MARKETPLACE } from "@mycode/contracts";
+import { MYCODE_PLUGIN_ID_ENV_KEY } from "@mycode/shared";
+import type { LoadedPlugin } from "./types.js";
+import { isRecord } from "./helpers.js";
+import { buildOfficialProvenance, parseMyCodeOfficialAuth } from "./mcp-official-auth.js";
+import {
+  loadPluginMcpServerDefinitions,
+  createVariableContext,
+  toNamespacedServerName,
+  PluginVariableError,
+  type VariableContext,
+  inferMcpType,
+  SUPPORTED_MCP_TYPES,
+  requireString,
+  resolveStringRecord,
+  resolveTemplate,
+} from "./mcp-load-plugin-mcp-server-definitions.js";
+import { resolveMcpOAuthConfig } from "./mcp-resolve-mcp-oauth-config.js";
+
+export function resolvePluginMcpServers(input: {
+  dataPath: string;
+  definitions?: Record<string, unknown>;
+  diagnostics: PluginDiagnostic[];
+  env: Record<string, string | undefined>;
+  loaded: LoadedPlugin;
+  options: PluginOptionValues;
+  workingDirectory: string;
+}): Record<string, McpServerConfig> {
+  const merged = input.definitions ?? loadPluginMcpServerDefinitions(input);
+  const context = createVariableContext(input);
+  const result: Record<string, McpServerConfig> = {};
+
+  for (const [name, server] of Object.entries(merged)) {
+    try {
+      result[toNamespacedServerName(input.loaded, name)] = resolveMcpServerConfig(server, context, {
+        mcpKey: name,
+        pluginId: input.loaded.id,
+      });
+    } catch (error) {
+      input.diagnostics.push({
+        code:
+          error instanceof PluginVariableError
+            ? "plugin_variable_missing"
+            : "plugin_mcp_server_disabled",
+        message: error instanceof Error ? error.message : `Invalid MCP server: ${name}`,
+        path: input.loaded.manifestPath,
+        pluginId: input.loaded.id,
+        severity: "error",
+      });
+    }
+  }
+
+  return result;
+}
+
+function resolveMcpServerConfig(
+  server: unknown,
+  context: VariableContext,
+  identity: { mcpKey: string; pluginId: string },
+): McpServerConfig {
+  if (!isRecord(server)) throw new Error("MCP server config must be an object");
+  const type = typeof server.type === "string" ? server.type : inferMcpType(server);
+  if (!SUPPORTED_MCP_TYPES.has(type)) throw new Error(`Unsupported MCP transport: ${type}`);
+  // MyCode 官方市场同时包含随应用装载的 Builtin Plugin 与按需安装的 CDN Plugin；后者运行时
+  // source 为 `cache`，因此必须按 marketplace 身份归类，不能只看 loader source。
+  const source: McpServerRuntimeSource = {
+    kind: context.loaded.marketplace === MYCODE_OFFICIAL_PLUGIN_MARKETPLACE ? "builtin" : "plugin",
+  };
+
+  // mycode_official 允许 http 与 stdio，sse 出现即禁用该 MCP，不静默忽略——静默会让配置作者以为鉴权已生效。
+  //
+  // stdio 之所以能放开：请求由插件进程自己发出，身份头随每条出站协议消息的 _meta 下发
+  // （见 adapters/src/mcp/index.ts）。sse 没有对应通道，继续拒绝。
+  const officialAuth = parseMyCodeOfficialAuth(server.auth, identity.mcpKey);
+  if (officialAuth && type !== "http" && type !== "stdio") {
+    throw new Error(
+      `MCP server ${identity.mcpKey}: ${officialAuth.type} auth requires type "http" or "stdio", got "${type}"`,
+    );
+  }
+
+  if (type === "stdio") {
+    const command = requireString(server.command, "stdio MCP server requires command");
+    // stdio 不走 OAuth 分支，声明 oauth 属无效配置；与 http 一样不做优先级裁决，直接禁用。
+    if (officialAuth && server.oauth !== undefined) {
+      throw new Error(
+        `MCP server ${identity.mcpKey}: ${officialAuth.type} auth cannot be combined with oauth`,
+      );
+    }
+    const env = resolveStringRecord(
+      {
+        CLAUDE_PROJECT_DIR: context.workingDirectory,
+        MYCODE_PLUGIN_DATA: context.dataPath,
+        MYCODE_PLUGIN_ROOT: context.loaded.rootPath,
+        MYCODE_PROJECT_DIR: context.workingDirectory,
+        CLAUDE_PLUGIN_DATA: context.dataPath,
+        CLAUDE_PLUGIN_ROOT: context.loaded.rootPath,
+        ...(isRecord(server.env) ? server.env : {}),
+      },
+      context,
+      { allowSensitive: true },
+    );
+    // 插件 manifest 可自定义 env，但插件身份必须由 resolver 权威写入（loaded.id 来自本地 plugin
+    // registry，不是可序列化配置），不能让第三方伪造 official mycode-cua 身份后获得只应定向注入给
+    // 内置插件的 broker 凭据。manifest env spread 之后覆写，确保 user/manifest 无法覆盖。
+    env[MYCODE_PLUGIN_ID_ENV_KEY] = context.loaded.id;
+    return {
+      type: "stdio",
+      command: resolveTemplate(command, context, { allowSensitive: false }),
+      args: Array.isArray(server.args)
+        ? server.args
+            .filter((arg): arg is string => typeof arg === "string")
+            .map((arg) => resolveTemplate(arg, context, { allowSensitive: false }))
+        : undefined,
+      cwd:
+        typeof server.cwd === "string"
+          ? resolveTemplate(server.cwd, context, { allowSensitive: false })
+          : undefined,
+      enabled: typeof server.enabled === "boolean" ? server.enabled : undefined,
+      env,
+      source,
+      timeoutMs: typeof server.timeoutMs === "number" ? server.timeoutMs : undefined,
+      ...(officialAuth
+        ? {
+            auth: officialAuth,
+            // provenance 由宿主生成；即便 .mcp.json 里写了 official 字段也会被此处覆盖。
+            official: buildOfficialProvenance(identity),
+          }
+        : {}),
+    };
+  }
+
+  const url = requireString(server.url, `${type} MCP server requires url`);
+  const headers = isRecord(server.headers)
+    ? resolveStringRecord(server.headers, context, { allowSensitive: true })
+    : undefined;
+  const oauth = resolveMcpOAuthConfig(server.oauth, context);
+
+  if (officialAuth) {
+    // 第一阶段不做优先级裁决：两种鉴权同时声明属于配置错误，直接禁用。
+    if (oauth) {
+      throw new Error(
+        `MCP server ${identity.mcpKey}: ${officialAuth.type} auth cannot be combined with oauth`,
+      );
+    }
+    // 保留头只在官方鉴权路径下拦截。普通/第三方 MCP 静态携带 authorization 是既有合法用法，
+    // 全局拦截会造成回归。
+    const reserved = findOfficialMcpReservedHeaders(headers);
+    if (reserved.length > 0) {
+      throw new Error(
+        `MCP server ${identity.mcpKey}: static headers must not contain reserved header(s): ${reserved.join(", ")}`,
+      );
+    }
+    return {
+      type: "http",
+      url: resolveTemplate(url, context, { allowSensitive: false }),
+      enabled: typeof server.enabled === "boolean" ? server.enabled : undefined,
+      headers,
+      auth: officialAuth,
+      source,
+      // provenance 由宿主生成；即便 .mcp.json 里写了 official 字段也会被此处覆盖。
+      official: buildOfficialProvenance(identity),
+      timeoutMs: typeof server.timeoutMs === "number" ? server.timeoutMs : undefined,
+    };
+  }
+
+  return {
+    type,
+    url: resolveTemplate(url, context, { allowSensitive: false }),
+    enabled: typeof server.enabled === "boolean" ? server.enabled : undefined,
+    headers,
+    oauth,
+    source,
+    timeoutMs: typeof server.timeoutMs === "number" ? server.timeoutMs : undefined,
+  } as McpServerConfig;
+}
+
+export { loadPluginMcpServerDefinitions } from "./mcp-load-plugin-mcp-server-definitions.js";

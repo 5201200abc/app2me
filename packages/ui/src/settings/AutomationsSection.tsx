@@ -1,10 +1,8 @@
-import { useCodingPlanEntryGate } from "@/settings/CodingPlanEntryButton.js";
 /* eslint-disable max-lines -- 定时任务主视图集中维护列表、创建/编辑整页路由与启停/删除操作，集中更利于交互一致。 */
 import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type ComponentType,
   type SVGProps,
@@ -12,7 +10,6 @@ import {
 import { CircleCheck, RotateCcw, TriangleAlert } from "lucide-react";
 import {
   AUTOMATION_CREATE_LIMIT,
-  BUILTIN_MODEL_PROVIDER_IDS,
   TID_AUTOMATION_ACTION_DELETE,
   TID_AUTOMATION_ACTION_TOGGLE,
   TID_AUTOMATION_CARD,
@@ -23,9 +20,9 @@ import {
   TID_OFFPEAK_TAB,
   isAutomationCreateLimitError,
   resolveWorkspaceKey,
-  type ZCodeAutomation,
-  type ZCodeOffPeakTask,
-} from "@zcode/shared";
+  type MyCodeAutomation,
+  type MyCodeOffPeakTask,
+} from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import {
   DropdownMenu,
@@ -39,7 +36,7 @@ import { toast as showToast, type ToastOptions } from "@/components/ui/toast.js"
 import { cn } from "@/components/lib/utils.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { AutomationScheduledTemplateIcon } from "@/settings/AutomationScheduledTemplateIcon.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { useServices } from "@/hooks/useServices.js";
 import { useConfirmDialog } from "@/hooks/useConfirmDialog.js";
 import { usePlatform } from "@/hooks/usePlatform.js";
@@ -50,13 +47,8 @@ import {
   type OffPeakCreateBlockReason,
 } from "@/settings/offPeakUiPresentation.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
-import { useOffPeakEligibility } from "@/hooks/useOffPeakEligibility.js";
 import { useSettings } from "@/hooks/useSettingService.js";
 import { logger } from "@/logger.js";
-import {
-  createIdleTimeCodingPlanFunnelContext,
-  resolveCodingPlanEntryPlanStateFromProviderSettings,
-} from "@/lib/codingPlanFunnelTelemetry.js";
 import {
   useAutomationManagementStore,
   type AutomationRunNowResult,
@@ -97,7 +89,6 @@ import {
   AutomationRunNowIcon,
   AutomationTrashIcon,
 } from "@/settings/AutomationDesignPrimitives.js";
-import { useCodingPlanUpgradeDialog } from "@/settings/CodingPlanUpgradeDialogProvider.js";
 import { SETTINGS_FRAME_CONTENT_CLASSNAME } from "@/settings/SettingsPageParts.js";
 import { useTabStore } from "@/store/TabStoreProvider.js";
 import { isWorkspaceTab } from "@/store/tabStore.js";
@@ -190,7 +181,7 @@ function OffPeakCreateButton({
   greyTooltip?: string;
   onCreate: () => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   // disabled 按钮 pointer-events-none，tooltip 必须挂在外层可指针元素上。
   const button = (
     <Button
@@ -230,9 +221,9 @@ interface AutomationDraft {
 type AutomationsView =
   | { mode: "list" }
   | { mode: "create"; draft: AutomationDraft | null }
-  | { mode: "edit"; automation: ZCodeAutomation }
+  | { mode: "edit"; automation: MyCodeAutomation }
   | { mode: "offpeak-create"; draft?: OffPeakCreateDraft }
-  | { mode: "offpeak-edit"; task: ZCodeOffPeakTask };
+  | { mode: "offpeak-edit"; task: MyCodeOffPeakTask };
 
 /** 主视图标签页：Scheduled 常驻，Idle-time 受灰度控制；不设 All 混排视图。 */
 type AutomationsTab = "scheduled" | "idle";
@@ -311,11 +302,11 @@ function automationPromptSummary(prompt: string): string {
   return normalized.length > 0 ? normalized : " ";
 }
 
-function canRestartAutomation(automation: Pick<ZCodeAutomation, "lifecycleStatus">): boolean {
+function canRestartAutomation(automation: Pick<MyCodeAutomation, "lifecycleStatus">): boolean {
   return automation.lifecycleStatus === "failed";
 }
 
-function canToggleAutomation(automation: Pick<ZCodeAutomation, "lifecycleStatus">): boolean {
+function canToggleAutomation(automation: Pick<MyCodeAutomation, "lifecycleStatus">): boolean {
   return automation.lifecycleStatus !== "completed" && automation.lifecycleStatus !== "failed";
 }
 
@@ -341,19 +332,19 @@ function getAutomationCreateErrorToastId(error: unknown): string {
 }
 
 function resolveAutomationDetailTarget(
-  automations: readonly ZCodeAutomation[],
+  automations: readonly MyCodeAutomation[],
   automationId?: string | null,
-): ZCodeAutomation | null {
+): MyCodeAutomation | null {
   const targetId = automationId?.trim();
   if (!targetId) return null;
   return automations.find((automation) => automation.automationId === targetId) ?? null;
 }
 
 function resolveAutomationDetailNavigation(
-  automations: readonly ZCodeAutomation[],
+  automations: readonly MyCodeAutomation[],
   automationId: string | null | undefined,
   listReady: boolean,
-): { status: "pending" } | { status: "missing" } | { status: "found"; target: ZCodeAutomation } {
+): { status: "pending" } | { status: "missing" } | { status: "found"; target: MyCodeAutomation } {
   if (!automationId?.trim() || !listReady) return { status: "pending" };
   const target = resolveAutomationDetailTarget(automations, automationId);
   return target ? { status: "found", target } : { status: "missing" };
@@ -364,35 +355,16 @@ function isOffPeakDetailNavigationId(automationId: string | null | undefined): b
   return Boolean(automationId?.trim().startsWith("offpeak-"));
 }
 
-/** 闲时轮尾卡跳转的并行解析路径；与 cron 的 resolveAutomationDetailNavigation 对称。 */
-function resolveOffPeakDetailNavigation(
-  tasks: readonly ZCodeOffPeakTask[],
-  offPeakTaskId: string | null | undefined,
-  listReady: boolean,
-  listError: string | null = null,
-):
-  | { status: "pending" }
-  | { status: "unavailable" }
-  | { status: "missing" }
-  | { status: "found"; target: ZCodeOffPeakTask } {
-  const targetId = offPeakTaskId?.trim();
-  if (!targetId || !listReady) return { status: "pending" };
-  // review：store.refresh 吞错保留旧列表；列表不可信时不能做 found/missing 终审。
-  if (listError) return { status: "unavailable" };
-  const target = tasks.find((task) => task.offPeakTaskId === targetId) ?? null;
-  return target ? { status: "found", target } : { status: "missing" };
-}
-
 interface AutomationActionsMenuProps {
-  automation: ZCodeAutomation;
+  automation: MyCodeAutomation;
   busy: boolean;
   canRestart: boolean;
   canToggle: boolean;
-  onRunNow: (automation: ZCodeAutomation) => void;
-  onEdit: (automation: ZCodeAutomation) => void;
-  onToggle: (automation: ZCodeAutomation, enabled: boolean) => void;
-  onRestart: (automation: ZCodeAutomation) => void;
-  onDelete: (automation: ZCodeAutomation) => void;
+  onRunNow: (automation: MyCodeAutomation) => void;
+  onEdit: (automation: MyCodeAutomation) => void;
+  onToggle: (automation: MyCodeAutomation, enabled: boolean) => void;
+  onRestart: (automation: MyCodeAutomation) => void;
+  onDelete: (automation: MyCodeAutomation) => void;
 }
 
 function AutomationActionsMenu({
@@ -406,7 +378,7 @@ function AutomationActionsMenu({
   onRestart,
   onDelete,
 }: AutomationActionsMenuProps) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -503,7 +475,7 @@ function AutomationActionsMenu({
 
 /** 状态筛选命中 0 条时的占位；复用闲时空态卡的描边样式，文案与「还没有任务」区分开。 */
 function AutomationStatusFilterEmpty() {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   return (
     <div className="rounded-[10px] border border-card-border px-3 py-3 text-ui-base text-foreground-subtle">
       {intl.formatMessage({ id: "automations.statusFilter.empty" })}
@@ -525,17 +497,14 @@ export function AutomationsSection({
   onOpenWorkflowConsumed,
   onOpenSession,
 }: AutomationsSectionProps) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useMyCodeIntl();
   const platform = usePlatform();
-  const { clientScenesService, offPeakTaskService, zcodeAgentService } = useServices();
+  const { clientScenesService, offPeakTaskService, mycodeAgentService } = useServices();
   const confirmDialog = useConfirmDialog();
-  const { openCodingPlanUpgrade } = useCodingPlanUpgradeDialog();
   const providerSettingsRead = useProviderSettingsView();
   const providerSettingsView =
     providerSettingsRead.state.status === "ready" ? providerSettingsRead.state.view : null;
-  const { status: entryStatus, label: entryLabel, retry: retryEntry } = useCodingPlanEntryGate();
   const { settings: sharedSettings, update: updateSharedSettings } = useSettings();
-  useOffPeakEligibility(sharedSettings, providerSettingsView?.revision);
 
   const automations = useAutomationManagementStore((state) => state.automations);
   const automationCreateLimitReached = automations.length >= AUTOMATION_CREATE_LIMIT;
@@ -565,13 +534,6 @@ export function AutomationsSection({
     (state) => state.takeNumberAvailabilityStatus,
   );
   const offPeakOperationId = useOffPeakTaskStore((state) => state.operationId);
-  const offPeakRefresh = useOffPeakTaskStore((state) => state.refresh);
-  const offPeakRefreshCodingPlanSupport = useOffPeakTaskStore(
-    (state) => state.refreshCodingPlanSupport,
-  );
-  const offPeakRefreshTakeNumberAvailability = useOffPeakTaskStore(
-    (state) => state.refreshTakeNumberAvailability,
-  );
   const offPeakCreate = useOffPeakTaskStore((state) => state.createTask);
   const offPeakUpdate = useOffPeakTaskStore((state) => state.updateTask);
   const offPeakPause = useOffPeakTaskStore((state) => state.pauseTask);
@@ -622,9 +584,9 @@ export function AutomationsSection({
     return activeTab && isWorkspaceTab(activeTab) ? activeTab : undefined;
   });
   const currentWorkspaceIsRemote = isRemoteAutomationWorkspace(activeWorkspaceTab);
-  // 灰度中途翻转：只藏创建入口；有非终态存量仍展示并跑到终态。
-  const offPeakGrayEnabled = offPeakGrayConfig?.enabled === true;
-  const offPeakCreationEnabled = offPeakGrayEnabled && !currentWorkspaceIsRemote;
+  // 旧闲时任务依赖已退役的 Coding Plan。入口和轮询同时关闭，定时自动化保持可用。
+  const offPeakGrayEnabled = false;
+  const offPeakCreationEnabled = false;
   // 扫描全部 provider 会把未选中的 Coding Plan 当成当前执行凭证。
   // mock 演示字段仍可覆盖；真实路径只接受与当前 family/selectedKey 一致的脱敏 resolver 快照。
   const offPeakNoPlan =
@@ -632,9 +594,8 @@ export function AutomationsSection({
     (offPeakGrayConfig?.codingPlanActive === undefined &&
       !offPeakStoreLoading &&
       !isCurrentOffPeakCodingPlanSupported(offPeakCodingPlanSupport, sharedSettings));
-  const offPeakVisible =
-    !currentWorkspaceIsRemote && (offPeakGrayEnabled || offPeakTasks.length > 0);
-  const hasAnyTasks = automations.length > 0 || offPeakTasks.length > 0;
+  const offPeakVisible = false;
+  const hasAnyTasks = automations.length > 0;
   const visibleTabs = resolveVisibleAutomationTabs({
     hasAnyTasks,
     offPeakVisible,
@@ -703,14 +664,14 @@ export function AutomationsSection({
     void initialize({
       workspacePath,
       workspaceIdentity,
-      agentService: zcodeAgentService,
+      agentService: mycodeAgentService,
     }).then(() => {
       if (!disposed) setLoadedWorkspaceKey(workspaceKey);
     });
     return () => {
       disposed = true;
     };
-  }, [workspacePath, workspaceIdentity, zcodeAgentService, initialize]);
+  }, [workspacePath, workspaceIdentity, mycodeAgentService, initialize]);
 
   useEffect(() => {
     const nextTab = resolveAutomationTabAfterOffPeakChange(tab, offPeakVisible);
@@ -766,18 +727,6 @@ export function AutomationsSection({
     workspacePath,
   ]);
 
-  // 服务端给出准确恢复时间；到点后重查。刷新期间及失败后继续禁入，直到成功返回 true。
-  useEffect(() => {
-    const nextTakeAt = offPeakTakeNumberAvailability?.nextTakeAt;
-    if (offPeakTakeNumberAvailability?.canTakeNumber !== false || nextTakeAt === undefined) return;
-    const delay = Math.max(0, nextTakeAt - Date.now()) + 100;
-    const timer = setTimeout(() => {
-      setNow(Date.now());
-      void offPeakRefreshTakeNumberAvailability(offPeakTaskService);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [offPeakRefreshTakeNumberAvailability, offPeakTaskService, offPeakTakeNumberAvailability]);
-
   // 额度 Tooltip 曾改成不会递减的绝对日期；按远端实现推进分钟边界，保持剩余时长准确。
   useEffect(() => {
     const nextTakeAt = offPeakTakeNumberAvailability?.nextTakeAt;
@@ -791,44 +740,22 @@ export function AutomationsSection({
     return () => clearTimeout(timer);
   }, [now, offPeakTakeNumberAvailability]);
 
-  // 位次/状态轮询刷新（host offPeakTaskSync 写库，renderer 每 10s 读快照；无任务不轮）。
-  useEffect(() => {
-    if (view.mode !== "list" || offPeakTasks.length === 0) return;
-    const timer = setInterval(() => {
-      void offPeakRefresh(offPeakTaskService);
-    }, 10_000);
-    return () => clearInterval(timer);
-  }, [view.mode, offPeakTasks.length, offPeakRefresh, offPeakTaskService]);
-
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await Promise.all([
-        refresh(zcodeAgentService),
-        offPeakRefresh(offPeakTaskService),
-        ...(offPeakGrayEnabled ? [offPeakRefreshCodingPlanSupport(offPeakTaskService)] : []),
-      ]);
+      await refresh(mycodeAgentService);
       setNow(Date.now());
     } finally {
       setRefreshing(false);
     }
-  }, [
-    offPeakGrayEnabled,
-    offPeakRefresh,
-    offPeakRefreshCodingPlanSupport,
-    offPeakTaskService,
-    refresh,
-    zcodeAgentService,
-  ]);
+  }, [refresh, mycodeAgentService]);
 
   // New task 页模板卡跳转过来：消费预填草稿 → 切 idle tab + 打开创建表单预填。
   useEffect(() => {
     const draft = consumePendingCreateDraft();
     if (!draft) return;
-    if (currentWorkspaceIsRemote) return;
-    setTab("idle");
-    setView({ mode: "offpeak-create", draft });
-  }, [consumePendingCreateDraft, currentWorkspaceIsRemote]);
+    // 退役入口留下的旧草稿只消费，不再切换到闲时任务表单。
+  }, [consumePendingCreateDraft]);
 
   useEffect(() => {
     if (!currentWorkspaceIsRemote) return;
@@ -840,44 +767,15 @@ export function AutomationsSection({
     );
   }, [currentWorkspaceIsRemote]);
 
-  const handleOpenCodingPlanUpgrade = useCallback(() => {
-    const providerId =
-      sharedSettings?.providerFamilyDomain === "bigmodel"
-        ? BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan
-        : BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan;
-    const eventText = intl.formatMessage({
-      id: "settings.modelProvider.codingPlan.upgrade",
-    });
-    // 埋点缺失原因：Automations 的闲时入口此前绕过了购买漏斗 context，只打开弹窗。
-    // 这里在用户点击时冻结入口套餐状态，后续 OAuth 只刷新鉴权，不重建 funnel。
-    openCodingPlanUpgrade({
-      providerId,
-      initialAudience: "personal",
-      funnelContext: createIdleTimeCodingPlanFunnelContext({
-        providerId,
-        eventText,
-        entryPlanState: resolveCodingPlanEntryPlanStateFromProviderSettings(providerSettingsView),
-      }),
-    });
-  }, [intl, openCodingPlanUpgrade, providerSettingsView, sharedSettings?.providerFamilyDomain]);
-
   const showCodingPlanRequiredToast = useCallback(() => {
-    toast(entryLabel ?? intl.formatMessage({ id: "offPeak.create.codingPlanToast" }), {
+    toast(intl.formatMessage({ id: "offPeak.create.availabilityUnavailable" }), {
       durationMs: 8000,
       position: "top-center",
       variant: "info",
-      actionLabel:
-        entryStatus === "loading"
-          ? undefined
-          : (entryLabel ??
-            intl.formatMessage({
-              id: "settings.modelProvider.codingPlan.upgrade",
-            })),
-      onAction: entryStatus === "error" ? retryEntry : handleOpenCodingPlanUpgrade,
       dismissible: true,
       dismissLabel: intl.formatMessage({ id: "common.close" }),
     });
-  }, [handleOpenCodingPlanUpgrade, intl, entryStatus, entryLabel, retryEntry]);
+  }, [intl]);
 
   const showAutomationCreateLimitToast = useCallback(() => {
     toast(
@@ -888,50 +786,10 @@ export function AutomationsSection({
     );
   }, [intl]);
 
-  // 会话内 OffPeakCreate 由 agent 直接落库，不经过 UI store；store 的 loading 初值也
-  // 是 false（"未加载"与"已加载"不可分）。因此每次 offpeak 导航都强制刷新列表，并以
-  // 「本次导航 id 的刷新已完成」作为唯一就绪信号，避免拿陈旧/空列表误判 targetNotFound。
-  const [offPeakNavRefreshed, setOffPeakNavRefreshed] = useState<{
-    id: string | null;
-    error: string | null;
-  }>({ id: null, error: null });
   useEffect(() => {
-    if (!isOffPeakDetailNavigationId(openAutomationId)) return;
-    let disposed = false;
-    void offPeakRefresh(offPeakTaskService).finally(() => {
-      if (disposed) return;
-      // review：refresh 不 reject，失败只写 store.error；把它随就绪信号一起带出。
-      setOffPeakNavRefreshed({
-        id: openAutomationId ?? null,
-        error: useOffPeakTaskStore.getState().error ?? null,
-      });
-    });
-    return () => {
-      disposed = true;
-    };
-  }, [openAutomationId, offPeakRefresh, offPeakTaskService]);
-
-  useEffect(() => {
-    // 闲时轮尾卡携带 offpeak- 前缀 id，从并行路径解析进 offpeak-edit 视图；
-    // 不能落进 cron 解析（必然 missing 并误报 targetNotFound）。
     if (isOffPeakDetailNavigationId(openAutomationId)) {
-      const result = resolveOffPeakDetailNavigation(
-        offPeakTasks,
-        openAutomationId,
-        offPeakNavRefreshed.id === openAutomationId,
-        offPeakNavRefreshed.error,
-      );
-      if (result.status === "pending") return;
-      if (result.status === "found") {
-        setTab("idle");
-        setView({ mode: "offpeak-edit", task: result.target });
-      } else if (result.status === "unavailable") {
-        // 列表刷新失败：落到闲时 tab 并提示加载失败，不误报"任务不存在"。
-        setTab("idle");
-        toast(intl.formatMessage({ id: "offPeak.nav.listUnavailable" }));
-      } else {
-        toast(intl.formatMessage({ id: "automations.error.targetNotFound" }));
-      }
+      // 旧闲时深链只消费，避免退役功能触发官方任务查询。
+      toast(intl.formatMessage({ id: "automations.error.targetNotFound" }));
       onOpenAutomationConsumed?.();
       return;
     }
@@ -955,7 +813,6 @@ export function AutomationsSection({
     automations,
     intl,
     loadedWorkspaceKey,
-    offPeakNavRefreshed,
     offPeakTasks,
     onOpenAutomationConsumed,
     openAutomationId,
@@ -1017,7 +874,7 @@ export function AutomationsSection({
       workspaceIdentity: targetIdentity,
     }: AutomationEditSubmit) => {
       if (view.mode === "edit") {
-        const ok = await updateAutomation(view.automation.automationId, input, zcodeAgentService);
+        const ok = await updateAutomation(view.automation.automationId, input, mycodeAgentService);
         if (!ok) {
           toast(
             intl.formatMessage({
@@ -1039,7 +896,7 @@ export function AutomationsSection({
           workspacePath: targetPath,
           workspaceIdentity: targetIdentity,
         },
-        zcodeAgentService,
+        mycodeAgentService,
       );
       void reportAutomationCreateResult(platform, {
         automationId: created?.automationId,
@@ -1073,13 +930,13 @@ export function AutomationsSection({
       showAutomationCreateLimitToast,
       updateAutomation,
       view,
-      zcodeAgentService,
+      mycodeAgentService,
     ],
   );
 
   const handleToggle = useCallback(
-    async (automation: ZCodeAutomation, enabled: boolean) => {
-      await setEnabled(automation.automationId, enabled, zcodeAgentService);
+    async (automation: MyCodeAutomation, enabled: boolean) => {
+      await setEnabled(automation.automationId, enabled, mycodeAgentService);
       const message = useAutomationManagementStore.getState().error;
       if (message) toast(intl.formatMessage({ id: getAutomationActionErrorToastId("toggle") }));
       else {
@@ -1100,12 +957,12 @@ export function AutomationsSection({
         setNow(Date.now());
       }
     },
-    [intl, setEnabled, zcodeAgentService],
+    [intl, setEnabled, mycodeAgentService],
   );
 
   const handleRestart = useCallback(
-    async (automation: ZCodeAutomation) => {
-      await restartAutomation(automation.automationId, zcodeAgentService);
+    async (automation: MyCodeAutomation) => {
+      await restartAutomation(automation.automationId, mycodeAgentService);
       const message = useAutomationManagementStore.getState().error;
       if (message)
         toast(
@@ -1115,11 +972,11 @@ export function AutomationsSection({
         );
       else setNow(Date.now());
     },
-    [intl, restartAutomation, zcodeAgentService],
+    [intl, restartAutomation, mycodeAgentService],
   );
 
   const handleRunNow = useCallback(
-    async (automation: ZCodeAutomation, source: "list" | "editor" = "list") => {
+    async (automation: MyCodeAutomation, source: "list" | "editor" = "list") => {
       logger.debug("[automations] 立即运行交互开始", {
         automationId: automation.automationId,
         source,
@@ -1130,14 +987,14 @@ export function AutomationsSection({
         automation,
         providerSettingsView,
       });
-      const result = await runAutomationNow(automation.automationId, zcodeAgentService);
+      const result = await runAutomationNow(automation.automationId, mycodeAgentService);
       logger.debug("[automations] 立即运行交互结束", {
         automationId: automation.automationId,
         source,
         result,
       });
       if (result === "queued") {
-        await loadRuns(automation.automationId, zcodeAgentService, true);
+        await loadRuns(automation.automationId, mycodeAgentService, true);
         const latestSessionId = useAutomationManagementStore
           .getState()
           .runsCache[automation.automationId]?.runs?.find(
@@ -1182,12 +1039,12 @@ export function AutomationsSection({
       platform,
       providerSettingsView,
       runAutomationNow,
-      zcodeAgentService,
+      mycodeAgentService,
     ],
   );
 
   const handleDelete = useCallback(
-    async (automation: ZCodeAutomation, source: "list" | "editor" = "list") => {
+    async (automation: MyCodeAutomation, source: "list" | "editor" = "list") => {
       const confirmed = await confirmDialog({
         presentation: "automation-confirmation",
         title: intl.formatMessage({ id: "automations.delete.title" }),
@@ -1208,7 +1065,7 @@ export function AutomationsSection({
         automation,
         providerSettingsView,
       });
-      await deleteAutomation(automation.automationId, zcodeAgentService);
+      await deleteAutomation(automation.automationId, mycodeAgentService);
       const message = useAutomationManagementStore.getState().error;
       if (message) toast(intl.formatMessage({ id: getAutomationActionErrorToastId("delete") }));
       // 若在编辑该任务的整页,删除后回列表。
@@ -1218,11 +1075,11 @@ export function AutomationsSection({
           : prev,
       );
     },
-    [confirmDialog, deleteAutomation, intl, platform, providerSettingsView, zcodeAgentService],
+    [confirmDialog, deleteAutomation, intl, platform, providerSettingsView, mycodeAgentService],
   );
 
   const handleOffPeakOpenSession = useCallback(
-    (task: ZCodeOffPeakTask) => {
+    (task: MyCodeOffPeakTask) => {
       if (!task.sessionId || !onOpenSession) return;
       onOpenSession({
         sessionId: task.sessionId,
@@ -1233,14 +1090,14 @@ export function AutomationsSection({
     [onOpenSession],
   );
 
-  const handleOffPeakOpen = useCallback((task: ZCodeOffPeakTask) => {
+  const handleOffPeakOpen = useCallback((task: MyCodeOffPeakTask) => {
     // 有 session 的卡片主点击不能直接跳会话：会使 Settings/History
     // 无法稳定到达。卡片主路径始终进入任务详情，会话只保留为显式次级动作。
     setView({ mode: "offpeak-edit", task });
   }, []);
 
   const handleOffPeakCancel = useCallback(
-    async (task: ZCodeOffPeakTask) => {
+    async (task: MyCodeOffPeakTask) => {
       const confirmed = await confirmDialog({
         title: intl.formatMessage({ id: "offPeak.cancel.title" }),
         description: intl.formatMessage(
@@ -1258,7 +1115,7 @@ export function AutomationsSection({
   );
 
   const handleOffPeakDelete = useCallback(
-    async (task: ZCodeOffPeakTask) => {
+    async (task: MyCodeOffPeakTask) => {
       const confirmed = await confirmDialog({
         title: intl.formatMessage({ id: "offPeak.delete.title" }),
         description: intl.formatMessage({ id: "offPeak.delete.description" }),
@@ -1278,7 +1135,7 @@ export function AutomationsSection({
   );
 
   const handleOffPeakDeleteHistory = useCallback(
-    async (task: ZCodeOffPeakTask) => {
+    async (task: MyCodeOffPeakTask) => {
       await offPeakDeleteHistory(task.offPeakTaskId, offPeakTaskService);
       const message = useOffPeakTaskStore.getState().error;
       if (message) toast(message);
@@ -1426,11 +1283,11 @@ export function AutomationsSection({
           runsEntry={view.mode === "edit" ? runsCache[view.automation.automationId] : undefined}
           onLoadRuns={() => {
             if (view.mode === "edit")
-              void loadRuns(view.automation.automationId, zcodeAgentService, true);
+              void loadRuns(view.automation.automationId, mycodeAgentService, true);
           }}
           onDeleteRun={(runId) => {
             if (view.mode === "edit") {
-              void deleteRun(view.automation.automationId, runId, zcodeAgentService);
+              void deleteRun(view.automation.automationId, runId, mycodeAgentService);
             }
           }}
           onOpenSession={

@@ -6,9 +6,9 @@ import type {
   FeedbackListQuery,
   FeedbackListResult,
   FeedbackTicketDetail,
-} from "@zcode/shared";
-import { ServiceChannels } from "@zcode/shared";
-import type { Event } from "@zcode/rpc";
+} from "@mycode/shared";
+import { ServiceChannels } from "@mycode/shared";
+import { Event as RpcEvent, type Event } from "@mycode/rpc";
 import { createServiceDescriptor } from "../descriptors.js";
 
 export interface FeedbackUploadProgress {
@@ -55,7 +55,7 @@ export interface IFeedbackService {
     },
   ): Promise<FeedbackAttachment>;
   attachLogsFromExport(id: string, options?: { full?: boolean }): Promise<FeedbackAttachment>;
-  getDeviceSnapshot(): Promise<import("@zcode/shared").FeedbackDeviceInfo>;
+  getDeviceSnapshot(): Promise<import("@mycode/shared").FeedbackDeviceInfo>;
   prepareCompactLogArchive(options?: { full?: boolean; progressId?: string }): Promise<{
     path: string;
     size: number;
@@ -65,3 +65,26 @@ export interface IFeedbackService {
 }
 
 export const IFeedbackService = createServiceDescriptor<IFeedbackService>(ServiceChannels.Feedback);
+
+export function createRemovedFeedbackService(): IFeedbackService {
+  const removed = async (): Promise<never> => {
+    throw new Error("Feedback integration has been removed");
+  };
+  return {
+    create: removed,
+    cancelCreate: removed,
+    list: removed,
+    get: removed,
+    comment: removed,
+    uploadAttachment: removed,
+    uploadAttachmentWithProgress: removed,
+    cancelUpload: removed,
+    onDynamicUploadProgress: () => RpcEvent.None,
+    uploadAttachmentData: removed,
+    attachLogsFromExport: removed,
+    getDeviceSnapshot: removed,
+    prepareCompactLogArchive: removed,
+    cleanupPreparedLogArchive: removed,
+    revealLogArchive: removed,
+  };
+}

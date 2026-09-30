@@ -1,11 +1,11 @@
-import { Emitter } from "@zcode/rpc";
+import { Emitter } from "@mycode/rpc";
 import {
   HostResponseTypes,
   HostMessageTypes,
   broadcastMessageSchema,
   hostBroadcastClaimResultMessageSchema,
   hostBroadcastEnvelopeSchema,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import type {
   BroadcastClaimAcquireResult,
   BroadcastClaimLease,

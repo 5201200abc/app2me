@@ -1,5 +1,5 @@
-import type { Event } from "@zcode/rpc";
-import { ServiceChannels } from "@zcode/shared";
+import type { Event } from "@mycode/rpc";
+import { ServiceChannels } from "@mycode/shared";
 import {
   type ModelConfigObject,
   type ModelId,
@@ -15,9 +15,10 @@ import {
   type ProviderSettingsView,
   type ResolveModelConfigInput,
   type SavePersonalModelDraftInput,
-} from "@zcode/provider";
+  type LocalModelScanResult,
+} from "@mycode/provider";
 import { createServiceDescriptor } from "../descriptors.js";
-import type { ModelConnectivityResult } from "@zcode/shared";
+import type { ModelConnectivityResult } from "@mycode/shared";
 import { createServiceLogger } from "../logger/serviceLogger.js";
 
 export type {
@@ -25,11 +26,12 @@ export type {
   ModelSelectionView,
   ModelSelectionViewInput,
   ProviderSettingsView,
-} from "@zcode/provider";
+} from "@mycode/provider";
 
 export interface IProviderSettingsService {
   readonly onDidChange: Event<ProviderSettingsView>;
   getView(): Promise<ProviderSettingsView>;
+  getLocalModels(): Promise<LocalModelScanResult>;
   refresh(reason: string): Promise<ProviderSettingsView>;
   createPersonalProvider(
     input?: Parameters<ProviderSettingsFacade["createPersonalProvider"]>[0],
@@ -110,8 +112,14 @@ export function createProviderSettingsService(
   facade: ProviderSettingsFacade,
   ensureReady: () => Promise<void> = async () => {},
   testConnectivity?: ProviderSettingsConnectivityTester,
+  scanLocalModels?: () => Promise<LocalModelScanResult>,
 ): IProviderSettingsService {
   return {
+    getLocalModels: async () => {
+      await ensureReady();
+      if (!scanLocalModels) throw new Error("当前宿主未装配本地模型扫描");
+      return scanLocalModels();
+    },
     onDidChange: toEvent((listener) => facade.onDidChange(listener)),
     getView: async () => {
       await ensureReady();

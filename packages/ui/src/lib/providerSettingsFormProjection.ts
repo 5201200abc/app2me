@@ -1,4 +1,4 @@
-import type { ProviderSettingsView } from "@zcode/services";
+import type { ProviderSettingsView } from "@mycode/services";
 import type { ProviderSettingsFormProvider } from "@/lib/providerSettingsFormTypes.js";
 import type { ProviderOrderView } from "@/lib/modelProviderOrdering.js";
 

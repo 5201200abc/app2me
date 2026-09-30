@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useRef } from "react";
 import type { ProviderSettingsFormProvider } from "@/lib/providerSettingsFormTypes.js";
-import type { ModelConnectivityResult } from "@zcode/shared";
-import type { ProviderSettingsView } from "@zcode/services";
+import type { ModelConnectivityResult } from "@mycode/shared";
+import type { ProviderSettingsView } from "@mycode/services";
 import { useServices } from "@/hooks/useServices.js";
 import { logger } from "@/logger.js";
 import { useProviderSettingsServiceView } from "@/hooks/useProviderSettingsView.js";
@@ -65,6 +65,7 @@ export function useModelProviders(target: {
       commitProviderSettingsView(view);
     } catch (err) {
       logger.error("[useModelProviders] 加载模型供应商失败", err);
+      throw err;
     } finally {
       // 用户连续触发刷新时，旧请求可能先返回。
       // 若不做 token 守卫，旧请求 finally 会把 refreshing 提前置 false，导致标题 loading 提示闪灭。

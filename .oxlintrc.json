@@ -55,12 +55,13 @@
   },
   "globals": {},
   "ignorePatterns": [
+    ".artifacts",
     "dist-release",
     "packages/ui/src/components/ui",
     "packages/ui/src/components/ai-elements",
     ".agents/skills",
     "packages/formal-proof",
-    "apps/zcode-cli",
+    "apps/mycode-cli",
     "docs/electron"
   ]
 }

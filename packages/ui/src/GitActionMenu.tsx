@@ -13,8 +13,8 @@ import type {
   GitCommitMessageConversationContext,
   GitIdentity,
   GitRepositorySummary,
-  ZCodeTaskChangeSummary,
-} from "@zcode/shared";
+  MyCodeTaskChangeSummary,
+} from "@mycode/shared";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import { Command, CommandItem, CommandList, CommandShortcut } from "@/components/ui/command.js";
@@ -46,7 +46,7 @@ import {
   getCurrentSessionFilePaths,
 } from "@/git-action-menu/currentSessionFileScope.js";
 import { useServices } from "@/hooks/useServices.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { getErrorMessage } from "@/lib/errorMessage.js";
 import { runUserAction } from "@/lib/userActionTelemetry.js";
 import { formatCommandShortcutLabel, matchesPrimaryShortcut } from "@/lib/keyboardShortcuts.js";
@@ -66,7 +66,7 @@ interface GitActionMenuProps {
   workspacePath: string;
   workspaceIdentity?: string;
   gitSummary: GitRepositorySummary;
-  activeTaskChangeSummary?: ZCodeTaskChangeSummary | null;
+  activeTaskChangeSummary?: MyCodeTaskChangeSummary | null;
   commitMessageConversationContext?: GitCommitMessageConversationContext | null;
   onRefreshGit: () => void;
   className?: string;
@@ -103,7 +103,7 @@ function isCommitMessageTextAreaTarget(target: EventTarget | null): target is HT
 interface GitCommitDialogState {
   summary: GitRepositorySummary;
   identity: GitIdentity | null;
-  activeTaskChangeSummary: ZCodeTaskChangeSummary | null;
+  activeTaskChangeSummary: MyCodeTaskChangeSummary | null;
   stagedFiles: GitCommitPreviewFile[];
   unstagedFiles: GitCommitPreviewFile[];
 }
@@ -206,7 +206,7 @@ function GitCommitDialog({
   onSubmitAndPush,
   onPushOnly,
 }: GitCommitDialogProps) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useMyCodeIntl();
   const [selectedActionId, setSelectedActionId] = useState<CommitDialogActionId>("commit");
   const messageTextareaRef = useRef<HTMLTextAreaElement | null>(null);
   const messageInputFocusedOnOpenRef = useRef(false);
@@ -601,7 +601,7 @@ function GitPushDialog({
   onOpenChange,
   onSubmit,
 }: GitPushDialogProps) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useMyCodeIntl();
   const numberFormatter = new Intl.NumberFormat(locale);
   const [errorCopied, setErrorCopied] = useState(false);
   const descriptionId = gitSummary.trackingBranchName
@@ -831,7 +831,7 @@ export function GitActionMenu({
   triggerLayout = "header",
 }: GitActionMenuProps) {
   const { gitService } = useServices();
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useMyCodeIntl();
   const [commitDialogOpen, setCommitDialogOpen] = useState(false);
   const [commitDialogLoading, setCommitDialogLoading] = useState(false);
   const [commitDialogState, setCommitDialogState] = useState<GitCommitDialogState | null>(null);
@@ -1314,7 +1314,7 @@ export function GitActionMenu({
           "flex h-7 items-center overflow-hidden rounded-lg border border-border bg-input transition-colors hover:border-border-hover @max-[560px]/workspace-header:w-7 @max-[560px]/workspace-header:justify-center",
           triggerIconOnly && "w-7 justify-center",
           isStatusRowTrigger &&
-            "h-8 w-full justify-start rounded-lg border-0 bg-transparent hover:border-transparent hover:bg-hover @max-[560px]/workspace-header:w-full @max-[560px]/workspace-header:justify-start",
+            "h-7 w-full justify-start rounded-lg border-0 bg-transparent hover:border-transparent hover:bg-hover @max-[560px]/workspace-header:w-full @max-[560px]/workspace-header:justify-start",
           className,
         )}
       >
@@ -1331,7 +1331,7 @@ export function GitActionMenu({
             "h-7 rounded-lg border-0 gap-1 px-1.5 @max-[560px]/workspace-header:w-7 @max-[560px]/workspace-header:px-0 @max-[560px]/workspace-header:[&>span]:hidden",
             triggerIconOnly && "w-7 px-0 [&>span]:hidden",
             isStatusRowTrigger &&
-              "h-8 min-w-0 w-full justify-start gap-2 px-2 text-left text-ui-base hover:bg-transparent hover:text-foreground @max-[560px]/workspace-header:w-auto @max-[560px]/workspace-header:[&>span]:inline",
+              "h-7 min-w-0 w-full justify-start gap-1.5 px-1.5 text-left text-ui-sm hover:bg-transparent hover:text-foreground @max-[560px]/workspace-header:w-auto @max-[560px]/workspace-header:[&>span]:inline",
           )}
           onClick={isStatusRowTrigger && !triggerIconOnly ? undefined : handlePrimaryAction}
         >

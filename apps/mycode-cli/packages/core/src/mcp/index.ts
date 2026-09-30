@@ -1,0 +1,220 @@
+// MCP tool bridge - projects MCP descriptors into core tool entries
+
+import {
+  type McpPort,
+  type McpToolDescriptor,
+  type ModelToolSideEffectScope,
+  type RiskLevel,
+} from "@mycode/contracts";
+import { OFFICIAL_CUA_FRAME_MODEL_CONTENT_PROTECTION } from "@mycode/mycode-cua/frame-contract";
+import type { ToolRegistry } from "../tool/registry.js";
+import type { ToolEntry } from "../tool/types.js";
+import { createToolRuleNameSet } from "../tool/tool-visibility.js";
+import { normalizeMcpToolResultForModel } from "./image-normalization.js";
+import { toMcpToolName } from "./name.js";
+import {
+  type RegisterMcpToolsOptions,
+  toRegisteredMcpToolName,
+  isMyCodeCuaGetAppState,
+  MCP_TOOL_TIMEOUT_MS,
+  officialCuaProviderSpellingAliases,
+  OFFICIAL_CUA_PERMISSION_CAPABILITY_GROUP,
+  createModelFacingMcpInputSchema,
+  McpToolOutputJsonSchema,
+  toMcpRuntimeArguments,
+  formatMcpToolResult,
+} from "./mcp-register-mcp-tools-options.js";
+
+export { toMcpToolName } from "./name.js";
+
+export {
+  HOST_NODE_REPL_IMAGE_MAX_DIMENSION,
+  MCP_IMAGE_INLINE_BASE64_BYTES,
+  MCP_IMAGE_INLINE_RAW_BYTES,
+} from "./image-normalization.js";
+
+export function registerMcpTools(
+  registry: ToolRegistry,
+  mcpPort: McpPort,
+  descriptors: readonly McpToolDescriptor[],
+  options: RegisterMcpToolsOptions = {},
+): string[] {
+  const allowed = options.allowedTools ? new Set(options.allowedTools) : undefined;
+  const disallowed = createToolRuleNameSet(options.disallowedTools);
+  const registered: string[] = [];
+
+  for (const descriptor of descriptors) {
+    const officialCuaAuthorityVerified =
+      options.officialCuaServerNames?.has(descriptor.serverName) === true;
+    const descriptorName = toMcpToolName(descriptor);
+    const name = toRegisteredMcpToolName(descriptor, officialCuaAuthorityVerified);
+    // 官方 CUA 投影模型主名后，如果只按新名检查规则，升级前保存的 namespaced
+    // denylist 会静默失效并放行。新旧名称任一命中 deny 即拒绝，任一命中 allow 即接受。
+    if (allowed && !allowed.has(name) && !allowed.has(descriptorName)) continue;
+    if (disallowed?.has(name) || disallowed?.has(descriptorName)) continue;
+    registry.register(createMcpToolEntry(name, descriptor, mcpPort, officialCuaAuthorityVerified));
+    registered.push(name);
+  }
+
+  return registered;
+}
+
+function createMcpToolEntry(
+  name: string,
+  descriptor: McpToolDescriptor,
+  mcpPort: McpPort,
+  officialCuaAuthorityVerified: boolean,
+): ToolEntry {
+  const readOnly = descriptor.annotations?.readOnlyHint === true;
+  const destructive = descriptor.annotations?.destructiveHint === true;
+  const isHostNodeReplExecution =
+    descriptor.serverName === "node_repl" && descriptor.toolName === "js";
+  const isCuaAppObservation = isMyCodeCuaGetAppState(descriptor);
+  // 宿主 node_repl 的 js 能执行本机 Node 代码，不能沿用普通未知 MCP 的 medium/network
+  // 默认值；否则权限 UI 会把文件/进程级能力错误描述成普通网络调用。
+  const sideEffectScope: ModelToolSideEffectScope = isHostNodeReplExecution ? "system" : "network";
+  const riskLevel: RiskLevel = isHostNodeReplExecution
+    ? "high"
+    : destructive
+      ? "high"
+      : readOnly
+        ? "low"
+        : "medium";
+  const needsApproval = true;
+  const timeoutMs = descriptor.timeoutMs ?? MCP_TOOL_TIMEOUT_MS;
+  const resultBudget = officialCuaAuthorityVerified
+    ? {
+        // 图片 block 的 base64 不计入模型文本预算，但树文本仍可能超过普通 MCP 的
+        // 50 KiB。这里给官方 CUA 足够的有界文本空间，避免通用截断把结构化
+        // image/image_ref 退化成纯字符串或改变相邻顺序。
+        maxInlineBytes: 256 * 1024,
+        maxModelBytes: 256 * 1024,
+        strategy: "truncate" as const,
+        preview: { direction: "head" as const },
+      }
+    : isHostNodeReplExecution
+      ? {
+          maxInlineBytes: 1_000_000,
+          maxModelBytes: 64 * 1024,
+          strategy: "artifact" as const,
+          preview: { direction: "tail" as const, maxBytes: 64 * 1024 },
+          artifact: { enabled: true, retention: "session" as const },
+        }
+      : {
+          maxInlineBytes: 100_000,
+          maxModelBytes: 50_000,
+          strategy: "truncate" as const,
+          preview: { direction: "head" as const },
+        };
+
+  return {
+    // 因精确查找直接返回 Tool not found。只在不可伪造的官方 authority 门成立且内部
+    // serverName 仍是官方 namespaced 名时挂单向别名；provider 继续只看规范名称。
+    aliases: officialCuaProviderSpellingAliases(name, descriptor, officialCuaAuthorityVerified),
+    capability: `MCP tool exposed by ${descriptor.serverName}: ${descriptor.toolName}`,
+    // 项目级 CUA 授权只能复用不可伪造的 official authority gate。
+    // server/tool 名可以被第三方仿冒，因此绝不能用名称 wildcard 表达这一权限。
+    ...(officialCuaAuthorityVerified
+      ? {
+          permissionCapabilityGroup: OFFICIAL_CUA_PERMISSION_CAPABILITY_GROUP,
+          // 最终栅格和紧随其后的 image_ref 共同定义模型唯一可用的像素坐标系。
+          // modelContentProtection 是唯一 Host authority；通用 resultBudget / hook
+          // 投影据此不能截断、丢弃或重排这组块，避免并行 boolean 漂移。
+          modelContentProtection: OFFICIAL_CUA_FRAME_MODEL_CONTENT_PROTECTION,
+        }
+      : {}),
+    inputSchema: createModelFacingMcpInputSchema(descriptor, isCuaAppObservation),
+    outputSchema: McpToolOutputJsonSchema,
+    metadata: {
+      concurrentSafe: readOnly || descriptor.annotations?.idempotentHint === true,
+      destructive,
+      // 必须把 MCP tool 的 description 透传到 metadata，让 registry 把它带进模型输入，
+      // 否则模型侧只看到 name + inputSchema，调用 MCP 工具时缺乏判断依据。
+      description: descriptor.description,
+      name,
+      mcpPresentation: {
+        serverName: descriptor.serverName,
+        toolName: descriptor.toolName,
+        ...(descriptor.description ? { description: descriptor.description } : {}),
+        // 只有官方 MCP 的结果才允许携带被客户端信任的结构化标识（额度耗尽 / 无套餐）。
+        ...(descriptor.official ? { official: true } : {}),
+      },
+      needsApproval,
+      readOnly,
+      riskLevel,
+      sideEffectScope,
+      timeoutMs,
+    },
+    permission: {
+      permission: "mcp",
+      reason: `MCP tool ${descriptor.serverName}/${descriptor.toolName} executes through an external server`,
+      riskLevel,
+      sideEffectScope,
+      needsApproval,
+      patternSources: ["toolName", "input", "network"],
+      denyPriority: "beforeAsk",
+    },
+    resultBudget,
+    timeout: {
+      defaultMs: timeoutMs,
+      allowCallOverride: false,
+    },
+    cancellation: {
+      supported: true,
+      cleanup: "bestEffort",
+      userVisibleMessage: `MCP tool ${name} was cancelled`,
+    },
+    trace: {
+      required: true,
+      propagateToAdapters: true,
+      recordInput: "summary",
+      recordOutput: "summary",
+    },
+    handler: async (input, context) => {
+      const result = await mcpPort.callTool(
+        {
+          serverName: descriptor.serverName,
+          toolName: descriptor.toolName,
+          arguments: toMcpRuntimeArguments(input, isCuaAppObservation),
+          trace: {
+            traceId: context.traceId,
+            spanId: context.spanId,
+            parentSpanId: context.parentSpanId,
+            sessionId: context.sessionId,
+            turnId: context.turnId,
+          },
+          runtimeScope: context.runtimeScope ?? "main",
+          workspacePath: context.workingDirectory,
+          ...(context.remoteSessionId ? { remoteSessionId: context.remoteSessionId } : {}),
+          ...(context.workspaceIdentity?.trim()
+            ? {
+                workspaceIdentity: context.workspaceIdentity.trim(),
+                workspaceKey: context.workspaceIdentity.trim(),
+              }
+            : { workspaceKey: context.workingDirectory }),
+          ...(context.turnId ? { turnId: context.turnId } : {}),
+          clientMode: context.clientMode ?? "desktop-continuous",
+          deliveryKind: context.deliveryKind ?? "desktop-continuous",
+        },
+        {
+          signal: context.abortSignal,
+          timeoutMs,
+        },
+      );
+      // MCP server 会返回大 base64 图片；resultBudget 只看到图片占位文本，
+      // 必须在 handler 阶段保存副本并替换模型可见内容，避免 provider 请求体被打爆。
+      return normalizeMcpToolResultForModel({
+        compressOversizedImages: isHostNodeReplExecution,
+        context,
+        descriptor,
+        preserveOfficialCuaFrames: officialCuaAuthorityVerified,
+        result,
+        toolName: name,
+      });
+    },
+    formatModelContent: (output) => formatMcpToolResult(output),
+  };
+}
+
+export type { RegisterMcpToolsOptions } from "./mcp-register-mcp-tools-options.js";
+export { McpToolOutputJsonSchema } from "./mcp-register-mcp-tools-options.js";

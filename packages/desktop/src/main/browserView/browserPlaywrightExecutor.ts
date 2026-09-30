@@ -1,9 +1,10 @@
 /* eslint-disable max-lines, @typescript-eslint/no-explicit-any -- 该函数会序列化后在隔离的浏览器页面上下文执行，不能引用 host 闭包。 */
-import type { BrowserCommandResult, BrowserPlaywrightAction } from "@zcode/shared";
+import type { BrowserCommandResult, BrowserPlaywrightAction } from "@mycode/shared";
 import { buildViewportScreenshotParams } from "./browserCommandPageHandlers.js";
 import type { ControlledView } from "./browserCommandTypes.js";
 import { captureScreenshotWithCssPixelCorrection } from "./browserScreenshotCapture.js";
 import { captureBrowserDomSnapshot } from "./browserPlaywrightDomSnapshot.js";
+import { evaluateWithCdp } from "./browserPlaywrightEvaluate.js";
 import { executeIabPlaywrightLocator } from "./browserPlaywrightLocatorExecutor.js";
 import { normalizePlaywrightTimeout } from "./browserPlaywrightTimeout.js";
 
@@ -62,7 +63,7 @@ function elementInfoRuntime(options: { x: number; y: number; includeNonInteracta
 }
 
 function overlayRuntime(options: { x: number; y: number; remove?: boolean }): void {
-  const id = "__zcode-playwright-element-screenshot-overlay";
+  const id = "__mycode-playwright-element-screenshot-overlay";
   document.getElementById(id)?.remove();
   if (options.remove) return;
   const root = document.createElement("div");
@@ -92,7 +93,7 @@ async function evaluateInPlaywrightIsolatedWorld(
   const world = (await view.cdp.send("Page.createIsolatedWorld", {
     frameId,
     grantUniveralAccess: false,
-    worldName: "zcode-playwright-helper",
+    worldName: "mycode-playwright-helper",
   })) as { executionContextId?: number };
   if (typeof world.executionContextId !== "number") {
     throw new Error("Playwright isolated world was not created");
@@ -183,42 +184,6 @@ async function waitForDocumentState(
     timeoutMs,
     signal,
   );
-}
-
-async function evaluateWithCdp(
-  view: ControlledView,
-  expression: string,
-  timeoutMs: number,
-  signal?: AbortSignal,
-): Promise<unknown> {
-  const terminate = () => {
-    void view.cdp.send("Runtime.terminateExecution").catch(() => undefined);
-  };
-  if (signal?.aborted) throw new DOMException("aborted", "AbortError");
-  signal?.addEventListener("abort", terminate, { once: true });
-  try {
-    const raw = (await view.cdp.send("Runtime.evaluate", {
-      expression,
-      awaitPromise: true,
-      returnByValue: true,
-      timeout: timeoutMs,
-    })) as {
-      result?: { value?: unknown };
-      exceptionDetails?: { text?: string; exception?: { description?: string } };
-    };
-    if (raw.exceptionDetails) {
-      throw new Error(
-        `playwright.evaluate failed: ${
-          raw.exceptionDetails.exception?.description ??
-          raw.exceptionDetails.text ??
-          "Playwright evaluate failed"
-        }`,
-      );
-    }
-    return raw.result?.value;
-  } finally {
-    signal?.removeEventListener("abort", terminate);
-  }
 }
 
 export async function handlePlaywrightAction(

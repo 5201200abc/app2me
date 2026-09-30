@@ -29,8 +29,8 @@ const nativeSearchBuildPlan = nativeSearchReleasePlan.enabled
 // Windows Chrome 导入入口未启用，默认 dev 启动不应把可选 helper 当成本地必需资源。
 // 显式 opt-in 时继续沿用原有按需构建，避免删除未来恢复所需代码。
 const shouldRequireWindowsBrowserImportHelper =
-  target.os === "win32" && process.env.ZCODE_ENABLE_WINDOWS_BROWSER_IMPORT === "1";
-// CUA 权限浮窗靠 zcode-window-bounds 读系统设置窗口 bounds 才能吸附。该 Swift 产物被
+  target.os === "win32" && process.env.MYCODE_ENABLE_WINDOWS_BROWSER_IMPORT === "1";
+// CUA 权限浮窗靠 mycode-window-bounds 读系统设置窗口 bounds 才能吸附。该 Swift 产物被
 // .gitignore 排除（仓库卫生门禁禁产物入库），生产链 prepare:runtime-assets 会在 darwin 上编它，
 // dev 链也必须 ensure —— 新 checkout、换 worktree 或清过 resources 后二进制缺失，watcher spawn
 // ENOENT 后 fail-open：浮窗照常显示、只是不再跟随系统设置窗口，且全程无报错，问题只能靠翻日志发现。
@@ -70,6 +70,22 @@ function isNativeSearchReady() {
 }
 
 const REQUIRED_LOCAL_RUNTIME_ASSETS = [
+  ...(["darwin", "win32"].includes(target.os)
+    ? [
+        {
+          label: "Cua Driver",
+          script: "prepare:cua-driver",
+          isReady: () =>
+            existsSync(
+              join(
+                bundledToolsRoot,
+                "cua-driver",
+                target.os === "win32" ? "cua-driver.exe" : "cua-driver",
+              ),
+            ),
+        },
+      ]
+    : []),
   ...(nativeSearchReleasePlan.enabled
     ? [
         {
@@ -85,7 +101,9 @@ const REQUIRED_LOCAL_RUNTIME_ASSETS = [
           label: "Windows browser import helper",
           script: "prepare:browser-import-helper",
           isReady: () =>
-            existsSync(join(bundledToolsRoot, "browser-import", "zcode-browser-import-helper.exe")),
+            existsSync(
+              join(bundledToolsRoot, "browser-import", "mycode-browser-import-helper.exe"),
+            ),
         },
       ]
     : []),
@@ -96,7 +114,7 @@ const REQUIRED_LOCAL_RUNTIME_ASSETS = [
           script: "prepare:macos-window-bounds",
           isReady: () =>
             existsSync(
-              join(desktopRoot, "resources", "macos-window-bounds", "zcode-window-bounds"),
+              join(desktopRoot, "resources", "macos-window-bounds", "mycode-window-bounds"),
             ),
         },
       ]

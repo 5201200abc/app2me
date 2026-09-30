@@ -5,8 +5,8 @@ import type {
   OAuthProviderMeta,
   OAuthStartResponse,
   UserInfo,
-} from "@zcode/shared";
-import { ServiceChannels } from "@zcode/shared";
+} from "@mycode/shared";
+import { ServiceChannels } from "@mycode/shared";
 import { createServiceDescriptor } from "../descriptors.js";
 
 /**
@@ -73,3 +73,24 @@ export interface IOAuthService {
 }
 
 export const IOAuthService = createServiceDescriptor<IOAuthService>(ServiceChannels.OAuth);
+
+export function createRemovedOAuthService(): IOAuthService {
+  const removed = async (): Promise<never> => {
+    throw new Error("OAuth integration has been removed");
+  };
+  return {
+    getProviders: async () => [],
+    getActiveProvider: async () => null,
+    restoreCachedSession: async () => null,
+    restoreCachedSessionState: async () => ({ status: "signed-out" }),
+    restoreSession: async () => null,
+    startOAuth: removed,
+    startOAuthWithPolling: removed,
+    pollPendingOAuth: async () => null,
+    handleCallback: async () => null,
+    refreshToken: removed,
+    logout: async () => undefined,
+    logoutAll: async () => undefined,
+    cancelPending: async () => undefined,
+  };
+}

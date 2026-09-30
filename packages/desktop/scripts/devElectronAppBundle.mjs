@@ -1,9 +1,10 @@
-import { access, cp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { access, copyFile, cp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-export const DEV_ELECTRON_PROTOCOL_SCHEME = "zcode";
-export const DEV_ELECTRON_APP_NAME = "ZCode Dev";
-export const DEV_ELECTRON_APP_BUNDLE_ID = "dev.zcode.app.development";
+export const DEV_ELECTRON_PROTOCOL_SCHEME = "mycode";
+export const DEV_ELECTRON_APP_NAME = "MyCode Dev";
+export const DEV_ELECTRON_APP_BUNDLE_ID = "dev.mycode.app.development";
 // 副本布局版本，见 prepareDevElectronAppBundle 中的指纹说明。
 export const DEV_ELECTRON_BUNDLE_FORMAT = 2;
 
@@ -37,14 +38,15 @@ function appendProtocolDeclaration(plist) {
 }
 
 /**
- * 为 macOS 本地 Dev runtime 写入产品身份和 zcode URL scheme。
- * raw Electron 的 Info.plist 没有 CFBundleURLTypes，系统只能把 zcode 交给
+ * 为 macOS 本地 Dev runtime 写入产品身份和 mycode URL scheme。
+ * raw Electron 的 Info.plist 没有 CFBundleURLTypes，系统只能把 mycode 交给
  * com.github.Electron；这里仅修改启动副本，避免污染 node_modules 中的 Electron。
  */
 export function patchDevElectronInfoPlist(plist) {
   let patched = replacePlistString(plist, "CFBundleDisplayName", DEV_ELECTRON_APP_NAME);
   patched = replacePlistString(patched, "CFBundleIdentifier", DEV_ELECTRON_APP_BUNDLE_ID);
   patched = replacePlistString(patched, "CFBundleName", DEV_ELECTRON_APP_NAME);
+  patched = replacePlistString(patched, "CFBundleIconFile", "mycode.icns");
   return appendProtocolDeclaration(patched);
 }
 
@@ -57,13 +59,14 @@ export async function prepareDevElectronAppBundle({
   runtimeRoot,
   electronVersion,
   arch,
+  iconSourcePath = fileURLToPath(new URL("../build/icon.icns", import.meta.url)),
 }) {
   const appPath = resolveDevElectronAppBundlePath({ runtimeRoot, electronVersion, arch });
   const infoPlistPath = join(appPath, "Contents", "Info.plist");
   const sourceExecutablePath = join(electronAppPath, "Contents", "MacOS", "Electron");
   const existingExecutablePath = join(appPath, "Contents", "MacOS", "Electron");
   // 源二进制的身份指纹，写在 .app 外面：放进 Contents 会污染 bundle 结构。
-  const sourceStampPath = join(dirname(appPath), ".zcode-dev-electron-source.json");
+  const sourceStampPath = join(dirname(appPath), ".mycode-dev-electron-source.json");
   // 这里原本把两个 Electron 可执行文件（各 ~100MB+）整份读进内存做 equals，
   // 每次 dev 启动都要付一次全量读盘。源二进制由 npm 包解压产出，记录它的 size+mtime
   // 即可判定是否需要重拷，语义等价而开销是常数级。
@@ -111,6 +114,15 @@ export async function prepareDevElectronAppBundle({
     // 指纹最后写：中途失败时下次仍会判定为需要重拷，不会留下半成品缓存。
     if (sourceStamp !== undefined) await writeFile(sourceStampPath, sourceStamp, "utf8");
   }
+
+  // Electron 的二进制缓存与产品图标独立更新，不能因二进制未变就继续显示旧图标。
+  // 只改开发副本，保留 node_modules 原始签名资源。
+  await copyFile(iconSourcePath, join(appPath, "Contents", "Resources", "mycode.icns"));
+  await writeFile(
+    infoPlistPath,
+    patchDevElectronInfoPlist(await readFile(infoPlistPath, "utf8")),
+    "utf8",
+  );
 
   return {
     appPath,

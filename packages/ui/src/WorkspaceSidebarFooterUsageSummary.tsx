@@ -7,7 +7,7 @@ import {
   normalizeProviderFamilyDomain,
   resolveModelProviderFamilyIdByProviderId,
   TID_SIDEBAR_CODING_PLAN_USAGE_BUTTON,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import { BarChart3Icon, RocketIcon } from "lucide-react";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu.js";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/CodingPlanUsageRemainingPanel.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
 import { useUsageEntitlement } from "@/hooks/useUsageEntitlement.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { useSettings } from "@/hooks/useSettingService.js";
 import {
   resolveEntitledAccountProviderAccess,
@@ -38,7 +38,7 @@ import {
   buildCodingPlanUsageSources,
   resolveSidebarCurrentCodingPlanUsageSource,
 } from "@/lib/codingPlanUsageSources.js";
-import { selectWorkspaceZCodeState, useZCodeSessionStore } from "@/store/zcodeSessionStore.js";
+import { selectWorkspaceMyCodeState, useMyCodeSessionStore } from "@/store/mycodeSessionStore.js";
 import { parseCustomProviderIdFromSupplierKey } from "@/lib/modelConfigSync.js";
 import { setPendingSettingsUsageIntent } from "@/lib/settingsNavigation.js";
 import {
@@ -99,9 +99,9 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
     providerSettingsRead.state.status === "ready" ? providerSettingsRead.state.view : null;
   // 首次读取失败也不能被解释成“已经加载且没有套餐”；只有 Ready 才能消费 Provider 事实。
   const providerSourcesLoading = providerSettingsRead.state.status !== "ready";
-  const selectedSupplierKey = useZCodeSessionStore((state) =>
+  const selectedSupplierKey = useMyCodeSessionStore((state) =>
     workspacePath
-      ? selectWorkspaceZCodeState(state, workspacePath, workspaceIdentity).selectedSupplierKey
+      ? selectWorkspaceMyCodeState(state, workspacePath, workspaceIdentity).selectedSupplierKey
       : "",
   );
   const availableCodingPlanProviders = useMemo(
@@ -427,7 +427,7 @@ export function WorkspaceSidebarFooterUsageSummaryContent({
     funnelContext: CodingPlanFunnelContext,
   ) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const entryGate = useCodingPlanEntryGate();
   const { providerEntitlements, upgradeTargetProviderId } = state;
   const upgradeProviderSnapshot =
@@ -450,33 +450,6 @@ export function WorkspaceSidebarFooterUsageSummaryContent({
         <BarChart3Icon className="size-4" />
         {intl.formatMessage({ id: "sidebar.usage.plan.openStats" })}
       </DropdownMenuItem>
-      {/* 产品要求：升级入口始终显示；未解析出当前套餐时由当前 provider family 决定品牌。 */}
-      <DropdownMenuItem
-        data-testid={TID_SIDEBAR_CODING_PLAN_UPGRADE_BUTTON}
-        disabled={entryGate.status === "loading"}
-        aria-busy={entryGate.status === "loading"}
-        onSelect={() => {
-          if (entryGate.status !== "ready") {
-            entryGate.retry?.();
-            return;
-          }
-          onUpgradeClick?.(
-            upgradeTargetProviderId,
-            createCodingPlanFunnelContext({
-              providerId: upgradeTargetProviderId,
-              upgradeSource: "profile_menu",
-              eventRegion: "app.profile",
-              eventText: intl.formatMessage({ id: upgradeActionLabelId }),
-              entryPlanState: resolveCodingPlanEntryPlanState({
-                snapshot: upgradeProviderSnapshot,
-              }),
-            }),
-          );
-        }}
-      >
-        <RocketIcon className="size-4" />
-        {entryGate.label ?? intl.formatMessage({ id: upgradeActionLabelId })}
-      </DropdownMenuItem>
     </>
   );
 }
@@ -486,7 +459,7 @@ export function WorkspaceSidebarFooterPlanBadge({
 }: {
   state: WorkspaceSidebarFooterUsageSummaryState;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const label =
     state.profilePlanBadge?.audience === "team"
       ? intl.formatMessage({ id: "sidebar.usage.plan.audienceTeam" })

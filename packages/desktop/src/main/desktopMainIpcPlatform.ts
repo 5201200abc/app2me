@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- 桌面平台 IPC 集中装配，拆散会让权限边界更难审计；行数随平台能力增长。 */
 import { BrowserWindow, dialog, ipcMain, nativeTheme } from "electron";
-import { readZCodeStdioTapDevState } from "@zcode/services/node";
+import { readMyCodeStdioTapDevState } from "@mycode/services/node";
 import {
   DesktopCommandIds,
   appSettingsPatchSchema,
@@ -20,11 +20,10 @@ import {
   type CreateTempTextAttachmentRequest,
   type UpdateStatePayload,
   type WindowControlsOverlayReadyPayload,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import { getInstalledEditors } from "./editors.js";
 import { getApplicationIcon } from "./applicationIcons.js";
 import { exportLogs } from "./exportLogs.js";
-import { resolveCommunityUrl } from "./desktopCommandHandlers.js";
 import { openInEditor } from "./openInEditor.js";
 import {
   openResourceManager,
@@ -57,7 +56,6 @@ import { registerDesktopPrintToPdfIpcHandler } from "./desktopPrintToPdf.js";
 import { registerCuaPipActiveSessionIpc } from "./desktopCuaPipIpc.js";
 
 export function registerPlatformIpcHandlers(options: {
-  fetchHelpConfig?: () => Promise<unknown>;
   logger: {
     info: (...args: unknown[]) => void;
     warn: (...args: unknown[]) => void;
@@ -179,7 +177,7 @@ export function registerPlatformIpcHandlers(options: {
     if (typeof active === "boolean") setResourceUsageSamplingActive(event.sender.id, active);
   });
   registerResourceManagerStorageIpc();
-  ipcMain.handle(PlatformChannels.GetZCodeStdioTapDevState, () => readZCodeStdioTapDevState());
+  ipcMain.handle(PlatformChannels.GetMyCodeStdioTapDevState, () => readMyCodeStdioTapDevState());
   ipcMain.on(PlatformChannels.OpenResourceManager, () => {
     openResourceManager();
   });
@@ -322,21 +320,7 @@ export function registerPlatformIpcHandlers(options: {
     currentApplicationLocale: options.currentApplicationLocale,
   });
 
-  ipcMain.handle(PlatformChannels.CanOpenCommunity, async (_event, locale: unknown) => {
-    const result = localeSchema.safeParse(locale);
-    if (!result.success) {
-      options.logger.warn("[community] invalid locale:", formatZodError(result.error));
-      return false;
-    }
-
-    const communityUrl = await resolveCommunityUrl({
-      locale: result.data,
-      fetchRemoteConfig: options.fetchHelpConfig,
-      logger: options.logger,
-    });
-
-    return typeof communityUrl === "string" && communityUrl.length > 0;
-  });
+  ipcMain.handle(PlatformChannels.CanOpenCommunity, async () => false);
 
   ipcMain.handle(
     PlatformChannels.AcknowledgePostUpdateReleaseNotes,

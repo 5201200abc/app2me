@@ -3,19 +3,16 @@ import { createRoot } from "react-dom/client";
 import {
   AppErrorBoundary,
   Root,
-  ZCodeIntlProvider,
+  RootStartupLoading,
+  MyCodeIntlProvider,
   generateMobileDeviceFingerprint,
   playTaskNotificationSound,
   setStreamClientId,
   type Theme,
-} from "@zcode/ui";
-import "@zcode/ui/styles.css";
-import { connectViaWebSocket } from "@zcode/client";
-import { WebCallbackPage } from "./auth/WebCallbackPage.js";
-import { createWebAuthService } from "./auth/webAuthService.js";
-import { WEB_ZAI_OAUTH_CONFIG, resolveWebAuthDevReturnTo } from "./auth/webZaiOAuthConfig.js";
-import { parseOAuthState, resolveSafeAppReturnTo } from "./auth/oauthStateCodec.js";
-import { resolveWebCommunityUrl, resolveWebHelpConfig } from "./communityUrl.js";
+} from "@mycode/ui";
+
+import "@mycode/ui/styles.css";
+import { connectViaWebSocket } from "@mycode/client";
 import {
   ConversationShareLandingLoader,
   ConversationShareLandingStatus,
@@ -28,50 +25,45 @@ import {
   isConversationSharePath,
   resolveConversationShareCodeFromPath,
 } from "./share/conversationShareRoute.js";
-import type { IPlatformService, RemoteTarget, ServerRemoteInfo } from "@zcode/shared";
+import type { IPlatformService, RemoteTarget } from "@mycode/shared";
 import { WEB_DEFAULT_THEME, resolveWebInitialTheme } from "./webThemeSeed.js";
 
 function resolveWebThemePreference(defaultTheme: Theme = WEB_DEFAULT_THEME): Theme {
-  const saved = localStorage.getItem("zcode-theme");
+  const saved = localStorage.getItem("mycode-theme");
   return resolveWebInitialTheme({ storedTheme: saved, defaultTheme });
 }
 
-// 初始化主题：默认 Zai dark，后续由 useTheme hook 接管
+// 初始化主题；后续由 useTheme hook 接管。
 // system 模式下需要查询系统偏好；非 system 模式直接用存储值
 {
   // 分享页没有本地主题配置时使用浅色，已有配置仍然沿用；其他 Web 页面继续默认深色。
   const saved = resolveWebThemePreference(
-    isConversationSharePath(window.location.pathname) ? "zai-light" : undefined,
+    isConversationSharePath(window.location.pathname) ? "mycode-light" : undefined,
   );
   const resolved =
     saved === "system"
       ? window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light"
-      : saved === "dark" || saved === "zai-dark"
+      : saved === "dark" || saved === "mycode-dark"
         ? "dark"
         : "light";
   const appliedTheme =
     saved === "system"
       ? resolved === "dark"
-        ? "zai-dark"
-        : "zai-light"
+        ? "mycode-dark"
+        : "mycode-light"
       : saved === "dark"
-        ? "zai-dark"
+        ? "mycode-dark"
         : saved === "light"
-          ? "zai-light"
+          ? "mycode-light"
           : saved;
   document.documentElement.classList.toggle("dark", resolved === "dark");
-  document.documentElement.classList.toggle("theme-zai-light", appliedTheme === "zai-light");
-  document.documentElement.classList.toggle("theme-zai-dark", appliedTheme === "zai-dark");
-}
-
-async function resolveFeedbackUrl(): Promise<string | undefined> {
-  return (await resolveWebHelpConfig()).feedback_url;
+  document.documentElement.classList.toggle("theme-mycode-light", appliedTheme === "mycode-light");
+  document.documentElement.classList.toggle("theme-mycode-dark", appliedTheme === "mycode-dark");
 }
 
 const root = createRoot(document.getElementById("root")!);
-const webAuthService = createWebAuthService();
 
 // 初始化 Web 端流式 clientId，确保所有 hook 在首次渲染前就使用稳定 ID
 {
@@ -87,33 +79,6 @@ interface WebBootstrapResult {
   allowOpenWorkspace?: boolean;
 }
 
-function isWebOAuthCallback(params: URLSearchParams): boolean {
-  return (
-    ["/cn/share/callback", "/share/callback"].includes(window.location.pathname) &&
-    params.has("state") &&
-    (params.has("code") || params.has("error"))
-  );
-}
-
-function renderWebAuthCallbackPage(): void {
-  document.title = "ZCode - Sign In";
-  const callbackState = parseOAuthState(
-    new URLSearchParams(window.location.search).get("state") ?? "",
-  );
-  const safeRetryTarget = resolveSafeAppReturnTo(callbackState?.app_return_to);
-  root.render(
-    <WebCallbackPage
-      authService={webAuthService}
-      onSuccess={({ appReturnTo }) => {
-        window.location.replace(appReturnTo ?? "/");
-      }}
-      onRetry={() => {
-        window.location.replace(safeRetryTarget ?? "/");
-      }}
-    />,
-  );
-}
-
 async function renderConversationSharePage(): Promise<void> {
   // 页面语言跟随路径前缀：/cn/share 中文，裸 /share 英文。
   const routeLocale = resolveConversationShareRouteLocale(window.location.pathname);
@@ -121,7 +86,7 @@ async function renderConversationSharePage(): Promise<void> {
   document.documentElement.lang = routeLocale;
   // 分享页必须设置 title：否则浏览器标签只显示 index.html 的通用标题。
   // 会话标题要等 preview 加载完，先给一个语言正确的兜底。
-  document.title = routeLocale === "zh-CN" ? "ZCode 会话分享" : "ZCode Conversation Share";
+  document.title = routeLocale === "zh-CN" ? "MyCode 会话分享" : "MyCode Conversation Share";
   const shareCode = resolveConversationShareCodeFromPath(window.location.pathname);
   if (!shareCode) {
     root.render(
@@ -134,7 +99,7 @@ async function renderConversationSharePage(): Promise<void> {
   }
 
   const endpointOrigin =
-    import.meta.env.VITE_ZCODE_BASE_URL?.trim().replace(/\/+$/u, "") || window.location.origin;
+    import.meta.env.VITE_MYCODE_BASE_URL?.trim().replace(/\/+$/u, "") || window.location.origin;
   const mockMode =
     import.meta.env.DEV && import.meta.env.VITE_CONVERSATION_SHARE_PREVIEW_MOCK === "true";
   // Share 加载失败不能只有通用 network 文案：需要区分 mock、endpoint 配置或跨域 fetch。
@@ -151,38 +116,16 @@ async function renderConversationSharePage(): Promise<void> {
       ).MockConversationSharePreviewClient()
     : new ConversationSharePreviewClient({ baseUrl: `${endpointOrigin}/api/v1` });
   const getMockToken = () =>
-    mockMode && window.sessionStorage.getItem("zcode:share:mock-auth") === "owner"
+    mockMode && window.sessionStorage.getItem("mycode:share:mock-auth") === "owner"
       ? "mock-owner-token"
       : null;
-  const onLogout = () => {
-    if (mockMode) {
-      window.sessionStorage.removeItem("zcode:share:mock-auth");
-      window.location.reload();
-      return;
-    }
-    void webAuthService.logout();
-  };
   root.render(
     <ConversationShareLandingLoader
       shareCode={shareCode}
       client={client}
-      getAccessToken={() => getMockToken() ?? webAuthService.getZCodeJwtToken()}
-      onLogin={(provider) => {
-        if (mockMode) {
-          window.sessionStorage.setItem("zcode:share:mock-auth", "owner");
-          window.location.reload();
-          return;
-        }
-        webAuthService.startLogin({
-          provider,
-          appReturnTo: window.location.href,
-          redirectUri: WEB_ZAI_OAUTH_CONFIG.shareRedirectUri,
-          devReturnTo: resolveWebAuthDevReturnTo(WEB_ZAI_OAUTH_CONFIG),
-        });
-      }}
-      onLogout={onLogout}
+      getAccessToken={getMockToken}
       locale={routeLocale}
-      theme={resolveWebThemePreference("zai-light")}
+      theme={resolveWebThemePreference("mycode-light")}
     />,
   );
 }
@@ -234,25 +177,9 @@ function createWebPlatform(): IPlatformService {
     openExternal: (url) => {
       window.open(url, "_blank", "noopener,noreferrer");
     },
-    openFeedback: async () => {
-      const feedbackUrl = await resolveFeedbackUrl();
-      if (!feedbackUrl) {
-        return;
-      }
-      window.open(feedbackUrl, "_blank", "noopener,noreferrer");
-    },
-    openCommunity: async () => {
-      const locale = document.documentElement.lang === "en-US" ? "en-US" : "zh-CN";
-      const communityUrl = await resolveWebCommunityUrl(locale);
-      if (!communityUrl) {
-        return;
-      }
-      window.open(communityUrl, "_blank", "noopener,noreferrer");
-    },
-    canOpenCommunity: async (locale) => {
-      const communityUrl = await resolveWebCommunityUrl(locale);
-      return typeof communityUrl === "string" && communityUrl.length > 0;
-    },
+    openFeedback: () => Promise.resolve(),
+    openCommunity: () => Promise.resolve(),
+    canOpenCommunity: () => Promise.resolve(false),
     openInFileManager: () =>
       Promise.resolve({ success: false, error: "Not supported in web mode" }),
     openExternalFile: () => Promise.resolve({ success: false, error: "Not supported in web mode" }),
@@ -358,34 +285,11 @@ function resolveDefaultWsOrigin(): string {
 
 async function resolveWebBootstrap(): Promise<WebBootstrapResult> {
   const params = new URLSearchParams(window.location.search);
-  const remoteId = params.get("remote");
-  const wsUrl = remoteId
-    ? `${resolveDefaultWsOrigin()}/ws/remote/${remoteId}`
-    : `${resolveDefaultWsOrigin()}/ws`;
+  if (params.has("remote")) throw new Error("Web remote control is no longer available");
+  const wsUrl = `${resolveDefaultWsOrigin()}/ws`;
 
-  if (remoteId) {
-    return { wsUrl };
-  }
-
-  try {
-    const response = await fetch("/api/server-info", {
-      cache: "no-store",
-    });
-    if (!response.ok) {
-      return { wsUrl };
-    }
-    const serverInfo = (await response.json()) as Partial<ServerRemoteInfo>;
-    const workspace = Array.isArray(serverInfo.workspaces) ? serverInfo.workspaces[0] : undefined;
-    return {
-      wsUrl,
-      ...(workspace?.path ? { initialWorkspaceAbsPath: workspace.path } : {}),
-      ...(workspace?.workspaceIdentity
-        ? { initialWorkspaceIdentity: workspace.workspaceIdentity }
-        : {}),
-    };
-  } catch {
-    return { wsUrl };
-  }
+  // 服务端项目列表只是可选目录，不是用户选择；自动取首项会把 server 启动目录带入新会话。
+  return { wsUrl };
 }
 
 function WebBootstrapErrorScreen({ message }: { message: string }) {
@@ -416,16 +320,15 @@ function WebBootstrapErrorScreen({ message }: { message: string }) {
 }
 
 function renderWebBootstrapError(error: unknown): void {
-  document.title = "ZCode - Web";
+  document.title = "MyCode - Web";
   root.render(
     <WebBootstrapErrorScreen message={error instanceof Error ? error.message : String(error)} />,
   );
 }
 
 async function bootstrapWebApp() {
-  const params = new URLSearchParams(window.location.search);
-  if (isWebOAuthCallback(params)) {
-    renderWebAuthCallbackPage();
+  if (["/cn/share/callback", "/share/callback"].includes(window.location.pathname)) {
+    renderWebBootstrapError("This sign-in method is no longer available");
     return;
   }
 
@@ -447,11 +350,11 @@ async function bootstrapWebApp() {
       onClose: () => {},
     });
     const platform = createWebPlatform();
-    document.title = "ZCode - Web + Server";
+    document.title = "MyCode - Web + Server";
 
     root.render(
       <AppErrorBoundary>
-        <ZCodeIntlProvider
+        <MyCodeIntlProvider
           settingService={services.settingService}
           broadcastService={services.broadcastService}
         >
@@ -466,8 +369,12 @@ async function bootstrapWebApp() {
             preferDirectoryBrowser
             supportsEmbeddedBrowser={false}
             allowRemoteWorkspace={false}
+            initialWorkspaceLoadingFallback={
+              <RootStartupLoading label="Loading workspace..." />
+            }
           />
-        </ZCodeIntlProvider>
+
+        </MyCodeIntlProvider>
       </AppErrorBoundary>,
     );
   } catch (error) {

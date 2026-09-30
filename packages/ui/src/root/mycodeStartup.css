@@ -1,0 +1,176 @@
+/* HTML 首帧与 React 使用同一套资源，接管时不切换品牌或底色。 */
+.mycode-startup {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100dvh;
+  height: 100%;
+  overflow: hidden;
+  background: #030e1d;
+  color: #edf8ff;
+}
+.mycode-startup__sky,
+.mycode-startup__stars,
+.mycode-startup__terrain,
+.mycode-startup__halo {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+.mycode-startup__sky {
+  inset: -15%;
+  background:
+    radial-gradient(ellipse at 50% 38%, #16375a 0%, transparent 48%),
+    radial-gradient(ellipse at 50% 100%, #247ab8 0%, #07182e 43%, #020a14 76%);
+  animation: mycode-sky-drift 8s ease-in-out infinite alternate;
+}
+.mycode-startup__stars {
+  inset: -4%;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(1px 1px at 12% 24%, #d6f4ff 80%, transparent),
+    radial-gradient(1px 1px at 77% 17%, #b9e6ff 80%, transparent),
+    radial-gradient(1px 1px at 31% 65%, #b9e6ff 80%, transparent),
+    radial-gradient(1.5px 1.5px at 86% 55%, #d6f4ff 80%, transparent);
+  background-size: 330px 310px;
+  animation: mycode-star-drift 12s linear infinite alternate;
+}
+.mycode-startup__stars::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  background-position: 93px 127px;
+  animation: mycode-star-twinkle 2.8s ease-in-out infinite alternate;
+}
+.mycode-startup__terrain {
+  inset: auto -2% -2%;
+  height: 32%;
+  /* 竖屏同样只取原图底部地平线，避免原图中部的徽标再次露出。 */
+  background: url("../assets/mycode-startup-scene.png") center bottom / max(104vw, 160dvh) auto
+    no-repeat;
+  mask-image: linear-gradient(transparent, #000 48%);
+  animation: mycode-horizon-breathe 9s ease-in-out infinite alternate;
+}
+.mycode-startup__halo {
+  inset: auto 12% 9%;
+  height: 1px;
+  border-radius: 50%;
+  box-shadow: 0 0 36px 10px #82d8ff4d;
+  animation: mycode-horizon-breathe 6s ease-in-out infinite alternate;
+}
+.mycode-startup__emblem {
+  position: relative;
+  isolation: isolate;
+  width: clamp(144px, 24vmin, 260px);
+  aspect-ratio: 1;
+  margin-top: -10dvh;
+}
+.mycode-startup__emblem::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -34%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #57baff4d 0%, #4cafff15 42%, transparent 69%);
+  animation: mycode-emblem-breathe 2.3s ease-in-out infinite alternate;
+}
+.mycode-startup__emblem::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(130deg, transparent 20%, #d9f8ff 48%, transparent 76%);
+  mask: url("../assets/mycode-mark.png") center / contain no-repeat;
+  mix-blend-mode: screen;
+  animation: mycode-mark-shimmer 3.8s ease-in-out infinite;
+}
+.mycode-startup__emblem img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 24px #63bcf033);
+}
+.mycode-startup__content {
+  position: relative;
+  max-width: min(90vw, 40rem);
+  text-align: center;
+}
+.mycode-startup-badge {
+  display: block;
+  width: 6rem;
+  height: 6rem;
+  object-fit: contain;
+}
+.mycode-startup-badge--animated {
+  animation: mycode-badge-glow 2.6s ease-in-out infinite alternate;
+}
+@keyframes mycode-sky-drift {
+  to {
+    transform: translate3d(1.5%, -1%, 0) scale(1.04);
+    opacity: 0.8;
+  }
+}
+@keyframes mycode-star-drift {
+  to {
+    transform: translate3d(-48px, 56px, 0);
+    opacity: 0.85;
+  }
+}
+@keyframes mycode-horizon-breathe {
+  to {
+    transform: scale(1.03);
+    opacity: 0.7;
+  }
+}
+@keyframes mycode-badge-glow {
+  from {
+    filter: drop-shadow(0 0 8px #63bcf022);
+  }
+  to {
+    filter: drop-shadow(0 0 18px #63bcf077);
+  }
+}
+@keyframes mycode-emblem-breathe {
+  from {
+    transform: scale(0.84);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1.16);
+    opacity: 1;
+  }
+}
+@keyframes mycode-mark-shimmer {
+  0%,
+  100% {
+    opacity: 0.03;
+  }
+  45% {
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 0.08;
+  }
+}
+@keyframes mycode-star-twinkle {
+  from {
+    opacity: 0.15;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mycode-startup *,
+  .mycode-startup *::before,
+  .mycode-startup *::after,
+  .mycode-startup-badge--animated {
+    animation: none !important;
+  }
+}

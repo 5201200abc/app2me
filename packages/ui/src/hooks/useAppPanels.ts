@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createUuid } from "@zcode/shared";
-import type { EmbeddedBrowserOpenUrlRequest, IPlatformService } from "@zcode/shared";
+import { createUuid } from "@mycode/shared";
+import type { EmbeddedBrowserOpenUrlRequest, IPlatformService } from "@mycode/shared";
 import type { CodeViewerSource } from "@/lib/codeViewer.js";
 // 保活：side pane terminal 跨 workspace 会话上移到模块级 registry。
 // 关闭 terminal tab 时必须显式 release，杀掉 PTY，避免常驻 registry 造成孤儿进程。
@@ -173,7 +173,7 @@ export function useAppPanels(options: {
   } = options;
   const supportsEmbeddedBrowser = explicitSupportsEmbeddedBrowser ?? Boolean(isDesktop);
   const activeWorkspaceKey = workspaceIdentity?.trim() || workspaceAbsPath;
-  const { zcodeAgentService, zcodeSessionService } = useServices();
+  const { mycodeAgentService, mycodeSessionService } = useServices();
   const isOfficeMode = useIsOfficeMode();
   const sidePaneMemoryKey = useMemo(
     () =>
@@ -202,7 +202,16 @@ export function useAppPanels(options: {
   // 交互说明：侧栏显隐按钮放在 App 外层，而不是 Sidebar 内部。
   // 这样即使侧栏被隐藏，入口也仍然留在左上角，不会出现"收起后没有地方再展开"的问题；
   // 同时这里统一处理 macOS 红绿灯安全区，避免按钮和系统窗口控件重叠。
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(
+    () => !window.matchMedia("(max-width: 767px)").matches,
+  );
+  useEffect(() => {
+    // 窄屏同时摆放侧栏和最小宽度会话区会裁掉发送按钮；进入窄屏时收起，手动打开使用浮层。
+    const media = window.matchMedia("(max-width: 767px)");
+    const handleChange = () => { if (media.matches) setIsSidebarVisible(false); };
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
+  }, []);
   const [browserNavigationRequest, setBrowserNavigationRequest] =
     useState<BrowserNavigationRequest | null>(null);
   const [allRecentClosedSidePaneTabs, setAllRecentClosedSidePaneTabs] = useState<
@@ -1125,7 +1134,7 @@ export function useAppPanels(options: {
         try {
           // 判据已经保证是本地 workspace（无 workspaceIdentity / remoteSessionId），
           // 这里只带 workspacePath。
-          const result = await zcodeAgentService.conversationWorkflowRunArtifactsV4({
+          const result = await mycodeAgentService.conversationWorkflowRunArtifactsV4({
             workspacePath: request.workspacePath,
             sessionId: request.parentSessionId,
             runId: request.runId,
@@ -1156,7 +1165,7 @@ export function useAppPanels(options: {
       commitOpenedSidePaneState,
       openFileUrlInBrowserSidePane,
       supportsEmbeddedBrowser,
-      zcodeAgentService,
+      mycodeAgentService,
     ],
   );
 
@@ -1164,7 +1173,7 @@ export function useAppPanels(options: {
     (tab: Extract<WorkspaceSidePaneTab, { type: "selection-side-chat" }>) => {
       clearSelectionSideChat(tab.childSessionId);
       clearConversationSelectionReferenceScope(tab.childSessionId, tab.workspaceKey);
-      void zcodeSessionService
+      void mycodeSessionService
         .closeSession({
           workspacePath: tab.workspacePath,
           ...(tab.workspaceIdentity ? { workspaceIdentity: tab.workspaceIdentity } : {}),
@@ -1178,7 +1187,7 @@ export function useAppPanels(options: {
           });
         });
     },
-    [zcodeSessionService],
+    [mycodeSessionService],
   );
 
   useEffect(() => {

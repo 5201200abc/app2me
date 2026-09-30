@@ -5,18 +5,18 @@ import type {
   CommandSetEnabledParams,
   CommandUpdateParams,
   UserCommand,
-  ZCodeCommand,
-} from "@zcode/shared";
-import type { ICommandsService } from "@zcode/services";
+  MyCodeCommand,
+} from "@mycode/shared";
+import type { ICommandsService } from "@mycode/services";
 
 interface CommandsStoreState {
   workspacePath: string | null;
   workspaceIdentity: string | null;
   loadedWorkspacePath: string | null;
   loadedWorkspaceIdentity: string | null;
-  commands: ZCodeCommand[];
+  commands: MyCodeCommand[];
   userCommands: UserCommand[];
-  pluginCommands: ZCodeCommand[];
+  pluginCommands: MyCodeCommand[];
   capability: { userScopeAvailable: boolean };
   loading: boolean;
   error: string | null;

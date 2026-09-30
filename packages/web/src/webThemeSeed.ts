@@ -1,20 +1,20 @@
-type WebThemeSeed = "light" | "dark" | "zai-light" | "zai-dark" | "system";
+type WebThemeSeed = "light" | "dark" | "mycode-light" | "mycode-dark" | "system";
 
-export const WEB_DEFAULT_THEME: WebThemeSeed = "zai-dark";
+export const WEB_DEFAULT_THEME: WebThemeSeed = "mycode-dark";
 
 function isWebThemeSeed(value: unknown): value is WebThemeSeed {
   return (
     value === "light" ||
     value === "dark" ||
-    value === "zai-light" ||
-    value === "zai-dark" ||
+    value === "mycode-light" ||
+    value === "mycode-dark" ||
     value === "system"
   );
 }
 
 function normalizeWebThemeSeed(theme: WebThemeSeed): WebThemeSeed {
-  if (theme === "dark") return "zai-dark";
-  if (theme === "light") return "zai-light";
+  if (theme === "dark") return "mycode-dark";
+  if (theme === "light") return "mycode-light";
   return theme;
 }
 

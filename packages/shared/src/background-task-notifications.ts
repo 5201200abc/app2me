@@ -1,8 +1,8 @@
-import type { ZCodeMessageWithParts } from "./zcode-protocol-legacy-types.js";
-import { textFromZCodeMessageParts } from "./zcode-protocol-legacy-types.js";
-import type { ZCodeStreamEvent } from "./zcode-task-types-core.js";
+import type { MyCodeMessageWithParts } from "./mycode-protocol-legacy-types.js";
+import { textFromMyCodeMessageParts } from "./mycode-protocol-legacy-types.js";
+import type { MyCodeStreamEvent } from "./mycode-task-types-core.js";
 
-export interface ZCodeBackgroundTaskNotificationInfo {
+export interface MyCodeBackgroundTaskNotificationInfo {
   error?: string;
   outputFile?: string;
   result?: string;
@@ -11,9 +11,9 @@ export interface ZCodeBackgroundTaskNotificationInfo {
   taskId?: string;
 }
 
-export function parseZCodeBackgroundTaskNotificationText(
+export function parseMyCodeBackgroundTaskNotificationText(
   text: string | undefined,
-): { notification: ZCodeBackgroundTaskNotificationInfo; toolUseId: string } | null {
+): { notification: MyCodeBackgroundTaskNotificationInfo; toolUseId: string } | null {
   const trimmed = text?.trim();
   if (!trimmed?.startsWith("<task-notification>")) {
     return null;
@@ -35,16 +35,16 @@ export function parseZCodeBackgroundTaskNotificationText(
   };
 }
 
-export function collectZCodeBackgroundTaskNotificationsByToolUseId(
-  messages: readonly ZCodeMessageWithParts[],
-): Map<string, ZCodeBackgroundTaskNotificationInfo> {
-  const notifications = new Map<string, ZCodeBackgroundTaskNotificationInfo>();
+export function collectMyCodeBackgroundTaskNotificationsByToolUseId(
+  messages: readonly MyCodeMessageWithParts[],
+): Map<string, MyCodeBackgroundTaskNotificationInfo> {
+  const notifications = new Map<string, MyCodeBackgroundTaskNotificationInfo>();
   for (const message of messages) {
     if (message.info.role !== "user") {
       continue;
     }
-    const parsed = parseZCodeBackgroundTaskNotificationText(
-      textFromZCodeMessageParts(message.parts),
+    const parsed = parseMyCodeBackgroundTaskNotificationText(
+      textFromMyCodeMessageParts(message.parts),
     );
     if (!parsed) {
       continue;
@@ -54,10 +54,10 @@ export function collectZCodeBackgroundTaskNotificationsByToolUseId(
   return notifications;
 }
 
-export function zcodeBackgroundTaskNotificationToolUpdateStatus(
+export function mycodeBackgroundTaskNotificationToolUpdateStatus(
   status: string | undefined,
 ): Extract<
-  Extract<ZCodeStreamEvent, { type: "tool_call_update" }>["status"],
+  Extract<MyCodeStreamEvent, { type: "tool_call_update" }>["status"],
   "completed" | "failed" | "stopped"
 > {
   if (status === "failed" || status === "lost") {
@@ -70,22 +70,22 @@ export function zcodeBackgroundTaskNotificationToolUpdateStatus(
   return "completed";
 }
 
-export function attachZCodeBackgroundTaskNotificationToRaw(
+export function attachMyCodeBackgroundTaskNotificationToRaw(
   raw: unknown,
-  notification: ZCodeBackgroundTaskNotificationInfo | undefined,
+  notification: MyCodeBackgroundTaskNotificationInfo | undefined,
 ): unknown {
   if (!notification) {
     return raw;
   }
   const record = asPlainRecord(raw);
   const meta = asPlainRecord(record._meta);
-  const zcode = asPlainRecord(meta.zcode);
+  const mycode = asPlainRecord(meta.mycode);
   return {
     ...record,
     _meta: {
       ...meta,
-      zcode: {
-        ...zcode,
+      mycode: {
+        ...mycode,
         taskNotification: notification,
       },
     },

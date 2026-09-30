@@ -7,8 +7,8 @@ import {
   type PlanIdentitySnapshot,
   type ProviderFamilyConnectionSelection,
   type ProviderFamilyDomain,
-} from "@zcode/shared";
-import type { IUsageStatsService } from "@zcode/services";
+} from "@mycode/shared";
+import type { IUsageStatsService } from "@mycode/services";
 import { useUsageEntitlementWithService } from "@/hooks/useUsageEntitlement.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
 import { resolveEntitledAccountProviderAccessFingerprint } from "@/lib/accountProviderAccess.js";

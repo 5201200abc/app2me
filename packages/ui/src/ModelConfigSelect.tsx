@@ -39,13 +39,14 @@ import {
   TID_CHAT_MODEL_SELECT_ITEM,
   TID_CHAT_MODEL_SELECT_TRIGGER,
   testId,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import {
   isCoarseTouchDevice,
   shouldRestoreChatInputFocusAfterPickerClose,
 } from "@/lib/pickerFocus.js";
 import { RollingToolbarLabel } from "@/chat-input-toolbar/RollingToolbarLabel.js";
 import { ModelInputCapabilityBadge } from "@/components/ModelInputCapabilityBadge.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 
 export interface ModelSelectGroupItem {
   key: string;
@@ -133,6 +134,7 @@ function getModelTriggerLabelClassName({
 }
 
 interface ModelConfigSelectProps {
+  roundedList?: boolean;
   modelGroups: readonly ModelSelectGroup[];
   normalizedValue: string;
   triggerLabel: string;
@@ -184,6 +186,7 @@ interface ModelConfigSelectProps {
 }
 
 export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
+  roundedList = false,
   modelGroups,
   normalizedValue,
   triggerLabel,
@@ -225,6 +228,7 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
   leadingItems,
   triggerBadge,
 }: ModelConfigSelectProps) {
+  const { intl } = useMyCodeIntl();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const open = controlledOpen ?? uncontrolledOpen;
   const lastOpenRequestKeyRef = useRef(openRequestKey);
@@ -354,7 +358,10 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
           key={itemKey}
           {...commonProps}
           value={item.value}
-          className="min-h-8 gap-2 pl-2 pr-8 text-ui-base"
+          className={cn(
+            "min-h-8 gap-2 pl-2 pr-8 text-ui-base",
+            roundedList && "min-h-8 rounded-md px-2 pr-8 text-ui-base",
+          )}
           onSelect={() => {
             handleModelValueChange(item.value);
             handlePopoverOpenChange(false);
@@ -370,6 +377,7 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
       isItemLocked,
       lockReasonMessage,
       normalizedValue,
+      roundedList,
     ],
   );
 
@@ -542,12 +550,16 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
       {open ? (
         <DropdownMenuContent
           className={cn(
-            shouldShowProviderLevel
-              ? "w-max min-w-48 max-w-[calc(100vw-2rem)]"
-              : "w-48 max-h-72 overflow-y-auto",
+            roundedList
+              ? "w-64 max-w-[calc(100vw-1.5rem)] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] overflow-y-auto rounded-xl p-1.5 shadow-md"
+              : shouldShowProviderLevel
+                ? "w-max min-w-48 max-w-[calc(100vw-2rem)]"
+                : "w-48 max-h-72 overflow-y-auto",
           )}
           align={contentAlign}
           side={contentSide}
+          sideOffset={roundedList ? 6 : undefined}
+          collisionPadding={roundedList ? 8 : undefined}
           onCloseAutoFocus={(event) => {
             if (!focusSelectorOnClose) {
               // Automations 没有聊天输入框可恢复；保留 Radix 默认行为，
@@ -568,74 +580,88 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
             input?.focus();
           }}
         >
+          {roundedList && (
+            <DropdownMenuLabel className="px-2 pb-1 text-ui-sm font-normal text-foreground-subtle">
+              {intl.formatMessage({ id: "chat.toolbar.strength.modelMenu" })}
+            </DropdownMenuLabel>
+          )}
           {leadingItems !== undefined && leadingItems.length > 0 ? (
             <>
               {renderModelItems(leadingItems)}
               {hasSelectableModel ? <DropdownMenuSeparator /> : null}
             </>
           ) : null}
-          {hasSelectableModel && shouldShowProviderLevel
-            ? modelGroups.map((group, index) => {
-                const groupSeparator = shouldRenderModelGroupSeparator(
-                  modelGroups[index - 1],
-                  group,
-                ) ? (
-                  <DropdownMenuSeparator />
-                ) : null;
-                if (group.directItems) {
+          {roundedList
+            ? modelGroups.map((group) => (
+                <div key={group.key} data-testid={testId(TID_CHAT_MODEL_SELECT_GROUP, group.key)}>
+                  <DropdownMenuLabel className="px-2 py-1 text-ui-xs font-normal text-foreground-subtle">
+                    {group.label}
+                  </DropdownMenuLabel>
+                  {renderModelItems(group.items)}
+                </div>
+              ))
+            : hasSelectableModel && shouldShowProviderLevel
+              ? modelGroups.map((group, index) => {
+                  const groupSeparator = shouldRenderModelGroupSeparator(
+                    modelGroups[index - 1],
+                    group,
+                  ) ? (
+                    <DropdownMenuSeparator />
+                  ) : null;
+                  if (group.directItems) {
+                    return (
+                      <Fragment key={group.key}>
+                        {groupSeparator}
+                        <div>
+                          <DropdownMenuLabel
+                            className="flex min-h-8 items-center px-2 py-1"
+                            data-testid={testId(TID_CHAT_MODEL_SELECT_GROUP, group.key)}
+                            data-model-provider-key={group.key}
+                          >
+                            {renderGroupLabel(group)}
+                          </DropdownMenuLabel>
+                          {renderProviderConnectionHeader(group)}
+                          <DropdownMenuRadioGroup value={normalizedValue}>
+                            {group.items.map((item) => renderModelItem(item))}
+                          </DropdownMenuRadioGroup>
+                        </div>
+                      </Fragment>
+                    );
+                  }
+
+                  const groupSelected = isModelSelectGroupSelected(group, normalizedValue);
                   return (
                     <Fragment key={group.key}>
                       {groupSeparator}
-                      <div>
-                        <DropdownMenuLabel
-                          className="flex min-h-8 items-center px-2 py-1"
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger
+                          className="min-h-8"
                           data-testid={testId(TID_CHAT_MODEL_SELECT_GROUP, group.key)}
                           data-model-provider-key={group.key}
+                          data-model-provider-selected={groupSelected ? "true" : undefined}
                         >
                           {renderGroupLabel(group)}
-                        </DropdownMenuLabel>
-                        {renderProviderConnectionHeader(group)}
-                        <DropdownMenuRadioGroup value={normalizedValue}>
-                          {group.items.map((item) => renderModelItem(item))}
-                        </DropdownMenuRadioGroup>
-                      </div>
+                          {groupSelected ? (
+                            <CheckIcon className="size-4 text-foreground-subtle" />
+                          ) : null}
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent
+                          className={cn(
+                            "max-h-72 overflow-y-auto",
+                            // 固定宽度会提前截断模型名；按内容扩展，并让可用空间优先于最小宽度。
+                            providerSubmenuClassName ??
+                              "w-max min-w-[min(12rem,var(--radix-dropdown-menu-content-available-width))] max-w-(--radix-dropdown-menu-content-available-width)",
+                          )}
+                        >
+                          {renderModelItems(group.items)}
+                        </DropdownMenuSubContent>
+                      </DropdownMenuSub>
                     </Fragment>
                   );
-                }
-
-                const groupSelected = isModelSelectGroupSelected(group, normalizedValue);
-                return (
-                  <Fragment key={group.key}>
-                    {groupSeparator}
-                    <DropdownMenuSub>
-                      <DropdownMenuSubTrigger
-                        className="min-h-8"
-                        data-testid={testId(TID_CHAT_MODEL_SELECT_GROUP, group.key)}
-                        data-model-provider-key={group.key}
-                        data-model-provider-selected={groupSelected ? "true" : undefined}
-                      >
-                        {renderGroupLabel(group)}
-                        {groupSelected ? (
-                          <CheckIcon className="size-4 text-foreground-subtle" />
-                        ) : null}
-                      </DropdownMenuSubTrigger>
-                      <DropdownMenuSubContent
-                        className={cn(
-                          "max-h-72 overflow-y-auto",
-                          // 固定宽度会提前截断模型名；按内容扩展，并让可用空间优先于最小宽度。
-                          providerSubmenuClassName ??
-                            "w-max min-w-[min(12rem,var(--radix-dropdown-menu-content-available-width))] max-w-(--radix-dropdown-menu-content-available-width)",
-                        )}
-                      >
-                        {renderModelItems(group.items)}
-                      </DropdownMenuSubContent>
-                    </DropdownMenuSub>
-                  </Fragment>
-                );
-              })
-            : hasSelectableModel
-              ? renderModelItems(modelGroups[0]?.items ?? [])
-              : null}
+                })
+              : hasSelectableModel
+                ? renderModelItems(modelGroups[0]?.items ?? [])
+                : null}
           {renderedFooterActions.length > 0 ? (
             <div className="sticky bottom-0 z-10 bg-menu after:absolute after:left-0 after:top-full after:h-1 after:w-full after:bg-menu after:content-['']">
               {hasSelectableModel ? <DropdownMenuSeparator /> : null}

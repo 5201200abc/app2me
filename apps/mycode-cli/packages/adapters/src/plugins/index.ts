@@ -1,0 +1,248 @@
+import { join, resolve } from "node:path";
+import type {
+  CustomCommandRoot,
+  PluginDiagnostic,
+  PluginDiscoverRequest,
+  PluginLoadOutcome,
+  PluginMetadata,
+  PluginOperationOptions,
+  PluginPort,
+  SkillRoot,
+} from "@mycode/contracts";
+import {
+  MYCODE_INLINE_PLUGIN_MARKETPLACE,
+  MYCODE_OFFICIAL_PLUGIN_MARKETPLACE,
+} from "@mycode/contracts";
+import { sanitizePluginId, throwIfAborted } from "./helpers.js";
+import { loadPluginMcpServerDefinitions } from "./mcp.js";
+import { listInstalledPluginRecords, resolveInstalledPluginRoot } from "./marketplace.js";
+import type { PluginAbortOptions, PluginCandidate } from "./types.js";
+import {
+  type NodePluginAdapterOptions,
+  emptyOutcome,
+  FIRST_PLUGIN_PRIORITY,
+  loadPlugin,
+  warnUnsupportedComponents,
+  resolveEnabled,
+  canRunPluginHooks,
+  PRIORITY_STEP,
+} from "./plugins-node-plugin-adapter-options.js";
+import { inspectPluginHooks, mergeHookEvents } from "./plugins-resolve-skill-roots.js";
+import {
+  resolveEnabledComponents,
+  emptyComponents,
+  createPluginMetadata,
+} from "./plugins-create-plugin-metadata.js";
+import { scanOfficialCache } from "./plugins-scan-official-cache.js";
+
+export {
+  addMarketplace,
+  describeMarketplacePlugin,
+  ensureDefaultPluginMarketplaces,
+  ensureMarketplaceManifestAvailable,
+  getPluginDataDir,
+  installMarketplacePlugin,
+  listInstalledPluginRecords,
+  loadKnownMarketplacesSync,
+  loadMarketplaceManifestSync,
+  normalizeAuthorValue,
+  parseEntryStoreListing,
+  parseMarketplaceSourceInput,
+  readPluginSourceIdentityPin,
+  readPluginSourceSha,
+  removeMarketplace,
+  uninstallMarketplacePlugin,
+  updateMarketplace,
+  validateMarketplacePlugin,
+  validateLocalPluginPath,
+  validateMarketplaceSource,
+  type DescribeMarketplacePluginResult,
+  type InstalledPluginRecord,
+  type KnownMarketplaceRecord,
+  type MarketplaceSource,
+  type PluginComponentGroup,
+  type PluginComponentItem,
+  type PluginComponentKind,
+  type PluginManifestDisplayMetadata,
+  type PluginMarketplaceEntry,
+  type PluginMarketplaceManifest,
+} from "./marketplace.js";
+
+export { writeBundledOfficialMarketplacePartitionSync } from "./official-marketplace.js";
+
+export { getPluginSourceDiagnosticCode } from "./source-errors.js";
+
+export {
+  comparePluginUpdate,
+  comparePluginVersions,
+  type PluginUpdateStatus,
+} from "./version-compare.js";
+
+export class NodePluginAdapter implements PluginPort {
+  constructor(private readonly options: NodePluginAdapterOptions) {}
+
+  async discoverPlugins(
+    request: PluginDiscoverRequest,
+    options?: PluginOperationOptions,
+  ): Promise<PluginLoadOutcome> {
+    return this.discoverPluginsSync(request, options);
+  }
+
+  discoverPluginsSync(
+    request: PluginDiscoverRequest,
+    options?: PluginAbortOptions,
+  ): PluginLoadOutcome {
+    if (!request.config.enabled) return emptyOutcome();
+
+    const diagnostics: PluginDiagnostic[] = [];
+    const dataRoot = join(request.storageRoot || this.options.storageRoot, "data");
+    const candidates = this.resolveCandidates(request, diagnostics, options);
+    const commandRoots: CustomCommandRoot[] = [];
+    const hooks: PluginLoadOutcome["hooks"] = {};
+    const mcpServers: PluginLoadOutcome["mcpServers"] = {};
+    const plugins: PluginMetadata[] = [];
+    const seen = new Set<string>();
+    const skillRoots: SkillRoot[] = [];
+    let priority = FIRST_PLUGIN_PRIORITY;
+
+    for (const candidate of candidates) {
+      throwIfAborted(options);
+      const loaded = loadPlugin(candidate, diagnostics);
+      if (!loaded) continue;
+      // 内置（官方）插件被「卸载」后只在 user config 写 suppressedBuiltins 标记。这里在发现层
+      // 用插件的权威 id（manifest 名 @ marketplace）过滤，不依赖缓存文件是否已被物理删除——
+      // 这样即便 app 升级遗留了旧版本缓存目录、或会话内 facade 持有过时配置，被卸载的内置插件
+      // 也不会被重新发现。仅作用于 official 源，inline/cache（市场安装）不受影响。
+      if (loaded.source === "official" && request.config.suppressedBuiltins.includes(loaded.id)) {
+        continue;
+      }
+      if (seen.has(loaded.id)) {
+        diagnostics.push({
+          code: "plugin_duplicate_id",
+          message: `Duplicate plugin ignored: ${loaded.id}`,
+          path: loaded.rootPath,
+          pluginId: loaded.id,
+          severity: "warning",
+        });
+        continue;
+      }
+      seen.add(loaded.id);
+      warnUnsupportedComponents(loaded, diagnostics);
+
+      // candidate.defaultEnabled 在 candidate 构造时无法访问 plugin id,
+      // 这里再叠加 bootstrap 提供的 "默认开" 名单 (按 `<name>@<marketplace>` 匹配)。
+      const candidateDefaultEnabled =
+        candidate.defaultEnabled ||
+        (request.officialPluginsEnabledByDefault?.has(loaded.id) ?? false);
+      const enabled = resolveEnabled(request.config, loaded.id, candidateDefaultEnabled);
+      const dataPath = join(dataRoot, sanitizePluginId(loaded.id));
+      // 只从启用后解析出的 component.mcpServers 生成 mcpServerNames，
+      // 未启用插件的内置 MCP 就会在管理页完全不可见。这里先读取声明名给 UI 只读展示，
+      // 实际 runtime 注入仍只使用 enabled 分支解析出的 component.mcpServers。
+      const mcpServerDefinitions = loadPluginMcpServerDefinitions({ diagnostics, loaded });
+      const hooksRunnable = canRunPluginHooks(loaded);
+      const hookInspection = inspectPluginHooks({
+        dataPath,
+        diagnostics,
+        loaded,
+        runnable: hooksRunnable,
+      });
+      const component = enabled
+        ? resolveEnabledComponents({
+            dataPath,
+            diagnostics,
+            env: request.env ?? {},
+            hookEvents: hooksRunnable ? hookInspection.events : {},
+            hookDetails: hookInspection.details,
+            loaded,
+            mcpServerDefinitions,
+            options: request.config.options[loaded.id] ?? {},
+            priority,
+            workingDirectory: request.workingDirectory,
+          })
+        : emptyComponents(hookInspection.details);
+      priority += PRIORITY_STEP;
+
+      Object.assign(mcpServers, component.mcpServers);
+      mergeHookEvents(hooks, component.hooks);
+      skillRoots.push(...component.skillRoots);
+      commandRoots.push(...component.commandRoots);
+      plugins.push(
+        createPluginMetadata(
+          loaded,
+          component,
+          dataPath,
+          enabled,
+          Object.keys(mcpServerDefinitions),
+          request.config.options[loaded.id] ?? {},
+        ),
+      );
+    }
+
+    return {
+      commandRoots,
+      diagnostics,
+      hooks,
+      mcpServers,
+      plugins,
+      skillRoots,
+    };
+  }
+
+  private resolveCandidates(
+    request: Pick<PluginDiscoverRequest, "config" | "officialPluginRoots" | "storageRoot">,
+    diagnostics: PluginDiagnostic[],
+    options?: PluginAbortOptions,
+  ): PluginCandidate[] {
+    const candidates: PluginCandidate[] = [];
+    for (const rootPath of request.config.dirs) {
+      candidates.push({
+        defaultEnabled: true,
+        marketplace: MYCODE_INLINE_PLUGIN_MARKETPLACE,
+        rootPath: resolve(rootPath),
+        source: "inline",
+      });
+    }
+    for (const rootPath of request.officialPluginRoots ?? []) {
+      candidates.push({
+        defaultEnabled: false,
+        marketplace: MYCODE_OFFICIAL_PLUGIN_MARKETPLACE,
+        rootPath: resolve(rootPath),
+        source: "official",
+      });
+    }
+    candidates.push(
+      ...scanOfficialCache(request.storageRoot, diagnostics, options).map((rootPath) => ({
+        defaultEnabled: false,
+        marketplace: MYCODE_OFFICIAL_PLUGIN_MARKETPLACE,
+        rootPath,
+        source: "official" as const,
+      })),
+    );
+    for (const installed of listInstalledPluginRecords(request.storageRoot)) {
+      candidates.push({
+        defaultEnabled: false,
+        marketplace: installed.marketplace,
+        rootPath: resolveInstalledPluginRoot(request.storageRoot, installed),
+        source: "cache",
+      });
+    }
+    return candidates;
+  }
+}
+
+export function createNodePluginAdapter(options: NodePluginAdapterOptions): NodePluginAdapter {
+  return new NodePluginAdapter(options);
+}
+
+export function discoverNodePluginsSync(
+  request: PluginDiscoverRequest,
+  options?: PluginAbortOptions,
+): PluginLoadOutcome {
+  return createNodePluginAdapter({ storageRoot: request.storageRoot }).discoverPluginsSync(
+    request,
+    options,
+  );
+}
+
+export type { NodePluginAdapterOptions } from "./plugins-node-plugin-adapter-options.js";

@@ -1,13 +1,14 @@
 import { z } from "zod";
-import { modelSelectionSchema } from "@zcode/shared/model-selection";
-import { completeModelConfigDataSchema, modelConfigDataSchema } from "@zcode/shared/model-config";
+import { normalizePersonalCatalog } from "./personal-catalog-policy.js";
+import { modelSelectionSchema } from "@mycode/shared/model-selection";
+import { completeModelConfigDataSchema, modelConfigDataSchema } from "@mycode/shared/model-config";
 import {
   parsePersonalModelConfigRules,
   parsePersonalProviderConfigMap,
   extractManualModelConfig,
   manualModelConfigSchema,
   type ProviderConfigLayerUpdate,
-} from "@zcode/provider";
+} from "@mycode/provider";
 
 const CURRENT_SCHEMA_VERSION = 1 as const;
 
@@ -69,16 +70,18 @@ export function decodeProviderConfigFile(input: unknown): ProviderConfigLayerUpd
     version = nextVersion;
   }
   const parsed = storedProviderConfigSchema.parse(candidate);
-  return Object.freeze({
-    providers: parsePersonalProviderConfigMap(parsed.config.providerConfigRules),
-    models: parsePersonalModelConfigRules(
-      normalizeLegacyManualRules(parsed.config.modelConfigRules),
-    ),
-    providerOrder: parsed.config.providerOrder,
-    ...(parsed.config.defaultModelSelection === undefined
-      ? {}
-      : { defaultModelSelection: parsed.config.defaultModelSelection }),
-  });
+  return Object.freeze(
+    normalizePersonalCatalog({
+      providers: parsePersonalProviderConfigMap(parsed.config.providerConfigRules),
+      models: parsePersonalModelConfigRules(
+        normalizeLegacyManualRules(parsed.config.modelConfigRules),
+      ),
+      providerOrder: parsed.config.providerOrder,
+      ...(parsed.config.defaultModelSelection === undefined
+        ? {}
+        : { defaultModelSelection: parsed.config.defaultModelSelection }),
+    }),
+  );
 }
 
 const legacyCompleteManualSchema = completeModelConfigDataSchema.extend({

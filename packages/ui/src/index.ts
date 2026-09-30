@@ -27,8 +27,8 @@ export { useTheme } from "./useTheme.js";
 export type { Theme } from "./useTheme.js";
 export { useTestActions } from "./test-actions.js";
 export type { TestActions } from "./test-actions.js";
-export { StoreProvider, useZCodeStore } from "./store/StoreProvider.js";
-export type { ZCodeState } from "./store/index.js";
+export { StoreProvider, useMyCodeStore } from "./store/StoreProvider.js";
+export type { MyCodeState } from "./store/index.js";
 export {
   bindRemoteWorkspacePath,
   getRemoteWorkspaceSession,
@@ -65,7 +65,7 @@ export {
   useGitActions,
 } from "./hooks/index.js";
 
-export { ZCodeIntlProvider, useZCodeIntl, LocaleSwitcher } from "./i18n/index.js";
+export { MyCodeIntlProvider, useMyCodeIntl, LocaleSwitcher } from "./i18n/index.js";
 export { ResourceManagerApp } from "./resource-manager/ResourceManagerApp.js";
 export type {
   ResourceManagerAppProps,
@@ -103,5 +103,7 @@ export { setReactErrorArmsReporter } from "./lib/reactErrorArmsTelemetry.js";
 export { recordArmsCustomEventForE2E } from "./lib/armsCustomEventObservability.js";
 export { generateMobileDeviceFingerprint, setStreamClientId } from "./lib/streamClientId.js";
 export { GlobalDatabaseStartupLoading } from "./root/GlobalDatabaseStartupLoading.js";
+export { RootStartupLoading, MyCodeStartupLogoBadge } from "./root/RootStartupLoading.js";
 
 export { LocalTtftObserver, setLocalTtftObserver } from "@/v4/telemetry/localTtftObserver.js";
+

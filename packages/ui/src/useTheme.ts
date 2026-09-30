@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 
-export type Theme = "light" | "dark" | "zai-light" | "zai-dark" | "system";
+export type Theme = "light" | "dark" | "mycode-light" | "mycode-dark" | "system";
 export type ResolvedTheme = "light" | "dark";
 
-const STORAGE_KEY = "zcode-theme";
-const BROWSER_THEME_SURFACE_ATTRIBUTE = "data-zcode-browser-theme-surface";
+const STORAGE_KEY = "mycode-theme";
+const BROWSER_THEME_SURFACE_ATTRIBUTE = "data-mycode-browser-theme-surface";
 
 function getSystemTheme(): ResolvedTheme {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -15,12 +15,12 @@ export function resolveTheme(theme: Theme): ResolvedTheme {
     return getSystemTheme();
   }
 
-  return theme === "dark" || theme === "zai-dark" ? "dark" : "light";
+  return theme === "dark" || theme === "mycode-dark" ? "dark" : "light";
 }
 
 export function normalizeThemePreference(theme: Theme): Theme {
-  if (theme === "dark") return "zai-dark";
-  if (theme === "light") return "zai-light";
+  if (theme === "dark") return "mycode-dark";
+  if (theme === "light") return "mycode-light";
   return theme;
 }
 
@@ -60,12 +60,12 @@ export function applyTheme(theme: Theme) {
   const appliedTheme =
     theme === "system"
       ? resolved === "dark"
-        ? "zai-dark"
-        : "zai-light"
+        ? "mycode-dark"
+        : "mycode-light"
       : normalizeThemePreference(theme);
   document.documentElement.classList.toggle("dark", resolved === "dark");
-  document.documentElement.classList.toggle("theme-zai-light", appliedTheme === "zai-light");
-  document.documentElement.classList.toggle("theme-zai-dark", appliedTheme === "zai-dark");
+  document.documentElement.classList.toggle("theme-mycode-light", appliedTheme === "mycode-light");
+  document.documentElement.classList.toggle("theme-mycode-dark", appliedTheme === "mycode-dark");
   syncBrowserThemeSurface(resolved);
 }
 
@@ -73,8 +73,8 @@ function isTheme(value: string | null): value is Theme {
   return (
     value === "light" ||
     value === "dark" ||
-    value === "zai-light" ||
-    value === "zai-dark" ||
+    value === "mycode-light" ||
+    value === "mycode-dark" ||
     value === "system"
   );
 }
@@ -82,8 +82,8 @@ function isTheme(value: string | null): value is Theme {
 export function useTheme() {
   const [theme, setThemeState] = useState<Theme>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    // 默认主题统一收敛到 Zai dark，避免旧 hook 兜底值和 Zustand store 默认值分叉。
-    return isTheme(saved) ? normalizeThemePreference(saved) : "zai-dark";
+    // 默认主题统一使用 mycode dark，避免 hook 兜底值和 Zustand store 默认值分叉。
+    return isTheme(saved) ? normalizeThemePreference(saved) : "mycode-dark";
   });
 
   const setTheme = useCallback((t: Theme) => {

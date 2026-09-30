@@ -23,12 +23,9 @@ import {
   ChevronRightIcon,
   CircleCheckBigIcon,
   CircleIcon,
-  EllipsisIcon,
   FileDiffIcon,
   GoalIcon,
   ListChecksIcon,
-  Maximize2Icon,
-  Minimize2Icon,
   PauseIcon,
   PlayIcon,
   SquareIcon,
@@ -40,20 +37,20 @@ import {
   TID_V4_BACKGROUND_WORK_CANCEL,
   TID_V4_BACKGROUND_WORK_ITEM,
   testId,
-} from "@zcode/shared";
+} from "@mycode/shared";
 import type {
   GitChangeSourceId,
   GitRepositorySummary,
-  ZCodeSessionRunningSubagent,
-  ZCodeTaskChangeSummary,
-} from "@zcode/shared";
+  MyCodeSessionRunningSubagent,
+  MyCodeTaskChangeSummary,
+} from "@mycode/shared";
 import type {
   BackgroundWorkSummary,
   GoalState,
   PlanState,
   ToolCallRow,
   WorkflowRunState,
-} from "@zcode/shared/zcode-protocol-v4";
+} from "@mycode/shared/mycode-protocol-v4";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import {
@@ -66,19 +63,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible.js";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.js";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { formatBackgroundTaskElapsedLabel } from "@/BackgroundTaskElapsedLabel.js";
 import { GitActionMenu } from "@/GitActionMenu.js";
 import { GitBranchSwitcher } from "@/GitBranchSwitcher.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type {
   OpenPlanDetailSideTabRequest,
   OpenSubagentDirectorySideTabRequest,
@@ -108,12 +98,12 @@ interface ConversationStatusPanelProps {
   gitDirtyFileCount?: number;
   gitWorktreeReviewSourceId?: GitChangeSourceId | null;
   gitWorktreeChangeSummary?: { added: number; removed: number } | null;
-  activeTaskChangeSummary?: ZCodeTaskChangeSummary | null;
+  activeTaskChangeSummary?: MyCodeTaskChangeSummary | null;
   goal?: GoalState | null;
   sessionPlans?: readonly ToolCallRow[];
   plan?: PlanState | null;
   backgroundWorks?: readonly BackgroundWorkSummary[];
-  runningSubagents?: readonly ZCodeSessionRunningSubagent[];
+  runningSubagents?: readonly MyCodeSessionRunningSubagent[];
   /** 本会话 `snapshot.workflowRuns.runs`；与 backgroundWorks 在模型层按 workId ≡ runId 联接。 */
   workflowRuns?: readonly WorkflowRunState[];
   /**
@@ -126,8 +116,6 @@ interface ConversationStatusPanelProps {
   rootSessionId?: string;
   parentSessionId?: string;
   /** 当前 pane 是否由手机 Web 远控壳承载。 */
-  /** 当前是否为粗指针手机视口。 */
-  isMobileViewport?: boolean;
   layoutMode?: "none" | "auto" | "inline";
   summaryPanelVariantOverride?: ChatViewSummaryPanelVariant | null;
   onVariantChange?: (variant: ChatViewSummaryPanelVariant | null) => void;
@@ -153,12 +141,12 @@ interface ConversationStatusPanelProps {
 
 // memo 组件默认 props 不内联创建数组，避免每次渲染生成新引用触发稳定引用边界测试。
 const EMPTY_BACKGROUND_WORKS: readonly BackgroundWorkSummary[] = [];
-const EMPTY_RUNNING_SUBAGENTS: readonly ZCodeSessionRunningSubagent[] = [];
+const EMPTY_RUNNING_SUBAGENTS: readonly MyCodeSessionRunningSubagent[] = [];
 const EMPTY_WORKFLOW_RUNS: readonly WorkflowRunState[] = [];
 
 function formatDurationUnits(
   totalSeconds: number,
-  formatMessage: ReturnType<typeof useZCodeIntl>["intl"]["formatMessage"],
+  formatMessage: ReturnType<typeof useMyCodeIntl>["intl"]["formatMessage"],
 ) {
   const seconds = Math.max(0, Math.floor(totalSeconds));
   const hours = Math.floor(seconds / 3600);
@@ -193,7 +181,7 @@ function getLongestRunningWorkElapsedMs(works: readonly BackgroundWorkSummary[],
 }
 
 function formatRunningCount(
-  formatMessage: ReturnType<typeof useZCodeIntl>["intl"]["formatMessage"],
+  formatMessage: ReturnType<typeof useMyCodeIntl>["intl"]["formatMessage"],
   count: number,
 ) {
   return formatMessage(
@@ -208,7 +196,7 @@ function formatRunningCount(
 }
 
 function formatRunningSubagentCount(
-  formatMessage: ReturnType<typeof useZCodeIntl>["intl"]["formatMessage"],
+  formatMessage: ReturnType<typeof useMyCodeIntl>["intl"]["formatMessage"],
   count: number,
 ) {
   return formatMessage(
@@ -248,34 +236,40 @@ const STATUS_SECTION_SCROLL_POLICY = {
 
 function StatusSectionHeader({
   children,
+  collapsible = true,
   isOpen,
   section,
   title,
 }: {
   children?: ReactNode;
+  collapsible?: boolean;
   isOpen: boolean;
   section: StatusSectionKind;
   title: string;
 }) {
   return (
-    <div className="mb-0.5 flex h-8 min-w-0 shrink-0 items-center gap-1.5 px-2 pr-8">
-      <CollapsibleTrigger asChild>
-        <button
-          type="button"
-          aria-expanded={isOpen}
-          data-status-section-trigger={section}
-          className="group flex min-w-0 shrink-0 items-center gap-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-input-border-focused)]"
-        >
-          <span className="shrink-0 text-ui-base text-[var(--color-foreground-subtle)]">
-            {title}
-          </span>
-          {isOpen ? (
-            <ChevronDownIcon className="size-3.5 shrink-0 text-[var(--color-foreground-subtle)] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
-          ) : (
-            <ChevronRightIcon className="size-3.5 shrink-0 text-[var(--color-foreground-subtle)] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
-          )}
-        </button>
-      </CollapsibleTrigger>
+    <div className="mb-0.5 flex h-7 min-w-0 shrink-0 items-center gap-1 px-1.5 pr-7">
+      {collapsible ? (
+        <CollapsibleTrigger asChild>
+          <button
+            type="button"
+            aria-expanded={isOpen}
+            data-status-section-trigger={section}
+            className="group flex min-w-0 shrink-0 items-center gap-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-input-border-focused)]"
+          >
+            <span className="shrink-0 text-ui-sm text-[var(--color-foreground-subtle)]">
+              {title}
+            </span>
+            {isOpen ? (
+              <ChevronDownIcon className="size-3.5 shrink-0 text-[var(--color-foreground-subtle)] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
+            ) : (
+              <ChevronRightIcon className="size-3.5 shrink-0 text-[var(--color-foreground-subtle)] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
+            )}
+          </button>
+        </CollapsibleTrigger>
+      ) : (
+        <span className="shrink-0 text-ui-sm text-[var(--color-foreground-subtle)]">{title}</span>
+      )}
       {children ? (
         <div className="inline-flex min-w-0 max-w-full shrink items-center gap-1.5 text-ui-sm text-[var(--color-foreground-subtlest)]">
           {children}
@@ -287,6 +281,7 @@ function StatusSectionHeader({
 
 function StatusSection({
   children,
+  collapsible = true,
   defaultOpen = true,
   onOpenChange,
   open,
@@ -296,6 +291,7 @@ function StatusSection({
   trailing,
 }: {
   children: ReactNode;
+  collapsible?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
@@ -306,7 +302,7 @@ function StatusSection({
 }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const isControlled = open !== undefined;
-  const isOpen = open ?? uncontrolledOpen;
+  const isOpen = collapsible ? (open ?? uncontrolledOpen) : true;
   // 限高过去依赖每个调用方显式传 scrollable，组合区块或新增类型时容易
   // 旁路滚动视口。改为按完整区块类型表统一裁决，让计划等新类型漏配时直接触发类型检查。
   const scrollViewportMaxHeightClass = STATUS_SECTION_SCROLL_POLICY[section];
@@ -328,7 +324,12 @@ function StatusSection({
       className={cn("min-w-0 flex-none", separated && "border-t border-[var(--color-border)] pt-2")}
     >
       <section className="min-w-0 flex-none">
-        <StatusSectionHeader isOpen={isOpen} section={section} title={title}>
+        <StatusSectionHeader
+          collapsible={collapsible}
+          isOpen={isOpen}
+          section={section}
+          title={title}
+        >
           {trailing?.(isOpen)}
         </StatusSectionHeader>
         <CollapsibleContent>
@@ -366,7 +367,7 @@ function GitStatusSection({
   workspacePath,
   useVerticalFloatingPanels,
 }: {
-  activeTaskChangeSummary?: ZCodeTaskChangeSummary | null;
+  activeTaskChangeSummary?: MyCodeTaskChangeSummary | null;
   gitSummary: GitRepositorySummary | null | undefined;
   gitWorktreeReviewSourceId?: GitChangeSourceId | null;
   model: ConversationStatusPanelModel;
@@ -377,31 +378,19 @@ function GitStatusSection({
   workspacePath: string;
   useVerticalFloatingPanels: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const git = model.git;
   if (!git || !gitSummary || !onRefreshGit) {
     return null;
   }
-  const hasChanges = git.added + git.removed > 0;
   const canOpenReview = Boolean(onOpenGitReview && gitSummary.isRepository);
 
   return (
     <StatusSection
+      collapsible={false}
       section="environment"
       separated={separated}
       title={intl.formatMessage({ id: "chat.statusPanel.environment" })}
-      trailing={(isOpen) =>
-        isOpen ? null : (
-          <span className="shrink-0 font-mono text-ui-sm tabular-nums">
-            <span className={cn("text-[var(--color-diff-added)]", !hasChanges && "opacity-50")}>
-              +{git.added}
-            </span>{" "}
-            <span className={cn("text-[var(--color-diff-removed)]", !hasChanges && "opacity-50")}>
-              -{git.removed}
-            </span>
-          </span>
-        )
-      }
     >
       <div className="space-y-0">
         {/* V4 状态面板迁移时只保留了 Changes 的静态展示，
@@ -410,7 +399,7 @@ function GitStatusSection({
           type="button"
           disabled={!canOpenReview}
           className={cn(
-            "flex h-8 w-full min-w-0 items-center gap-2 rounded-lg px-2 text-left text-ui-base text-[var(--color-foreground)] transition-colors",
+            "flex h-7 w-full min-w-0 items-center gap-1.5 rounded-lg px-1.5 text-left text-ui-sm text-[var(--color-foreground)] transition-colors",
             canOpenReview
               ? "hover:bg-[var(--color-hover)] hover:text-[var(--color-foreground)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-input-border-focused)]"
               : "cursor-default opacity-50",
@@ -419,7 +408,7 @@ function GitStatusSection({
             onOpenGitReview?.(gitWorktreeReviewSourceId ?? undefined);
           }}
         >
-          <FileDiffIcon className="size-4 shrink-0 text-[var(--color-foreground)]" />
+          <FileDiffIcon className="size-3.5 shrink-0 text-[var(--color-foreground)]" />
           <span className="min-w-0 flex-1 truncate">
             {intl.formatMessage({ id: "chat.statusPanel.changes" })}
           </span>
@@ -434,7 +423,7 @@ function GitStatusSection({
           dirtyFileCount={git.dirtyFileCount}
           onRefreshGit={onRefreshGit}
           className="w-full px-0 pt-0"
-          triggerClassName="flex h-8 w-full min-w-0 justify-start gap-2 rounded-lg px-2 text-left text-ui-base text-[var(--color-foreground)] hover:bg-[var(--color-hover)] hover:text-[var(--color-foreground)] [&>span]:max-w-[calc(100%-3.5rem)] [&_svg:first-child]:text-[var(--color-foreground)]"
+          triggerClassName="flex h-7 w-full min-w-0 justify-start gap-1.5 rounded-lg px-1.5 text-left text-ui-sm text-[var(--color-foreground)] hover:bg-[var(--color-hover)] hover:text-[var(--color-foreground)] [&>span]:max-w-[calc(100%-3.5rem)] [&_svg:first-child]:text-[var(--color-foreground)]"
           popoverClassName="w-72 max-w-[calc(100vw-2rem)]"
           branchListClassName="max-h-56"
           popoverSide={useVerticalFloatingPanels ? "bottom" : "left"}
@@ -465,7 +454,7 @@ function GoalStatusSection({
   onResumeGoal?: () => void;
   separated: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const goal = model.goal;
   const isPausable =
     goal?.status === "active" || goal?.status === "verifying" || goal?.status === "notSatisfied";
@@ -721,7 +710,7 @@ function TodoHiddenGroupPreview({
   open: boolean;
   popoverSide: "bottom" | "left";
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const messageId =
     group === "preceding"
       ? items.every((item) => item.status === "completed")
@@ -815,7 +804,7 @@ function SessionPlansStatusSection({
   parentSessionId?: string;
   separated: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const sessionPlans = model.sessionPlans;
   if (!sessionPlans) return null;
 
@@ -877,7 +866,7 @@ function PlanStatusSection({
   popoverSide: "bottom" | "left";
   separated: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const plan = model.plan;
   if (!plan) return null;
   const isCompleted = plan.totalCount > 0 && plan.completedCount >= plan.totalCount;
@@ -916,7 +905,7 @@ function RunningWorkCancelButton({
   workId: string;
   onCancel?: (workId: string) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const handleClick = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
@@ -952,7 +941,7 @@ function buildRunningSubagentOpenRequest({
 }: {
   parentSessionId?: string;
   rootSessionId?: string;
-  subagent: ZCodeSessionRunningSubagent;
+  subagent: MyCodeSessionRunningSubagent;
 }): OpenSubagentSideTabRequest | null {
   if (!parentSessionId) return null;
   return {
@@ -975,7 +964,7 @@ function RunningStatusItem({
   onCancelBackgroundWork?: (workId: string) => void;
   work: BackgroundWorkSummary;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
 
   return (
     <li
@@ -1034,7 +1023,7 @@ function BackgroundWorkStatusSection({
   title: string;
   works: readonly BackgroundWorkSummary[];
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const [now, setNow] = useState(() => Date.now());
   const orderedRunningWorks = useMemo(
     () => [...works].sort((left, right) => left.startedAt - right.startedAt),
@@ -1139,7 +1128,7 @@ function WorkflowStatusSection({
   separated: boolean;
   title: string;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const [now, setNow] = useState(() => Date.now());
   // 只有带 startedAt 的行需要秒级刷新；一行都没有时不必让面板每秒重渲染。
   const tickingRunCount = runs.filter((run) => run.startedAt !== undefined).length;
@@ -1338,7 +1327,7 @@ function SubagentStatusSection({
   title: string;
   subagents: readonly ConversationStatusPanelRunningSubagent[];
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const [now, setNow] = useState(() => Date.now());
   const ordered = useMemo(
     () => [...subagents].sort((left, right) => (left.startedAt ?? 0) - (right.startedAt ?? 0)),
@@ -1511,7 +1500,7 @@ function EndedSubagentDirectoryRow({
   rootSessionId?: string;
   separated: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   return (
     <EndedDirectoryRow
       count={count}
@@ -1534,12 +1523,7 @@ function EndedSubagentDirectoryRow({
 function StatusSummaryMetric({ children, icon }: { children: ReactNode; icon: ReactNode }) {
   return (
     <div className="flex h-8 w-max max-w-80 min-w-0 items-center gap-1.5 pl-2 pr-3 text-ui-base text-[var(--color-foreground)]">
-      <span className="relative size-4 shrink-0">
-        <span className="absolute inset-0 transition-opacity group-hover:opacity-0 group-focus-visible:opacity-0">
-          {icon}
-        </span>
-        <Maximize2Icon className="absolute inset-0 size-4 text-[var(--color-foreground)] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100" />
-      </span>
+      <span className="size-4 shrink-0">{icon}</span>
       {children}
     </div>
   );
@@ -1569,7 +1553,7 @@ function StatusSummaryRow({
   model: ConversationStatusPanelModel;
   onVariantChange?: (variant: ChatViewSummaryPanelVariant | null) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const expandLabel = intl.formatMessage({ id: "chat.summaryPanel.showPanel" });
   const currentPlanItem = getCurrentPlanItem(model.plan);
   const completedPlanItem = getCompletedPlanItem(model.plan);
@@ -1721,7 +1705,6 @@ function ConversationStatusPanelImpl({
   endedSubagentCount = 0,
   rootSessionId,
   parentSessionId,
-  isMobileViewport = false,
   layoutMode = "none",
   summaryPanelVariantOverride,
   onVariantChange,
@@ -1779,13 +1762,8 @@ function ConversationStatusPanelImpl({
   const variant = resolveConversationStatusPanelVariant({
     variantOverride: summaryPanelVariantOverride ?? null,
   });
-  const isVariantAutomatic = summaryPanelVariantOverride == null;
   const useVerticalFloatingPanels = false;
-  const panelModeValue = isVariantAutomatic ? "auto" : variant;
-  const { intl } = useZCodeIntl();
-  const panelMenuLabel = intl.formatMessage({
-    id: "chat.summaryPanel.displayMode",
-  });
+  const { intl } = useMyCodeIntl();
   const shellStyle = useMemo(
     () =>
       ({
@@ -1810,22 +1788,6 @@ function ConversationStatusPanelImpl({
   // 已结束目录入口过去渲染在 Agent StatusSection 之后，视觉和 DOM 都被提升成
   // 并列顶层 section。Agent 的运行态和已结束目录属于同一领域，统一由 Agent 折叠分组承载。
   const canRenderAgents = model.runningSubagentWorks.length > 0 || canRenderEndedAgents;
-  const handlePanelModeChange = useCallback(
-    (value: string) => {
-      if (value === "auto") {
-        onVariantChange?.(null);
-        return;
-      }
-      if (value === "panel" || value === "mini") {
-        onVariantChange?.(value);
-      }
-    },
-    [onVariantChange],
-  );
-  const handleCollapseToMini = useCallback(() => {
-    onVariantChange?.("mini");
-  }, [onVariantChange]);
-
   useEffect(() => {
     const element = miniMeasureRef.current;
     if (!element) {
@@ -1865,16 +1827,16 @@ function ConversationStatusPanelImpl({
         "pointer-events-none absolute top-0 z-20 pt-4",
         // 旧 ChatView 的 inline 面板直接钉在右侧，正文列通过独立 translate 让位。
         // v4 若继续用 inset-x-0 + justify-end，会让面板容器宽铺满并改变宽屏下的横向对齐。
+        // 手机窄视口进入文档流；从 640px 起贴在问答右侧，由 Timeline 同步留出宽度。
         layoutMode === "inline"
-          ? "right-4"
+          ? "relative flex shrink-0 justify-end px-4 @min-[640px]/conversation:absolute @min-[640px]/conversation:right-4 @min-[640px]/conversation:px-0"
           : layoutMode === "auto"
             ? "inset-x-0 flex justify-end px-4 @min-[1280px]/conversation:left-auto @min-[1280px]/conversation:right-4 @min-[1280px]/conversation:px-0"
             : "inset-x-0 flex justify-end px-4",
         className,
       )}
     >
-      {/* 状态面板恢复旧 ChatView 的同 shell 收起/展开模型。
-          之前 v4 用固定展开卡片替代 summary panel，窄屏会遮挡聊天正文，也丢失用户 override。 */}
+      {/* 摘要可展开为完整面板；展开后由会话状态保留，窄屏布局进入文档流。 */}
       <aside
         aria-label={intl.formatMessage({ id: "chat.summaryPanel.title" })}
         data-testid={TID_CHAT_SUMMARY_PANEL}
@@ -1893,73 +1855,20 @@ function ConversationStatusPanelImpl({
         data-ended-workflow-count={endedWorkflowRunCount}
         style={shellStyle}
         className={cn(
-          "pointer-events-auto relative overflow-hidden rounded-2xl border border-[var(--color-popover-border)] bg-[var(--color-popover)] text-[var(--color-foreground)] shadow-md transition-[border-radius,padding,background-color,box-shadow] duration-300 ease-in-out",
+          "pointer-events-auto relative overflow-hidden rounded-lg border border-[var(--color-popover-border)] bg-[var(--color-popover)] text-[var(--color-foreground)] shadow-sm transition-[border-radius,padding,background-color,box-shadow] duration-300 ease-in-out",
           variant === "mini"
             ? "inline-flex max-h-8.5 w-[var(--chat-summary-panel-mini-width)] max-w-[calc(100vw-1.5rem)] flex-col"
             : variant === "panel"
-              ? "flex max-h-[min(64dvh,32rem)] w-80 max-w-[calc(100vw-1.5rem)] flex-col"
-              : "inline-flex max-h-8.5 w-[var(--chat-summary-panel-mini-width)] max-w-[calc(100vw-1.5rem)] flex-col @min-[1280px]/conversation:max-h-[min(64dvh,32rem)] @min-[1280px]/conversation:w-80",
+              ? "flex max-h-[min(55dvh,22rem)] w-56 max-w-[calc(100vw-1.5rem)] flex-col"
+              : "inline-flex max-h-8.5 w-[var(--chat-summary-panel-mini-width)] max-w-[calc(100vw-1.5rem)] flex-col @min-[1280px]/conversation:max-h-[min(55dvh,22rem)] @min-[1280px]/conversation:w-56",
         )}
       >
-        {variant !== "mini" ? (
-          <div
-            className={cn(
-              "absolute right-3 top-3 z-10 items-center gap-1",
-              variant === "auto" ? "hidden @min-[1280px]/conversation:flex" : "flex",
-            )}
-          >
-            <DropdownMenu>
-              <ControlHintTooltip title={panelMenuLabel} side="left">
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    className="size-6"
-                    aria-label={panelMenuLabel}
-                  >
-                    <EllipsisIcon className="size-3.5" />
-                  </Button>
-                </DropdownMenuTrigger>
-              </ControlHintTooltip>
-              <DropdownMenuContent align="end" side="bottom" className="w-44">
-                <DropdownMenuRadioGroup
-                  value={panelModeValue}
-                  onValueChange={handlePanelModeChange}
-                >
-                  <DropdownMenuRadioItem value="auto">
-                    {intl.formatMessage({
-                      id: "chat.summaryPanel.displayModeAuto",
-                    })}
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <ControlHintTooltip
-              title={intl.formatMessage({ id: "chat.summaryPanel.showMini" })}
-              side="left"
-            >
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                className="size-6"
-                aria-label={intl.formatMessage({
-                  id: "chat.summaryPanel.showMini",
-                })}
-                onClick={handleCollapseToMini}
-              >
-                <Minimize2Icon className="size-3.5" />
-              </Button>
-            </ControlHintTooltip>
-          </div>
-        ) : null}
         {variant !== "mini" ? (
           // 单个区块限高后，多区块同时展开仍可能超过 shell；外层必须提供
           // 第二层兜底滚动，保证后续区块标题和操作始终可达，不能继续直接裁切。
           <div
             className={cn(
-              "min-h-0 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto p-2",
+              "min-h-0 flex-1 flex-col gap-0.5 overflow-x-hidden overflow-y-auto p-1",
               variant === "auto" ? "hidden @min-[1280px]/conversation:flex" : "flex",
             )}
           >

@@ -1,13 +1,13 @@
 import { spawn } from "node:child_process";
 import { resolve } from "node:path";
-import type { Locale } from "@zcode/shared";
+import type { Locale } from "@mycode/shared";
 
-const MENU_KEY_NAME = "ZCode.OpenInZCode";
+const MENU_KEY_NAME = "MyCode.OpenInMyCode";
 const DIRECTORY_MENU_KEY = `HKCU\\Software\\Classes\\Directory\\shell\\${MENU_KEY_NAME}`;
 const DRIVE_MENU_KEY = `HKCU\\Software\\Classes\\Drive\\shell\\${MENU_KEY_NAME}`;
 const MENU_LABELS: Record<Locale, string> = {
-  "zh-CN": "在ZCode中打开",
-  "en-US": "Open in ZCode",
+  "zh-CN": "在MyCode中打开",
+  "en-US": "Open in MyCode",
 };
 
 type Logger = {

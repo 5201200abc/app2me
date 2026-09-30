@@ -5,17 +5,35 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { createProviderConfigRuntime } from "../src/model-provider/providerConfigRuntime.js";
-import { readLegacyZCodeConfigProviders } from "../src/model-provider/legacyZCodeConfigProviderReader.js";
+import { readLegacyMyCodeConfigProviders } from "../src/model-provider/legacyMyCodeConfigProviderReader.js";
 import { getAppConfigDir, setDataBaseDir } from "../src/paths.js";
 
 const legacyConfig = {
   provider: {
-    "custom-example": {
-      name: "Example provider",
+    "zai-api": {
+      name: "Retired account provider",
+      npm: "@ai-sdk/openai-compatible",
+      options: { baseURL: "https://retired.example/v1", apiKey: "retired-key" },
+      models: { "glm-4": { limit: { context: 128000 } } },
+    },
+    "bigmodel-api": {
+      name: "Retired plan provider",
+      npm: "@ai-sdk/openai-compatible",
+      options: { baseURL: "https://retired.example/v1", apiKey: "retired-key" },
+      models: { "glm-4-plus": { limit: { context: 128000 } } },
+    },
+    "custom-retired": {
+      name: "Retired",
+      npm: "@ai-sdk/openai-compatible",
+      options: { baseURL: "https://provider.example/v1" },
+      models: {},
+    },
+    "deepseek-existing": {
+      name: "DeepSeek existing",
       npm: "@ai-sdk/openai-compatible",
       enabled: false,
       options: {
-        baseURL: "https://provider.example/v1",
+        baseURL: "https://api.deepseek.com",
         apiKey: "test-only-key",
         headers: { "X-Example": "test" },
       },
@@ -29,7 +47,7 @@ const legacyConfig = {
 };
 
 async function setup() {
-  const dir = await mkdtemp(join(tmpdir(), "zcode-provider-migration-"));
+  const dir = await mkdtemp(join(tmpdir(), "mycode-provider-migration-"));
   setDataBaseDir(dir);
   const configDir = getAppConfigDir();
   await mkdir(configDir, { recursive: true });
@@ -40,15 +58,15 @@ async function setup() {
   let reads = 0;
   const recoveries: unknown[] = [];
   const runtime = createProviderConfigRuntime({
-    zcodeBuiltinFilePath: fileURLToPath(
-      new URL("../../../config/provider/zcode-builtin.json", import.meta.url),
+    mycodeBuiltinFilePath: fileURLToPath(
+      new URL("../../../config/provider/mycode-builtin.json", import.meta.url),
     ),
     personalFilePath: personalPath,
     personalPollingIntervalMs: false,
     watch: false,
     readLegacyProviders: async () => {
       reads += 1;
-      return readLegacyZCodeConfigProviders();
+      return readLegacyMyCodeConfigProviders();
     },
     onPersonalConfigRecovery: (event) => recoveries.push(event.error),
   });
@@ -67,24 +85,27 @@ async function setup() {
   };
 }
 
-test("startup migrates published ZCode config into personal config without changing the source", async () => {
+test("startup retains DeepSeek, removes retired providers and preserves the legacy source", async () => {
   const fixture = await setup();
   try {
     await fixture.runtime.start();
     const config = await fixture.runtime.configService.read();
     assert.equal(fixture.readCount(), 1);
     assert.deepEqual(fixture.recoveries, []);
-    const rule = config.personalProviders.getRule("custom-example");
+    assert.equal(config.personalProviders.has("custom-retired"), false);
+    assert.equal(config.personalProviders.has("zai-api"), false);
+    assert.equal(config.personalProviders.has("bigmodel-api"), false);
+    const rule = config.personalProviders.getRule("deepseek-existing");
     assert.ok(rule);
-    assert.equal(rule.providerName, "Example provider");
+    assert.equal(rule.providerName, "DeepSeek existing");
     assert.equal(rule.enabled, false);
     assert.equal(rule.config.access?.toJSON().apiKey, "test-only-key");
-    assert.equal(rule.config.api?.baseUrl, "https://provider.example/v1");
+    assert.equal(rule.config.api?.baseUrl, "https://api.deepseek.com");
     assert.deepEqual(rule.config.api?.headers, { "X-Example": "test" });
     assert.deepEqual(rule.config.personalModelIds, ["model-b", "model-a"]);
     assert.deepEqual(rule.config.modelOrder, ["model-b", "model-a"]);
     assert.equal(
-      config.personalModels.getExact("custom-example", "model-b")?.properties?.contextWindow,
+      config.personalModels.getExact("deepseek-existing", "model-b")?.properties?.contextWindow,
       64000,
     );
     assert.equal(await readFile(fixture.legacyPath, "utf8"), fixture.legacyContent);
@@ -92,7 +113,7 @@ test("startup migrates published ZCode config into personal config without chang
     assert.equal(persisted.schemaVersion, 1);
     assert.equal(
       persisted.config.providerConfigRules.providerRules[0].providerId,
-      "custom-example",
+      "deepseek-existing",
     );
   } finally {
     await fixture.dispose();

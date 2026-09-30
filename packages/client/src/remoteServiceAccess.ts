@@ -1,4 +1,4 @@
-import { ProxyChannel, type IChannelClient } from "@zcode/rpc";
+import { ProxyChannel, type IChannelClient } from "@mycode/rpc";
 import {
   IFileService,
   IMediaPreviewService,
@@ -10,9 +10,9 @@ import {
   IOnboardingRecordService,
   ICredentialService,
   IBroadcastService,
-  IZCodeTaskService,
-  IZCodeAgentService,
-  IZCodeSessionService,
+  IMyCodeTaskService,
+  IMyCodeAgentService,
+  IMyCodeSessionService,
   ICuaPermissionService,
   IConversationShareService,
   IBotsService,
@@ -23,7 +23,6 @@ import {
   IProviderProvisioningTargetService,
   IUsageStatsService,
   ICodingPlanSubscriptionService,
-  IClientConfigService,
   IClientScenesService,
   IOffPeakTaskService,
   ISkillsService,
@@ -41,7 +40,7 @@ import {
   IPromptAttachmentTransferService,
   IWindowControllerService,
   type IServiceAccessor,
-} from "@zcode/services";
+} from "@mycode/services";
 
 /**
  * RemoteServiceAccess — 通过 ChannelClient 自动创建类型安全的服务代理
@@ -59,10 +58,10 @@ export class RemoteServiceAccess implements IServiceAccessor {
   readonly onboardingRecordService: IOnboardingRecordService;
   readonly credentialService: ICredentialService;
   readonly broadcastService: IBroadcastService;
-  readonly zcodeTaskService: IZCodeTaskService;
+  readonly mycodeTaskService: IMyCodeTaskService;
   readonly windowControllerService: IWindowControllerService;
-  readonly zcodeAgentService: IZCodeAgentService;
-  readonly zcodeSessionService: IZCodeSessionService;
+  readonly mycodeAgentService: IMyCodeAgentService;
+  readonly mycodeSessionService: IMyCodeSessionService;
   // cuaPermissionService 在 IServiceAccessor 上是可选（远端/bots host 不提供），但桌面 renderer
   // 经 RPC 一定能拿到（main host 始终注册此 descriptor；非 macOS / 未启用时方法返回 available:false）。
   readonly cuaPermissionService: ICuaPermissionService;
@@ -76,7 +75,6 @@ export class RemoteServiceAccess implements IServiceAccessor {
   readonly providerProvisioningTargetService!: IProviderProvisioningTargetService;
   readonly usageStatsService: IUsageStatsService;
   readonly codingPlanSubscriptionService: ICodingPlanSubscriptionService;
-  readonly clientConfigService: IClientConfigService;
   readonly clientScenesService: IClientScenesService;
   readonly offPeakTaskService: IOffPeakTaskService;
   readonly skillsService: ISkillsService;
@@ -126,17 +124,17 @@ export class RemoteServiceAccess implements IServiceAccessor {
     this.broadcastService = ProxyChannel.toService<IBroadcastService>(
       channelClient.getChannel(IBroadcastService.channelName),
     );
-    this.zcodeTaskService = ProxyChannel.toService<IZCodeTaskService>(
-      channelClient.getChannel(IZCodeTaskService.channelName),
+    this.mycodeTaskService = ProxyChannel.toService<IMyCodeTaskService>(
+      channelClient.getChannel(IMyCodeTaskService.channelName),
     );
     this.windowControllerService = ProxyChannel.toService<IWindowControllerService>(
       channelClient.getChannel(IWindowControllerService.channelName),
     );
-    this.zcodeAgentService = ProxyChannel.toService<IZCodeAgentService>(
-      channelClient.getChannel(IZCodeAgentService.channelName),
+    this.mycodeAgentService = ProxyChannel.toService<IMyCodeAgentService>(
+      channelClient.getChannel(IMyCodeAgentService.channelName),
     );
-    this.zcodeSessionService = ProxyChannel.toService<IZCodeSessionService>(
-      channelClient.getChannel(IZCodeSessionService.channelName),
+    this.mycodeSessionService = ProxyChannel.toService<IMyCodeSessionService>(
+      channelClient.getChannel(IMyCodeSessionService.channelName),
     );
     this.cuaPermissionService = ProxyChannel.toService<ICuaPermissionService>(
       channelClient.getChannel(ICuaPermissionService.channelName),
@@ -170,9 +168,6 @@ export class RemoteServiceAccess implements IServiceAccessor {
     );
     this.codingPlanSubscriptionService = ProxyChannel.toService<ICodingPlanSubscriptionService>(
       channelClient.getChannel(ICodingPlanSubscriptionService.channelName),
-    );
-    this.clientConfigService = ProxyChannel.toService<IClientConfigService>(
-      channelClient.getChannel(IClientConfigService.channelName),
     );
     this.clientScenesService = ProxyChannel.toService<IClientScenesService>(
       channelClient.getChannel(IClientScenesService.channelName),

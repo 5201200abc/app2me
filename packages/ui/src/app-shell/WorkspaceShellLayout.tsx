@@ -1,5 +1,6 @@
 /* eslint-disable max-lines -- workspace shell 当前集中编排 sidebar、chat、terminal 和 browser pane 的布局联动，先保持单文件收口，避免为满足行数限制打散关键布局状态。*/
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PanelLeft } from "lucide-react";
 import type {
   CSSProperties,
   KeyboardEvent as ReactKeyboardEvent,
@@ -7,7 +8,7 @@ import type {
 } from "react";
 import type { PanelImperativeHandle } from "react-resizable-panels";
 
-import { TID_APP_HEADER } from "@zcode/shared";
+import { TID_APP_HEADER } from "@mycode/shared";
 // 保活：workspace tab 真正关闭时，按 workspaceKey 回收 side pane terminal 的常驻 PTY/xterm。
 // 对称下侧 Terminal.tsx 的 openWorkspaceKeys 回收。
 import { sidePaneTerminalSessionRegistry } from "@/terminal/sidePaneTerminalSessionRegistry.js";
@@ -69,7 +70,7 @@ import { Button } from "@/components/ui/button.js";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable.js";
 import { toast } from "@/components/ui/toast.js";
 import { getGitDirtyFileCount } from "@/git-branch-switcher/display.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { useBaseWorkspaceServices } from "@/hooks/useWorkspaceServices.js";
 import { getPathLeaf, toFileUrl } from "@/lib/path.js";
 import { shouldOpenAssistantHtmlInBrowser } from "@/lib/assistantPreviewCards.js";
@@ -93,13 +94,13 @@ import {
 } from "@/workspace-file-tree/model.js";
 import type { WorkspaceShellLayoutProps } from "@/app-shell/types.js";
 import { useTabStoreApi } from "@/store/TabStoreProvider.js";
-import { useZCodeSessionStore } from "@/store/zcodeSessionStore.js";
-import type { ComposerMentionPrefill } from "@/store/zcodeSessionStoreTypes.js";
+import { useMyCodeSessionStore } from "@/store/mycodeSessionStore.js";
+import type { ComposerMentionPrefill } from "@/store/mycodeSessionStoreTypes.js";
 
 const WORKSPACE_SIDEBAR_DEFAULT_WIDTH_PX = 264;
 const WORKSPACE_SIDEBAR_MIN_WIDTH_PX = 264;
 const WORKSPACE_SIDEBAR_MAX_WIDTH_RATIO = 0.5;
-const WORKSPACE_SIDEBAR_WIDTH_STORAGE_KEY = "zcode:workspace-shell:sidebar-width-px";
+const WORKSPACE_SIDEBAR_WIDTH_STORAGE_KEY = "mycode:workspace-shell:sidebar-width-px";
 const LEGACY_WORKSPACE_SHELL_LAYOUT_STORAGE_KEY =
   "react-resizable-panels:workspace-shell-layout:sidebar:content";
 const WORKSPACE_SIDEBAR_RESIZE_KEYBOARD_STEP_PX = 16;
@@ -226,7 +227,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   isDesktop,
   isMacDesktop,
   isWindowsDesktop,
-  workspaceShellZCodeState,
+  workspaceShellMyCodeState,
   theme,
   isMacFullscreen,
   desktopWindowChromeState,
@@ -333,7 +334,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   setGitSelectedSourceId,
   taskFindDialogProps,
 }: WorkspaceShellLayoutProps) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useMyCodeIntl();
   const isOfficeMode = useIsOfficeMode();
   const baseServices = useBaseWorkspaceServices();
   const tabStoreApi = useTabStoreApi();
@@ -369,7 +370,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   usePaneSessionPersistence({
     workspaceKey,
     activeSessionId: activeTaskId,
-    draftFocusVersion: workspaceShellZCodeState.draftFocusVersion,
+    draftFocusVersion: workspaceShellMyCodeState.draftFocusVersion,
     selectSession: (sessionId) => handleSelectTask(workspaceAbsPath, sessionId, workspaceIdentity),
   });
   const workspaceShellRef = useRef<HTMLDivElement | null>(null);
@@ -1088,8 +1089,8 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
     (
       targetWorkspacePath: string,
       targetWorkspaceIdentity?: string,
-      targetWorkspacePurpose?: import("@zcode/shared").WorkspacePurpose,
-      createSource?: import("@zcode/shared").SessionCreateSource,
+      targetWorkspacePurpose?: import("@mycode/shared").WorkspacePurpose,
+      createSource?: import("@mycode/shared").SessionCreateSource,
     ) => {
       showChatMainView();
       handleStartDraftInWorkspace(
@@ -1141,7 +1142,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   ]);
   const handleSelectComposerPlugin = useCallback(
     (mention: ComposerMentionPrefill) => {
-      useZCodeSessionStore
+      useMyCodeSessionStore
         .getState()
         .requestComposerTextInsert(
           workspaceAbsPath,
@@ -1509,7 +1510,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
 
   return (
     <DesktopWindowFrame
-      title={`ZCode / ${getPathLeaf(workspaceAbsPath)}`}
+      title={`MyCode / ${getPathLeaf(workspaceAbsPath)}`}
       showHeader
       isDesktop={isDesktop}
       isMacDesktop={isMacDesktop}
@@ -1527,13 +1528,33 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
           // CSS 变量驱动的专用 split，普通窗口 resize 只走浏览器布局，不触发 React 状态。
         )}
       >
+        <button
+          type="button"
+          data-testid="mobile-sidebar-toggle"
+          className="absolute right-3 top-3 z-20 flex size-8 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent md:hidden"
+          aria-label={intl.formatMessage({ id: "workspaceSidebar.toggleSidebar" })}
+          aria-expanded={isSidebarVisible}
+          aria-controls="sidebar"
+          onClick={handleToggleSidebar}
+        >
+          <PanelLeft className="size-4" aria-hidden="true" />
+        </button>
+        {isSidebarVisible ? (
+          <button
+            type="button"
+            data-testid="mobile-sidebar-backdrop"
+            className="absolute inset-0 z-30 bg-black/30 md:hidden"
+            aria-label={intl.formatMessage({ id: "common.close" })}
+            onClick={handleToggleSidebar}
+          />
+        ) : null}
         <div
           ref={workspaceSidebarPanelElementRef}
           data-panel=""
           data-workspace-sidebar-panel="true"
           id="sidebar"
           className={cn(
-            "w-[var(--workspace-sidebar-panel-width)] max-w-[50%] flex-none overflow-hidden duration-200 ease-out transition-[width,opacity] data-[workspace-sidebar-resizing=true]:transition-opacity",
+            "w-[var(--workspace-sidebar-panel-width)] max-w-[50%] flex-none overflow-hidden duration-200 ease-out transition-[width,opacity] data-[workspace-sidebar-resizing=true]:transition-opacity max-md:absolute max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:max-w-[85%] max-md:bg-surface",
             // 拖动侧栏宽度时如果继续过渡 width，会让指针移动和实际宽度之间产生滞后。
             // 拖拽 active 通过 DOM 标记切 transition，避免 pointerdown/up 为了切 class 重渲染整棵 workspace。
             isSidebarPanelVisible ? "opacity-100" : "pointer-events-none opacity-0",
@@ -1624,7 +1645,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
             onPointerMove={handleWorkspaceSidebarResizeMove}
             onPointerUp={(event) => finishWorkspaceSidebarResize(event)}
             className={cn(
-              "group/handle relative z-10 flex h-full w-1 shrink-0 touch-none cursor-ew-resize items-center justify-center bg-transparent outline-none [app-region:no-drag] focus:outline-none focus-visible:ring-0",
+              "group/handle relative z-10 flex h-full w-1 shrink-0 touch-none cursor-ew-resize items-center justify-center bg-transparent outline-none [app-region:no-drag] focus:outline-none focus-visible:ring-0 max-md:hidden",
               "after:pointer-events-none after:absolute after:rounded-full after:bg-foreground-subtlest/50 after:opacity-0 after:transition-opacity after:content-[''] after:inset-y-[var(--workspace-panel-radius)] after:w-0.5",
               "hover:after:opacity-100 data-[separator=hover]:after:opacity-100 data-[separator=active]:after:opacity-100 focus-visible:after:opacity-100 [[data-workspace-sidebar-resizing=true]_&]:after:opacity-100",
               hasDesktopPanelInset && "after:inset-y-[var(--workspace-resize-handle-inset)]",
@@ -1636,7 +1657,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
           data-panel=""
           id="content"
           className={cn(
-            "flex min-w-[320px] flex-1 flex-col",
+            "flex min-w-0 flex-1 flex-col",
             hasDesktopPanelInset ? "p-1 pl-0 pt-0" : "p-0",
           )}
         >
@@ -1718,7 +1739,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
                           nativeSessionLogPath={taskNativeSessionLogFile.path}
                           nativeSessionLogExists={taskNativeSessionLogFile.exists}
                           nativeSessionLogLoading={taskNativeSessionLogFile.loading}
-                          workspaceHeaderState={workspaceShellZCodeState}
+                          workspaceHeaderState={workspaceShellMyCodeState}
                           gitSummary={gitState.summary}
                           gitDirtyFileCount={gitDirtyFileCount}
                           isMacDesktop={isMacDesktop}
