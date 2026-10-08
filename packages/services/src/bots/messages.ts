@@ -1,10 +1,10 @@
-import type { Locale } from "@mycode/shared";
+import { DEFAULT_LOCALE, type Locale } from "@mycode/shared";
 
 export type BotMessageLocale = Extract<Locale, "zh-CN" | "en-US">;
 
 type MessageValues = Record<string, string | number | undefined>;
 
-const DEFAULT_BOT_MESSAGE_LOCALE: BotMessageLocale = "zh-CN";
+const DEFAULT_BOT_MESSAGE_LOCALE: BotMessageLocale = DEFAULT_LOCALE;
 
 const messages = {
   "zh-CN": {
@@ -251,7 +251,7 @@ const messages = {
 export type BotMessageId = keyof (typeof messages)[BotMessageLocale];
 
 export function normalizeBotMessageLocale(locale: Locale | undefined): BotMessageLocale {
-  return locale === "en-US" ? "en-US" : DEFAULT_BOT_MESSAGE_LOCALE;
+  return locale === "zh-CN" ? "zh-CN" : DEFAULT_BOT_MESSAGE_LOCALE;
 }
 
 export function formatBotMessage(

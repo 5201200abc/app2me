@@ -15,6 +15,7 @@ import type {
   Locale,
 } from "@mycode/shared";
 import {
+  DEFAULT_LOCALE,
   decodeConversationShareRows,
   buildConversationPreviewArtifactCandidates,
   CONVERSATION_PREVIEW_CARD_VISIBLE_LIMIT,
@@ -239,7 +240,7 @@ const IMPORTED_SHARE_TITLE_PREFIX: Readonly<Record<Locale, string>> = {
 };
 
 function formatImportedShareSessionTitle(shareTitle: string, locale: Locale | undefined): string {
-  return `${IMPORTED_SHARE_TITLE_PREFIX[locale ?? "zh-CN"]}${shareTitle.trim()}`;
+  return `${IMPORTED_SHARE_TITLE_PREFIX[locale ?? DEFAULT_LOCALE]}${shareTitle.trim()}`;
 }
 
 function localizePublishedShare(
@@ -1410,7 +1411,10 @@ export class ConversationShareService implements IConversationShareService {
         typeof existingMarker.sessionId === "string" &&
         existingMarker.sessionId.startsWith("share-import-")
       ) {
-        const sessions = await this.mycodeSessionService.listSessions({ workspacePath, limit: 100 });
+        const sessions = await this.mycodeSessionService.listSessions({
+          workspacePath,
+          limit: 100,
+        });
         const existingSession = sessions.find(
           (item) => item.sessionId === existingMarker.sessionId,
         );

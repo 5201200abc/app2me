@@ -58,7 +58,7 @@ const defaults: Disk = {
   memoryEnabled: true,
   modelsDir: DEFAULT_MODELS_DIR,
   chatInstructions: "",
-  language: "zh",
+  language: "en",
   modelCatalog: ["Qwen3.8-27B"],
   llamaModels: [],
   llamaEndpoints: [{ id: "local", name: "Current model", url: "http://127.0.0.1/v1" }],

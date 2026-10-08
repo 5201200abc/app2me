@@ -9,7 +9,7 @@ import {
   type MouseEvent,
 } from "react";
 import { ArrowUpRightIcon, MoonIcon, SunIcon } from "@mycode/ui/icons";
-import type { ConversationSharePreview } from "@mycode/shared";
+import { DEFAULT_LOCALE, type ConversationSharePreview } from "@mycode/shared";
 import { ConversationShareReadonlyTimeline } from "@mycode/ui/conversation-share-readonly";
 import { applyTheme, resolveTheme, type Theme } from "@mycode/ui/useTheme";
 import "./conversationShareLandingPage.css";
@@ -135,7 +135,7 @@ const COPY: Record<ConversationShareLandingLocale, Copy> = {
 
 function localeOf(locale?: ConversationShareLandingLocale): ConversationShareLandingLocale {
   if (locale) return locale;
-  return /^zh(?:-|$)/iu.test(globalThis.navigator?.language ?? "") ? "zh-CN" : "en-US";
+  return DEFAULT_LOCALE;
 }
 
 function formatDate(timestamp: number, locale: ConversationShareLandingLocale): string {

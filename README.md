@@ -199,7 +199,7 @@ Open `http://127.0.0.1:3030` to validate the complete flow, with one backend ser
 | `packages/services`                                  | Business services and persistence                                                       |
 | `packages/shared`, `packages/rpc`, `packages/client` | Shared protocols and types, RPC framework, and Agent client SDK                         |
 | `packages/provider`, `packages/provider-node`        | Common provider capabilities and Node implementations                                   |
-| [apps/mycode-cli](apps/mycode-cli/README.en.md)      | Agent CLI, TUI, runtime, and tools                                                      |
+| [apps/mycode-cli](apps/mycode-cli/README.md)         | Agent CLI, TUI, runtime, and tools                                                      |
 | `scripts`, `config`, `third-party`                   | Build and maintenance scripts, built-in configuration, and third-party notice materials |
 
 ## Automatic releases

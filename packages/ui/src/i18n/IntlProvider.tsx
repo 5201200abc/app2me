@@ -187,7 +187,7 @@ export function MyCodeIntlProvider({
   }, []);
 
   const [localePreference, setLocalePreferenceState] = useState<LocalePreference>(
-    () => initialLocale ?? readStoredPreference() ?? "system",
+    () => initialLocale ?? readStoredPreference() ?? DEFAULT_LOCALE,
   );
   const [systemLocale, setSystemLocale] = useState<Locale>(() => resolveNavigatorSystemLocale());
   const enqueueLocalePreferenceUpdate = useCallback(

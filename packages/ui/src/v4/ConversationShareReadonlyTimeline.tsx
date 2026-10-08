@@ -25,7 +25,7 @@ import {
   SquareTerminalIcon,
   WrenchIcon,
 } from "@/components/icons/tabler.js";
-import { getCompactToolCallStatusMessageId, type Locale } from "@mycode/shared";
+import { DEFAULT_LOCALE, getCompactToolCallStatusMessageId, type Locale } from "@mycode/shared";
 import type {
   ArtifactRow,
   AssistantTextRow,
@@ -1081,7 +1081,7 @@ function ReadonlyTurn({
 
 export function ConversationShareReadonlyTimeline({
   rows,
-  locale = "zh-CN",
+  locale = DEFAULT_LOCALE,
   theme = "system",
   codePreviewSettings = DEFAULT_CODE_PREVIEW_SETTINGS,
   artifactUrls = EMPTY_ARTIFACT_URLS,

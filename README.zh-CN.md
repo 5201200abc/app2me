@@ -199,7 +199,7 @@ node dist/mycode/debug/mycode/bin/mycode.mjs --web \
 | `packages/services`                                  | 业务服务与持久化                           |
 | `packages/shared`、`packages/rpc`、`packages/client` | 共享协议和类型、RPC 框架、Agent 客户端 SDK |
 | `packages/provider`、`packages/provider-node`        | Provider 公共能力与 Node 实现              |
-| [apps/mycode-cli](apps/mycode-cli/README.md)         | Agent CLI、TUI、运行时与工具               |
+| [apps/mycode-cli](apps/mycode-cli/README.zh-CN.md)   | Agent CLI、TUI、运行时与工具               |
 | `scripts`、`config`、`third-party`                   | 构建维护脚本、内置配置与第三方声明材料     |
 
 ## 自动发布

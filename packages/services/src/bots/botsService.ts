@@ -6,6 +6,7 @@ import { dirname, join } from "node:path";
 import type { IDisposable } from "@mycode/rpc";
 import { completeNewModelSelection } from "@mycode/provider";
 import {
+  DEFAULT_LOCALE,
   ALL_BOT_WORKSPACES,
   generateTraceId,
   normalizeAgentProviderToMyCodeAgent,
@@ -404,7 +405,7 @@ function normalizeText(value: string): string {
 }
 
 function getReplyGranularityOptions(locale: Locale | undefined, provider?: BotProvider) {
-  const messageLocale = locale === "en-US" ? "en-US" : "zh-CN";
+  const messageLocale = locale === "zh-CN" ? "zh-CN" : DEFAULT_LOCALE;
   const supportedIds = provider ? new Set(getSupportedBotReplyGranularities(provider)) : null;
   return BOT_REPLY_GRANULARITY_OPTIONS.filter(
     (option) => !supportedIds || supportedIds.has(option.id),

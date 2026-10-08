@@ -1,4 +1,5 @@
 import {
+  DEFAULT_LOCALE,
   conversationShareErrorEnvelopeSchema,
   conversationShareKnownErrorCodeSchema,
   conversationSharePreviewDataSchema,
@@ -59,11 +60,11 @@ export function parseConversationShareRoute(pathname: string): string | null {
   return isSafeConversationShareCode(code) ? code : null;
 }
 
-/** 页面语言由路径前缀决定：/cn/share 中文，裸 /share 英文；非分享路径回退到浏览器语言。 */
+/** 页面语言由路径前缀决定：/cn/share 中文，裸 /share 英文；非分享路径默认英文。 */
 export function resolveConversationShareRouteLocale(pathname: string): Locale {
   const parsed = parseConversationSharePathname(pathname);
   if (parsed) return parsed.locale;
-  return /^zh(?:-|$)/iu.test(navigator.language) ? "zh-CN" : "en-US";
+  return DEFAULT_LOCALE;
 }
 
 export function buildShareImportDeepLink(shareCode: string): string {

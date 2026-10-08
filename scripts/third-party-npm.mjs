@@ -80,31 +80,33 @@ export function assertProductionGraphs(lockedProjects, installedProjects) {
   return locked;
 }
 
-export async function readWorkspaceProductionGraph(root) {
+export async function readWorkspaceProductionGraph(root, execute = exec) {
   root = await realpath(root);
   // 修复：pnpm ls 默认读取安装快照，不能把旧图与当前锁文件哈希拼成有效声明。
-  const [locked, actual] = await Promise.all(
-    [true, false].map(async (lockfileOnly) => {
-      const { stdout } = await exec(
-        "pnpm",
-        [
-          "-r",
-          "ls",
-          "--prod",
-          "--json",
-          "--depth",
-          "Infinity",
-          ...(lockfileOnly ? ["--lockfile-only"] : []),
-        ],
-        {
-          cwd: root,
-          maxBuffer: 256 * 1024 * 1024,
-          ...resolveSpawnRuntimeOptions("pnpm"),
-        },
-      );
-      return JSON.parse(stdout);
-    }),
-  );
+  // Windows CI 在并行扫描两棵完整依赖树时耗尽文件句柄（EMFILE）。
+  // 锁文件和实际安装仍分别核验，按顺序执行以限制峰值读取量。
+  const graphs = [];
+  for (const lockfileOnly of [true, false]) {
+    const { stdout } = await execute(
+      "pnpm",
+      [
+        "-r",
+        "ls",
+        "--prod",
+        "--json",
+        "--depth",
+        "Infinity",
+        ...(lockfileOnly ? ["--lockfile-only"] : []),
+      ],
+      {
+        cwd: root,
+        maxBuffer: 256 * 1024 * 1024,
+        ...resolveSpawnRuntimeOptions("pnpm"),
+      },
+    );
+    graphs.push(JSON.parse(stdout));
+  }
+  const [locked, actual] = graphs;
   const required = assertProductionGraphs(locked, actual);
   return { required, projects: actual };
 }

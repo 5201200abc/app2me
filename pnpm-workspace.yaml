@@ -16,6 +16,7 @@ supportedArchitectures:
   libc:
     - current
     - glibc
+    - musl
 allowBuilds:
   cpu-features: true
   edgedriver: true

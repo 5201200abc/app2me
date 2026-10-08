@@ -6,7 +6,7 @@
  */
 import { create } from "zustand";
 import type { IBroadcastService, BroadcastMessage } from "@mycode/services";
-import type { OAuthProviderId, UserInfo } from "@mycode/shared";
+import { DEFAULT_LOCALE, type OAuthProviderId, type UserInfo } from "@mycode/shared";
 import type { CodingPlanResetType } from "@mycode/shared";
 import type { CodePreviewSettings } from "@/lib/codePreviewSettings.js";
 import type {
@@ -263,7 +263,7 @@ export function createMyCodeStore(
       set({ theme: normalizedTheme });
     },
 
-    locale: readSafeLocalStorage("mycode-locale") || "zh-CN",
+    locale: readSafeLocalStorage("mycode-locale") || DEFAULT_LOCALE,
     setLocale: (locale: string) => {
       writeSafeLocalStorage("mycode-locale", locale);
       set({ locale });

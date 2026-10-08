@@ -69,15 +69,14 @@ function resolveBoundaryLocale(): Locale {
       if (storedPreference === "zh-CN" || storedPreference === "en-US") {
         return storedPreference;
       }
+      if (storedPreference === "system" && typeof navigator !== "undefined") {
+        return navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
+      }
     } catch {
       // 在 Node 测试环境里，可能出现“localStorage 对象存在但能力不完整/不可读”的场景
       // （例如只有占位对象或读取阶段直接抛错）。错误边界若不兜底会在 fallback 渲染期再次崩溃，
-      // 用户就会看到白屏。这里吞掉存储层异常，继续回退到 navigator / 默认语言。
+      // 用户就会看到白屏。这里吞掉存储层异常，继续回退到默认语言。
     }
-  }
-
-  if (typeof navigator !== "undefined") {
-    return navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en-US";
   }
 
   return DEFAULT_LOCALE;
