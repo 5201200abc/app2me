@@ -5,13 +5,10 @@ import "./desktopEarlyDataBaseDirBootstrap.js";
 import "./desktopEarlyChromiumHardwareAccelerationBootstrap.js";
 import { powerMonitor, powerSaveBlocker } from "electron";
 import { crashCapturePaths } from "./appCrashCaptureBootstrap.js";
-import { armsInitPromise } from "./appARMSBootstrap.js";
 import {
   onLocalDatabaseStartupReady,
   configureDatabaseStartupQuit,
 } from "./databaseStartupRelay.js";
-import armsRum from "@arms/rum-electron";
-import { createArmsUserIdentitySync } from "./armsUserIdentity.js";
 import { ensureDesktopDeviceMidSync } from "./desktopDeviceMid.js";
 import { createDesktopContextPromptRollout } from "./desktopContextPromptRollout.js";
 import { buildBrowserViewCloseTabNotification } from "./browserView/browserCloseTabNotification.js";
@@ -748,8 +745,6 @@ function syncAppTelemetryInteractiveState(): void {
       (win) => !win.isDestroyed() && win.isVisible() && win.isFocused(),
     ),
   );
-  // 登出/切号发生在 host 子进程，主进程无即时信号；窗口聚焦时兜底刷新 ARMS user.name
-  void armsUserIdentitySync.refresh();
 }
 
 app.on("browser-window-focus", (_event, win) => {
@@ -812,14 +807,6 @@ const rendererActionTraceBroker = createRendererActionTraceBroker({
   logger,
 });
 let disposeRendererActionTraceIpc: (() => void) | undefined;
-const armsUserIdentitySync = createArmsUserIdentitySync({
-  deviceMid,
-  // 采集停用时 SDK 未初始化，setConfig 会抛错。
-  setUser:
-    MYCODE_TELEMETRY_ENABLED && MYCODE_ARMS_RUM_ENDPOINT
-      ? (user) => armsRum.setConfig("user", user)
-      : () => {},
-});
 
 function extractOpenWorkspacePathFromDeepLinkUrl(url: string): string | null {
   try {
@@ -2139,9 +2126,7 @@ app.whenReady().then(async () => {
   registerRemoteIpcHandlers({
     logger,
     appTelemetryRuntime,
-    onOAuthCallbackHandledSideEffect: () => {
-      void armsUserIdentitySync.refresh();
-    },
+    onOAuthCallbackHandledSideEffect: () => {},
     appTelemetryCore,
     reportRemoteUsageEvent: reportRemoteUsageEventForRenderer,
     armsCustomContext: {
@@ -2163,12 +2148,6 @@ app.whenReady().then(async () => {
     listAvailableDockerContainers,
     listSSHConfigAliases,
   });
-
-  // 等待 ARMS 完成 init（含渲染进程注入监听），避免首窗 dom-ready 早于 SDK 注册导致无上报
-  await armsInitPromise;
-
-  // ARMS init 完成后首次写入 user.name（落 device_mid）
-  void armsUserIdentitySync.refresh();
 
   // 未配置 ARMS 端点时不初始化上报 context，避免把空转误当成已启用。
   if (MYCODE_TELEMETRY_ENABLED && MYCODE_ARMS_RUM_ENDPOINT) {

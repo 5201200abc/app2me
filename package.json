@@ -1,6 +1,6 @@
 {
   "name": "app2me",
-  "version": "2026.1008.60565",
+  "version": "2026.1008.65071",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -84,7 +84,6 @@
       "react-dom": "19.2.7"
     },
     "patchedDependencies": {
-      "@arms/rum-electron@0.0.3": "patches/@arms__rum-electron@0.0.3.patch",
       "@ai-sdk/openai-compatible@2.0.60": "patches/@ai-sdk__openai-compatible@2.0.60.patch",
       "@ai-sdk/anthropic@3.0.81": "patches/@ai-sdk__anthropic@3.0.81.patch"
     }
@@ -92,6 +91,6 @@
   "app2meRelease": {
     "prepared": true,
     "date": "2026-10-08",
-    "windowsBuildVersion": "2026.10.8.1009"
+    "windowsBuildVersion": "2026.10.8.1084"
   }
 }

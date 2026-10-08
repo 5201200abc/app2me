@@ -636,6 +636,7 @@ export default {
       : []),
     ...resolveBundledRemoteAssetResources(),
     { from: resolve(workspaceRoot, noticesFileName), to: noticesFileName },
+    { from: resolve(workspaceRoot, "third-party/source-archives"), to: "licenses/sources" },
     ...(targetPlatform.os === "darwin"
       ? [
           {

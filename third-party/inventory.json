@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "inputHashEncoding": "UTF-8 with CRLF normalized to LF; notice and source snapshot hashes remain byte-exact",
   "scope": "Production dependency union across current workspace projects, copied source/assets and native tools; not a per-installer SBOM or a certification of all licensing obligations.",
-  "noticesSha256": "226a88afbfe251410218908fb90b56f8d5ba2aada1f26e696d03feebc3879be4",
+  "noticesSha256": "6f4306c54ab01785a5b3a246a491e04bde8dd10f123194dd1ed798db74250519",
   "inputs": {
     ".agents/skills/agent-browser/references/authentication.md": "e2488c6dfaa280e973ff46a5b1744dff08ebd394070de05cf955c3f46bd19814",
     ".agents/skills/agent-browser/references/commands.md": "0e2f2b26ca5a75c7dfd7d31c6bb592911747f988327db5b27ba042842d63f993",
@@ -148,82 +148,6 @@
     ".agents/skills/dogfood/SKILL.md": "8b666536f0e3670c71bcfc8b5472be122ed133867e2dc1b74afc1d01dc0deb8a",
     ".agents/skills/dogfood/templates/dogfood-report-template.md": "db36ce5c5a6102307617df57969c25f3ec5deac3706cd826f09799cff4322754",
     ".agents/skills/electron/SKILL.md": "198224c855e357cee509daa16ce77111c088f9131fca53f6f29bda90dd4254e3",
-    ".agents/skills/react-best-practices/AGENTS.md": "9d0d1c4f1922a65ddead8b869b4f2653bf3c10c84b1c8c9dd2507e0a4a4c82cb",
-    ".agents/skills/react-best-practices/metadata.json": "c4e18bac3290fbe1b471a605867d4df68b03144ea26b8befdbe8f9d8fd124354",
-    ".agents/skills/react-best-practices/README.md": "e49f5e0088d47dab6687a7d501e9f3b23ce8ce7e8a8e428a2fd590e582f966da",
-    ".agents/skills/react-best-practices/rules/_sections.md": "01c59969e4e867f0708c8f8ef9c6d87fab9a07d0586244f429ff84013db8a115",
-    ".agents/skills/react-best-practices/rules/_template.md": "fee4f1bc27a105bd82662c259018e6a2d115b01d355ca04b8ee72ccaf6c7e434",
-    ".agents/skills/react-best-practices/rules/advanced-effect-event-deps.md": "b5d8d13942539c7545cf881d4faab8e868dcf0cc8e75fa3e6fb33ff4844f271f",
-    ".agents/skills/react-best-practices/rules/advanced-event-handler-refs.md": "775e3c2edc803270fb91b5e5b0b111c38d4d1146a7ae0201ccc22c22c3c4c68d",
-    ".agents/skills/react-best-practices/rules/advanced-init-once.md": "9e41179610d597081728d4f8102506e7ccee06a9c027caf1552d4ab5b3ed042f",
-    ".agents/skills/react-best-practices/rules/advanced-use-latest.md": "5cd66168e6bec629ee882e969b0d53d52610f7cb4e065846ed1d0793a1dec1bf",
-    ".agents/skills/react-best-practices/rules/async-api-routes.md": "242c9d7a00ba5083c12c233a64108755f7c6ef59925a7c50dcb436f0b1edd3f8",
-    ".agents/skills/react-best-practices/rules/async-cheap-condition-before-await.md": "bced8ccf27a344e78f1334c8ce3e6a8ce9ffbffe26a9d65f65fd280c6d8dabdb",
-    ".agents/skills/react-best-practices/rules/async-defer-await.md": "ce8a6727ed3f20e29d2a9272943a7d4f10ea6001a094e88909d881724270c8ea",
-    ".agents/skills/react-best-practices/rules/async-dependencies.md": "3f03ca575c1d9be6e1d9dbe7caf3c1e7d8546133a47783d94293ddde213f03f8",
-    ".agents/skills/react-best-practices/rules/async-parallel.md": "7faedef899d93d30cb03c0508bfa15190edbed7855c6bf88c1b1400e236a728c",
-    ".agents/skills/react-best-practices/rules/async-suspense-boundaries.md": "6fae5c16cc3f84e96ed7a20c063d7561ad5368feebca758f2b70600dbd9076d4",
-    ".agents/skills/react-best-practices/rules/bundle-analyzable-paths.md": "5d8d29ba3f68f8da57bdf0ee50ef84b4556eba95a207c9eb4959520a9d342bf5",
-    ".agents/skills/react-best-practices/rules/bundle-barrel-imports.md": "512aa4277d3f29ce6d7612cb0744d8c049ccafdeb3a72fd2843ae8ce0be2f64d",
-    ".agents/skills/react-best-practices/rules/bundle-conditional.md": "f8e927725c448703fa3f1fb31bd45218e9259d544000f83eb95444fee7def7f6",
-    ".agents/skills/react-best-practices/rules/bundle-defer-third-party.md": "0c3575198a55115cd278e64bc328ec348a06d6ae9e3076d9eb14a15d050b46cb",
-    ".agents/skills/react-best-practices/rules/bundle-dynamic-imports.md": "3d13ee1e2ed4596c7ddd034607719b70ebc9346c65eeaff79cf2c2417d8f4104",
-    ".agents/skills/react-best-practices/rules/bundle-preload.md": "7e632ae1cb8b914243ff6f5103e30009514e292c3321c265911661d5e458b356",
-    ".agents/skills/react-best-practices/rules/client-event-listeners.md": "dcdfd4e5f57c36b8a206a31e321f7227b6427b430ee1182cee1e1abd77764635",
-    ".agents/skills/react-best-practices/rules/client-localstorage-schema.md": "6e21253d070ebe50b6c222186ed756814dfae674d458b475727c9d4ef6c23c9a",
-    ".agents/skills/react-best-practices/rules/client-passive-event-listeners.md": "72894ea2eef53bf8efe0c597ca4e4ef2b47d48e1c9d3f2e5ea7cf50feeb0bac8",
-    ".agents/skills/react-best-practices/rules/client-swr-dedup.md": "6be13ae14595b48908310672ca8b1bb6720e9dd906f68566fc48778da2dc8cd3",
-    ".agents/skills/react-best-practices/rules/js-batch-dom-css.md": "d00ff06d829a4a367dcf3d3919812733b6542c4dde8a40722b044823e66cd402",
-    ".agents/skills/react-best-practices/rules/js-cache-function-results.md": "3005995cfe8eba0538279f73b3423400bc1f0d410130b7f09c4c6fc938c9c2d7",
-    ".agents/skills/react-best-practices/rules/js-cache-property-access.md": "7bdf71639e95132223ebf4309580a4a8979e2a9c6d0551409843d0eea81f8117",
-    ".agents/skills/react-best-practices/rules/js-cache-storage.md": "b428b53c40e8e45edd72d3f5de600cc07009c1d7dd68991b04ae141c4b07d441",
-    ".agents/skills/react-best-practices/rules/js-combine-iterations.md": "8f054989560a25f72d53f202443d5fc2ff79375aaff881f7966fd4d9fa223ecb",
-    ".agents/skills/react-best-practices/rules/js-early-exit.md": "8a31c105d95c20d774e69f0dc4f14ac869276745dc97f4b3f604dba2c5b04603",
-    ".agents/skills/react-best-practices/rules/js-flatmap-filter.md": "046a287a88aeeadb002fbc590d459c8f12920ccc0c2d335228ea469bd9cc4b5f",
-    ".agents/skills/react-best-practices/rules/js-hoist-regexp.md": "3381777595af13ab14d9d7c2c6f30c8fbde0a7dba69d12aa4c2f32947ec4e99e",
-    ".agents/skills/react-best-practices/rules/js-index-maps.md": "a0bdf99ff9d954b63eea790fd81768d8ce141f6df1e87c25840e9c88fdcc4d45",
-    ".agents/skills/react-best-practices/rules/js-length-check-first.md": "e5efeb8ff1ddad9286e4ae842ef42a517925ee03edb46e9c2a5a794d9e077ea9",
-    ".agents/skills/react-best-practices/rules/js-min-max-loop.md": "beb6df30fab6d299169d27693da43201d1999010b778fe743679860ae8a03af5",
-    ".agents/skills/react-best-practices/rules/js-request-idle-callback.md": "219c5bdbb779a44c63262a5ca4e747aa484a0c6b81938a888d80f0c238a69e9e",
-    ".agents/skills/react-best-practices/rules/js-set-map-lookups.md": "a7fd781a6ba9ad49065961b6f9a90ef486bf6b648390e1a08704025f98e1642b",
-    ".agents/skills/react-best-practices/rules/js-tosorted-immutable.md": "62dc2921621cfe50b377979b0cf0118d9284fc73f92d88e89baccf8fecd76692",
-    ".agents/skills/react-best-practices/rules/rendering-activity.md": "535312cadf0312834e749a14897123f7eb98ec6daadae35f7cbb9d2e36f6d545",
-    ".agents/skills/react-best-practices/rules/rendering-animate-svg-wrapper.md": "369976cd613a7d5aee5350eb55ceb62184ace4d75a9a57c2e4cd579157a2f54a",
-    ".agents/skills/react-best-practices/rules/rendering-conditional-render.md": "81ef33223568f03038a2189a9d97db05e447168430a2ad7c7258208b14c82684",
-    ".agents/skills/react-best-practices/rules/rendering-content-visibility.md": "473ba911f62559ab463a7b01d4167010548a15e92d08a3e2e0306d6709999d16",
-    ".agents/skills/react-best-practices/rules/rendering-hoist-jsx.md": "4cede4559302c8577ec0e1a9b761804090783b8d9da8134ca9af551b54cd5157",
-    ".agents/skills/react-best-practices/rules/rendering-hydration-no-flicker.md": "79ffe8f33ec4c4b0838e1dfd91d679b19c429847b58259baa6968485ed3a5005",
-    ".agents/skills/react-best-practices/rules/rendering-hydration-suppress-warning.md": "f2ca794aa650534f31f4c94ef75ff0002edaee56207950297743300a568072f9",
-    ".agents/skills/react-best-practices/rules/rendering-resource-hints.md": "424aa829393482e7784e2296eb5026512bff426405f97e63ee1e85a0cd1d19f7",
-    ".agents/skills/react-best-practices/rules/rendering-script-defer-async.md": "1d7754ca787a16517b1e8de16ae203789c0ceadf9f76d564e16a4f8c6fa31359",
-    ".agents/skills/react-best-practices/rules/rendering-svg-precision.md": "ed468533f6e95f622859c884b122cf21f9f593ed6bb3d500a54de4b9f9bcb9fb",
-    ".agents/skills/react-best-practices/rules/rendering-usetransition-loading.md": "e14f4eb969c7c86c8fd057ce83d8146279e45cac5ccc4c50c8aca32212b07d14",
-    ".agents/skills/react-best-practices/rules/rerender-defer-reads.md": "2faba85e83c16aebf48168f9b1b261e2c9922a69d0e1f36f767250eeefb746bd",
-    ".agents/skills/react-best-practices/rules/rerender-dependencies.md": "25aa43d6aaf40cb1edb97d36eb8684678c929560934c9731d50ac602284fe93a",
-    ".agents/skills/react-best-practices/rules/rerender-derived-state-no-effect.md": "3f5b04e50ed1be24e203f1f5bd645df422e720f784e9604676652f161ac43635",
-    ".agents/skills/react-best-practices/rules/rerender-derived-state.md": "8f1d225c76d11ed7705110898ba21ecb7a9d9b81eb688b678b6ca152e5d7851d",
-    ".agents/skills/react-best-practices/rules/rerender-functional-setstate.md": "87fd1a19792955f50bac69ed46e3576d55f35138928a660867a9e99cd71f68af",
-    ".agents/skills/react-best-practices/rules/rerender-lazy-state-init.md": "f0c25cbab4981d113663fea1508ce0b07e59e992121743bed5e7a107dc669d03",
-    ".agents/skills/react-best-practices/rules/rerender-memo-with-default-value.md": "97044a6c30973672df6be20cbcd7e1e3582ca7550a46b661021c3ade93759354",
-    ".agents/skills/react-best-practices/rules/rerender-memo.md": "bd1f0d21b55e68685468d883d8e6d385a6f8feb8fcd9628066ac4144d7087ba6",
-    ".agents/skills/react-best-practices/rules/rerender-move-effect-to-event.md": "05e13a75e5237d8491a49dcd7d724e93522b65126f11d5782b6f0408b60afbfe",
-    ".agents/skills/react-best-practices/rules/rerender-no-inline-components.md": "ce5cf1319267e3184b7e79d08d555cc51dc6a664ddff24d4557b01d16e954a94",
-    ".agents/skills/react-best-practices/rules/rerender-simple-expression-in-memo.md": "147dfd4acab2c64f20ab9f0476e966d9445abebbcc400eb51dd407037e1bc998",
-    ".agents/skills/react-best-practices/rules/rerender-split-combined-hooks.md": "4124d594029220f6cedbdff5dc2bbacc5c16289d5aeb53fff6ef6d7341a2d2ea",
-    ".agents/skills/react-best-practices/rules/rerender-transitions.md": "698267bd65c8a0bf3350b7386d7b619da02fd1fac97930d9a3098346c6853761",
-    ".agents/skills/react-best-practices/rules/rerender-use-deferred-value.md": "84c8bec6c8d525e8e712376c4d37d1133fe74d2550a0943232dd139147b87c24",
-    ".agents/skills/react-best-practices/rules/rerender-use-ref-transient-values.md": "adc30b14f13ea2b020bf8eaa2b3fd8410050421c5753de0c8ff03bd10b9e5576",
-    ".agents/skills/react-best-practices/rules/server-after-nonblocking.md": "13d34ead58d626015c300d9d737808ae23a0a53976b8497247cd9323ff90aeda",
-    ".agents/skills/react-best-practices/rules/server-auth-actions.md": "7961af203b51ef5c2a975e0e5d05e91955a4b214a15d1970a4b8ea7150722d40",
-    ".agents/skills/react-best-practices/rules/server-cache-lru.md": "bb33aab8bb6f81bbaa441cf6e254cf79f73a8a15b610f81fd2de6567440f232f",
-    ".agents/skills/react-best-practices/rules/server-cache-react.md": "6a67163afb9b98bae45b129d48cc26b00d13e2b5a38b36d19b05f1444537aefa",
-    ".agents/skills/react-best-practices/rules/server-dedup-props.md": "833b59dc0d9a6f5473bc57fef70f4c9e928513bb0bdd9e3361f0520ecb529626",
-    ".agents/skills/react-best-practices/rules/server-hoist-static-io.md": "2a4d6f78430661ec065a6649c1859655039d3ec2d23e35797d95ac730cf017eb",
-    ".agents/skills/react-best-practices/rules/server-no-shared-module-state.md": "74f529c7e2bf6f5ed0552580c1ccc6d35f9ce48c3de008f3a98c7d876a26fd1f",
-    ".agents/skills/react-best-practices/rules/server-parallel-fetching.md": "cd68caf2eb3946f12bd236c5a4e668e03dd3e7a54acf8d84bd54a199126d6018",
-    ".agents/skills/react-best-practices/rules/server-parallel-nested-fetching.md": "4d9c44e579e1286013acf5cb5f65b04297d2b68909f44f8163804656514a78ff",
-    ".agents/skills/react-best-practices/rules/server-serialization.md": "4d025c42043c56e6355196a2e885d168cdb15248d0797146c9db838a57b34946",
-    ".agents/skills/react-best-practices/SKILL.md": "b7d246acb440bee224ab33614979a5b8debe5fdb13d0304967aa19358eb69d9f",
     "apps/mycode-cli/package.json": "c2c7e126088c10719c01862c16ca8c9c85ca80f675437de41522db1f5c4c4f0f",
     "apps/mycode-cli/packages/adapters/package.json": "1db1660b1f9d3109d56479e3a35a690f2ce7ec126758d4b7cf71ba60fa0afcea",
     "apps/mycode-cli/packages/bootstrap/package.json": "1da991a6e0b8500bdb5b510918cdbc40eab7a9a7f9e3015391c52e888c8cdcfc",
@@ -244,9 +168,9 @@
     "apps/mycode-cli/packages/tui/package.json": "fb9ee88f93e05e4af80c1a3bcfeb3ac1493113c66c33627c5c5b0d44fb3d2cb3",
     "apps/mycode-cli/tools/prompt-trajectory/package.json": "3050f65d23c68de4f85c598570a63f1487fd78adac82585da60851ce92e7a363",
     "apps/mycode-cli/tools/typescript/package.json": "b8d6290591f0aa72d1ac3e230b55c4ec31b07e4e4aa34ee96eca0a2ce0b1f828",
-    "package.json": "512bc64cfc5eef1cbc7a169ac2878fe80a97ce735d90eee10687bde8de2175d2",
+    "package.json": "b405af7f2d9dd84ccacbf67baf15635ac06a9d32df5d492e3ddc437736e89d28",
     "packages/client/package.json": "8cc2c5bf1292c8139c8c6b460d15f8df07b79831836b84f37cda184499c7bbbc",
-    "packages/desktop/package.json": "ecc0cbd55ad4b9417b2096b9d43cef5c3dbd08d85d2fda958fc4ef90c629ecd5",
+    "packages/desktop/package.json": "51310aae0c3484c25f965b994b3c6324ceb8c775e48c40432a3411d84bc1c6c5",
     "packages/desktop/src/renderer/public/material-icons/3d.svg": "9527b849f0fba57ca7640e2717b3a19cb5f5e046712cbbd8b75d73af338c68fb",
     "packages/desktop/src/renderer/public/material-icons/abap.svg": "1335bd7eb9a0ed49deb622330d680c2e97731726a7a5eee8e4f46dc1e5db4de4",
     "packages/desktop/src/renderer/public/material-icons/abc.svg": "d1a68020e8f020ef29dca5f94dc8613b7ae8fb5b212d8b1cc23b0f975ac7acda",
@@ -2673,13 +2597,12 @@
     "packages/web/public/material-icons/zip.svg": "dad79a45f756542d37abd422502ecfbea15720b92ea1c9d80ef0439ab6b9448a",
     "patches/@ai-sdk__anthropic@3.0.81.patch": "1babbd18b5f31224bb972cb358069344f8ad3e6006614a53d3a3723cd119002b",
     "patches/@ai-sdk__openai-compatible@2.0.60.patch": "7e5caed2d616b058ca70cb586ae58dde575868fafb44eadd4de8850e520c8a6f",
-    "patches/@arms__rum-electron@0.0.3.patch": "73b419d97b7caee96975c130a52caa65de072ec21a372aa9836ecfa928847085",
-    "pnpm-lock.yaml": "f7151d677fff4e986e1d794d88ccea03b673e09e96df535ed10b56b4e6509731",
+    "pnpm-lock.yaml": "b58fa4ec3eed54092a345f93b2c1598742ecac0d88939585c34ed5567a00b8b1",
     "pnpm-workspace.yaml": "391175a4a90e820d51ae4e0cf8c16accf827f4c057b0d64fd9aec3d74ba6d30e",
     "scripts/license-texts/Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
     "scripts/native-search-tools-config.mjs": "11d031b9d69b32edd7778131bde4d705670ed68017cdddf188a0c8ec46947165",
     "scripts/remote-native-search-tools-config.mjs": "472322a66f84c7452f96aa9e16e9c4e0600f7c2588a03dc6bc869229161b1cb2",
-    "third-party/copied-components.json": "5c926778d2f743f2abb58a1fcf68d6b105f3fc4b49fe95e9ca76e08df1a51bb3",
+    "third-party/copied-components.json": "2783702a6d3676216485cbcda6e15b22af1a5fde6d0cc3973a7a17748dce4863",
     "third-party/embedded-components.json": "9586ccca15897f56d4ca1d703dffe9e02880fedd766c1dff93f7ac1f52ea891a",
     "third-party/native-search/licenses/00373c9bf56a894b2ed67586596bc1e8b0630cabbaf1ab46c75fc754b6bcd1ce.txt": "00373c9bf56a894b2ed67586596bc1e8b0630cabbaf1ab46c75fc754b6bcd1ce",
     "third-party/native-search/licenses/01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f.txt": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
@@ -2796,10 +2719,11 @@
     "third-party/native-search/licenses/f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af.txt": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af",
     "third-party/native-search/licenses/f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505.txt": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505",
     "third-party/native-search/sources.json": "67dbedc0c642d414e442e617f2bc0cfd8a3a657d1107b06d08e716eef9a92c67",
-    "third-party/npm-overrides.json": "f8b8f7e7f15556195684da7c8665b9b00393c7fee71ec734e5270d06665c7b34",
+    "third-party/npm-overrides.json": "090457a5af3491f55fd56df0b71fcba290e76f2bb69160038bc8cab75186dbf7",
     "third-party/runtime/node-22.16.0-LICENSE.txt": "1ae62e2015784ba438db7b04ebd33f3c4ff3efdb824c111c4ececd99945fd52d",
     "third-party/runtime/node-24.14.0-LICENSE.txt": "4573185d56580da2b890ba34a85a409257640f1c5632eade4300137266194d18",
     "third-party/runtime/sources.json": "b27bc8d81aeb71108e523602364ffbb6a1b19c2d5d47733fd43094b769006741",
+    "third-party/source-reviews.json": "7c88c0f4946975e6b2676b7ac1b2cfe9288c95013bae9e77a27332797ca0ca9f",
     "third-party/upstream/000ffa2d773c511f4459fb31d89f841806f93bf5caf2050468ab2097c081b443.txt": "000ffa2d773c511f4459fb31d89f841806f93bf5caf2050468ab2097c081b443",
     "third-party/upstream/014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff.txt": "014bb31e83d5c2e76aea1cc6e82217346ab41362f32cb355ad0f5c10aa0aeaff",
     "third-party/upstream/0a7cda7d15aca7baaa3035e1f90466dde9ecc980c103cd230382d6675714bf2a.txt": "0a7cda7d15aca7baaa3035e1f90466dde9ecc980c103cd230382d6675714bf2a",
@@ -2814,14 +2738,11 @@
     "third-party/upstream/268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5.txt": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5",
     "third-party/upstream/2711a8b5a5cdfef0e639f96c1aca12ae23d7d64a02d0507f1bdf14d2b27bbc3a.txt": "2711a8b5a5cdfef0e639f96c1aca12ae23d7d64a02d0507f1bdf14d2b27bbc3a",
     "third-party/upstream/2c88816684a40c718113a10062a8335b665cec00d3c7b32e2b3fe9c620a3e03e.txt": "2c88816684a40c718113a10062a8335b665cec00d3c7b32e2b3fe9c620a3e03e",
-    "third-party/upstream/2c976d327b293bd74c257cd53e9b4ecef97a06b1651baa3b24327c97192cb3de.txt": "2c976d327b293bd74c257cd53e9b4ecef97a06b1651baa3b24327c97192cb3de",
     "third-party/upstream/2d2349188616c4b64ceeae33e1386bb546b0658864b4f7f8c9785757cb065b5d.txt": "2d2349188616c4b64ceeae33e1386bb546b0658864b4f7f8c9785757cb065b5d",
     "third-party/upstream/3007cd45c9afdf93812c0c8a7643ea32a7db0b24e495dc0f2312c8a43990b0dd.txt": "3007cd45c9afdf93812c0c8a7643ea32a7db0b24e495dc0f2312c8a43990b0dd",
     "third-party/upstream/31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87.txt": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87",
-    "third-party/upstream/328eb7864c20ab77607b26ee1913b65a9b880f6300eea9e667b890da896a2f40.txt": "328eb7864c20ab77607b26ee1913b65a9b880f6300eea9e667b890da896a2f40",
     "third-party/upstream/34dee5fd5e5cc756efb5ad4d64652bce719bdf5e900ca5d7538253e737930bc4.txt": "34dee5fd5e5cc756efb5ad4d64652bce719bdf5e900ca5d7538253e737930bc4",
     "third-party/upstream/37398454f23ddeb02f0b81113fef9ebdc4571b7297cb6e18376c1ccb9bb1453e.txt": "37398454f23ddeb02f0b81113fef9ebdc4571b7297cb6e18376c1ccb9bb1453e",
-    "third-party/upstream/38b6f63a0aa422b5c329e75f1aeecd2b02e83caab1747644c00810870d77bacb.txt": "38b6f63a0aa422b5c329e75f1aeecd2b02e83caab1747644c00810870d77bacb",
     "third-party/upstream/3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94.txt": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
     "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
     "third-party/upstream/417fa227d75b1e22a15d8389ca8b5e8b7b86241c3b1b17288d20523016ef6fa6.txt": "417fa227d75b1e22a15d8389ca8b5e8b7b86241c3b1b17288d20523016ef6fa6",
@@ -2840,7 +2761,6 @@
     "third-party/upstream/5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd.txt": "5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd",
     "third-party/upstream/66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101.txt": "66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101",
     "third-party/upstream/6ae13df543a24b3fb18c25182cf4f084132f799ea9225410f7037888401b7469.txt": "6ae13df543a24b3fb18c25182cf4f084132f799ea9225410f7037888401b7469",
-    "third-party/upstream/6f7e6eae2a2afbaa67b266650f7342e7bf8e82cb57f6ab98148b3d6e0fb4450a.txt": "6f7e6eae2a2afbaa67b266650f7342e7bf8e82cb57f6ab98148b3d6e0fb4450a",
     "third-party/upstream/75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6.txt": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6",
     "third-party/upstream/8405932022a556380c2d8c272eff154a923feb197233f348ce5f7334fb0a5ede.txt": "8405932022a556380c2d8c272eff154a923feb197233f348ce5f7334fb0a5ede",
     "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
@@ -2874,13 +2794,49 @@
     "third-party/upstream/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
     "third-party/upstream/e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c.txt": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c",
     "third-party/upstream/e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c.txt": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c",
-    "third-party/upstream/e49e62397b603438476e0d6b5ca3b6e6d4f23a80594e596aff29ac04fa3e1b1c.txt": "e49e62397b603438476e0d6b5ca3b6e6d4f23a80594e596aff29ac04fa3e1b1c",
     "third-party/upstream/ebb2e920800c6353474e3e23d84f714ee8aaecd8f5a71851aa03594a4129d855.txt": "ebb2e920800c6353474e3e23d84f714ee8aaecd8f5a71851aa03594a4129d855",
     "third-party/upstream/f158b3bd10b867740fdbf81447216f1f8685473acf61e6a105ef91ba9fe8ebc3.txt": "f158b3bd10b867740fdbf81447216f1f8685473acf61e6a105ef91ba9fe8ebc3",
     "third-party/upstream/f18c12b8e7daf98d572518b7db133b2dc66a713921dac4825410dd656e0c1a1a.txt": "f18c12b8e7daf98d572518b7db133b2dc66a713921dac4825410dd656e0c1a1a",
     "third-party/upstream/f29b60ea39a2132e3baa98927c2d473b349a54143da44a0c6762b243e6459452.txt": "f29b60ea39a2132e3baa98927c2d473b349a54143da44a0c6762b243e6459452",
     "third-party/upstream/f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af.txt": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af",
     "third-party/upstream/fc7d762e0ebf8720d0a03cf00058aaa3a198347e9651be2f50a25e3b3ec13985.txt": "fc7d762e0ebf8720d0a03cf00058aaa3a198347e9651be2f50a25e3b3ec13985"
+  },
+  "rawInputs": {
+    "third-party/source-reviews/core-cargo-lock.txt": "a9dcb14ed212fe8a451f8a0b98265bf21907bfb3a9c70be893b8c8190298efdd",
+    "third-party/source-reviews/cua-cargo-lock.txt": "5fa39679b3fa4a44d8011dfe36bf9e4e2263d41fbd09980e51a6bbca28840968",
+    "third-party/source-reviews/native-cargo-lock.txt": "925e26f606cd906f74675c14687bbe4561844a86c935a4db77dd089a83449316",
+    "third-party/source-archives/cbindgen-0.29.4.crate": "2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20",
+    "third-party/source-archives/option-ext-0.2.0.crate": "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d",
+    "third-party/source-archives/uniffi-0.31.0.crate": "b8c6dec3fc6645f71a16a3fa9ff57991028153bd194ca97f4b55e610c73ce66a",
+    "third-party/source-archives/uniffi_bindgen-0.31.0.crate": "4ed0150801958d4825da56a41c71f000a457ac3a4613fa9647df78ac4b6b6881",
+    "third-party/source-archives/uniffi_core-0.31.0.crate": "b0ef62e69762fbb9386dcb6c87cd3dd05d525fa8a3a579a290892e60ddbda47e",
+    "third-party/source-archives/uniffi_internal_macros-0.31.0.crate": "98f51ebca0d9a4b2aa6c644d5ede45c56f73906b96403c08a1985e75ccb64a01",
+    "third-party/source-archives/uniffi_macros-0.31.0.crate": "db9d12529f1223d014fd501e5f29ca0884d15d6ed5ddddd9f506e55350327dc3",
+    "third-party/source-archives/uniffi_meta-0.31.0.crate": "9df6d413db2827c68588f8149d30d49b71d540d46539e435b23a7f7dbd4d4f86",
+    "third-party/source-archives/uniffi_pipeline-0.31.0.crate": "a806dddc8208f22efd7e95a5cdf88ed43d0f3271e8f63b47e757a8bbdb43b63a",
+    "third-party/source-archives/uniffi_udl-0.31.0.crate": "0d1a7339539bf6f6fa3e9b534dece13f778bda2d54b1a6d4e40b4d6090ac26e7",
+    "third-party/source-archives/uniffi_build-0.31.0.crate": "b78fd9271a4c2e85bd2c266c5a9ede1fac676eb39fd77f636c27eaf67426fd5f",
+    "third-party/source-archives/uniffi_testing-0.31.0.crate": "4802bed208a296657eef3451a961a6502e1d7aa8930b4b0cd952ed4f81a3957e",
+    "third-party/source-archives/ubjs-core-49bc59194d183a05855ed4104c18eb92fb465e02.tar.gz": "7d5eefa49ace07f2bff5dcc4cea9d78db0934fd432b05100942ba8bb6c1322b5",
+    "third-party/source-archives/ubjs-native-dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449.tar.gz": "d5084bb2064d0784f27023f96325af5e5d81477da21d8cdeb9b61d68065fe78f",
+    "third-party/source-reviews/cargo-license-audit.json": "081a44e729677b6d5be0b08ce316bf845dff4bcd0220be7728659d7205eee531",
+    "third-party/source-reviews/trycua-cua-driver-darwin-arm64-0.30.4.json": "024d49ec0486850014764b34fec7d1713f2db013d7eca0477e908f56bff5fa71",
+    "third-party/source-reviews/cua-driver-rs-v0.30.4-tag.json": "bf7b19c9fee67fb5b2b64f13092f41387967e049d5cb9bf58438b044a2707f5f",
+    "third-party/source-reviews/trycua-cua-driver-darwin-x64-0.30.4.json": "7cabda58e36fb4aa100bf0937282daa7bcef693c20c3b3a5af095187f1806b6d",
+    "third-party/source-reviews/trycua-cua-driver-linux-arm64-gnu-0.30.4.json": "1a305627abf1b67e9040e6a6f20717403b4543678b281013ec0d8e14acce70e6",
+    "third-party/source-reviews/trycua-cua-driver-linux-x64-gnu-0.30.4.json": "eaad7fe4ca545cf7c66fe998f3d76324b70a768d91898716b488c25c7eeaa57c",
+    "third-party/source-reviews/trycua-cua-driver-win32-arm64-msvc-0.30.4.json": "ef76cb22a26c03b052de23abc87da73df2a48d3456d126905a2dee014a0cbc77",
+    "third-party/source-reviews/trycua-cua-driver-win32-x64-msvc-0.30.4.json": "abf1136b398d4fe411842c12b5ec3a6afcb3e3c01f33378fabac1dd37b5ce668",
+    "third-party/source-reviews/ubjs-core-0.31.0-3.json": "b90e70521a7ea2e23f069c0770b83f3c888c9ff2bb142e845dcfa07430817913",
+    "third-party/source-reviews/ubjs-node-0.31.0-3.json": "df41ccaf15eab3ed6f6c53e0e1000617ed5e238e6fd30cf91d180e55834c02ce",
+    "third-party/source-reviews/ubjs-node-darwin-arm64-0.31.0-3.json": "875b2c6e8b43ca1cd09ca67b5d141ff77b302b9b81ba1937fecf49b62e0041f7",
+    "third-party/source-reviews/ubjs-node-darwin-x64-0.31.0-3.json": "5e189fa7ca541f08d7cc4e44d8886541ea1b3109703336aeb667fc320ce20818",
+    "third-party/source-reviews/ubjs-node-linux-arm64-gnu-0.31.0-3.json": "e73560184ddfddfa99d5521725678d56127d519baeb8ccc8ff63cbce3509a7d7",
+    "third-party/source-reviews/ubjs-node-linux-arm64-musl-0.31.0-3.json": "bacaea4e72f5dc041fa85fda3d972e22c90b28c7fb1e1a1e9e4c5231827a05c8",
+    "third-party/source-reviews/ubjs-node-linux-x64-musl-0.31.0-3.json": "e11cf498a0d2a35fe84dadd4e2baaf147aaaf723fec01061885503770037cbfb",
+    "third-party/source-reviews/ubjs-node-linux-x64-gnu-0.31.0-3.json": "b5b49b499f5268064fb92b5911a25a31e336da266c5a26180789620cd0ebef24",
+    "third-party/source-reviews/ubjs-node-win32-arm64-msvc-0.31.0-3.json": "eed2fad826ad26f3bd987958421d473e6216eca542bf6326171603f93738ae56",
+    "third-party/source-reviews/ubjs-node-win32-x64-msvc-0.31.0-3.json": "7f9d68570ab235625d4e000daf672b08ceeb56e48d879d12962c00445aec4820"
   },
   "packages": [
     {
@@ -3056,39 +3012,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "6209542eca0c56db0322ad9a8f307b85b8fad89ce601810e00987d4a94e55738"
-        }
-      ]
-    },
-    {
-      "name": "@arms/rum-browser",
-      "version": "0.1.8",
-      "license": "ISC",
-      "notices": [
-        {
-          "member": "https://registry.npmjs.org/%40arms%2frum-browser%400.1.8",
-          "sha256": "2c976d327b293bd74c257cd53e9b4ecef97a06b1651baa3b24327c97192cb3de"
-        }
-      ]
-    },
-    {
-      "name": "@arms/rum-core",
-      "version": "0.1.4",
-      "license": "ISC",
-      "notices": [
-        {
-          "member": "https://registry.npmjs.org/%40arms%2frum-core%400.1.4",
-          "sha256": "328eb7864c20ab77607b26ee1913b65a9b880f6300eea9e667b890da896a2f40"
-        }
-      ]
-    },
-    {
-      "name": "@arms/rum-electron",
-      "version": "0.0.3",
-      "license": "MIT",
-      "notices": [
-        {
-          "member": "https://registry.npmjs.org/%40arms%2frum-electron%400.0.3",
-          "sha256": "38b6f63a0aa422b5c329e75f1aeecd2b02e83caab1747644c00810870d77bacb"
         }
       ]
     },
@@ -3721,18 +3644,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "24601581852c22ee64603c980589723298f3a10fe52e1279bec400f7fd9a4d22"
-        }
-      ]
-    },
-    {
-      "name": "@electron/get",
-      "version": "2.0.3",
-      "license": "MIT",
-      "repository": "https://github.com/electron/get",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "edab8abb78d9c5b36944c3e00aebf6a90eb32378993f49ac8a3904007029c629"
         }
       ]
     },
@@ -6330,30 +6241,6 @@
       ]
     },
     {
-      "name": "@rrweb/types",
-      "version": "2.1.6",
-      "license": "MIT",
-      "repository": "git+https://github.com/rrweb-io/rrweb.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/rrweb-io/rrweb/rrweb%402.1.6/LICENSE",
-          "sha256": "e49e62397b603438476e0d6b5ca3b6e6d4f23a80594e596aff29ac04fa3e1b1c"
-        }
-      ]
-    },
-    {
-      "name": "@rrweb/utils",
-      "version": "2.1.6",
-      "license": "MIT",
-      "repository": "git+https://github.com/rrweb-io/rrweb.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/rrweb-io/rrweb/rrweb%402.1.6/LICENSE",
-          "sha256": "e49e62397b603438476e0d6b5ca3b6e6d4f23a80594e596aff29ac04fa3e1b1c"
-        }
-      ]
-    },
-    {
       "name": "@sec-ant/readable-stream",
       "version": "0.4.1",
       "license": "MIT",
@@ -6698,18 +6585,6 @@
       ]
     },
     {
-      "name": "@sindresorhus/is",
-      "version": "4.6.0",
-      "license": "MIT",
-      "repository": "sindresorhus/is",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
-        }
-      ]
-    },
-    {
       "name": "@sindresorhus/merge-streams",
       "version": "4.0.0",
       "license": "MIT",
@@ -6814,22 +6689,6 @@
         {
           "member": "LICENSE",
           "sha256": "f5ecc63f26b1bf790f68fd8e4a84376385b19b9246100dc93a5b6ba9bf17f964"
-        }
-      ]
-    },
-    {
-      "name": "@szmarczak/http-timer",
-      "version": "4.0.6",
-      "license": "MIT",
-      "repository": "git+https://github.com/szmarczak/http-timer.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "0194571d45a06ea2a22ceb51f981e3be92525966d28847dbc0d9982603bf90de"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
         }
       ]
     },
@@ -7106,30 +6965,6 @@
         {
           "member": "LICENSE",
           "sha256": "c2a4cfb69592431f4b3a179c114909bb76a979d5748c19ca595c94133c623b12"
-        }
-      ]
-    },
-    {
-      "name": "@types/cacheable-request",
-      "version": "6.0.3",
-      "license": "MIT",
-      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
-        }
-      ]
-    },
-    {
-      "name": "@types/css-font-loading-module",
-      "version": "0.0.7",
-      "license": "MIT",
-      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
         }
       ]
     },
@@ -7578,32 +7413,8 @@
       ]
     },
     {
-      "name": "@types/http-cache-semantics",
-      "version": "4.2.0",
-      "license": "MIT",
-      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
-        }
-      ]
-    },
-    {
       "name": "@types/katex",
       "version": "0.16.8",
-      "license": "MIT",
-      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
-        }
-      ]
-    },
-    {
-      "name": "@types/keyv",
-      "version": "3.1.4",
       "license": "MIT",
       "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
       "notices": [
@@ -7640,18 +7451,6 @@
     {
       "name": "@types/node",
       "version": "16.9.1",
-      "license": "MIT",
-      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
-        }
-      ]
-    },
-    {
-      "name": "@types/node",
-      "version": "24.12.2",
       "license": "MIT",
       "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
       "notices": [
@@ -7734,18 +7533,6 @@
       ]
     },
     {
-      "name": "@types/responselike",
-      "version": "1.0.3",
-      "license": "MIT",
-      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
-        }
-      ]
-    },
-    {
       "name": "@types/statuses",
       "version": "2.0.6",
       "license": "MIT",
@@ -7808,18 +7595,6 @@
     {
       "name": "@types/validate-npm-package-name",
       "version": "4.0.2",
-      "license": "MIT",
-      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
-        }
-      ]
-    },
-    {
-      "name": "@types/yauzl",
-      "version": "2.10.3",
       "license": "MIT",
       "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
       "notices": [
@@ -7998,18 +7773,6 @@
         {
           "member": "LICENSE",
           "sha256": "b070d77bfb2c52a1dd6996de0ce5f64c49a0ca55c889b163a963ddf5cb001ee2"
-        }
-      ]
-    },
-    {
-      "name": "@xstate/fsm",
-      "version": "1.6.5",
-      "license": "MIT",
-      "repository": "git+ssh://git@github.com/statelyai/xstate.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "542d926d7bbb099785e322d1d5574c539d51942e52ec8adce2be4629ba81fc7f"
         }
       ]
     },
@@ -8438,22 +8201,6 @@
       ]
     },
     {
-      "name": "base64-arraybuffer",
-      "version": "1.0.2",
-      "license": "MIT",
-      "repository": "https://github.com/niklasvh/base64-arraybuffer",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "f3eca6ff762533fa5a77caf954a143e48afa204668cf97dce758c45a9e006be3"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "62235643db61d20e8e4c58d160e906fc168941207adbc96a80ba87b491570067"
-        }
-      ]
-    },
-    {
       "name": "baseline-browser-mapping",
       "version": "2.10.18",
       "license": "Apache-2.0",
@@ -8530,18 +8277,6 @@
         {
           "member": "https://registry.npmjs.org/boolbase/1.0.0",
           "sha256": "2d2349188616c4b64ceeae33e1386bb546b0658864b4f7f8c9785757cb065b5d"
-        }
-      ]
-    },
-    {
-      "name": "boolean",
-      "version": "3.2.0",
-      "license": "MIT",
-      "repository": "git://github.com/thenativeweb/boolean.git",
-      "notices": [
-        {
-          "member": "LICENSE.txt",
-          "sha256": "8e4aa1aef825c37d6f74d4b867dccb7b059b66c75ecdedc74834e2f403568a27"
         }
       ]
     },
@@ -8694,38 +8429,6 @@
         {
           "member": "Readme.md (license section)",
           "sha256": "084adb10b5fc6c48ed64780d1fe8ef625aca43532bafed6762d96ac3ec03cec5"
-        }
-      ]
-    },
-    {
-      "name": "cacheable-lookup",
-      "version": "5.0.4",
-      "license": "MIT",
-      "repository": "git+https://github.com/szmarczak/cacheable-lookup.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "b35de79efc88b23c73dd431df6075bed0890db0db1544ee3d57b046aa7a8e72b"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
-        }
-      ]
-    },
-    {
-      "name": "cacheable-request",
-      "version": "7.0.4",
-      "license": "MIT",
-      "repository": "lukechilds/cacheable-request",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "861908ec818ff6142fdd6c4b66d6264c206d3d5a46003b1342e1853a9a85abac"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "4f6bff47d23de042c99fb8f97a4a4193390d0f7fef2443b6aef8945aa8147b79"
         }
       ]
     },
@@ -9038,22 +8741,6 @@
         {
           "member": "LICENSE.txt",
           "sha256": "2dc0465729366c3a7890dfa9e972a1ba7048a26c02116fb8b419a6a1ac110149"
-        }
-      ]
-    },
-    {
-      "name": "clone-response",
-      "version": "1.0.3",
-      "license": "MIT",
-      "repository": "git+https://github.com/sindresorhus/clone-response.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "861908ec818ff6142fdd6c4b66d6264c206d3d5a46003b1342e1853a9a85abac"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "4f6bff47d23de042c99fb8f97a4a4193390d0f7fef2443b6aef8945aa8147b79"
         }
       ]
     },
@@ -10090,18 +9777,6 @@
       ]
     },
     {
-      "name": "decompress-response",
-      "version": "6.0.0",
-      "license": "MIT",
-      "repository": "sindresorhus/decompress-response",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
-        }
-      ]
-    },
-    {
       "name": "dedent",
       "version": "1.7.2",
       "license": "MIT",
@@ -10158,34 +9833,6 @@
       ]
     },
     {
-      "name": "defer-to-connect",
-      "version": "2.0.1",
-      "license": "MIT",
-      "repository": "git+https://github.com/szmarczak/defer-to-connect.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "0194571d45a06ea2a22ceb51f981e3be92525966d28847dbc0d9982603bf90de"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
-        }
-      ]
-    },
-    {
-      "name": "define-data-property",
-      "version": "1.1.4",
-      "license": "MIT",
-      "repository": "git+https://github.com/ljharb/define-data-property.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "b41d08bc3624d8c436fc80237d73ebb361985a67f4504bbcd703e5ca2b27254c"
-        }
-      ]
-    },
-    {
       "name": "define-lazy-prop",
       "version": "3.0.0",
       "license": "MIT",
@@ -10194,18 +9841,6 @@
         {
           "member": "license",
           "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
-        }
-      ]
-    },
-    {
-      "name": "define-properties",
-      "version": "1.2.1",
-      "license": "MIT",
-      "repository": "git://github.com/ljharb/define-properties.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "00d402c2bbe7c67369bd01ce2c16b8ed46ccc949a1ee2d6bb8f9606afa8c7434"
         }
       ]
     },
@@ -10286,18 +9921,6 @@
       "version": "1.1.0",
       "license": "MIT",
       "repository": "https://github.com/thekashey/detect-node",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "54b32293ea560d22cd9b62af9b2cda1a030d910a48c6601d227c5ff2338d95f8"
-        }
-      ]
-    },
-    {
-      "name": "detect-node",
-      "version": "2.1.0",
-      "license": "MIT",
-      "repository": "https://github.com/iliakan/detect-node",
       "notices": [
         {
           "member": "LICENSE",
@@ -10554,26 +10177,6 @@
       ]
     },
     {
-      "name": "electron",
-      "version": "41.0.3",
-      "license": "MIT",
-      "repository": "https://github.com/electron/electron",
-      "notices": [
-        {
-          "member": "dist/LICENSE",
-          "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
-        },
-        {
-          "member": "LICENSE",
-          "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "56a37896ff6edec2b75b41465b66dd768f2d294c315255164898ca3e685bbd30"
-        }
-      ]
-    },
-    {
       "name": "embla-carousel-react",
       "version": "8.6.0",
       "license": "MIT",
@@ -10670,22 +10273,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "7c59ffc1bdc8ebb3145afe526c0afb0d63e2b1a3233ce239eb3f62a6a79b0e2e"
-        }
-      ]
-    },
-    {
-      "name": "end-of-stream",
-      "version": "1.4.5",
-      "license": "MIT",
-      "repository": "git://github.com/mafintosh/end-of-stream.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "3fe8d55a98dbf260eace67c00cf9bc53edb46234e840098a0b93df3096b97fb6"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
         }
       ]
     },
@@ -10818,18 +10405,6 @@
       ]
     },
     {
-      "name": "es6-error",
-      "version": "4.1.1",
-      "license": "MIT",
-      "repository": "https://github.com/bjyoungblood/es6-error.git",
-      "notices": [
-        {
-          "member": "LICENSE.md",
-          "sha256": "9f655c5baa5a6f254d1e87f27e14d04acaff4bd0b489ea3c2f33723919da2f44"
-        }
-      ]
-    },
-    {
       "name": "escalade",
       "version": "3.2.0",
       "license": "MIT",
@@ -10870,18 +10445,6 @@
         {
           "member": "Readme.md (license section)",
           "sha256": "ab27fc045f7a02ee0f02640e290b14a849a6a9d3dac2c5e6a4f986d303543809"
-        }
-      ]
-    },
-    {
-      "name": "escape-string-regexp",
-      "version": "4.0.0",
-      "license": "MIT",
-      "repository": "sindresorhus/escape-string-regexp",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
         }
       ]
     },
@@ -11122,18 +10685,6 @@
       ]
     },
     {
-      "name": "extract-zip",
-      "version": "2.0.1",
-      "license": "BSD-2-Clause",
-      "repository": "maxogden/extract-zip",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "77b2de947c65f3062fb347118ca198ca50898ead84a8509d8153fa65741f029b"
-        }
-      ]
-    },
-    {
       "name": "fast-deep-equal",
       "version": "3.1.3",
       "license": "MIT",
@@ -11210,18 +10761,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "ba9493d367402925a7705f85f597583fd894561efb8717ab6ad56d9ebc17ba14"
-        }
-      ]
-    },
-    {
-      "name": "fd-slicer",
-      "version": "1.1.0",
-      "license": "MIT",
-      "repository": "git://github.com/andrewrk/node-fd-slicer.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "176d95320d565cb034d8323797b6cd6160238f625453687f98aad2085c46c3b3"
         }
       ]
     },
@@ -11454,22 +10993,6 @@
       ]
     },
     {
-      "name": "fs-extra",
-      "version": "8.1.0",
-      "license": "MIT",
-      "repository": "https://github.com/jprichardson/node-fs-extra",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "1e76029602ae9b21cc4e612db2496d92febed882ba13ba745f8b3309e85f9d39"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "99418da6b0279959da793d62433978847d00236e852c4be780f384b7f506d425"
-        }
-      ]
-    },
-    {
       "name": "function-bind",
       "version": "1.1.2",
       "license": "MIT",
@@ -11583,18 +11106,6 @@
     },
     {
       "name": "get-stream",
-      "version": "5.2.0",
-      "license": "MIT",
-      "repository": "sindresorhus/get-stream",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
-        }
-      ]
-    },
-    {
-      "name": "get-stream",
       "version": "6.0.1",
       "license": "MIT",
       "repository": "sindresorhus/get-stream",
@@ -11666,30 +11177,6 @@
       ]
     },
     {
-      "name": "global-agent",
-      "version": "3.0.0",
-      "license": "BSD-3-Clause",
-      "repository": "https://github.com/gajus/global-agent",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "ba98e94118579117505f6f11fd9a4354c5e65ece03b4898d8b8f7785efcd25c1"
-        }
-      ]
-    },
-    {
-      "name": "globalthis",
-      "version": "1.0.4",
-      "license": "MIT",
-      "repository": "git://github.com/ljharb/System.global.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "acfaf437865d82f0fa9b9cdcae8b550bed8d011adaa5b42d973191caf99f62a8"
-        }
-      ]
-    },
-    {
       "name": "gopd",
       "version": "1.2.0",
       "license": "MIT",
@@ -11698,18 +11185,6 @@
         {
           "member": "LICENSE",
           "sha256": "d90bf0a089da4cf43d644ed240a0b3825dcdb705e64e38371d56995a4cc9e4c5"
-        }
-      ]
-    },
-    {
-      "name": "got",
-      "version": "11.8.6",
-      "license": "MIT",
-      "repository": "sindresorhus/got",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
         }
       ]
     },
@@ -11750,18 +11225,6 @@
         {
           "member": "LICENSE",
           "sha256": "5e807b516a9be9229ed459880bf353a336e2d947867247290680d437017be391"
-        }
-      ]
-    },
-    {
-      "name": "has-property-descriptors",
-      "version": "1.0.2",
-      "license": "MIT",
-      "repository": "git+https://github.com/inspect-js/has-property-descriptors.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "0f0ca96f50793990031ebc488a38f7292ff70bce8ab6a8e5eeda674abc32ccdf"
         }
       ]
     },
@@ -12114,18 +11577,6 @@
       ]
     },
     {
-      "name": "http-cache-semantics",
-      "version": "4.2.0",
-      "license": "BSD-2-Clause",
-      "repository": "git+https://github.com/kornelski/http-cache-semantics.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "ab868ad5a2ef5068560d9cd3b2180ec63c140bb4c5cae1ba779d300a0ac74fa3"
-        }
-      ]
-    },
-    {
       "name": "http-errors",
       "version": "2.0.1",
       "license": "MIT",
@@ -12166,22 +11617,6 @@
         {
           "member": "LICENSE",
           "sha256": "71368fd0f5b4129191e9afcd1e1ef2dc89a9090d3e4d80bbab92dafd032b3bef"
-        }
-      ]
-    },
-    {
-      "name": "http2-wrapper",
-      "version": "1.0.3",
-      "license": "MIT",
-      "repository": "git+https://github.com/szmarczak/http2-wrapper.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "0194571d45a06ea2a22ceb51f981e3be92525966d28847dbc0d9982603bf90de"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
         }
       ]
     },
@@ -12906,22 +12341,6 @@
       ]
     },
     {
-      "name": "json-buffer",
-      "version": "3.0.1",
-      "license": "MIT",
-      "repository": "git://github.com/dominictarr/json-buffer.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "715f1f0f2eb7688e53e4e958acdc7fc9e365ae3eaf26efc2604b93cc65fdc3f5"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
-        }
-      ]
-    },
-    {
       "name": "json-parse-even-better-errors",
       "version": "2.3.1",
       "license": "MIT",
@@ -12978,18 +12397,6 @@
       ]
     },
     {
-      "name": "json-stringify-safe",
-      "version": "5.0.1",
-      "license": "ISC",
-      "repository": "git://github.com/isaacs/json-stringify-safe",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "4ec3d4c66cd87f5c8d8ad911b10f99bf27cb00cdfcff82621956e379186b016b"
-        }
-      ]
-    },
-    {
       "name": "json5",
       "version": "2.2.3",
       "license": "MIT",
@@ -13002,22 +12409,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "09ebd9927f40b8b47880fa9ad15bd2e09ca95a6d52668767c2b0f01550920357"
-        }
-      ]
-    },
-    {
-      "name": "jsonfile",
-      "version": "4.0.0",
-      "license": "MIT",
-      "repository": "git@github.com:jprichardson/node-jsonfile.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "a9801fb52ba22ef808682a094da8a7a480584b7ed0dfd0d888ab543616335031"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "e61af02e143359d84791b8386297b57a0739d9f545e253757bec1ef00952ca23"
         }
       ]
     },
@@ -13094,22 +12485,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "1a7471ca96e17d08d390ff3b0c23ccbbff29390483add7577ae75c799d494b59"
-        }
-      ]
-    },
-    {
-      "name": "keyv",
-      "version": "4.5.4",
-      "license": "MIT",
-      "repository": "git+https://github.com/jaredwray/keyv.git",
-      "notices": [
-        {
-          "member": "README.md (license section)",
-          "sha256": "7c52c9115673b3e47e2a78c9c911558b7b2f23b144a3927e5fa862e1409727ba"
-        },
-        {
-          "member": "https://registry.npmjs.org/keyv/4.5.4",
-          "sha256": "6f7e6eae2a2afbaa67b266650f7342e7bf8e82cb57f6ab98148b3d6e0fb4450a"
         }
       ]
     },
@@ -13458,22 +12833,6 @@
       ]
     },
     {
-      "name": "lowercase-keys",
-      "version": "2.0.0",
-      "license": "MIT",
-      "repository": "sindresorhus/lowercase-keys",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
-        },
-        {
-          "member": "readme.md (license section)",
-          "sha256": "0b8c7c0c5579b689ab841976b473ebe9269aa46347fc1295431e0fc3f2452d36"
-        }
-      ]
-    },
-    {
       "name": "lru_map",
       "version": "0.4.1",
       "license": "MIT",
@@ -13626,18 +12985,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "9432aa108cccae3962e4d284c49478ba528fb74e0fb68c4af719e8a338bb15da"
-        }
-      ]
-    },
-    {
-      "name": "matcher",
-      "version": "3.0.0",
-      "license": "MIT",
-      "repository": "sindresorhus/matcher",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
         }
       ]
     },
@@ -14634,34 +13981,6 @@
       ]
     },
     {
-      "name": "mimic-response",
-      "version": "1.0.1",
-      "license": "MIT",
-      "repository": "sindresorhus/mimic-response",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
-        },
-        {
-          "member": "readme.md (license section)",
-          "sha256": "0b8c7c0c5579b689ab841976b473ebe9269aa46347fc1295431e0fc3f2452d36"
-        }
-      ]
-    },
-    {
-      "name": "mimic-response",
-      "version": "3.1.0",
-      "license": "MIT",
-      "repository": "sindresorhus/mimic-response",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
-        }
-      ]
-    },
-    {
       "name": "minimatch",
       "version": "10.2.5",
       "license": "BlueOak-1.0.0",
@@ -14686,22 +14005,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "cc15cc37a1fb93f68ce0b84d0333571b35870e10fb441e7b8c2cc93c11e2829d"
-        }
-      ]
-    },
-    {
-      "name": "mitt",
-      "version": "3.0.1",
-      "license": "MIT",
-      "repository": "developit/mitt",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "1cab22f196264195a4caec8ca5630170fdde76ee8f43346e47021d087332d3b0"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "23f29ca7271409b35761a333311e24dd1dc6b62bea91fd7c80b2bc753f3b1b8f"
         }
       ]
     },
@@ -15014,18 +14317,6 @@
       ]
     },
     {
-      "name": "normalize-url",
-      "version": "6.1.0",
-      "license": "MIT",
-      "repository": "sindresorhus/normalize-url",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
-        }
-      ]
-    },
-    {
       "name": "npm-run-path",
       "version": "4.0.1",
       "license": "MIT",
@@ -15090,18 +14381,6 @@
         {
           "member": "readme.markdown (license section)",
           "sha256": "04694eacd112f4a979f1dd1c7a1c365ea2d721f505eb0464bd05838d80933c34"
-        }
-      ]
-    },
-    {
-      "name": "object-keys",
-      "version": "1.1.1",
-      "license": "MIT",
-      "repository": "git://github.com/ljharb/object-keys.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "5640e5cbe2e9f57f6ccfdd8dbfbeadb875495bdbcb69d2666ce3177ccd0942e4"
         }
       ]
     },
@@ -15262,18 +14541,6 @@
         {
           "member": "LICENSE",
           "sha256": "d06a69cefbdd9135436ff8e36ea5c32f07fc27c629063aa411f811efe7c30359"
-        }
-      ]
-    },
-    {
-      "name": "p-cancelable",
-      "version": "2.1.1",
-      "license": "MIT",
-      "repository": "sindresorhus/p-cancelable",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
         }
       ]
     },
@@ -15962,22 +15229,6 @@
       ]
     },
     {
-      "name": "progress",
-      "version": "2.0.3",
-      "license": "MIT",
-      "repository": "git://github.com/visionmedia/node-progress",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "d7d2a7786de7c7cfd96f920c6f12927d74e1d2a861ca4498bf465c3bc3f4c21c"
-        },
-        {
-          "member": "Readme.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
-        }
-      ]
-    },
-    {
       "name": "prompts",
       "version": "2.4.2",
       "license": "MIT",
@@ -16106,22 +15357,6 @@
       ]
     },
     {
-      "name": "pump",
-      "version": "3.0.4",
-      "license": "MIT",
-      "repository": "git://github.com/mafintosh/pump.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "3fe8d55a98dbf260eace67c00cf9bc53edb46234e840098a0b93df3096b97fb6"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
-        }
-      ]
-    },
-    {
       "name": "qrcode",
       "version": "1.5.4",
       "license": "MIT",
@@ -16162,18 +15397,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "a3c7d5b41af742dce5b55e0b2cb165c39b857e3d48e51ed2ee1e66afe3b82887"
-        }
-      ]
-    },
-    {
-      "name": "quick-lru",
-      "version": "5.1.1",
-      "license": "MIT",
-      "repository": "sindresorhus/quick-lru",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0"
         }
       ]
     },
@@ -16810,22 +16033,6 @@
       ]
     },
     {
-      "name": "resolve-alpn",
-      "version": "1.2.1",
-      "license": "MIT",
-      "repository": "git+https://github.com/szmarczak/resolve-alpn.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "03b347a3d13b0e5bdb8fc5edeed0286b1be51441c6490a90710692d227136e0d"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
-        }
-      ]
-    },
-    {
       "name": "resolve-from",
       "version": "4.0.0",
       "license": "MIT",
@@ -16838,22 +16045,6 @@
         {
           "member": "readme.md (license section)",
           "sha256": "0b8c7c0c5579b689ab841976b473ebe9269aa46347fc1295431e0fc3f2452d36"
-        }
-      ]
-    },
-    {
-      "name": "responselike",
-      "version": "2.0.1",
-      "license": "MIT",
-      "repository": "https://github.com/sindresorhus/responselike.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "2c4e066228dbca96c8c6e8bef5377306f227ffa1d87a18a218b230e13ac5d39e"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "4f6bff47d23de042c99fb8f97a4a4193390d0f7fef2443b6aef8945aa8147b79"
         }
       ]
     },
@@ -16914,18 +16105,6 @@
       ]
     },
     {
-      "name": "roarr",
-      "version": "2.15.4",
-      "license": "BSD-3-Clause",
-      "repository": "git@github.com:gajus/roarr.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "ba98e94118579117505f6f11fd9a4354c5e65ece03b4898d8b8f7785efcd25c1"
-        }
-      ]
-    },
-    {
       "name": "robust-predicates",
       "version": "3.0.3",
       "license": "Unlicense",
@@ -16970,42 +16149,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "5ca52667d17b1f17d424c5dcc5564d9783f6c8e88cb38d4a1628132fcf22d57e"
-        }
-      ]
-    },
-    {
-      "name": "rrdom",
-      "version": "2.1.6",
-      "license": "MIT",
-      "repository": "git+https://github.com/rrweb-io/rrweb.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/rrweb-io/rrweb/rrweb%402.1.6/LICENSE",
-          "sha256": "e49e62397b603438476e0d6b5ca3b6e6d4f23a80594e596aff29ac04fa3e1b1c"
-        }
-      ]
-    },
-    {
-      "name": "rrweb-snapshot",
-      "version": "2.1.6",
-      "license": "MIT",
-      "repository": "git+https://github.com/rrweb-io/rrweb.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/rrweb-io/rrweb/rrweb%402.1.6/LICENSE",
-          "sha256": "e49e62397b603438476e0d6b5ca3b6e6d4f23a80594e596aff29ac04fa3e1b1c"
-        }
-      ]
-    },
-    {
-      "name": "rrweb",
-      "version": "2.1.6",
-      "license": "MIT",
-      "repository": "git+ssh://git@github.com/rrweb-io/rrweb.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/rrweb-io/rrweb/rrweb%402.1.6/LICENSE",
-          "sha256": "e49e62397b603438476e0d6b5ca3b6e6d4f23a80594e596aff29ac04fa3e1b1c"
         }
       ]
     },
@@ -17118,22 +16261,6 @@
       ]
     },
     {
-      "name": "semver-compare",
-      "version": "1.0.0",
-      "license": "MIT",
-      "repository": "git://github.com/substack/semver-compare.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b"
-        },
-        {
-          "member": "readme.markdown (license section)",
-          "sha256": "4d8a73c1024e09c8b323a225d3a7880156ba5a4b9a8d56c9f4fd4202384b110f"
-        }
-      ]
-    },
-    {
       "name": "semver",
       "version": "6.3.1",
       "license": "ISC",
@@ -17170,18 +16297,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "6acb5236fdb284e239fdd9aa3e939067b28373d09c241ce7aab38d2d01f0e495"
-        }
-      ]
-    },
-    {
-      "name": "serialize-error",
-      "version": "7.0.1",
-      "license": "MIT",
-      "repository": "sindresorhus/serialize-error",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
         }
       ]
     },
@@ -17546,22 +16661,6 @@
       ]
     },
     {
-      "name": "sprintf-js",
-      "version": "1.1.3",
-      "license": "BSD-3-Clause",
-      "repository": "https://github.com/alexei/sprintf.js.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "f8287e4dd9480be58c56aca4a55c23b782c43a86e69aabad78fff4df0d29edef"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "b0103765a1ddbb08ac290cf214f00caabac645d7f8702d22677d0b766f7b7729"
-        }
-      ]
-    },
-    {
       "name": "ssh2",
       "version": "1.17.0",
       "license": "MIT",
@@ -17834,18 +16933,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "0ce5ffaadf384c9e64046fffa70faec61ac66c66af562682b16566a99be9e228"
-        }
-      ]
-    },
-    {
-      "name": "sumchecker",
-      "version": "3.0.1",
-      "license": "Apache-2.0",
-      "repository": "git+https://github.com/malept/sumchecker.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
         }
       ]
     },
@@ -18215,22 +17302,6 @@
     },
     {
       "name": "type-fest",
-      "version": "0.13.1",
-      "license": "(MIT OR CC0-1.0)",
-      "repository": "sindresorhus/type-fest",
-      "notices": [
-        {
-          "member": "license",
-          "sha256": "64a93ffc0a06a2266dbb57ed7ebe3b56ba66ab337b6347fabdbf86c76819fbae"
-        },
-        {
-          "member": "readme.md (license section)",
-          "sha256": "ee8ce2b628da002780228222081dd7353fb050ca452de937983a369a1d80c418"
-        }
-      ]
-    },
-    {
-      "name": "type-fest",
       "version": "5.5.0",
       "license": "(MIT OR CC0-1.0)",
       "repository": "sindresorhus/type-fest",
@@ -18342,18 +17413,6 @@
         {
           "member": "README.md (license section)",
           "sha256": "d274cc11a7f8b98caff978f6b5acdfd72de3ba6a2c3c20ea3bd984fcde194201"
-        }
-      ]
-    },
-    {
-      "name": "undici-types",
-      "version": "7.16.0",
-      "license": "MIT",
-      "repository": "git+https://github.com/nodejs/undici.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "a6db8096b2707bc0102d256917d4d33f298ba36d8c3f25de067a2b5bb379db27"
         }
       ]
     },
@@ -18546,22 +17605,6 @@
         {
           "member": "readme.md (license section)",
           "sha256": "3d0339f36ada73cc5c1832994ec0be2c9e77e3a91afad459af826df73a82616a"
-        }
-      ]
-    },
-    {
-      "name": "universalify",
-      "version": "0.1.2",
-      "license": "MIT",
-      "repository": "git+https://github.com/RyanZim/universalify.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "3fda5977c0904e226190b4e21d64340c1731e2142d6fe5f3dee0090a216b8b63"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "daf005969aac8cb4283b3777361f0244f4cce898b9a983a60b7f0d9e96f559bf"
         }
       ]
     },
@@ -19118,22 +18161,6 @@
       ]
     },
     {
-      "name": "web-vitals",
-      "version": "3.5.2",
-      "license": "Apache-2.0",
-      "repository": "https://github.com/GoogleChrome/web-vitals.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "bfdeded4040e05da31ca9b6239dc83bd23fa26ac8db87342a7ca4363f68916ff"
-        },
-        {
-          "member": "README.md (license section)",
-          "sha256": "43aaa4efe24cac3b61a9626d2ec1316b634457f90919fff757c299c090d6595f"
-        }
-      ]
-    },
-    {
       "name": "whatwg-encoding",
       "version": "3.1.1",
       "license": "MIT",
@@ -19470,18 +18497,6 @@
         {
           "member": "LICENSE",
           "sha256": "2f1a503bfab84b3ba7393627308b3274501e459e3b5185bbb56bbf16cb1602d4"
-        }
-      ]
-    },
-    {
-      "name": "yauzl",
-      "version": "2.10.0",
-      "license": "MIT",
-      "repository": "https://github.com/thejoshwolfe/yauzl.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "b303783d5eb7ca50b853ffa5f145e4e7998fab339831d848f507ca6cd970577a"
         }
       ]
     },
@@ -30178,324 +29193,6 @@
       ]
     },
     {
-      "id": "React Best Practices skill",
-      "referenceRevision": "063bee94c3f4df8453406c830b0a7df0f2860278",
-      "source": "https://github.com/vercel-labs/agent-skills/tree/063bee94c3f4df8453406c830b0a7df0f2860278",
-      "importRevision": null,
-      "roots": [
-        ".agents/skills/react-best-practices"
-      ],
-      "license": "MIT",
-      "scope": "Vendored React/Next.js guidance and local adaptations; local README preserves Shu Ding / Vercel attribution.",
-      "reviewRequired": "Pinned upstream README and skill declare MIT, but a complete original copyright/license notice has not been obtained.",
-      "files": [
-        {
-          "file": ".agents/skills/react-best-practices/AGENTS.md",
-          "sha256": "9d0d1c4f1922a65ddead8b869b4f2653bf3c10c84b1c8c9dd2507e0a4a4c82cb"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/README.md",
-          "sha256": "e49f5e0088d47dab6687a7d501e9f3b23ce8ce7e8a8e428a2fd590e582f966da"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/SKILL.md",
-          "sha256": "b7d246acb440bee224ab33614979a5b8debe5fdb13d0304967aa19358eb69d9f"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/metadata.json",
-          "sha256": "c4e18bac3290fbe1b471a605867d4df68b03144ea26b8befdbe8f9d8fd124354"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/_sections.md",
-          "sha256": "01c59969e4e867f0708c8f8ef9c6d87fab9a07d0586244f429ff84013db8a115"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/_template.md",
-          "sha256": "fee4f1bc27a105bd82662c259018e6a2d115b01d355ca04b8ee72ccaf6c7e434"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/advanced-effect-event-deps.md",
-          "sha256": "b5d8d13942539c7545cf881d4faab8e868dcf0cc8e75fa3e6fb33ff4844f271f"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/advanced-event-handler-refs.md",
-          "sha256": "775e3c2edc803270fb91b5e5b0b111c38d4d1146a7ae0201ccc22c22c3c4c68d"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/advanced-init-once.md",
-          "sha256": "9e41179610d597081728d4f8102506e7ccee06a9c027caf1552d4ab5b3ed042f"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/advanced-use-latest.md",
-          "sha256": "5cd66168e6bec629ee882e969b0d53d52610f7cb4e065846ed1d0793a1dec1bf"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/async-api-routes.md",
-          "sha256": "242c9d7a00ba5083c12c233a64108755f7c6ef59925a7c50dcb436f0b1edd3f8"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/async-cheap-condition-before-await.md",
-          "sha256": "bced8ccf27a344e78f1334c8ce3e6a8ce9ffbffe26a9d65f65fd280c6d8dabdb"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/async-defer-await.md",
-          "sha256": "ce8a6727ed3f20e29d2a9272943a7d4f10ea6001a094e88909d881724270c8ea"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/async-dependencies.md",
-          "sha256": "3f03ca575c1d9be6e1d9dbe7caf3c1e7d8546133a47783d94293ddde213f03f8"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/async-parallel.md",
-          "sha256": "7faedef899d93d30cb03c0508bfa15190edbed7855c6bf88c1b1400e236a728c"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/async-suspense-boundaries.md",
-          "sha256": "6fae5c16cc3f84e96ed7a20c063d7561ad5368feebca758f2b70600dbd9076d4"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/bundle-analyzable-paths.md",
-          "sha256": "5d8d29ba3f68f8da57bdf0ee50ef84b4556eba95a207c9eb4959520a9d342bf5"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/bundle-barrel-imports.md",
-          "sha256": "512aa4277d3f29ce6d7612cb0744d8c049ccafdeb3a72fd2843ae8ce0be2f64d"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/bundle-conditional.md",
-          "sha256": "f8e927725c448703fa3f1fb31bd45218e9259d544000f83eb95444fee7def7f6"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/bundle-defer-third-party.md",
-          "sha256": "0c3575198a55115cd278e64bc328ec348a06d6ae9e3076d9eb14a15d050b46cb"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/bundle-dynamic-imports.md",
-          "sha256": "3d13ee1e2ed4596c7ddd034607719b70ebc9346c65eeaff79cf2c2417d8f4104"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/bundle-preload.md",
-          "sha256": "7e632ae1cb8b914243ff6f5103e30009514e292c3321c265911661d5e458b356"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/client-event-listeners.md",
-          "sha256": "dcdfd4e5f57c36b8a206a31e321f7227b6427b430ee1182cee1e1abd77764635"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/client-localstorage-schema.md",
-          "sha256": "6e21253d070ebe50b6c222186ed756814dfae674d458b475727c9d4ef6c23c9a"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/client-passive-event-listeners.md",
-          "sha256": "72894ea2eef53bf8efe0c597ca4e4ef2b47d48e1c9d3f2e5ea7cf50feeb0bac8"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/client-swr-dedup.md",
-          "sha256": "6be13ae14595b48908310672ca8b1bb6720e9dd906f68566fc48778da2dc8cd3"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-batch-dom-css.md",
-          "sha256": "d00ff06d829a4a367dcf3d3919812733b6542c4dde8a40722b044823e66cd402"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-cache-function-results.md",
-          "sha256": "3005995cfe8eba0538279f73b3423400bc1f0d410130b7f09c4c6fc938c9c2d7"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-cache-property-access.md",
-          "sha256": "7bdf71639e95132223ebf4309580a4a8979e2a9c6d0551409843d0eea81f8117"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-cache-storage.md",
-          "sha256": "b428b53c40e8e45edd72d3f5de600cc07009c1d7dd68991b04ae141c4b07d441"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-combine-iterations.md",
-          "sha256": "8f054989560a25f72d53f202443d5fc2ff79375aaff881f7966fd4d9fa223ecb"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-early-exit.md",
-          "sha256": "8a31c105d95c20d774e69f0dc4f14ac869276745dc97f4b3f604dba2c5b04603"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-flatmap-filter.md",
-          "sha256": "046a287a88aeeadb002fbc590d459c8f12920ccc0c2d335228ea469bd9cc4b5f"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-hoist-regexp.md",
-          "sha256": "3381777595af13ab14d9d7c2c6f30c8fbde0a7dba69d12aa4c2f32947ec4e99e"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-index-maps.md",
-          "sha256": "a0bdf99ff9d954b63eea790fd81768d8ce141f6df1e87c25840e9c88fdcc4d45"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-length-check-first.md",
-          "sha256": "e5efeb8ff1ddad9286e4ae842ef42a517925ee03edb46e9c2a5a794d9e077ea9"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-min-max-loop.md",
-          "sha256": "beb6df30fab6d299169d27693da43201d1999010b778fe743679860ae8a03af5"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-request-idle-callback.md",
-          "sha256": "219c5bdbb779a44c63262a5ca4e747aa484a0c6b81938a888d80f0c238a69e9e"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-set-map-lookups.md",
-          "sha256": "a7fd781a6ba9ad49065961b6f9a90ef486bf6b648390e1a08704025f98e1642b"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/js-tosorted-immutable.md",
-          "sha256": "62dc2921621cfe50b377979b0cf0118d9284fc73f92d88e89baccf8fecd76692"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-activity.md",
-          "sha256": "535312cadf0312834e749a14897123f7eb98ec6daadae35f7cbb9d2e36f6d545"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-animate-svg-wrapper.md",
-          "sha256": "369976cd613a7d5aee5350eb55ceb62184ace4d75a9a57c2e4cd579157a2f54a"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-conditional-render.md",
-          "sha256": "81ef33223568f03038a2189a9d97db05e447168430a2ad7c7258208b14c82684"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-content-visibility.md",
-          "sha256": "473ba911f62559ab463a7b01d4167010548a15e92d08a3e2e0306d6709999d16"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-hoist-jsx.md",
-          "sha256": "4cede4559302c8577ec0e1a9b761804090783b8d9da8134ca9af551b54cd5157"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-hydration-no-flicker.md",
-          "sha256": "79ffe8f33ec4c4b0838e1dfd91d679b19c429847b58259baa6968485ed3a5005"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-hydration-suppress-warning.md",
-          "sha256": "f2ca794aa650534f31f4c94ef75ff0002edaee56207950297743300a568072f9"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-resource-hints.md",
-          "sha256": "424aa829393482e7784e2296eb5026512bff426405f97e63ee1e85a0cd1d19f7"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-script-defer-async.md",
-          "sha256": "1d7754ca787a16517b1e8de16ae203789c0ceadf9f76d564e16a4f8c6fa31359"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-svg-precision.md",
-          "sha256": "ed468533f6e95f622859c884b122cf21f9f593ed6bb3d500a54de4b9f9bcb9fb"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rendering-usetransition-loading.md",
-          "sha256": "e14f4eb969c7c86c8fd057ce83d8146279e45cac5ccc4c50c8aca32212b07d14"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-defer-reads.md",
-          "sha256": "2faba85e83c16aebf48168f9b1b261e2c9922a69d0e1f36f767250eeefb746bd"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-dependencies.md",
-          "sha256": "25aa43d6aaf40cb1edb97d36eb8684678c929560934c9731d50ac602284fe93a"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-derived-state-no-effect.md",
-          "sha256": "3f5b04e50ed1be24e203f1f5bd645df422e720f784e9604676652f161ac43635"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-derived-state.md",
-          "sha256": "8f1d225c76d11ed7705110898ba21ecb7a9d9b81eb688b678b6ca152e5d7851d"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-functional-setstate.md",
-          "sha256": "87fd1a19792955f50bac69ed46e3576d55f35138928a660867a9e99cd71f68af"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-lazy-state-init.md",
-          "sha256": "f0c25cbab4981d113663fea1508ce0b07e59e992121743bed5e7a107dc669d03"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-memo-with-default-value.md",
-          "sha256": "97044a6c30973672df6be20cbcd7e1e3582ca7550a46b661021c3ade93759354"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-memo.md",
-          "sha256": "bd1f0d21b55e68685468d883d8e6d385a6f8feb8fcd9628066ac4144d7087ba6"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-move-effect-to-event.md",
-          "sha256": "05e13a75e5237d8491a49dcd7d724e93522b65126f11d5782b6f0408b60afbfe"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-no-inline-components.md",
-          "sha256": "ce5cf1319267e3184b7e79d08d555cc51dc6a664ddff24d4557b01d16e954a94"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-simple-expression-in-memo.md",
-          "sha256": "147dfd4acab2c64f20ab9f0476e966d9445abebbcc400eb51dd407037e1bc998"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-split-combined-hooks.md",
-          "sha256": "4124d594029220f6cedbdff5dc2bbacc5c16289d5aeb53fff6ef6d7341a2d2ea"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-transitions.md",
-          "sha256": "698267bd65c8a0bf3350b7386d7b619da02fd1fac97930d9a3098346c6853761"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-use-deferred-value.md",
-          "sha256": "84c8bec6c8d525e8e712376c4d37d1133fe74d2550a0943232dd139147b87c24"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/rerender-use-ref-transient-values.md",
-          "sha256": "adc30b14f13ea2b020bf8eaa2b3fd8410050421c5753de0c8ff03bd10b9e5576"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-after-nonblocking.md",
-          "sha256": "13d34ead58d626015c300d9d737808ae23a0a53976b8497247cd9323ff90aeda"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-auth-actions.md",
-          "sha256": "7961af203b51ef5c2a975e0e5d05e91955a4b214a15d1970a4b8ea7150722d40"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-cache-lru.md",
-          "sha256": "bb33aab8bb6f81bbaa441cf6e254cf79f73a8a15b610f81fd2de6567440f232f"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-cache-react.md",
-          "sha256": "6a67163afb9b98bae45b129d48cc26b00d13e2b5a38b36d19b05f1444537aefa"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-dedup-props.md",
-          "sha256": "833b59dc0d9a6f5473bc57fef70f4c9e928513bb0bdd9e3361f0520ecb529626"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-hoist-static-io.md",
-          "sha256": "2a4d6f78430661ec065a6649c1859655039d3ec2d23e35797d95ac730cf017eb"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-no-shared-module-state.md",
-          "sha256": "74f529c7e2bf6f5ed0552580c1ccc6d35f9ce48c3de008f3a98c7d876a26fd1f"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-parallel-fetching.md",
-          "sha256": "cd68caf2eb3946f12bd236c5a4e668e03dd3e7a54acf8d84bd54a199126d6018"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-parallel-nested-fetching.md",
-          "sha256": "4d9c44e579e1286013acf5cb5f65b04297d2b68909f44f8163804656514a78ff"
-        },
-        {
-          "file": ".agents/skills/react-best-practices/rules/server-serialization.md",
-          "sha256": "4d025c42043c56e6355196a2e885d168cdb15248d0797146c9db838a57b34946"
-        }
-      ]
-    },
-    {
       "id": "tabler-icons",
       "referenceRevision": "v3.48.0",
       "source": "https://github.com/tabler/tabler-icons/blob/v3.48.0/LICENSE",
@@ -30517,11 +29214,6 @@
     }
   ],
   "patches": [
-    {
-      "package": "@arms/rum-electron@0.0.3",
-      "file": "patches/@arms__rum-electron@0.0.3.patch",
-      "sha256": "73b419d97b7caee96975c130a52caa65de072ec21a372aa9836ecfa928847085"
-    },
     {
       "package": "@ai-sdk/openai-compatible@2.0.60",
       "file": "patches/@ai-sdk__openai-compatible@2.0.60.patch",
@@ -30754,38 +29446,6 @@
         "sourceTreeUrl": "https://api.github.com/repos/nteract/ansi-to-react/git/trees/145140971e9d83ccac32265f24b1c55dea437896?recursive=1",
         "upstreamLicenseFiles": []
       }
-    },
-    {
-      "package": "keyv@4.5.4",
-      "file": "third-party/upstream/6f7e6eae2a2afbaa67b266650f7342e7bf8e82cb57f6ab98148b3d6e0fb4450a.txt",
-      "sha256": "6f7e6eae2a2afbaa67b266650f7342e7bf8e82cb57f6ab98148b3d6e0fb4450a",
-      "source": "https://registry.npmjs.org/keyv/4.5.4",
-      "evidenceKind": "publisher-license-identifier-and-standard-terms",
-      "license": "MIT"
-    },
-    {
-      "package": "@arms/rum-browser@0.1.8",
-      "file": "third-party/upstream/2c976d327b293bd74c257cd53e9b4ecef97a06b1651baa3b24327c97192cb3de.txt",
-      "sha256": "2c976d327b293bd74c257cd53e9b4ecef97a06b1651baa3b24327c97192cb3de",
-      "source": "https://registry.npmjs.org/%40arms%2frum-browser%400.1.8",
-      "evidenceKind": "publisher-license-identifier-and-standard-terms",
-      "license": "ISC"
-    },
-    {
-      "package": "@arms/rum-core@0.1.4",
-      "file": "third-party/upstream/328eb7864c20ab77607b26ee1913b65a9b880f6300eea9e667b890da896a2f40.txt",
-      "sha256": "328eb7864c20ab77607b26ee1913b65a9b880f6300eea9e667b890da896a2f40",
-      "source": "https://registry.npmjs.org/%40arms%2frum-core%400.1.4",
-      "evidenceKind": "publisher-license-identifier-and-standard-terms",
-      "license": "ISC"
-    },
-    {
-      "package": "@arms/rum-electron@0.0.3",
-      "file": "third-party/upstream/38b6f63a0aa422b5c329e75f1aeecd2b02e83caab1747644c00810870d77bacb.txt",
-      "sha256": "38b6f63a0aa422b5c329e75f1aeecd2b02e83caab1747644c00810870d77bacb",
-      "source": "https://registry.npmjs.org/%40arms%2frum-electron%400.0.3",
-      "evidenceKind": "publisher-license-identifier-and-standard-terms",
-      "license": "MIT"
     }
   ],
   "embedded": [
@@ -31055,10 +29715,6 @@
   },
   "reviewRequired": [
     {
-      "id": "React Best Practices skill",
-      "reason": "Pinned upstream README and skill declare MIT, but a complete original copyright/license notice has not been obtained."
-    },
-    {
       "id": "unsafe-pointer@0.2.0",
       "reason": "Original version-specific publisher copyright/license material remains incomplete."
     },
@@ -31100,22 +29756,6 @@
     },
     {
       "id": "ansi-to-react@6.2.6",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "keyv@4.5.4",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "@arms/rum-browser@0.1.8",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "@arms/rum-core@0.1.4",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "@arms/rum-electron@0.0.3",
       "reason": "Original version-specific publisher copyright/license material remains incomplete."
     },
     {

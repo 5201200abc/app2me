@@ -17,6 +17,10 @@ export async function readVerifiedNotices(root = repositoryRoot, { requireComple
   const bytes = await readThirdPartyNotices(root);
   if (hash(bytes) !== manifest.noticesSha256)
     throw new Error("Third-party notices changed; regenerate the inventory");
+  for (const [file, expected] of Object.entries(manifest.rawInputs ?? {})) {
+    if (hash(await readFile(resolve(root, file))) !== expected)
+      throw new Error(`Third-party source evidence changed: ${file}`);
+  }
   for (const [file, expected] of Object.entries(manifest.inputs)) {
     // 工作区文本允许 Windows checkout 的 CRLF；原始许可和发行声明另用字节哈希校验。
     if (hash((await readFile(resolve(root, file), "utf8")).replaceAll("\r\n", "\n")) !== expected) {

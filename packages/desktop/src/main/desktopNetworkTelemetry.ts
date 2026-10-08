@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- 网络指标采集/聚合/ARMS 上报 */
-import armsRum from "@arms/rum-electron";
+import { recordDesktopDiagnosticEvent } from "./desktopDiagnosticEvent.js";
 import { mapMyCodeEnvToArmsRumEnv } from "@mycode/shared";
 import type { NetworkObservation } from "@mycode/rpc";
 import {
@@ -71,7 +71,7 @@ function reportNetworkCustom(
   });
 
   try {
-    armsRum.sendCustom({
+    recordDesktopDiagnosticEvent({
       name,
       type: "custom",
       group: "network",
@@ -141,12 +141,6 @@ export function ingestHostNetworkObservations(observations: NetworkObservation[]
 
 export function configureDesktopNetworkTelemetry(context: NetworkGlobalContext): void {
   globalContext = context;
-  armsRum.setConfig("properties", {
-    device_mid: context.deviceMid,
-    platform: normalizeOsCategory(context.platform),
-    app_version: context.appVersion,
-    arms_env: context.armsEnv,
-  });
 }
 
 export function registerDesktopNetworkTelemetry(logger: NetworkLogger): void {

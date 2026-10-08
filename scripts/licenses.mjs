@@ -14,6 +14,7 @@
 import { classifyLicense } from "./license-policy.mjs";
 import { generateThirdPartyNotices } from "./generate-third-party-notices.mjs";
 import { readVerifiedNotices } from "./third-party-notices.mjs";
+import { readLicenseSourceReviews } from "./license-source-reviews.mjs";
 import { readFile } from "node:fs/promises";
 import {
   readWorkspaceProductionGraph,
@@ -68,10 +69,19 @@ function weakAllowReason(r) {
 }
 
 if (command === "check") {
+  const { verified: sourceReviews } = await readLicenseSourceReviews(ROOT);
+  const rootPackage = JSON.parse(await readFile(path.join(ROOT, "package.json"), "utf8"));
   const bad = [];
   for (const r of installed.values()) {
     if (r.bucket === "green") continue;
     if (r.bucket.startsWith("yellow") && weakAllowReason(r)) continue;
+    const key = `${r.name}@${r.version}`;
+    const review = sourceReviews.get(key);
+    if (review?.license === r.license) {
+      if (Object.hasOwn(rootPackage.pnpm?.patchedDependencies ?? {}, key))
+        throw new Error(`Modified MPL dependency needs corresponding modified source: ${key}`);
+      continue;
+    }
     bad.push(r);
   }
   const failures = [];

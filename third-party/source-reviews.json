@@ -1,0 +1,560 @@
+{
+  "schemaVersion": 1,
+  "scope": "Exact published package versions, corresponding unmodified MPL-covered sources, and publisher release metadata. This records source-form obligations, not a blanket approval of native binary provenance or other license obligations.",
+  "archives": [
+    {
+      "id": "cbindgen@0.29.4",
+      "name": "cbindgen",
+      "version": "0.29.4",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+      "file": "third-party/source-archives/cbindgen-0.29.4.crate",
+      "sha256": "2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20",
+      "cargoChecksum": "2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20"
+    },
+    {
+      "id": "option-ext@0.2.0",
+      "name": "option-ext",
+      "version": "0.2.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/option-ext/option-ext-0.2.0.crate",
+      "file": "third-party/source-archives/option-ext-0.2.0.crate",
+      "sha256": "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d",
+      "cargoChecksum": "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
+    },
+    {
+      "id": "uniffi@0.31.0",
+      "name": "uniffi",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi/uniffi-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi-0.31.0.crate",
+      "sha256": "b8c6dec3fc6645f71a16a3fa9ff57991028153bd194ca97f4b55e610c73ce66a",
+      "cargoChecksum": "b8c6dec3fc6645f71a16a3fa9ff57991028153bd194ca97f4b55e610c73ce66a"
+    },
+    {
+      "id": "uniffi_bindgen@0.31.0",
+      "name": "uniffi_bindgen",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_bindgen/uniffi_bindgen-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_bindgen-0.31.0.crate",
+      "sha256": "4ed0150801958d4825da56a41c71f000a457ac3a4613fa9647df78ac4b6b6881",
+      "cargoChecksum": "4ed0150801958d4825da56a41c71f000a457ac3a4613fa9647df78ac4b6b6881"
+    },
+    {
+      "id": "uniffi_core@0.31.0",
+      "name": "uniffi_core",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_core/uniffi_core-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_core-0.31.0.crate",
+      "sha256": "b0ef62e69762fbb9386dcb6c87cd3dd05d525fa8a3a579a290892e60ddbda47e",
+      "cargoChecksum": "b0ef62e69762fbb9386dcb6c87cd3dd05d525fa8a3a579a290892e60ddbda47e"
+    },
+    {
+      "id": "uniffi_internal_macros@0.31.0",
+      "name": "uniffi_internal_macros",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_internal_macros/uniffi_internal_macros-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_internal_macros-0.31.0.crate",
+      "sha256": "98f51ebca0d9a4b2aa6c644d5ede45c56f73906b96403c08a1985e75ccb64a01",
+      "cargoChecksum": "98f51ebca0d9a4b2aa6c644d5ede45c56f73906b96403c08a1985e75ccb64a01"
+    },
+    {
+      "id": "uniffi_macros@0.31.0",
+      "name": "uniffi_macros",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_macros/uniffi_macros-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_macros-0.31.0.crate",
+      "sha256": "db9d12529f1223d014fd501e5f29ca0884d15d6ed5ddddd9f506e55350327dc3",
+      "cargoChecksum": "db9d12529f1223d014fd501e5f29ca0884d15d6ed5ddddd9f506e55350327dc3"
+    },
+    {
+      "id": "uniffi_meta@0.31.0",
+      "name": "uniffi_meta",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_meta/uniffi_meta-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_meta-0.31.0.crate",
+      "sha256": "9df6d413db2827c68588f8149d30d49b71d540d46539e435b23a7f7dbd4d4f86",
+      "cargoChecksum": "9df6d413db2827c68588f8149d30d49b71d540d46539e435b23a7f7dbd4d4f86"
+    },
+    {
+      "id": "uniffi_pipeline@0.31.0",
+      "name": "uniffi_pipeline",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_pipeline/uniffi_pipeline-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_pipeline-0.31.0.crate",
+      "sha256": "a806dddc8208f22efd7e95a5cdf88ed43d0f3271e8f63b47e757a8bbdb43b63a",
+      "cargoChecksum": "a806dddc8208f22efd7e95a5cdf88ed43d0f3271e8f63b47e757a8bbdb43b63a"
+    },
+    {
+      "id": "uniffi_udl@0.31.0",
+      "name": "uniffi_udl",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_udl/uniffi_udl-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_udl-0.31.0.crate",
+      "sha256": "0d1a7339539bf6f6fa3e9b534dece13f778bda2d54b1a6d4e40b4d6090ac26e7",
+      "cargoChecksum": "0d1a7339539bf6f6fa3e9b534dece13f778bda2d54b1a6d4e40b4d6090ac26e7"
+    },
+    {
+      "id": "uniffi_build@0.31.0",
+      "name": "uniffi_build",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_build/uniffi_build-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_build-0.31.0.crate",
+      "sha256": "b78fd9271a4c2e85bd2c266c5a9ede1fac676eb39fd77f636c27eaf67426fd5f",
+      "cargoChecksum": "b78fd9271a4c2e85bd2c266c5a9ede1fac676eb39fd77f636c27eaf67426fd5f"
+    },
+    {
+      "id": "uniffi_testing@0.31.0",
+      "name": "uniffi_testing",
+      "version": "0.31.0",
+      "license": "MPL-2.0",
+      "source": "https://static.crates.io/crates/uniffi_testing/uniffi_testing-0.31.0.crate",
+      "file": "third-party/source-archives/uniffi_testing-0.31.0.crate",
+      "sha256": "4802bed208a296657eef3451a961a6502e1d7aa8930b4b0cd952ed4f81a3957e",
+      "cargoChecksum": "4802bed208a296657eef3451a961a6502e1d7aa8930b4b0cd952ed4f81a3957e"
+    },
+    {
+      "id": "ubjs-core",
+      "repository": "jhugman/uniffi-bindgen-react-native",
+      "revision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+      "source": "https://codeload.github.com/jhugman/uniffi-bindgen-react-native/tar.gz/49bc59194d183a05855ed4104c18eb92fb465e02",
+      "file": "third-party/source-archives/ubjs-core-49bc59194d183a05855ed4104c18eb92fb465e02.tar.gz",
+      "sha256": "7d5eefa49ace07f2bff5dcc4cea9d78db0934fd432b05100942ba8bb6c1322b5"
+    },
+    {
+      "id": "ubjs-native",
+      "repository": "jhugman/uniffi-bindgen-react-native",
+      "revision": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "source": "https://codeload.github.com/jhugman/uniffi-bindgen-react-native/tar.gz/dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "file": "third-party/source-archives/ubjs-native-dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449.tar.gz",
+      "sha256": "d5084bb2064d0784f27023f96325af5e5d81477da21d8cdeb9b61d68065fe78f"
+    }
+  ],
+  "cargoLocks": [
+    {
+      "file": "third-party/source-reviews/core-cargo-lock.txt",
+      "sha256": "a9dcb14ed212fe8a451f8a0b98265bf21907bfb3a9c70be893b8c8190298efdd"
+    },
+    {
+      "file": "third-party/source-reviews/cua-cargo-lock.txt",
+      "sha256": "5fa39679b3fa4a44d8011dfe36bf9e4e2263d41fbd09980e51a6bbca28840968"
+    },
+    {
+      "file": "third-party/source-reviews/native-cargo-lock.txt",
+      "sha256": "925e26f606cd906f74675c14687bbe4561844a86c935a4db77dd089a83449316"
+    }
+  ],
+  "packages": [
+    {
+      "package": "@trycua/cua-driver-darwin-arm64@0.30.4",
+      "license": "MIT AND MPL-2.0",
+      "metadataFile": "third-party/source-reviews/trycua-cua-driver-darwin-arm64-0.30.4.json",
+      "metadataSha256": "024d49ec0486850014764b34fec7d1713f2db013d7eca0477e908f56bff5fa71",
+      "gitHead": null,
+      "metadataSource": "https://registry.npmjs.org/@trycua%2fcua-driver-darwin-arm64/0.30.4",
+      "sources": [
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ],
+      "sourceRevision": "bf6c76786d938070f4ecf1e44004752f69f518b8",
+      "releaseTag": {
+        "file": "third-party/source-reviews/cua-driver-rs-v0.30.4-tag.json",
+        "sha256": "bf7b19c9fee67fb5b2b64f13092f41387967e049d5cb9bf58438b044a2707f5f"
+      },
+      "driverSource": "https://github.com/trycua/cua/tree/bf6c76786d938070f4ecf1e44004752f69f518b8/libs/cua-driver"
+    },
+    {
+      "package": "@trycua/cua-driver-darwin-x64@0.30.4",
+      "license": "MIT AND MPL-2.0",
+      "metadataFile": "third-party/source-reviews/trycua-cua-driver-darwin-x64-0.30.4.json",
+      "metadataSha256": "7cabda58e36fb4aa100bf0937282daa7bcef693c20c3b3a5af095187f1806b6d",
+      "gitHead": null,
+      "metadataSource": "https://registry.npmjs.org/@trycua%2fcua-driver-darwin-x64/0.30.4",
+      "sources": [
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ],
+      "sourceRevision": "bf6c76786d938070f4ecf1e44004752f69f518b8",
+      "releaseTag": {
+        "file": "third-party/source-reviews/cua-driver-rs-v0.30.4-tag.json",
+        "sha256": "bf7b19c9fee67fb5b2b64f13092f41387967e049d5cb9bf58438b044a2707f5f"
+      },
+      "driverSource": "https://github.com/trycua/cua/tree/bf6c76786d938070f4ecf1e44004752f69f518b8/libs/cua-driver"
+    },
+    {
+      "package": "@trycua/cua-driver-linux-arm64-gnu@0.30.4",
+      "license": "MIT AND MPL-2.0",
+      "metadataFile": "third-party/source-reviews/trycua-cua-driver-linux-arm64-gnu-0.30.4.json",
+      "metadataSha256": "1a305627abf1b67e9040e6a6f20717403b4543678b281013ec0d8e14acce70e6",
+      "gitHead": null,
+      "metadataSource": "https://registry.npmjs.org/@trycua%2fcua-driver-linux-arm64-gnu/0.30.4",
+      "sources": [
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ],
+      "sourceRevision": "bf6c76786d938070f4ecf1e44004752f69f518b8",
+      "releaseTag": {
+        "file": "third-party/source-reviews/cua-driver-rs-v0.30.4-tag.json",
+        "sha256": "bf7b19c9fee67fb5b2b64f13092f41387967e049d5cb9bf58438b044a2707f5f"
+      },
+      "driverSource": "https://github.com/trycua/cua/tree/bf6c76786d938070f4ecf1e44004752f69f518b8/libs/cua-driver"
+    },
+    {
+      "package": "@trycua/cua-driver-linux-x64-gnu@0.30.4",
+      "license": "MIT AND MPL-2.0",
+      "metadataFile": "third-party/source-reviews/trycua-cua-driver-linux-x64-gnu-0.30.4.json",
+      "metadataSha256": "eaad7fe4ca545cf7c66fe998f3d76324b70a768d91898716b488c25c7eeaa57c",
+      "gitHead": null,
+      "metadataSource": "https://registry.npmjs.org/@trycua%2fcua-driver-linux-x64-gnu/0.30.4",
+      "sources": [
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ],
+      "sourceRevision": "bf6c76786d938070f4ecf1e44004752f69f518b8",
+      "releaseTag": {
+        "file": "third-party/source-reviews/cua-driver-rs-v0.30.4-tag.json",
+        "sha256": "bf7b19c9fee67fb5b2b64f13092f41387967e049d5cb9bf58438b044a2707f5f"
+      },
+      "driverSource": "https://github.com/trycua/cua/tree/bf6c76786d938070f4ecf1e44004752f69f518b8/libs/cua-driver"
+    },
+    {
+      "package": "@trycua/cua-driver-win32-arm64-msvc@0.30.4",
+      "license": "MIT AND MPL-2.0",
+      "metadataFile": "third-party/source-reviews/trycua-cua-driver-win32-arm64-msvc-0.30.4.json",
+      "metadataSha256": "ef76cb22a26c03b052de23abc87da73df2a48d3456d126905a2dee014a0cbc77",
+      "gitHead": null,
+      "metadataSource": "https://registry.npmjs.org/@trycua%2fcua-driver-win32-arm64-msvc/0.30.4",
+      "sources": [
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ],
+      "sourceRevision": "bf6c76786d938070f4ecf1e44004752f69f518b8",
+      "releaseTag": {
+        "file": "third-party/source-reviews/cua-driver-rs-v0.30.4-tag.json",
+        "sha256": "bf7b19c9fee67fb5b2b64f13092f41387967e049d5cb9bf58438b044a2707f5f"
+      },
+      "driverSource": "https://github.com/trycua/cua/tree/bf6c76786d938070f4ecf1e44004752f69f518b8/libs/cua-driver"
+    },
+    {
+      "package": "@trycua/cua-driver-win32-x64-msvc@0.30.4",
+      "license": "MIT AND MPL-2.0",
+      "metadataFile": "third-party/source-reviews/trycua-cua-driver-win32-x64-msvc-0.30.4.json",
+      "metadataSha256": "abf1136b398d4fe411842c12b5ec3a6afcb3e3c01f33378fabac1dd37b5ce668",
+      "gitHead": null,
+      "metadataSource": "https://registry.npmjs.org/@trycua%2fcua-driver-win32-x64-msvc/0.30.4",
+      "sources": [
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ],
+      "sourceRevision": "bf6c76786d938070f4ecf1e44004752f69f518b8",
+      "releaseTag": {
+        "file": "third-party/source-reviews/cua-driver-rs-v0.30.4-tag.json",
+        "sha256": "bf7b19c9fee67fb5b2b64f13092f41387967e049d5cb9bf58438b044a2707f5f"
+      },
+      "driverSource": "https://github.com/trycua/cua/tree/bf6c76786d938070f4ecf1e44004752f69f518b8/libs/cua-driver"
+    },
+    {
+      "package": "@ubjs/core@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-core-0.31.0-3.json",
+      "metadataSha256": "b90e70521a7ea2e23f069c0770b83f3c888c9ff2bb142e845dcfa07430817913",
+      "gitHead": "49bc59194d183a05855ed4104c18eb92fb465e02",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fcore/0.31.0-3",
+      "sources": [
+        "ubjs-core",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-0.31.0-3.json",
+      "metadataSha256": "df41ccaf15eab3ed6f6c53e0e1000617ed5e238e6fd30cf91d180e55834c02ce",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-darwin-arm64@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-darwin-arm64-0.31.0-3.json",
+      "metadataSha256": "875b2c6e8b43ca1cd09ca67b5d141ff77b302b9b81ba1937fecf49b62e0041f7",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-darwin-arm64/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-darwin-x64@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-darwin-x64-0.31.0-3.json",
+      "metadataSha256": "5e189fa7ca541f08d7cc4e44d8886541ea1b3109703336aeb667fc320ce20818",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-darwin-x64/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-linux-arm64-gnu@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-linux-arm64-gnu-0.31.0-3.json",
+      "metadataSha256": "e73560184ddfddfa99d5521725678d56127d519baeb8ccc8ff63cbce3509a7d7",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-linux-arm64-gnu/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-linux-arm64-musl@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-linux-arm64-musl-0.31.0-3.json",
+      "metadataSha256": "bacaea4e72f5dc041fa85fda3d972e22c90b28c7fb1e1a1e9e4c5231827a05c8",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-linux-arm64-musl/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-linux-x64-musl@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-linux-x64-musl-0.31.0-3.json",
+      "metadataSha256": "e11cf498a0d2a35fe84dadd4e2baaf147aaaf723fec01061885503770037cbfb",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-linux-x64-musl/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-linux-x64-gnu@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-linux-x64-gnu-0.31.0-3.json",
+      "metadataSha256": "b5b49b499f5268064fb92b5911a25a31e336da266c5a26180789620cd0ebef24",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-linux-x64-gnu/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-win32-arm64-msvc@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-win32-arm64-msvc-0.31.0-3.json",
+      "metadataSha256": "eed2fad826ad26f3bd987958421d473e6216eca542bf6326171603f93738ae56",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-win32-arm64-msvc/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    },
+    {
+      "package": "@ubjs/node-win32-x64-msvc@0.31.0-3",
+      "license": "MPL-2.0",
+      "metadataFile": "third-party/source-reviews/ubjs-node-win32-x64-msvc-0.31.0-3.json",
+      "metadataSha256": "7f9d68570ab235625d4e000daf672b08ceeb56e48d879d12962c00445aec4820",
+      "gitHead": "dcb5c4ab2350d57f6d26f5fa81a99c77ed86d449",
+      "metadataSource": "https://registry.npmjs.org/@ubjs%2fnode-win32-x64-msvc/0.31.0-3",
+      "sources": [
+        "ubjs-native",
+        "cbindgen@0.29.4",
+        "option-ext@0.2.0",
+        "uniffi@0.31.0",
+        "uniffi_bindgen@0.31.0",
+        "uniffi_core@0.31.0",
+        "uniffi_internal_macros@0.31.0",
+        "uniffi_macros@0.31.0",
+        "uniffi_meta@0.31.0",
+        "uniffi_pipeline@0.31.0",
+        "uniffi_udl@0.31.0",
+        "uniffi_build@0.31.0",
+        "uniffi_testing@0.31.0"
+      ]
+    }
+  ],
+  "rustAudit": {
+    "file": "third-party/source-reviews/cargo-license-audit.json",
+    "sha256": "081a44e729677b6d5be0b08ce316bf845dff4bcd0220be7728659d7205eee531"
+  }
+}

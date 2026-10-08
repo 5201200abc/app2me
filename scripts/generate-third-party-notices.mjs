@@ -1,6 +1,7 @@
 import { readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { collectNpmNotices, hashBytes } from "./third-party-npm.mjs";
+import { readLicenseSourceReviews } from "./license-source-reviews.mjs";
 import {
   noticesFileName,
   readNativeSearchNotices,
@@ -19,6 +20,8 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
   const copied = await readJson("third-party/copied-components.json");
   const embedded = await readJson("third-party/embedded-components.json");
   const runtimes = await readJson("third-party/runtime/sources.json");
+  await readInput("third-party/source-reviews.json");
+  const sourceReviews = await readLicenseSourceReviews(root);
   for (const runtime of runtimes.node) {
     if (hashBytes(await readInput(runtime.file)) !== runtime.sha256)
       throw new Error(`Changed Node ${runtime.version} license`);
@@ -159,6 +162,16 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
       "````text\n" + record.bytes.toString("utf8") + "\n````",
     );
   }
+  sections.push(
+    "## Corresponding MPL source code",
+    "Unmodified corresponding sources are included in the application resources under `licenses/sources`. They are also available from the immutable upstream archive URLs below. MPL-covered sources remain available under MPL-2.0; the app2me license does not restrict their use.",
+  );
+  for (const [name, review] of sourceReviews.verified) {
+    if (!currentPackages.has(name)) throw new Error(`Stale source review: ${name}`);
+    sections.push(
+      `- ${name}: ${review.sources.map((source) => `${source.source} (SHA-256 ${source.sha256})`).join("; ")}`,
+    );
+  }
   sections.push("## Native search tools", "````text\n" + native.bytes.toString("utf8") + "\n````");
   const bytes = Buffer.from(`${sections.join("\n\n")}\n`);
   const inventory = {
@@ -169,6 +182,7 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
       "Production dependency union across current workspace projects, copied source/assets and native tools; not a per-installer SBOM or a certification of all licensing obligations.",
     noticesSha256: hashBytes(bytes),
     inputs: Object.fromEntries(Object.entries(inputs).sort(([a], [b]) => a.localeCompare(b, "en"))),
+    rawInputs: sourceReviews.rawInputs,
     packages: packageInventory,
     notInstalled,
     copied: copiedInventory,

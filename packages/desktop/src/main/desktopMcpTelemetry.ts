@@ -1,4 +1,4 @@
-import armsRum from "@arms/rum-electron";
+import { recordDesktopDiagnosticEvent } from "./desktopDiagnosticEvent.js";
 import type { MyCodeMcpTelemetryEvent } from "@mycode/shared";
 
 interface DesktopMcpTelemetryContext {
@@ -21,7 +21,7 @@ export function reportMcpTelemetryToArms(
   if (!context || event.kind === "memory") return;
   const mapped = mapMcpTelemetryEvent(event);
   try {
-    armsRum.sendCustom({
+    recordDesktopDiagnosticEvent({
       group: mapped.group,
       name: mapped.name,
       properties: stringifyProperties({

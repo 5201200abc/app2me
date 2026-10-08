@@ -1,4 +1,4 @@
-import armsRum from "@arms/rum-electron";
+import { recordDesktopDiagnosticEvent } from "./desktopDiagnosticEvent.js";
 import {
   MYCODE_VERSION,
   type DatabaseStartupState,
@@ -39,11 +39,11 @@ function send(
         deviceMid,
         platform: process.platform,
         appVersion: MYCODE_VERSION,
-        armsEnv: armsRum.getConfig().env === "prod" ? "prod" : "local",
+        armsEnv: "local",
         rendererId: 0,
       },
     });
-    armsRum.sendCustom(payload as Parameters<typeof armsRum.sendCustom>[0]);
+    recordDesktopDiagnosticEvent(payload);
   } catch {
     /* 上报入口失败不能阻断启动或失败提示。 */
   }

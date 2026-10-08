@@ -1,6 +1,6 @@
 {
   "name": "@app2me/desktop",
-  "version": "2026.1008.60565",
+  "version": "2026.1008.65071",
   "private": true,
   "description": "app2me Desktop App — MyCode and MyChat",
   "author": "app2me",
@@ -29,7 +29,6 @@
     "lint:fix": "oxlint --fix"
   },
   "dependencies": {
-    "@arms/rum-electron": "^0.0.3",
     "@babel/runtime": "^7.24.5",
     "@fiahfy/icns": "^0.0.7",
     "@larksuiteoapi/node-sdk": "1.61.1",

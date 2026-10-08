@@ -2,7 +2,8 @@ import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile, readdir, realpath } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { promisify } from "node:util";
+import { promisify, isDeepStrictEqual } from "node:util";
+import { parse as parseYaml } from "yaml";
 import { resolveSpawnRuntimeOptions } from "./spawn-command.mjs";
 
 const exec = promisify(execFile);
@@ -82,33 +83,21 @@ export function assertProductionGraphs(lockedProjects, installedProjects) {
 
 export async function readWorkspaceProductionGraph(root, execute = exec) {
   root = await realpath(root);
-  // 修复：pnpm ls 默认读取安装快照，不能把旧图与当前锁文件哈希拼成有效声明。
-  // Windows CI 在并行扫描两棵完整依赖树时耗尽文件句柄（EMFILE）。
-  // 锁文件和实际安装仍分别核验，按顺序执行以限制峰值读取量。
-  const graphs = [];
-  for (const lockfileOnly of [true, false]) {
-    const { stdout } = await execute(
-      "pnpm",
-      [
-        "-r",
-        "ls",
-        "--prod",
-        "--json",
-        "--depth",
-        "Infinity",
-        ...(lockfileOnly ? ["--lockfile-only"] : []),
-      ],
-      {
-        cwd: root,
-        maxBuffer: 256 * 1024 * 1024,
-        ...resolveSpawnRuntimeOptions("pnpm"),
-      },
+  // 托管 CI 的 pnpm ls 实装树遍历即使串行也会 EMFILE。
+  // 先精确比较安装快照，再读锁图；后续逐个核验实装包版本，不豁免陈旧安装。
+  const locked = parseYaml(await readFile(join(root, "pnpm-lock.yaml"), "utf8"));
+  const installed = parseYaml(await readFile(join(root, "node_modules/.pnpm/lock.yaml"), "utf8"));
+  if (!locked || !installed || !isDeepStrictEqual(locked, installed))
+    throw new Error(
+      "Installed lock snapshot differs from pnpm-lock.yaml. Run pnpm install --frozen-lockfile.",
     );
-    graphs.push(JSON.parse(stdout));
-  }
-  const [locked, actual] = graphs;
-  const required = assertProductionGraphs(locked, actual);
-  return { required, projects: actual };
+  const { stdout } = await execute(
+    "pnpm",
+    ["-r", "ls", "--prod", "--json", "--depth", "Infinity", "--lockfile-only"],
+    { cwd: root, maxBuffer: 256 * 1024 * 1024, ...resolveSpawnRuntimeOptions("pnpm") },
+  );
+  const projects = JSON.parse(stdout);
+  return { required: productionPackages(projects), projects };
 }
 
 export async function scanInstalledPackages(root, projects) {

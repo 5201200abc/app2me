@@ -1,4 +1,4 @@
-import armsRum from "@arms/rum-electron";
+import { recordDesktopDiagnosticEvent } from "./desktopDiagnosticEvent.js";
 import type { ArmsRumEnv, FinalArmsCustomEventPayload } from "@mycode/shared";
 
 import type { MyCodeDataSizeScanResult } from "./mycodeDataSizeScanner.js";
@@ -411,7 +411,7 @@ export function registerDesktopMyCodeDataSizeTelemetry(options: {
     readState: () => readMyCodeDataSizeTelemetryState(options.stateFile),
     report: (result) => {
       const payload = buildMyCodeDataSizeArmsPayload({ context: options.context, result });
-      armsRum.sendCustom({
+      recordDesktopDiagnosticEvent({
         group: payload.group,
         name: payload.name,
         properties: payload.properties,
