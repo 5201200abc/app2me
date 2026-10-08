@@ -1,6 +1,6 @@
 {
   "name": "app2me",
-  "version": "2026.1008.65071",
+  "version": "2026.1008.68502",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -81,7 +81,8 @@
   "pnpm": {
     "overrides": {
       "react": "19.2.7",
-      "react-dom": "19.2.7"
+      "react-dom": "19.2.7",
+      "pdfjs-dist>@napi-rs/canvas": "-"
     },
     "patchedDependencies": {
       "@ai-sdk/openai-compatible@2.0.60": "patches/@ai-sdk__openai-compatible@2.0.60.patch",
@@ -91,6 +92,6 @@
   "app2meRelease": {
     "prepared": true,
     "date": "2026-10-08",
-    "windowsBuildVersion": "2026.10.8.1084"
+    "windowsBuildVersion": "2026.10.8.1141"
   }
 }

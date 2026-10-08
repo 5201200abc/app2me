@@ -1,6 +1,8 @@
 import { readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { collectNpmNotices, hashBytes } from "./third-party-npm.mjs";
+import { readLicenseEmbeddedReviews } from "./license-embedded-reviews.mjs";
+import { readLicensePublisherReviews } from "./license-publisher-reviews.mjs";
 import { readLicenseSourceReviews } from "./license-source-reviews.mjs";
 import {
   noticesFileName,
@@ -22,6 +24,10 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
   const runtimes = await readJson("third-party/runtime/sources.json");
   await readInput("third-party/source-reviews.json");
   const sourceReviews = await readLicenseSourceReviews(root);
+  await readInput("third-party/publisher-reviews.json");
+  const publisherReviews = await readLicensePublisherReviews(root);
+  await readInput("third-party/embedded-reviews.json");
+  const embeddedReviews = await readLicenseEmbeddedReviews(root, embedded);
   for (const runtime of runtimes.node) {
     if (hashBytes(await readInput(runtime.file)) !== runtime.sha256)
       throw new Error(`Changed Node ${runtime.version} license`);
@@ -57,6 +63,17 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
       sha256: addText(bytes, `${item.name}@${item.version}`, member),
     })),
   }));
+  for (const [key, review] of publisherReviews.verified) {
+    const item = packages.find((item) => `${item.name}@${item.version}` === key);
+    if (!item || item.license !== review.license)
+      throw new Error(`Stale publisher review or changed grant: ${key}`);
+    for (const material of review.materials)
+      addText(
+        material.bytes,
+        `${key} original publisher material`,
+        `${review.source}#${material.path}`,
+      );
+  }
   async function copiedFiles(file, files) {
     if ((await stat(join(root, file))).isDirectory()) {
       for (const child of (await readdir(join(root, file))).sort())
@@ -129,8 +146,8 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
       (item) =>
         `- ${item.name}@${item.version} — ${typeof item.license === "string" ? item.license : JSON.stringify(item.license)}${item.acceptedMissingNotice ? `; ${item.acceptedMissingNotice}` : ""}`,
     ),
-    "## Source evidence limitations",
-    "Some publishers provide only a license identifier or a short README license section instead of a complete LICENSE file. For the following packages the supplied material explicitly identifies publisher metadata and standard terms; it is not represented as an original upstream LICENSE file. Any available README copyright notice is retained:",
+    "## Original publisher declarations",
+    "Some publishers provide only a license identifier or a short README license section instead of a complete LICENSE file. For the following packages the supplied material explicitly identifies publisher metadata and standard terms; it is not represented as an original upstream LICENSE file. The exact published archives, registry integrity, original declarations and every original textual notice are independently verified and preserved in resources/licenses/sources; no absent copyright holder or year is invented:",
     ...overrides
       .filter((item) => item.evidenceKind)
       .map((item) => `- ${item.package}: ${item.source}`),
@@ -144,7 +161,7 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
     "## Embedded native and WASM components",
     ...embedded.map(
       (item) =>
-        `- ${item.id} inside ${item.parentPackage}; upstream revision ${item.revision}; source: ${item.source}. ${item.reviewRequired ?? ""}`,
+        `- ${item.id} inside ${item.parentPackage}; upstream revision ${item.revision}; source: ${item.source}. ${item.reviewRequired ?? (item.reviewEvidence ? "Original source and notice coverage verified against third-party/embedded-reviews.json." : "")}`,
     ),
     "Electron/Chromium target-specific notices are shipped separately under Resources/licenses/electron. Distributions containing an independent Node runtime also include its exact-version LICENSE.node.txt; SEA includes that text in --licenses output.",
     "## Modified npm packages",
@@ -182,7 +199,11 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
       "Production dependency union across current workspace projects, copied source/assets and native tools; not a per-installer SBOM or a certification of all licensing obligations.",
     noticesSha256: hashBytes(bytes),
     inputs: Object.fromEntries(Object.entries(inputs).sort(([a], [b]) => a.localeCompare(b, "en"))),
-    rawInputs: sourceReviews.rawInputs,
+    rawInputs: {
+      ...sourceReviews.rawInputs,
+      ...publisherReviews.rawInputs,
+      ...embeddedReviews.rawInputs,
+    },
     packages: packageInventory,
     notInstalled,
     copied: copiedInventory,
@@ -196,14 +217,18 @@ export async function generateThirdPartyNotices(root = repositoryRoot) {
         .filter((item) => item.reviewRequired)
         .map((item) => ({ id: item.id, reason: item.reviewRequired })),
       ...overrides
-        .filter((item) => item.acceptedMissingNotice || item.evidenceKind)
+        .filter(
+          (item) =>
+            (item.acceptedMissingNotice || item.evidenceKind) &&
+            !publisherReviews.verified.has(item.package),
+        )
         .map((item) => ({
           id: item.package,
           reason:
             "Original version-specific publisher copyright/license material remains incomplete.",
         })),
       ...embedded
-        .filter((item) => item.reviewRequired)
+        .filter((item) => item.reviewRequired && !embeddedReviews.verified.has(item.id))
         .map((item) => ({ id: item.id, reason: item.reviewRequired })),
       ...native.inventory.components
         .filter((item) => !item.notices.length)

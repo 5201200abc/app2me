@@ -322,24 +322,6 @@ Original copyright, license and NOTICE text is retained below. Identical text is
 
 - @mswjs/interceptors@0.41.3 — MIT
 
-- @napi-rs/canvas-darwin-arm64@0.1.100 — MIT
-
-- @napi-rs/canvas-darwin-x64@0.1.100 — MIT
-
-- @napi-rs/canvas-linux-arm64-gnu@0.1.100 — MIT
-
-- @napi-rs/canvas-linux-arm64-musl@0.1.100 — MIT
-
-- @napi-rs/canvas-linux-x64-gnu@0.1.100 — MIT
-
-- @napi-rs/canvas-linux-x64-musl@0.1.100 — MIT
-
-- @napi-rs/canvas-win32-arm64-msvc@0.1.100 — MIT
-
-- @napi-rs/canvas-win32-x64-msvc@0.1.100 — MIT
-
-- @napi-rs/canvas@0.1.100 — MIT
-
 - @noble/ciphers@1.3.0 — MIT
 
 - @noble/curves@1.9.7 — MIT
@@ -1069,6 +1051,8 @@ Original copyright, license and NOTICE text is retained below. Identical text is
 - data-uri-to-buffer@8.0.0 — MIT
 
 - dayjs@1.11.20 — MIT
+
+- debug@4.4.3 — MIT
 
 - decamelize@1.2.0 — MIT
 
@@ -2318,9 +2302,9 @@ Original copyright, license and NOTICE text is retained below. Identical text is
 
 - zwitch@2.0.4 — MIT
 
-## Source evidence limitations
+## Original publisher declarations
 
-Some publishers provide only a license identifier or a short README license section instead of a complete LICENSE file. For the following packages the supplied material explicitly identifies publisher metadata and standard terms; it is not represented as an original upstream LICENSE file. Any available README copyright notice is retained:
+Some publishers provide only a license identifier or a short README license section instead of a complete LICENSE file. For the following packages the supplied material explicitly identifies publisher metadata and standard terms; it is not represented as an original upstream LICENSE file. The exact published archives, registry integrity, original declarations and every original textual notice are independently verified and preserved in resources/licenses/sources; no absent copyright holder or year is invented:
 
 - unsafe-pointer@0.2.0: https://registry.npmjs.org/unsafe-pointer/0.2.0
 
@@ -2368,9 +2352,7 @@ Fig autocomplete source carries the repository's MIT license; the generated regi
 
 ## Embedded native and WASM components
 
-- Skia inside @napi-rs/canvas@0.1.100; upstream revision fe2718df5f53a681087be6f0539045ca1b4b8c09; source: https://github.com/Brooooooklyn/canvas/tree/db337893b9b53483050ca7b24c6d306e4da06741/skia. Skia core notice retained. Per-platform linked third-party libraries and their exact build provenance still require a complete audit.
-
-- QuickJS-NG inside quickjs-wasi@2.2.0; upstream revision dec012362bd93876449f3ecff4f835b2eba89bab; source: https://github.com/vercel-labs/quickjs-wasi/tree/cc1fea4a6a4ac1d960e0db68d35e1459064a1a23/quickjs-ng. Engine notice retained. WASI libc and extension link provenance is not fully established by the npm package.
+- QuickJS-NG inside quickjs-wasi@2.2.0; upstream revision dec012362bd93876449f3ecff4f835b2eba89bab; source: https://github.com/vercel-labs/quickjs-wasi/tree/cc1fea4a6a4ac1d960e0db68d35e1459064a1a23/quickjs-ng. Original source and notice coverage verified against third-party/embedded-reviews.json.
 
 Electron/Chromium target-specific notices are shipped separately under Resources/licenses/electron. Distributions containing an independent Node runtime also include its exact-version LICENSE.node.txt; SEA includes that text in --licenses output.
 
@@ -3013,8 +2995,6 @@ SOFTWARE.
 - chevrotain@12.0.0: LICENSE.txt
 
 - long@5.3.2: LICENSE
-
-- wuffs (inside @napi-rs/canvas@0.1.100): https://skia.googlesource.com/external/github.com/google/wuffs-mirror-release-c.git/+/e3f919ccfe3ef542cfc983a82146070258fb57f8/LICENSE?format=TEXT
 
 - Apache-2.0 licensed components: Apache License, Version 2.0
 
@@ -4733,53 +4713,6 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-````
-
-### Notice 8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6
-
-- @napi-rs/canvas-darwin-arm64@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas-darwin-x64@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas-linux-arm64-gnu@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas-linux-arm64-musl@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas-linux-x64-gnu@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas-linux-x64-musl@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas-win32-arm64-msvc@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas-win32-x64-msvc@0.1.100: https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE
-
-- @napi-rs/canvas@0.1.100: LICENSE
-
-
-
-````text
-MIT License
-
-Copyright (c) 2020 lynweklm@gmail.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 ````
 
@@ -12905,6 +12838,71 @@ SOFTWARE.
 ## License
 
 Day.js is licensed under a [MIT License](./LICENSE).
+
+````
+
+### Notice 3a61c6c96caf5c1d9b623fb9b04c822b783dfcb78aa7e49c76a3f643e6ed7f95
+
+- debug@4.4.3: LICENSE
+
+
+
+````text
+(The MIT License)
+
+Copyright (c) 2014-2017 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2018-2021 Josh Junon
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+and associated documentation files (the 'Software'), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+````
+
+### Notice d6f83842cafbe3a73d4f9db8731524aa09ea74d0709ee3287f3ab7c01e749835
+
+- debug@4.4.3: README.md (license section)
+
+
+
+````text
+## License
+
+(The MIT License)
+
+Copyright (c) 2014-2017 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
+Copyright (c) 2018-2021 Josh Junon
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ````
 
@@ -38426,6 +38424,1696 @@ SOFTWARE.
 
 ````
 
+### Notice 0ff64f19f2ac1659ec232cfc6f8d5517f8a40c41b67819b0749541a058877dd5
+
+- unsafe-pointer@0.2.0 original publisher material: https://registry.npmjs.org/unsafe-pointer/-/unsafe-pointer-0.2.0.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "unsafe-pointer",
+  "version": "0.2.0",
+  "description": "Unsafely turn ArrayBuffers into raw pointers and raw pointers into ArrayBuffers. Warning: arbitrary memory access can lead to attackers controlling your users' computers.",
+  "type": "commonjs",
+  "repository": {
+    "url": "https://github.com/justjake/node-unsafe-pointer"
+  },
+  "author": {
+    "name": "Jake Teton-Landis",
+    "url": "https://jake.tl"
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    "types": "./index.d.ts",
+    "import": "./index.mjs",
+    "require": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "index.mjs",
+    "index.d.ts",
+    "binding.gyp",
+    "src/",
+    "prebuilds/"
+  ],
+  "scripts": {
+    "install": "node-gyp-build",
+    "rebuild": "node-gyp rebuild",
+    "build": "bun run build:js && bun run build:c",
+    "build:js": "./scripts/codegen-index-mjs.mts",
+    "build:c": "./scripts/zig-build-prebuilds.mts",
+    "test": "node --test ./index.test.js",
+    "typecheck": "tsc --pretty -p jsconfig.json"
+  },
+  "keywords": [
+    "napi",
+    "node-api",
+    "ffi",
+    "pointer",
+    "native",
+    "unsafe"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "node-gyp-build": "^4.8.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "node-gyp": "^11.5.0",
+    "typescript": "^5",
+    "zig-build": "github:solarwinds/zig-build#fa7428c0a607e4075172346e4d22f7a19ba68fe0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
+
+````
+
+### Notice e372f857ce05f266137c65293436b5380fec42ac311e6acb9378ed78b98d75d0
+
+- react-remove-scroll-bar@2.3.8 original publisher material: https://registry.npmjs.org/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.8.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "react-remove-scroll-bar",
+  "version": "2.3.8",
+  "description": "Removes body scroll without content _shake_",
+  "main": "dist/es5/index.js",
+  "jsnext:main": "dist/es2015/index.js",
+  "module": "dist/es2015/index.js",
+  "types": "dist/es5/index.d.ts",
+  "scripts": {
+    "dev": "lib-builder dev",
+    "test": "jest",
+    "test:ci": "jest --runInBand --coverage",
+    "build": "lib-builder build && yarn size:report",
+    "release": "yarn build && yarn test",
+    "size": "yarn size-limit",
+    "size:report": "yarn --silent size-limit --json > .size.json",
+    "lint": "lib-builder lint",
+    "format": "lib-builder format",
+    "update": "lib-builder update",
+    "prepublish": "yarn build && yarn changelog",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog:rewrite": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "storybook": "start-storybook -p 6006"
+  },
+  "keywords": [
+    "scroll"
+  ],
+  "author": "Anton Korzunov <thekashey@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^11.0.2",
+    "size-limit": "^11.0.2",
+    "@storybook/react": "^6.4.22",
+    "@testing-library/react": "^12.1.5",
+    "@types/react": "^16.14.56",
+    "@theuiteam/lib-builder": "^0.1.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "peerDependencies": {
+    "@types/react": "*",
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist",
+    "constants"
+  ],
+  "repository": "https://github.com/theKashey/react-remove-scroll-bar",
+  "dependencies": {
+    "react-style-singleton": "^2.2.2",
+    "tslib": "^2.0.0"
+  },
+  "module:es2019": "dist/es2019/index.js",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true
+  }
+}
+
+````
+
+### Notice 486442209236ffa3893312e508694699a6b8834d30a2f9c083c1f3379983e4f9
+
+- react-remove-scroll-bar@2.3.8 original publisher material: https://registry.npmjs.org/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.8.tgz#package/README.md
+
+
+
+````text
+<h1>react-remove-scroll-bar</h1>
+
+[![npm](https://img.shields.io/npm/v/react-remove-scroll-bar.svg)](https://www.npmjs.com/package/react-remove-scroll-bar)
+[![bundle size](https://badgen.net/bundlephobia/minzip/react-remove-scroll-bar)](https://bundlephobia.com/result?p=react-remove-scroll-bar)
+[![downloads](https://badgen.net/npm/dm/react-remove-scroll-bar)](https://www.npmtrends.com/react-remove-scroll-bar)
+
+<hr />
+
+> v1+ for React 15, v2+ requires React 16.8+
+
+Removes scroll bar (by setting `overflow: hidden` on body), and preserves the scroll bar "gap".
+
+Read - it just makes scroll bar invisible.
+
+Does nothing if scroll bar does not consume any space.
+
+# Usage
+
+```js
+import {RemoveScrollBar} from 'react-remove-scroll-bar';
+
+<RemoveScrollBar /> -> no scroll bar
+```
+
+### The Right Border
+To prevent content jumps __position:fixed__ elements with `right:0`  should have additional classname applied.
+It will just provide a _non-zero_ right, when it needed, to maintain the right "gap".
+```js
+import {zeroRightClassName,fullWidthClassName, noScrollbarsClassName} from 'react-remove-scroll-bar';
+
+// to set `right:0` on an element
+<div className={zeroRightClassName} />
+
+// to set `width:100%` on an element
+<div className={fullWidthClassName} />
+
+// to remove scrollbar from an element
+<div className={noScrollbarsClassName} />
+
+```
+
+# Size
+500b after compression (excluding tslib).
+
+# Scroll-Locky
+All code is a result of a [react-scroll-locky](https://github.com/theKashey/react-scroll-locky) refactoring.
+
+# Article
+There is a medium article about preventing the body scroll - [How to fight the <body> scroll](https://medium.com/@antonkorzunov/how-to-fight-the-body-scroll-2b00267b37ac)
+
+# License
+MIT
+
+````
+
+### Notice d8831d3987b5c62af1f32f62f9dec26a16394bda2962ac19a41151a8d57e5a59
+
+- quickjs-wasi@2.2.0 original publisher material: https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-2.2.0.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "quickjs-wasi",
+  "version": "2.2.0",
+  "description": "Snapshotable JavaScript runtime via WebAssembly. QuickJS-NG compiled to WASM with snapshot/restore support.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./url": {
+      "types": "./dist/url.d.ts",
+      "default": "./dist/url.js"
+    },
+    "./encoding": {
+      "types": "./dist/encoding.d.ts",
+      "default": "./dist/encoding.js"
+    },
+    "./base64": {
+      "types": "./dist/base64.d.ts",
+      "default": "./dist/base64.js"
+    },
+    "./structured-clone": {
+      "types": "./dist/structured-clone.d.ts",
+      "default": "./dist/structured-clone.js"
+    },
+    "./headers": {
+      "types": "./dist/headers.d.ts",
+      "default": "./dist/headers.js"
+    },
+    "./crypto": {
+      "types": "./dist/crypto.d.ts",
+      "default": "./dist/crypto.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "quickjs.wasm",
+    "extensions/*/*.so"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vercel-labs/quickjs-wasi.git"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.30.0",
+    "@types/node": "^22.0.0",
+    "@vercel/nft": "^1.3.2",
+    "bun": "^1.3.10",
+    "core-js-pure": "^3.48.0",
+    "degenerator": "^5.0.1",
+    "esbuild": "^0.27.3",
+    "fast-text-encoding": "^1.0.6",
+    "quickjs-emscripten": "^0.32.0",
+    "tinybench": "^6.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^4.0.18",
+    "whatwg-fetch": "^3.6.20"
+  },
+  "scripts": {
+    "setup": "make setup",
+    "build:wasm": "make",
+    "build:ts": "tsc",
+    "build": "pnpm run build:wasm && pnpm run build:ts",
+    "test": "vitest run",
+    "bench": "pnpm run bench:url && pnpm run bench:encoding && pnpm run bench:base64 && pnpm run bench:headers && pnpm run bench:emscripten",
+    "bench:url": "bun run bench/url-benchmark.ts",
+    "bench:encoding": "bun run bench/encoding-benchmark.ts",
+    "bench:base64": "bun run bench/base64-benchmark.ts",
+    "bench:headers": "bun run bench/headers-benchmark.ts",
+    "bench:emscripten": "bun run bench/emscripten-benchmark.ts",
+    "changeset": "changeset",
+    "ci:version": "changeset version && node -e \"fs.writeFileSync('src/version.ts', '// Auto-synced with package.json version. Do not edit manually.\\nexport const VERSION = ' + JSON.stringify(require('./package.json').version) + ';\\n')\"",
+    "ci:publish": "pnpm run build && changeset publish"
+  }
+}
+````
+
+### Notice f8db37af6ecfe7a7fba9483ff42e22409ef5dd395e60d762c9b5f3ca31229d9a
+
+- quickjs-wasi@2.2.0 original publisher material: https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-2.2.0.tgz#package/README.md
+
+
+
+````text
+# quickjs-wasi
+
+A snapshotable JavaScript runtime via WebAssembly. Runs [QuickJS](https://github.com/quickjs-ng/quickjs) compiled to WASM, with the ability to **snapshot the entire VM state** (including pending promises) and **restore it in a fresh WASM instance**.
+
+## Install
+
+```sh
+npm install quickjs-wasi
+```
+
+## Usage
+
+### Basic Evaluation
+
+Both `QuickJS` and `JSValueHandle` implement `Symbol.dispose`, so you can use `using` declarations for automatic cleanup:
+
+```typescript
+import { QuickJS } from 'quickjs-wasi';
+
+{
+  using vm = await QuickJS.create(wasmBytes);
+
+  // Evaluate code — handles are auto-disposed with `using`
+  using result = vm.evalCode('1 + 2');
+  console.log(result.toNumber()); // 3
+} // vm and result are automatically disposed here
+```
+
+### Working with Values
+
+```typescript
+using vm = await QuickJS.create(wasmBytes);
+
+// Create values — `using` ensures they're disposed at end of scope
+{
+  using str = vm.newString('hello');
+  using num = vm.newNumber(42);
+  using big = vm.newBigInt(9007199254740993n);
+  vm.setProp(vm.global, 'message', str);
+}
+
+// Read back the value
+using msg = vm.evalCode('message');
+console.log(msg.toString()); // "hello"
+
+// Convert host values to QuickJS handles (and back)
+using handle = vm.hostToHandle({ x: 1, y: [2, 3] });
+const dumped = vm.dump(handle); // { x: 1, y: [2, 3] }
+
+// consume() is still useful for inline one-liners
+const value = vm.evalCode('1 + 2').consume(h => h.toNumber()); // 3
+```
+
+### Host Functions
+
+Register JavaScript functions backed by host (Node.js) callbacks:
+
+```typescript
+using vm = await QuickJS.create(wasmBytes);
+
+// The first argument to the callback is always `this`
+{
+  using add = vm.newFunction('add', (...args) => {
+    return vm.newNumber(args[0].toNumber() + args[1].toNumber());
+  });
+  vm.setProp(vm.global, 'add', add);
+}
+
+using result = vm.evalCode('add(3, 4)');
+console.log(result.toNumber()); // 7
+```
+
+### Promises and Async Host Functions
+
+Bridge async host operations into the QuickJS sandbox:
+
+```typescript
+using vm = await QuickJS.create(wasmBytes);
+
+// Create an async host function that returns a promise to QuickJS
+{
+  using dnsResolve = vm.newFunction('dnsResolve', (...args) => {
+    const hostname = args[0].toString();
+    const deferred = vm.newPromise();
+
+    // Do real async work on the host side
+    dns.resolve4(hostname).then(
+      (addresses) => {
+        deferred.resolve(vm.newString(addresses[0]));
+        vm.executePendingJobs(); // drain the QuickJS job queue
+      },
+      (err) => {
+        deferred.reject(vm.newError(err));
+        vm.executePendingJobs();
+      }
+    );
+
+    return deferred.handle; // return the QuickJS promise
+  });
+  vm.setProp(vm.global, 'dnsResolve', dnsResolve);
+}
+```
+
+### Error Handling
+
+```typescript
+using vm = await QuickJS.create(wasmBytes);
+
+// evalCode() throws a JSException if the evaluated code throws
+try {
+  vm.evalCode('throw new TypeError("bad")');
+} catch (err) {
+  console.log(err.name);    // "TypeError"
+  console.log(err.message); // "bad"
+  console.log(err.stack);   // QuickJS stack trace
+}
+
+// Create errors from host Error objects (preserves name, message, stack)
+{
+  using errHandle = vm.newError(new RangeError('out of bounds'));
+  vm.setProp(vm.global, 'hostError', errHandle);
+}
+```
+
+### WASI Overrides
+
+The `wasi` option lets you override any `wasi_snapshot_preview1` host function. It's a factory that receives the WASM linear memory and returns an object of override functions. Overrides apply to both the main module and all loaded extensions.
+
+This is useful for deterministic execution — QuickJS uses a [xorshift64*](https://en.wikipedia.org/wiki/Xorshift) PRNG that is seeded once from the clock value during context creation. Override `clock_time_get` to control both `Date.now()` and the `Math.random()` seed:
+
+```typescript
+const fixedClock = (memory: WebAssembly.Memory) => ({
+  clock_time_get(_clockId: number, _precision: bigint, resultPtr: number) {
+    new DataView(memory.buffer).setBigUint64(resultPtr, 1700000000000n * 1_000_000n, true);
+    return 0;
+  },
+});
+
+using vm1 = await QuickJS.create({ wasm: wasmBytes, wasi: fixedClock });
+using vm2 = await QuickJS.create({ wasm: wasmBytes, wasi: fixedClock });
+
+vm1.evalCode('Math.random()').consume(h => h.toNumber());
+// => 0.8130834347906803
+
+vm2.evalCode('Math.random()').consume(h => h.toNumber());
+// => 0.8130834347906803 (identical)
+```
+
+Override `random_get` to control the crypto extension's RNG:
+
+```typescript
+using vm = await QuickJS.create({
+  wasm: wasmBytes,
+  wasi: (memory) => ({
+    random_get(bufPtr: number, bufLen: number) {
+      new Uint8Array(memory.buffer, bufPtr, bufLen).fill(0x42); // deterministic
+      return 0;
+    },
+  }),
+  extensions: [cryptoExtension],
+});
+```
+
+The time can also be advanced between calls for realistic behavior:
+
+```typescript
+let currentTime = 1700000000000n;
+using vm = await QuickJS.create({
+  wasm: wasmBytes,
+  wasi: (memory) => ({
+    clock_time_get(_clockId: number, _precision: bigint, resultPtr: number) {
+      new DataView(memory.buffer).setBigUint64(resultPtr, currentTime * 1_000_000n, true);
+      return 0;
+    },
+  }),
+});
+
+vm.evalCode('Date.now()').consume(h => h.toNumber()); // 1700000000000
+currentTime += 1000n; // advance 1 second
+vm.evalCode('Date.now()').consume(h => h.toNumber()); // 1700000001000
+```
+
+### Memory Limits
+
+Restrict how much memory the QuickJS runtime can allocate. When exceeded, allocations fail and surface as JS exceptions:
+
+```typescript
+using vm = await QuickJS.create({
+  wasm: wasmBytes,
+  memoryLimit: 4 * 1024 * 1024, // 4 MB
+});
+
+vm.evalCode(`
+  try {
+    const huge = new Array(10000000).fill("x".repeat(1000));
+  } catch (e) {
+    console.log(e.message); // allocation failure
+  }
+`);
+```
+
+The limit is re-applied after `QuickJS.restore()`, so you can use a different limit for restored VMs than the original.
+
+### Interrupt Handler
+
+Prevent infinite loops and enforce execution timeouts:
+
+```typescript
+const start = Date.now();
+using vm = await QuickJS.create({
+  wasm: wasmBytes,
+  interruptHandler: () => {
+    // Return true to interrupt — called periodically during JS execution
+    return Date.now() - start > 5000; // 5 second timeout
+  },
+});
+
+try {
+  vm.evalCode('while (true) {}');
+} catch (err) {
+  // JSException — interrupted
+  err.dispose();
+}
+
+// VM is still usable after an interrupt
+vm.evalCode('1 + 2').consume(h => h.toNumber()); // 3
+```
+
+The handler is called approximately once per JS bytecode instruction, so it should be fast. When it returns `true`, the current execution is interrupted and throws a `JSException`. The VM remains usable after an interrupt.
+
+### Timezone Offset
+
+By default, `Date` inside the sandbox mirrors the host environment's timezone. You can override this with a fixed offset or a dynamic callback:
+
+```typescript
+// Fixed offset: UTC-8 (480 minutes west of UTC)
+using vm = await QuickJS.create({
+  wasm: wasmBytes,
+  timezoneOffset: 480,
+});
+vm.evalCode('new Date().getTimezoneOffset()').consume(h => h.toNumber()); // 480
+```
+
+```typescript
+// Force UTC (offset 0)
+using vm = await QuickJS.create({
+  wasm: wasmBytes,
+  timezoneOffset: 0,
+});
+```
+
+```typescript
+// Dynamic callback for custom DST-aware logic
+using vm = await QuickJS.create({
+  wasm: wasmBytes,
+  timezoneOffset: (timeSecs) => {
+    // Return offset in minutes (getTimezoneOffset convention: positive = west of UTC)
+    return new Date(timeSecs * 1000).getTimezoneOffset();
+  },
+});
+```
+
+The `timezoneOffset` option accepts:
+
+- **`'host'`** (default) — mirrors the host's timezone, including DST transitions.
+- **A number** — fixed UTC offset in minutes using the `getTimezoneOffset()` sign convention (positive values are west of UTC, e.g. `480` for UTC-8).
+- **A callback `(timeSecs: number) => number`** — called with seconds since epoch, must return the offset in minutes. Useful for custom timezone logic. The callback is invoked whenever QuickJS needs to convert between UTC and local time (e.g. `getHours()`, `toString()`, `new Date(year, month, ...)`, `getTimezoneOffset()`), so it may be called multiple times per Date operation.
+
+### Snapshot and Restore
+
+The key differentiator — snapshot the entire VM state and restore it later:
+
+```typescript
+let snapshot: Snapshot;
+
+{
+  using vm = await QuickJS.create(wasmBytes);
+
+  // Build up some state, including a pending promise
+  vm.evalCode(`
+    globalThis.counter = 0;
+
+    let __resolve;
+    globalThis.pendingWork = new Promise(r => { __resolve = r; });
+    globalThis.__resolve = __resolve;
+
+    globalThis.pendingWork.then(value => {
+      globalThis.counter = value;
+    });
+  `).dispose();
+  vm.executePendingJobs();
+
+  // Take a snapshot
+  snapshot = vm.snapshot();
+}
+
+// Serialize to a binary buffer for storage (apply gzip on top for best compression)
+const bytes = QuickJS.serializeSnapshot(snapshot);
+await storage.put('snapshots/run-123', bytes);
+
+// ... time passes, maybe a different process entirely ...
+
+// Deserialize and restore
+const loaded = await storage.get('snapshots/run-123');
+const restored = QuickJS.deserializeSnapshot(loaded);
+
+{
+  using vm = await QuickJS.restore(restored, wasmBytes);
+
+  // The pending promise still exists — resolve it
+  using resolve = vm.global.getProp('__resolve');
+  using arg = vm.newNumber(42);
+  vm.callFunction(resolve, vm.undefined, arg).dispose();
+  vm.executePendingJobs();
+
+  // The .then handler ran in the restored VM
+  using counter = vm.global.getProp('counter');
+  console.log(counter.toNumber()); // 42
+}
+```
+
+### Host Callbacks After Restore
+
+Host functions registered with `newFunction()` are keyed by their name, which gets baked into the snapshot. After restoring, re-register the callbacks by name:
+
+```typescript
+let snapshot: Snapshot;
+
+{
+  using vm = await QuickJS.create(wasmBytes);
+  using fn = vm.newFunction('hostAdd', (...args) => {
+    return vm.newNumber(args[0].toNumber() + args[1].toNumber());
+  });
+  vm.setProp(vm.global, 'hostAdd', fn);
+  snapshot = vm.snapshot();
+}
+
+{
+  // After restore — re-register by name
+  using vm = await QuickJS.restore(snapshot, wasmBytes);
+  vm.registerHostCallback('hostAdd', (...args) => {
+    return vm.newNumber(args[0].toNumber() + args[1].toNumber());
+  });
+
+  // hostAdd() works again
+  using result = vm.evalCode('hostAdd(100, 200)');
+  console.log(result.toNumber()); // 300
+}
+```
+
+Note: each call to `newFunction()` must use a unique name. Attempting to register two host functions with the same name will throw an error.
+
+### Native WASM Extensions
+
+Load C-based extensions compiled as WASM shared libraries. Extensions link directly against the QuickJS C API with zero marshalling overhead — they share the same linear memory and can register custom classes, prototypes, and globals.
+
+```typescript
+import { QuickJS } from 'quickjs-wasi';
+import { readFileSync } from 'fs';
+
+const urlExt = readFileSync('./extensions/url/url.so');
+
+using vm = await QuickJS.create({
+  extensions: [{ name: 'url', wasm: urlExt }],
+});
+
+using result = vm.evalCode(`
+  const url = new URL('https://example.com:8080/api?key=value#section');
+  url.hostname // 'example.com'
+`);
+```
+
+Extensions survive snapshot/restore — provide the same extensions when restoring:
+
+```typescript
+const snapshot = vm.snapshot();
+
+using vm2 = await QuickJS.restore(snapshot, {
+  extensions: [{ name: 'url', wasm: urlExt }],
+});
+// URL objects created before the snapshot still work
+```
+
+See [EXTENSIONS.md](./EXTENSIONS.md) for how to build extensions, how dynamic linking works, and known limitations.
+
+## API Reference
+
+### `QuickJS` (VM Instance)
+
+| Method | Description |
+|--------|-------------|
+| `QuickJS.create(options?)` | Create a fresh VM instance |
+| `QuickJS.restore(snapshot, options?)` | Restore a VM from a snapshot |
+| `QuickJS.serializeSnapshot(snapshot)` | Serialize a snapshot to a versioned binary `Uint8Array` |
+| `QuickJS.deserializeSnapshot(data)` | Deserialize a snapshot from a binary `Uint8Array` |
+| `vm.evalCode(code, filename?)` | Evaluate JS code, returns `JSValueHandle` (throws `JSException` on error) |
+| `vm.callFunction(fn, this, ...args)` | Call a QuickJS function (throws `JSException` on error) |
+| `vm.executePendingJobs()` | Drain the promise microtask queue |
+| `vm.newString(str)` | Create a string value |
+| `vm.newNumber(num)` | Create a number value |
+| `vm.newBigInt(val)` | Create a BigInt value |
+| `vm.newObject()` | Create an empty object |
+| `vm.newArray()` | Create an empty array |
+| `vm.newSymbolFor(description)` | Create a global symbol (`Symbol.for(description)`) |
+| `vm.newArrayBuffer(data)` | Create an ArrayBuffer from host `ArrayBuffer` or `Uint8Array` |
+| `vm.newUint8Array(data)` | Create a Uint8Array from host `Uint8Array` |
+| `vm.newFunction(name, callback)` | Create a function backed by a host callback |
+| `vm.newPromise()` | Create a `Deferred` (promise + resolve/reject) |
+| `vm.newError(messageOrError)` | Create an Error from a string or native `Error` |
+| `vm.resolvePromise(handle)` | Await a QuickJS promise from the host side |
+| `vm.setProp(obj, key, value)` | Set a property (key: string or handle, including symbols) |
+| `vm.getProp(obj, key)` | Get a property using a handle key (including symbols) |
+| `vm.typeof(handle)` | Get the `typeof` as a string |
+| `vm.dump(handle)` | Convert a QuickJS value to a host value |
+| `vm.hostToHandle(value)` | Convert a host value to a QuickJS handle |
+| `vm.snapshot()` | Capture the entire VM state (including extension metadata) |
+| `vm.registerHostCallback(name, fn)` | Re-register a host callback by name after restore |
+| `vm.dispose()` | Free the VM |
+| `vm[Symbol.dispose]()` | Same as `dispose()` — enables `using vm = ...` |
+
+### `QuickJSOptions`
+
+| Option | Description |
+|--------|-------------|
+| `wasm` | WASM module bytes or pre-compiled `WebAssembly.Module` |
+| `wasi` | WASI override factory: `(memory) => ({ random_get, clock_time_get, ... })`. Applies to main module and all extensions |
+| `memoryLimit` | Maximum memory the QuickJS runtime can allocate (bytes) |
+| `interruptHandler` | Callback to interrupt execution (return `true` to stop) |
+| `extensions` | Array of `ExtensionDescriptor` objects — native WASM extensions to load |
+| `timezoneOffset` | Timezone for `Date` inside the VM: `'host'` (default), fixed offset in minutes, or `(timeSecs) => minutes` callback |
+
+### `ExtensionDescriptor`
+
+| Property | Description |
+|----------|-------------|
+| `name` | Identifier string (used in snapshot metadata) |
+| `wasm` | WASM bytes (`BufferSource`) or pre-compiled `WebAssembly.Module` |
+| `initFn?` | Init function name (default: `qjs_ext_${name}_init`) |
+| `wasi?` | Extension-provided WASI overrides: `(memory) => ({...})`. Layered between built-in defaults and user overrides |
+
+### Cached Properties
+
+These are singleton handles — do **not** dispose them:
+
+| Property | Value |
+|----------|-------|
+| `vm.global` | The global object |
+| `vm.undefined` | `undefined` |
+| `vm.null` | `null` |
+| `vm.true` | `true` |
+| `vm.false` | `false` |
+
+### `JSValueHandle`
+
+| Method / Property | Description |
+|-------------------|-------------|
+| `handle.isUndefined` | `true` if this is `undefined` |
+| `handle.isNull` | `true` if this is `null` |
+| `handle.promiseState` | `0` pending, `1` fulfilled, `2` rejected |
+| `handle.toNumber()` | Extract as a `number` |
+| `handle.toBigInt()` | Extract as a `bigint` |
+| `handle.toString()` | Extract as a `string` |
+| `handle.toArrayBuffer()` | Extract as an `ArrayBuffer` (copy from WASM memory) |
+| `handle.toUint8Array()` | Extract as a `Uint8Array` (copy from WASM memory) |
+| `handle.getProp(name)` | Get a property by name |
+| `handle.setProp(name, value)` | Set a property by name |
+| `handle.consume(fn)` | Call `fn(handle)`, then dispose, return result |
+| `handle.dup()` | Duplicate the handle (increment refcount) |
+| `handle.dispose()` | Free the handle |
+| `handle[Symbol.dispose]()` | Same as `dispose()` — enables `using handle = ...` |
+
+### `Deferred` (from `vm.newPromise()`)
+
+| Property / Method | Description |
+|--------------------|-------------|
+| `deferred.handle` | The QuickJS promise object |
+| `deferred.settled` | Host `Promise<void>` that resolves on settlement |
+| `deferred.resolve(handle)` | Resolve the promise with a QuickJS value |
+| `deferred.reject(handle)` | Reject the promise with a QuickJS value |
+
+### Data Marshalling
+
+`dump()` and `hostToHandle()` automatically convert values between the host and the QuickJS VM. The following types are supported:
+
+| Host Type | QuickJS Type | `dump()` returns | `hostToHandle()` accepts |
+|-----------|-------------|-----------------|------------------------|
+| `undefined` | undefined | `undefined` | `undefined` |
+| `null` | null | `null` | `null` |
+| `boolean` | boolean | `boolean` | `boolean` |
+| `number` | number | `number` | `number` |
+| `string` | string | `string` | `string` |
+| `bigint` | BigInt | `bigint` | `bigint` |
+| `Symbol.for()` | global Symbol | `Symbol.for(description)` | `Symbol.for(description)` |
+| `Error` | Error | `Error` (with name, message, stack) | `Error` |
+| `Array` | Array | `Array` (recursive) | `Array` (recursive) |
+| `ArrayBuffer` | ArrayBuffer | `ArrayBuffer` (copy) | `ArrayBuffer` |
+| `Uint8Array` | Uint8Array | `Uint8Array` (copy) | `Uint8Array` |
+| Other typed arrays | typed array | Corresponding typed array (copy) | `ArrayBuffer` (via view) |
+| `Promise` | Promise | — | QuickJS Promise (bridged via `Deferred`) |
+| Plain object | Object | `Record<string, unknown>` (recursive, own enumerable keys) | Object (recursive) |
+
+**Notes:**
+
+- Global symbols (`Symbol.for()`) round-trip as real host `Symbol` values via `Symbol.for(description)`
+- Local (anonymous) symbols dump as `undefined` and throw if passed to `hostToHandle()`
+- Functions dump as `undefined` (cannot be meaningfully serialized)
+- Circular and shared references are preserved — `dump()` returns the same host object for the same QuickJS object pointer
+- Only own enumerable string properties are included when dumping objects
+- Binary data is always **copied** between host and WASM memory — there is no zero-copy view API
+- `dump()` for typed arrays determines the host constructor from bytes-per-element (1 → `Uint8Array`, 2 → `Uint16Array`, 4 → `Uint32Array`, 8 → `Float64Array`)
+
+## How It Works
+
+### The Core Insight
+
+WebAssembly linear memory is a flat byte array. Everything QuickJS allocates — the runtime struct, all contexts, all JS objects, the GC heap, the atom table, the promise job queue, pending promises — lives in this linear memory. There are no external pointers, file handles, or OS resources. When you copy the memory wholesale to a new WASM instance, all internal pointer relationships are preserved because they reference the same linear address space.
+
+### One VM = One WASM Instance
+
+Unlike quickjs-emscripten which has a two-level model (`QuickJSWASMModule` → `QuickJSContext`), quickjs-wasm uses a simpler one-level model: each `QuickJS.create()` call instantiates its own WASM module with its own linear memory, runtime, and context. This gives stronger isolation (no shared memory between VMs) and makes snapshotting clean — one instance, one context, one snapshot.
+
+### Architecture
+
+```
+Host (Node.js / Deno / Bun / Browser)
+ |
+ +-- QuickJS class (ts/index.ts)
+ |    |-- evalCode(), callFunction(), newFunction(), ...
+ |    |-- snapshot() -> Snapshot { memory, stackPointer, runtimePtr, contextPtr }
+ |    +-- restore(snapshot) -> QuickJS
+ |
+ +-- WASI Shim (ts/wasi-shim.ts)
+ |    |-- clock_time_get, fd_write, random_get
+ |    +-- fd_close, fd_fdstat_get, fd_seek (stubs)
+ |
+ +-- quickjs.wasm (1.4 MB)
+      |-- QuickJS-NG engine
+      +-- C interface layer (c/interface.c)
+           |-- Lifecycle, eval, value creation/extraction
+           |-- Host callback trampoline (imported host_call)
+           +-- Snapshot support (get/set runtime and context pointers)
+```
+
+### Host Callback Mechanism
+
+When `vm.newFunction(name, fn)` is called, a QuickJS C function is created via `JS_NewCFunctionData2` with the function name stored as a JS string in `func_data[0]`. When QuickJS code calls the function, the C trampoline extracts the name and calls the imported `host_call(name_ptr, name_len, this_ptr, argc, argv_ptr)` function, which dispatches to the registered host callback by name.
+
+This design survives snapshot/restore: the name string is stored in QuickJS's heap (part of the snapshot), and after restore, `registerHostCallback(name, fn)` re-maps the name to a new host function. Because callbacks are keyed by name rather than sequential integer IDs, the registration order doesn't matter and adding or removing host functions won't silently break restore.
+
+## Development
+
+### Prerequisites
+
+- [wasi-sdk](https://github.com/WebAssembly/wasi-sdk) (tested with v30) — set `WASI_SDK` env var or defaults to `/tmp/wasi-sdk`
+- Node.js >= 22
+- pnpm
+
+### Building Locally
+
+```sh
+# Clone with submodules
+git clone --recursive https://github.com/vercel-labs/quickjs-wasm.git
+cd quickjs-wasm
+
+# Install wasi-sdk (macOS arm64 — adjust URL for your platform)
+curl -sL "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-30/wasi-sdk-30.0-arm64-macos.tar.gz" \
+  | tar xz -C /tmp --strip-components=1 --one-top-level=wasi-sdk
+
+# Install dependencies
+pnpm install
+
+# Build WASM binary + TypeScript
+pnpm run build
+
+# Run tests
+pnpm test
+```
+
+## Technical Details
+
+### WASM Binary
+
+- Built from [quickjs-ng](https://github.com/quickjs-ng/quickjs) (MIT license)
+- Compiled with wasi-sdk targeting `wasm32-wasip1` in reactor mode
+- 1.4 MB uncompressed
+- 7 WASM imports: 6 WASI functions + 1 `env.host_call` for host callbacks
+- Exports `memory` and `__stack_pointer` for snapshot support
+
+### What Gets Snapshotted
+
+The snapshot captures the entire WASM linear memory, which contains:
+
+- The `JSRuntime` struct (GC state, job queue, module loader state)
+- The `JSContext` struct (global object, intrinsics, atom table)
+- All JS objects (via QuickJS's GC heap)
+- The promise job queue (pending `.then` callbacks)
+- The string intern table (atoms)
+- The `dlmalloc` heap metadata
+- The C interface's `static JSRuntime *rt` and `static JSContext *ctx` globals
+- Host callback IDs stored in function data
+
+Plus the `__stack_pointer` WASM global (a single i32).
+
+### Limitations and Future Work
+
+- **Snapshot size**: Snapshots capture the entire WASM linear memory (~256 KB baseline, grows with heap). Use `serializeSnapshot()` to get a binary buffer, then apply your own compression (gzip/zstd) — the memory compresses very well due to large zero regions.
+- **Stack size limit**: QuickJS-ng disables `JS_SetMaxStackSize` on WASI, so deep recursion causes a WASM trap (not a catchable exception).
+- **ES Modules**: Only script-mode eval is supported. `import`/`export` and module loaders are not yet wired through.
+- **Extension ABI**: Native WASM extensions use an experimental dynamic linking ABI that is [not yet stabilized](https://github.com/WebAssembly/tool-conventions/blob/main/DynamicLinking.md). All extensions must be compiled with the same wasi-sdk version as the main module. See [EXTENSIONS.md](./EXTENSIONS.md) for details.
+
+### Browser Usage
+
+quickjs-wasi works in browsers — the TypeScript API uses only the standard `WebAssembly` API and the WASI shim is environment-agnostic. The only Node.js-specific code is the default WASM loading fallback (which uses `node:fs`). In the browser, pass the WASM bytes directly:
+
+```typescript
+import { QuickJS } from 'quickjs-wasi';
+
+// Fetch the .wasm file and compile it once
+const response = await fetch('/quickjs.wasm');
+const wasmModule = await WebAssembly.compileStreaming(response);
+
+// Create VMs from the pre-compiled module (fast — no re-compilation)
+using vm = await QuickJS.create({ wasm: wasmModule });
+```
+
+See [`examples/browser/`](./examples/browser/) for a complete Vite demo app.
+
+````
+
+### Notice 5fbb43438fcc582491d1b089fff6b4e024a43c1856ae1c9f9c5a4b6441acbe66
+
+- @hono/node-ws@1.3.0 original publisher material: https://registry.npmjs.org/@hono/node-ws/-/node-ws-1.3.0.tgz#package/README.md
+
+
+
+````text
+# WebSocket helper for Node.js
+
+[![codecov](https://codecov.io/github/honojs/middleware/graph/badge.svg?flag=node-ws)](https://codecov.io/github/honojs/middleware)
+
+A WebSocket helper for Node.js
+
+## Usage
+
+```ts
+import { createNodeWebSocket } from '@hono/node-ws'
+import { Hono } from 'hono'
+import { serve } from '@hono/node-server'
+
+const app = new Hono()
+
+const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app })
+
+app.get(
+  '/ws',
+  upgradeWebSocket((c) => ({
+    // https://hono.dev/helpers/websocket
+  }))
+)
+
+const server = serve(app)
+injectWebSocket(server)
+```
+
+## Author
+
+Shotaro Nakamura <https://github.com/nakasyou>
+
+## License
+
+MIT
+
+````
+
+### Notice beeb4cfbd16d5d08ebe19b3ca588b914a24b60bde41d4129f6f1d60a083ef874
+
+- @hono/node-ws@1.3.0 original publisher material: https://registry.npmjs.org/@hono/node-ws/-/node-ws-1.3.0.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "@hono/node-ws",
+  "version": "1.3.0",
+  "description": "WebSocket helper for Node.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc -b tsconfig.json",
+    "test": "vitest",
+    "version:jsr": "yarn version:set $npm_package_version"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/honojs/middleware.git",
+    "directory": "packages/node-ws"
+  },
+  "homepage": "https://github.com/honojs/middleware",
+  "devDependencies": {
+    "@hono/node-server": "^1.19.2",
+    "hono": "^4.11.3",
+    "tsdown": "^0.15.9",
+    "typescript": "^5.8.2",
+    "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "ws": "^8.17.0"
+  },
+  "peerDependencies": {
+    "@hono/node-server": "^1.19.2",
+    "hono": "^4.6.0"
+  },
+  "engines": {
+    "node": ">=18.14.1"
+  }
+}
+````
+
+### Notice dc958d0bfc8127388c7d651646749f7017990cb1d1aa01618a0a84915e5eff9a
+
+- strict-event-emitter@0.5.1 original publisher material: https://registry.npmjs.org/strict-event-emitter/-/strict-event-emitter-0.5.1.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "strict-event-emitter",
+  "version": "0.5.1",
+  "description": "Type-safe implementation of EventEmitter for browser and Node.js",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "typings": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "default": "./lib/index.mjs"
+    }
+  },
+  "repository": "git@github.com:open-draft/strict-event-emitter.git",
+  "author": "Artem Zakharchenko <kettanaito@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "devDependencies": {
+    "@ossjs/release": "^0.8.0",
+    "@types/events": "^3.0.0",
+    "@types/jest": "^29.2.4",
+    "jest": "^29.3.1",
+    "jest-extended": "^3.2.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^9.1.1",
+    "tsup": "^6.2.3",
+    "typescript": "4.8"
+  },
+  "scripts": {
+    "dev": "tsc -w",
+    "test": "jest",
+    "test:ts": "tsc -p test/typings.tsconfig.json",
+    "clean": "rimraf ./lib",
+    "build": "pnpm clean && tsup",
+    "release": "release publish"
+  }
+}
+````
+
+### Notice c99806746abe863eaa7e941fed608eadf89d1ff9bde0216ea76d024ee0e14843
+
+- strict-event-emitter@0.5.1 original publisher material: https://registry.npmjs.org/strict-event-emitter/-/strict-event-emitter-0.5.1.tgz#package/README.md
+
+
+
+````text
+# Strict Event Emitter
+
+A type-safe implementation of `EventEmitter` for browser and Node.js.
+
+## Motivation
+
+Despite event emitters potentially accepting any runtime value, defining a strict event contract is crucial when developing complex event-driven architectures. Unfortunately, the native type definitions for Node's `EventEmitter` annotate event names as `string`, which forbids any stricter type validation.
+
+```js
+// index.js
+const emitter = new EventEmitter()
+
+// Let's say our application expects a "ping"
+// event with the number payload.
+emitter.on('ping', (n: number) => {})
+
+// We can, however, emit a different event by mistake.
+emitter.emit('pong', 1)
+
+// Or even the correct event with the wrong data.
+emitter.emit('ping', 'wait, not a number')
+```
+
+The purpose of this library is to provide an `EventEmitter` instance that can accept a generic describing the expected events contract.
+
+```ts
+import { Emitter } from 'strict-event-emitter'
+
+// Define a strict events contract where keys
+// represent event names and values represent
+// the list of arguments expected in ".emit()".
+type Events = {
+  ping: [number]
+}
+
+const emitter = new Emitter<Events>()
+emitter.addListener('ping', (n) => {
+  // "n" argument type is inferred as "number'.
+})
+
+emitter.emit('ping', 10) // OK
+emitter.emit('unknown', 10) // TypeError (invalid event name)
+emitter.emit('ping', 'wait, not a number') // TypeError (invalid data)
+```
+
+This library is also a custom `EventEmitter` implementation, which makes it compatible with other environments, like browsers or React Native.
+
+## Getting started
+
+### Install
+
+```bash
+npm install strict-event-emitter
+```
+
+### Use
+
+```ts
+import { Emitter } from 'strict-event-emitter'
+
+// 1. Define an interface that describes your events.
+// Set event names as the keys, and their expected payloads as values.
+interface Events {
+  connect: [id: string]
+  disconnect: [id: string]
+}
+
+// 2. Create a strict emitter and pass the previously defined "Events"
+// as its first generic argument.
+const emitter = new Emitter<Events>()
+
+// 3. Use the "emitter" the same way you'd use the regular "EventEmitter" instance.
+emitter.addListener('connect', (id) => {})
+emitter.emit('connect', 'abc-123')
+```
+
+## License
+
+MIT
+
+````
+
+### Notice a5096f95098452cf6fe5c8ac9be8f13f59ab7c9f605ba5ef92c91b2c505744f0
+
+- lazy-val@1.0.5 original publisher material: https://registry.npmjs.org/lazy-val/-/lazy-val-1.0.5.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "lazy-val",
+  "version": "1.0.5",
+  "main": "out/main.js",
+  "author": "Vladimir Krivosheev",
+  "license": "MIT",
+  "repository": "develar/lazy-val",
+  "bugs": "https://github.com/develar/lazy-val/issues",
+  "homepage": "https://github.com/develar/lazy-val",
+  "files": [
+    "out"
+  ],
+  "scripts": {
+    "compile": "tsc",
+    "release": "pnpm compile && pnpm publish --no-git-checks"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
+  "typings": "./out/main.d.ts"
+}
+
+````
+
+### Notice be2a8a71f8055b65f5b5d2724418aef1642c5d4ba243f3206eebd915d35ba228
+
+- semaphore@1.1.0 original publisher material: https://registry.npmjs.org/semaphore/-/semaphore-1.1.0.tgz#package/README.md
+
+
+
+````text
+semaphore.js
+============
+
+[![Build Status](https://travis-ci.org/abrkn/semaphore.js.svg?branch=master)](https://travis-ci.org/abrkn/semaphore.js)
+
+Install:
+npm install semaphore
+
+Limit simultaneous access to a resource.
+
+```javascript
+// Create
+var sem = require('semaphore')(capacity);
+
+// Take
+sem.take(fn[, n=1])
+sem.take(n, fn)
+
+// Leave
+sem.leave([n])
+
+// Available
+sem.available([n])
+```
+
+
+```javascript
+// Limit concurrent db access
+var sem = require('semaphore')(1);
+var server = require('http').createServer(req, res) {
+	sem.take(function() {
+		expensive_database_operation(function(err, res) {
+			sem.leave();
+
+			if (err) return res.end("Error");
+
+			return res.end(res);
+		});
+	});
+});
+```
+
+```javascript
+// 2 clients at a time
+var sem = require('semaphore')(2);
+var server = require('http').createServer(req, res) {
+	res.write("Then good day, madam!");
+
+	sem.take(function() {
+		res.end("We hope to see you soon for tea.");
+		sem.leave();
+	});
+});
+```
+
+```javascript
+// Rate limit
+var sem = require('semaphore')(10);
+var server = require('http').createServer(req, res) {
+	sem.take(function() {
+		res.end(".");
+		
+		setTimeout(sem.leave, 500)
+	});
+});
+```
+
+License
+===
+
+MIT
+
+````
+
+### Notice e7fced0a4cbdd98d9048254733d85935685f904912c7d1dc6fd13eac8e949b48
+
+- semaphore@1.1.0 original publisher material: https://registry.npmjs.org/semaphore/-/semaphore-1.1.0.tgz#package/bower.json
+
+
+
+````text
+{
+  "name": "semaphore.js",
+  "version": "1.0.3",
+  "homepage": "https://github.com/abrkn/semaphore.js",
+  "authors": [
+    "Andreas Brekken <andreas@opuno.com>"
+  ],
+  "description": "Limit simultaneous access to a resource.",
+  "main": "lib/semaphore.js",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "semaphore",
+    "concurrency"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
+
+````
+
+### Notice ca09c0dccbfc43be6be0ac89e9ffa19b64b30f9c74c64da27f719a7244a25e30
+
+- boolbase@1.0.0 original publisher material: https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "boolbase",
+  "version": "1.0.0",
+  "description": "two functions: One that returns true, one that returns false",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fb55/boolbase"
+  },
+  "keywords": [
+    "boolean",
+    "function"
+  ],
+  "author": "Felix Boehm <me@feedic.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fb55/boolbase/issues"
+  },
+  "homepage": "https://github.com/fb55/boolbase"
+}
+
+````
+
+### Notice 36d6e1dda37c34e5559f0f10e09ae1ae5ce9d50ac2b872c2d287365bf52ad33c
+
+- @open-draft/deferred-promise@2.2.0 original publisher material: https://registry.npmjs.org/@open-draft/deferred-promise/-/deferred-promise-2.2.0.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "@open-draft/deferred-promise",
+  "version": "2.2.0",
+  "description": "A Promise-compatible abstraction that defers resolving/rejecting promises to another closure.",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "module": "./build/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "require": "./build/index.js",
+      "default": "./build/index.mjs"
+    }
+  },
+  "scripts": {
+    "test": "jest",
+    "test:compliance": "export NODE_OPTIONS=--loader=tsx || set NODE_OPTIONS=--loader=tsx&& npx -y promises-aplus-tests ./test/aplus-tests-adapter.ts",
+    "prebuild": "rimraf ./build",
+    "build": "tsup",
+    "release": "release publish"
+  },
+  "files": [
+    "./build"
+  ],
+  "keywords": [
+    "promise",
+    "defer",
+    "deferred",
+    "resolve",
+    "reject",
+    "executor"
+  ],
+  "author": "Artem Zakharchenko",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/open-draft/deferred-promise"
+  },
+  "devDependencies": {
+    "@ossjs/release": "^0.7.2",
+    "@types/jest": "^29.0.1",
+    "jest": "^29.0.3",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.0",
+    "tsup": "^7.2.0",
+    "tsx": "^3.12.1",
+    "typescript": "^4.8.3"
+  }
+}
+````
+
+### Notice 3bf5781dc5e98b9f9923249b0a8e8bae3dc36699841a417bf9b7451f68fc012a
+
+- is-node-process@1.2.0 original publisher material: https://registry.npmjs.org/is-node-process/-/is-node-process-1.2.0.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "is-node-process",
+  "description": "Reliably determines if the code is running in Node.js",
+  "version": "1.2.0",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "typings": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "default": "./lib/index.mjs"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mswjs/is-node-process"
+  },
+  "files": [
+    "lib"
+  ],
+  "devDependencies": {
+    "@ossjs/release": "^0.5.1",
+    "@types/jest": "^27.0.0",
+    "@types/node": "^18.14.0",
+    "electron": "^19.0.6",
+    "jest": "^27.0.6",
+    "playwright": "^1.22.2",
+    "spectron": "^15.0.0",
+    "ts-jest": "^27.0.3",
+    "tsup": "^6.2.3",
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "browser": "open test/browser.html",
+    "electron": "electron test/fixtures/electron.js",
+    "test": "jest --testPathIgnorePatterns electron.test.ts",
+    "test:react-native": "cd test/fixtures/react-native && pnpm test",
+    "build": "tsup",
+    "release": "release publish"
+  }
+}
+````
+
+### Notice 6669789531a5fb393815b54aaa6ee853be53a60e00054c9de436dfc11a90c6ae
+
+- ansi-to-react@6.2.6 original publisher material: https://registry.npmjs.org/ansi-to-react/-/ansi-to-react-6.2.6.tgz#package/package.json
+
+
+
+````text
+{
+  "name": "ansi-to-react",
+  "version": "6.2.6",
+  "packageManager": "pnpm@10.2.0",
+  "description": "ANSI to React Elements",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "nteractDesktop": "src/index.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "jest",
+    "semantic-release": "semantic-release"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nteract/ansi-to-react.git"
+  },
+  "keywords": [
+    "ansi",
+    "react"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Kyle Kelley <rgbkrk@gmail.com>",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "anser": "^2.3.2",
+    "escape-carriage": "^1.3.1",
+    "linkify-it": "^3.0.3"
+  },
+  "peerDependencies": {
+    "react": "^16.3.2 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.3.2 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@semantic-release/github": "^12.0.2",
+    "@semantic-release/npm": "^13.1.3",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/jest": "^29.5.14",
+    "@types/linkify-it": "^3.0.2",
+    "@types/react": "^19.1.8",
+    "conventional-changelog-conventionalcommits": "^9.0.0",
+    "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0",
+    "prettier": "^3.5.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "semantic-release": "^25.0.2",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
+  },
+  "release": {
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
+  }
+}
+
+````
+
+### Notice b681c6d6ab80ff5412c6b377a8b88941d2aefa312a7d74e32972ae5eadceb67a
+
+- ansi-to-react@6.2.6 original publisher material: https://registry.npmjs.org/ansi-to-react/-/ansi-to-react-6.2.6.tgz#package/README.md
+
+
+
+````text
+# ansi-to-react
+
+This package convert ANSI escape codes to formatted text output for React.
+
+## Installation
+
+```
+$ pnpm add ansi-to-react
+```
+
+## Usage
+
+### Basic
+
+The example below shows how we can use this package to render a string with ANSI escape codes.
+
+```javascript
+import Ansi from "ansi-to-react";
+
+export function () => {
+  return <Ansi>
+    {'\u001b[34mhello world'}
+  </Ansi>;
+};
+```
+
+Will render:
+
+```javascript
+<code>
+  <span style="color:rgb(0, 0, 187)">hello world</span>
+</code>
+```
+
+### Classes
+
+Style with classes instead of `style` attribute.
+
+```javascript
+<Ansi useClasses>{"\u001b[34mhello world"}</Ansi>
+```
+
+Will render
+
+```javascript
+<code>
+  <span class="ansi-blue-fg">hello world</span>
+</code>
+```
+
+#### Class Names
+
+| Font color             | Background Color |
+| ---------------------- | ---------------- |
+| ansi-black-fg          | ansi-black-bg    |
+| ansi-red-fg            | ansi-red-bg      |
+| ansi-green-fg          | ansi-green-bg    |
+| ansi-yellow-fg         | ansi-yellow-bg   |
+| ansi-blue-fg           | ansi-blue-bg     |
+| ansi-magenta-fg        | ansi-magenta-bg  |
+| ansi-cyan-fg           | ansi-cyan-bg     |
+| ansi-white-fg          | ansi-white-bg    |
+| ansi-bright-black-fg   |
+| ansi-bright-red-fg     |
+| ansi-bright-green-fg   |
+| ansi-bright-yellow-fg  |
+| ansi-bright-blue-fg    |
+| ansi-bright-magenta-fg |
+| ansi-bright-cyan-fg    |
+| ansi-bright-white-fg   |
+
+## Development
+
+To develop on this project, fork and clone this repository on your local machine. Before making modifications, install the project's dependencies.
+
+```
+$ pnpm install
+```
+
+To run the test suite for this project, run:
+
+```
+$ pnpm test
+```
+
+## Documentation
+
+We're working on adding more documentation for this component. Stay tuned by watching this repository!
+
+## Support
+
+If you experience an issue while using this package or have a feature request, please file an issue on the [issue board](https://github.com/nteract/ansi-to-react/issues),
+
+## License
+
+[BSD-3-Clause](https://choosealicense.com/licenses/bsd-3-clause/)
+
+````
+
 ### Notice 5129f8779dca579cfcb235570688a2f15822b270575e04f27ef906aabbcc0355
 
 - Fig autocomplete registry: https://raw.githubusercontent.com/withfig/autocomplete/aef52acff84c45edde61ae610cc2c964802b9a38/LICENSE
@@ -38745,2039 +40433,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-````
-
-### Notice 5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd
-
-- Skia (inside @napi-rs/canvas@0.1.100): https://raw.githubusercontent.com/google/skia/fe2718df5f53a681087be6f0539045ca1b4b8c09/LICENSE
-
-
-
-````text
-Copyright (c) 2011 Google Inc. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-  * Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
-
-  * Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in
-    the documentation and/or other materials provided with the
-    distribution.
-
-  * Neither the name of the copyright holder nor the names of its
-    contributors may be used to endorse or promote products derived
-    from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-````
-
-### Notice 31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87
-
-- expat (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/external/github.com/libexpat/libexpat.git/+/6154446fccefbf3ca644894f598969113b0c7bcd/expat/COPYING?format=TEXT
-
-
-
-````text
-Copyright (c) 1998-2000 Thai Open Source Software Center Ltd and Clark Cooper
-Copyright (c) 2001-2025 Expat maintainers
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-````
-
-### Notice 5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f
-
-- freetype (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/chromium/src/third_party/freetype2.git/+/264b5fbf5b912b39f98d038bf75d39be0a73f21b/docs/FTL.TXT?format=TEXT
-
-
-
-````text
-                    The FreeType Project LICENSE
-                    ----------------------------
-
-                            2006-Jan-27
-
-                    Copyright 1996-2002, 2006 by
-          David Turner, Robert Wilhelm, and Werner Lemberg
-
-
-
-Introduction
-============
-
-  The FreeType  Project is distributed in  several archive packages;
-  some of them may contain, in addition to the FreeType font engine,
-  various tools and  contributions which rely on, or  relate to, the
-  FreeType Project.
-
-  This  license applies  to all  files found  in such  packages, and
-  which do not  fall under their own explicit  license.  The license
-  affects  thus  the  FreeType   font  engine,  the  test  programs,
-  documentation and makefiles, at the very least.
-
-  This  license   was  inspired  by  the  BSD,   Artistic,  and  IJG
-  (Independent JPEG  Group) licenses, which  all encourage inclusion
-  and  use of  free  software in  commercial  and freeware  products
-  alike.  As a consequence, its main points are that:
-
-    o We don't promise that this software works. However, we will be
-      interested in any kind of bug reports. (`as is' distribution)
-
-    o You can  use this software for whatever you  want, in parts or
-      full form, without having to pay us. (`royalty-free' usage)
-
-    o You may not pretend that  you wrote this software.  If you use
-      it, or  only parts of it,  in a program,  you must acknowledge
-      somewhere  in  your  documentation  that  you  have  used  the
-      FreeType code. (`credits')
-
-  We  specifically  permit  and  encourage  the  inclusion  of  this
-  software, with  or without modifications,  in commercial products.
-  We  disclaim  all warranties  covering  The  FreeType Project  and
-  assume no liability related to The FreeType Project.
-
-
-  Finally,  many  people  asked  us  for  a  preferred  form  for  a
-  credit/disclaimer to use in compliance with this license.  We thus
-  encourage you to use the following text:
-
-   """
-    Portions of this software are copyright © <year> The FreeType
-    Project (https://freetype.org).  All rights reserved.
-   """
-
-  Please replace <year> with the value from the FreeType version you
-  actually use.
-
-
-Legal Terms
-===========
-
-0. Definitions
---------------
-
-  Throughout this license,  the terms `package', `FreeType Project',
-  and  `FreeType  archive' refer  to  the  set  of files  originally
-  distributed  by the  authors  (David Turner,  Robert Wilhelm,  and
-  Werner Lemberg) as the `FreeType Project', be they named as alpha,
-  beta or final release.
-
-  `You' refers to  the licensee, or person using  the project, where
-  `using' is a generic term including compiling the project's source
-  code as  well as linking it  to form a  `program' or `executable'.
-  This  program is  referred to  as  `a program  using the  FreeType
-  engine'.
-
-  This  license applies  to all  files distributed  in  the original
-  FreeType  Project,   including  all  source   code,  binaries  and
-  documentation,  unless  otherwise  stated   in  the  file  in  its
-  original, unmodified form as  distributed in the original archive.
-  If you are  unsure whether or not a particular  file is covered by
-  this license, you must contact us to verify this.
-
-  The FreeType  Project is copyright (C) 1996-2000  by David Turner,
-  Robert Wilhelm, and Werner Lemberg.  All rights reserved except as
-  specified below.
-
-1. No Warranty
---------------
-
-  THE FREETYPE PROJECT  IS PROVIDED `AS IS' WITHOUT  WARRANTY OF ANY
-  KIND, EITHER  EXPRESS OR IMPLIED,  INCLUDING, BUT NOT  LIMITED TO,
-  WARRANTIES  OF  MERCHANTABILITY   AND  FITNESS  FOR  A  PARTICULAR
-  PURPOSE.  IN NO EVENT WILL ANY OF THE AUTHORS OR COPYRIGHT HOLDERS
-  BE LIABLE  FOR ANY DAMAGES CAUSED  BY THE USE OR  THE INABILITY TO
-  USE, OF THE FREETYPE PROJECT.
-
-2. Redistribution
------------------
-
-  This  license  grants  a  worldwide, royalty-free,  perpetual  and
-  irrevocable right  and license to use,  execute, perform, compile,
-  display,  copy,   create  derivative  works   of,  distribute  and
-  sublicense the  FreeType Project (in  both source and  object code
-  forms)  and  derivative works  thereof  for  any  purpose; and  to
-  authorize others  to exercise  some or all  of the  rights granted
-  herein, subject to the following conditions:
-
-    o Redistribution of  source code  must retain this  license file
-      (`FTL.TXT') unaltered; any  additions, deletions or changes to
-      the original  files must be clearly  indicated in accompanying
-      documentation.   The  copyright   notices  of  the  unaltered,
-      original  files must  be  preserved in  all  copies of  source
-      files.
-
-    o Redistribution in binary form must provide a  disclaimer  that
-      states  that  the software is based in part of the work of the
-      FreeType Team,  in  the  distribution  documentation.  We also
-      encourage you to put an URL to the FreeType web page  in  your
-      documentation, though this isn't mandatory.
-
-  These conditions  apply to any  software derived from or  based on
-  the FreeType Project,  not just the unmodified files.   If you use
-  our work, you  must acknowledge us.  However, no  fee need be paid
-  to us.
-
-3. Advertising
---------------
-
-  Neither the  FreeType authors and  contributors nor you  shall use
-  the name of the  other for commercial, advertising, or promotional
-  purposes without specific prior written permission.
-
-  We suggest,  but do not require, that  you use one or  more of the
-  following phrases to refer  to this software in your documentation
-  or advertising  materials: `FreeType Project',  `FreeType Engine',
-  `FreeType library', or `FreeType Distribution'.
-
-  As  you have  not signed  this license,  you are  not  required to
-  accept  it.   However,  as  the FreeType  Project  is  copyrighted
-  material, only  this license, or  another one contracted  with the
-  authors, grants you  the right to use, distribute,  and modify it.
-  Therefore,  by  using,  distributing,  or modifying  the  FreeType
-  Project, you indicate that you understand and accept all the terms
-  of this license.
-
-4. Contacts
------------
-
-  There are two mailing lists related to FreeType:
-
-    o freetype@nongnu.org
-
-      Discusses general use and applications of FreeType, as well as
-      future and  wanted additions to the  library and distribution.
-      If  you are looking  for support,  start in  this list  if you
-      haven't found anything to help you in the documentation.
-
-    o freetype-devel@nongnu.org
-
-      Discusses bugs,  as well  as engine internals,  design issues,
-      specific licenses, porting, etc.
-
-  Our home page can be found at
-
-    https://freetype.org
-
-
---- end of FTL.TXT ---
-
-````
-
-### Notice ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64
-
-- harfbuzz (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/external/github.com/harfbuzz/harfbuzz.git/+/9cb1fee51069b206effb4736e443b038d230789d/COPYING?format=TEXT
-
-
-
-````text
-HarfBuzz is licensed under the so-called "Old MIT" license.  Details follow.
-For parts of HarfBuzz that are licensed under different licenses see individual
-files names COPYING in subdirectories where applicable.
-
-Copyright © 2010-2022  Google, Inc.
-Copyright © 2015-2020  Ebrahim Byagowi
-Copyright © 2019,2020  Facebook, Inc.
-Copyright © 2012,2015  Mozilla Foundation
-Copyright © 2011  Codethink Limited
-Copyright © 2008,2010  Nokia Corporation and/or its subsidiary(-ies)
-Copyright © 2009  Keith Stribley
-Copyright © 2011  Martin Hosken and SIL International
-Copyright © 2007  Chris Wilson
-Copyright © 2005,2006,2020,2021,2022,2023  Behdad Esfahbod
-Copyright © 2004,2007,2008,2009,2010,2013,2021,2022,2023  Red Hat, Inc.
-Copyright © 1998-2005  David Turner and Werner Lemberg
-Copyright © 2016  Igalia S.L.
-Copyright © 2022  Matthias Clasen
-Copyright © 2018,2021  Khaled Hosny
-Copyright © 2018,2019,2020  Adobe, Inc
-Copyright © 2013-2015  Alexei Podtelezhnikov
-
-For full copyright notices consult the individual files in the package.
-
-
-Permission is hereby granted, without written agreement and without
-license or royalty fees, to use, copy, modify, and distribute this
-software and its documentation for any purpose, provided that the
-above copyright notice and the following two paragraphs appear in
-all copies of this software.
-
-IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE TO ANY PARTY FOR
-DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
-ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN
-IF THE COPYRIGHT HOLDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
-DAMAGE.
-
-THE COPYRIGHT HOLDER SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
-BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
-ON AN "AS IS" BASIS, AND THE COPYRIGHT HOLDER HAS NO OBLIGATION TO
-PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
-
-````
-
-### Notice 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
-
-- highway (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/external/github.com/google/highway.git/+/424360251cdcfc314cfc528f53c872ecd63af0f0/LICENSE?format=TEXT
-
-
-
-````text
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
-
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
-
-   1. Definitions.
-
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
-
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
-
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
-
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
-
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
-
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
-
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
-
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
-
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
-
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
-
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
-
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
-
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
-
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
-
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
-
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
-
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
-
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
-
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
-
-   APPENDIX: How to apply the Apache License to your work.
-
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
-
-   Copyright [yyyy] [name of copyright owner]
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-````
-
-### Notice 17510cf7a58b4879b887ec05a45d72cf1b73544dd9ec7e72f20110ed104229ee
-
-- icu (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/chromium/deps/icu.git/+/364118a1d9da24bb5b770ac3d762ac144d6da5a4/LICENSE?format=TEXT
-
-
-
-````text
-UNICODE LICENSE V3
-
-COPYRIGHT AND PERMISSION NOTICE
-
-Copyright © 2016-2023 Unicode, Inc.
-
-NOTICE TO USER: Carefully read the following legal agreement. BY
-DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING DATA FILES, AND/OR
-SOFTWARE, YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE
-TERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT
-DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE THE DATA FILES OR SOFTWARE.
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of data files and any associated documentation (the "Data Files") or
-software and any associated documentation (the "Software") to deal in the
-Data Files or Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, and/or sell
-copies of the Data Files or Software, and to permit persons to whom the
-Data Files or Software are furnished to do so, provided that either (a)
-this copyright and permission notice appear with all copies of the Data
-Files or Software, or (b) this copyright and permission notice appear in
-associated Documentation.
-
-THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
-THIRD PARTY RIGHTS.
-
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE
-BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES,
-OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE DATA
-FILES OR SOFTWARE.
-
-Except as contained in this notice, the name of a copyright holder shall
-not be used in advertising or otherwise to promote the sale, use or other
-dealings in these Data Files or Software without prior written
-authorization of the copyright holder.
-
-----------------------------------------------------------------------
-
-Third-Party Software Licenses
-
-This section contains third-party software notices and/or additional
-terms for licensed third-party software components included within ICU
-libraries.
-
-----------------------------------------------------------------------
-
-ICU License - ICU 1.8.1 to ICU 57.1
-
-COPYRIGHT AND PERMISSION NOTICE
-
-Copyright (c) 1995-2016 International Business Machines Corporation and others
-All rights reserved.
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, and/or sell copies of the Software, and to permit persons
-to whom the Software is furnished to do so, provided that the above
-copyright notice(s) and this permission notice appear in all copies of
-the Software and that both the above copyright notice(s) and this
-permission notice appear in supporting documentation.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
-OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-HOLDERS INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY
-SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER
-RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
-CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
-Except as contained in this notice, the name of a copyright holder
-shall not be used in advertising or otherwise to promote the sale, use
-or other dealings in this Software without prior written authorization
-of the copyright holder.
-
-All trademarks and registered trademarks mentioned herein are the
-property of their respective owners.
-
-----------------------------------------------------------------------
-
-Chinese/Japanese Word Break Dictionary Data (cjdict.txt)
-
- #     The Google Chrome software developed by Google is licensed under
- # the BSD license. Other software included in this distribution is
- # provided under other licenses, as set forth below.
- #
- #  The BSD License
- #  http://opensource.org/licenses/bsd-license.php
- #  Copyright (C) 2006-2008, Google Inc.
- #
- #  All rights reserved.
- #
- #  Redistribution and use in source and binary forms, with or without
- # modification, are permitted provided that the following conditions are met:
- #
- #  Redistributions of source code must retain the above copyright notice,
- # this list of conditions and the following disclaimer.
- #  Redistributions in binary form must reproduce the above
- # copyright notice, this list of conditions and the following
- # disclaimer in the documentation and/or other materials provided with
- # the distribution.
- #  Neither the name of  Google Inc. nor the names of its
- # contributors may be used to endorse or promote products derived from
- # this software without specific prior written permission.
- #
- #
- #  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
- # CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- # MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- # DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- # LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- # CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- # BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- #
- #
- #  The word list in cjdict.txt are generated by combining three word lists
- # listed below with further processing for compound word breaking. The
- # frequency is generated with an iterative training against Google web
- # corpora.
- #
- #  * Libtabe (Chinese)
- #    - https://sourceforge.net/project/?group_id=1519
- #    - Its license terms and conditions are shown below.
- #
- #  * IPADIC (Japanese)
- #    - http://chasen.aist-nara.ac.jp/chasen/distribution.html
- #    - Its license terms and conditions are shown below.
- #
- #  ---------COPYING.libtabe ---- BEGIN--------------------
- #
- #  /*
- #   * Copyright (c) 1999 TaBE Project.
- #   * Copyright (c) 1999 Pai-Hsiang Hsiao.
- #   * All rights reserved.
- #   *
- #   * Redistribution and use in source and binary forms, with or without
- #   * modification, are permitted provided that the following conditions
- #   * are met:
- #   *
- #   * . Redistributions of source code must retain the above copyright
- #   *   notice, this list of conditions and the following disclaimer.
- #   * . Redistributions in binary form must reproduce the above copyright
- #   *   notice, this list of conditions and the following disclaimer in
- #   *   the documentation and/or other materials provided with the
- #   *   distribution.
- #   * . Neither the name of the TaBE Project nor the names of its
- #   *   contributors may be used to endorse or promote products derived
- #   *   from this software without specific prior written permission.
- #   *
- #   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- #   * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- #   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- #   * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- #   * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- #   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- #   * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- #   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- #   * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- #   * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- #   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- #   * OF THE POSSIBILITY OF SUCH DAMAGE.
- #   */
- #
- #  /*
- #   * Copyright (c) 1999 Computer Systems and Communication Lab,
- #   *                    Institute of Information Science, Academia
- #       *                    Sinica. All rights reserved.
- #   *
- #   * Redistribution and use in source and binary forms, with or without
- #   * modification, are permitted provided that the following conditions
- #   * are met:
- #   *
- #   * . Redistributions of source code must retain the above copyright
- #   *   notice, this list of conditions and the following disclaimer.
- #   * . Redistributions in binary form must reproduce the above copyright
- #   *   notice, this list of conditions and the following disclaimer in
- #   *   the documentation and/or other materials provided with the
- #   *   distribution.
- #   * . Neither the name of the Computer Systems and Communication Lab
- #   *   nor the names of its contributors may be used to endorse or
- #   *   promote products derived from this software without specific
- #   *   prior written permission.
- #   *
- #   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- #   * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- #   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- #   * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- #   * REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- #   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- #   * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- #   * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- #   * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- #   * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- #   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- #   * OF THE POSSIBILITY OF SUCH DAMAGE.
- #   */
- #
- #  Copyright 1996 Chih-Hao Tsai @ Beckman Institute,
- #      University of Illinois
- #  c-tsai4@uiuc.edu  http://casper.beckman.uiuc.edu/~c-tsai4
- #
- #  ---------------COPYING.libtabe-----END--------------------------------
- #
- #
- #  ---------------COPYING.ipadic-----BEGIN-------------------------------
- #
- #  Copyright 2000, 2001, 2002, 2003 Nara Institute of Science
- #  and Technology.  All Rights Reserved.
- #
- #  Use, reproduction, and distribution of this software is permitted.
- #  Any copy of this software, whether in its original form or modified,
- #  must include both the above copyright notice and the following
- #  paragraphs.
- #
- #  Nara Institute of Science and Technology (NAIST),
- #  the copyright holders, disclaims all warranties with regard to this
- #  software, including all implied warranties of merchantability and
- #  fitness, in no event shall NAIST be liable for
- #  any special, indirect or consequential damages or any damages
- #  whatsoever resulting from loss of use, data or profits, whether in an
- #  action of contract, negligence or other tortuous action, arising out
- #  of or in connection with the use or performance of this software.
- #
- #  A large portion of the dictionary entries
- #  originate from ICOT Free Software.  The following conditions for ICOT
- #  Free Software applies to the current dictionary as well.
- #
- #  Each User may also freely distribute the Program, whether in its
- #  original form or modified, to any third party or parties, PROVIDED
- #  that the provisions of Section 3 ("NO WARRANTY") will ALWAYS appear
- #  on, or be attached to, the Program, which is distributed substantially
- #  in the same form as set out herein and that such intended
- #  distribution, if actually made, will neither violate or otherwise
- #  contravene any of the laws and regulations of the countries having
- #  jurisdiction over the User or the intended distribution itself.
- #
- #  NO WARRANTY
- #
- #  The program was produced on an experimental basis in the course of the
- #  research and development conducted during the project and is provided
- #  to users as so produced on an experimental basis.  Accordingly, the
- #  program is provided without any warranty whatsoever, whether express,
- #  implied, statutory or otherwise.  The term "warranty" used herein
- #  includes, but is not limited to, any warranty of the quality,
- #  performance, merchantability and fitness for a particular purpose of
- #  the program and the nonexistence of any infringement or violation of
- #  any right of any third party.
- #
- #  Each user of the program will agree and understand, and be deemed to
- #  have agreed and understood, that there is no warranty whatsoever for
- #  the program and, accordingly, the entire risk arising from or
- #  otherwise connected with the program is assumed by the user.
- #
- #  Therefore, neither ICOT, the copyright holder, or any other
- #  organization that participated in or was otherwise related to the
- #  development of the program and their respective officials, directors,
- #  officers and other employees shall be held liable for any and all
- #  damages, including, without limitation, general, special, incidental
- #  and consequential damages, arising out of or otherwise in connection
- #  with the use or inability to use the program or any product, material
- #  or result produced or otherwise obtained by using the program,
- #  regardless of whether they have been advised of, or otherwise had
- #  knowledge of, the possibility of such damages at any time during the
- #  project or thereafter.  Each user will be deemed to have agreed to the
- #  foregoing by his or her commencement of use of the program.  The term
- #  "use" as used herein includes, but is not limited to, the use,
- #  modification, copying and distribution of the program and the
- #  production of secondary products from the program.
- #
- #  In the case where the program, whether in its original form or
- #  modified, was distributed or delivered to or received by a user from
- #  any person, organization or entity other than ICOT, unless it makes or
- #  grants independently of ICOT any specific warranty to the user in
- #  writing, such person, organization or entity, will also be exempted
- #  from and not be held liable to the user for any such damages as noted
- #  above as far as the program is concerned.
- #
- #  ---------------COPYING.ipadic-----END----------------------------------
-
-----------------------------------------------------------------------
-
-Lao Word Break Dictionary Data (laodict.txt)
-
- # Copyright (C) 2016 and later: Unicode, Inc. and others.
- # License & terms of use: http://www.unicode.org/copyright.html
- # Copyright (c) 2015 International Business Machines Corporation
- # and others. All Rights Reserved.
- #
- # Project: https://github.com/rober42539/lao-dictionary
- # Dictionary: https://github.com/rober42539/lao-dictionary/laodict.txt
- # License: https://github.com/rober42539/lao-dictionary/LICENSE.txt
- #          (copied below)
- #
- #	This file is derived from the above dictionary version of Nov 22, 2020
- #  ----------------------------------------------------------------------
- #  Copyright (C) 2013 Brian Eugene Wilson, Robert Martin Campbell.
- #  All rights reserved.
- #
- #  Redistribution and use in source and binary forms, with or without
- #  modification, are permitted provided that the following conditions are met:
- #
- #  Redistributions of source code must retain the above copyright notice, this
- #  list of conditions and the following disclaimer. Redistributions in binary
- #  form must reproduce the above copyright notice, this list of conditions and
- #  the following disclaimer in the documentation and/or other materials
- #  provided with the distribution.
- #
- # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- # COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- # INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- # (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- # SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- # HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- # OF THE POSSIBILITY OF SUCH DAMAGE.
- #  --------------------------------------------------------------------------
-
-----------------------------------------------------------------------
-
-Burmese Word Break Dictionary Data (burmesedict.txt)
-
- #  Copyright (c) 2014 International Business Machines Corporation
- #  and others. All Rights Reserved.
- #
- #  This list is part of a project hosted at:
- #    github.com/kanyawtech/myanmar-karen-word-lists
- #
- #  --------------------------------------------------------------------------
- #  Copyright (c) 2013, LeRoy Benjamin Sharon
- #  All rights reserved.
- #
- #  Redistribution and use in source and binary forms, with or without
- #  modification, are permitted provided that the following conditions
- #  are met: Redistributions of source code must retain the above
- #  copyright notice, this list of conditions and the following
- #  disclaimer.  Redistributions in binary form must reproduce the
- #  above copyright notice, this list of conditions and the following
- #  disclaimer in the documentation and/or other materials provided
- #  with the distribution.
- #
- #    Neither the name Myanmar Karen Word Lists, nor the names of its
- #    contributors may be used to endorse or promote products derived
- #    from this software without specific prior written permission.
- #
- #  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
- #  CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- #  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- #  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- #  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
- #  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- #  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- #  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- #  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- #  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
- #  TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
- #  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- #  SUCH DAMAGE.
- #  --------------------------------------------------------------------------
-
-----------------------------------------------------------------------
-
-Time Zone Database
-
-  ICU uses the public domain data and code derived from Time Zone
-Database for its time zone support. The ownership of the TZ database
-is explained in BCP 175: Procedure for Maintaining the Time Zone
-Database section 7.
-
- # 7.  Database Ownership
- #
- #    The TZ database itself is not an IETF Contribution or an IETF
- #    document.  Rather it is a pre-existing and regularly updated work
- #    that is in the public domain, and is intended to remain in the
- #    public domain.  Therefore, BCPs 78 [RFC5378] and 79 [RFC3979] do
- #    not apply to the TZ Database or contributions that individuals make
- #    to it.  Should any claims be made and substantiated against the TZ
- #    Database, the organization that is providing the IANA
- #    Considerations defined in this RFC, under the memorandum of
- #    understanding with the IETF, currently ICANN, may act in accordance
- #    with all competent court orders.  No ownership claims will be made
- #    by ICANN or the IETF Trust on the database or the code.  Any person
- #    making a contribution to the database or code waives all rights to
- #    future claims in that contribution or in the TZ Database.
-
-----------------------------------------------------------------------
-
-Google double-conversion
-
-Copyright 2006-2011, the V8 project authors. All rights reserved.
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of Google Inc. nor the names of its
-      contributors may be used to endorse or promote products derived
-      from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-----------------------------------------------------------------------
-
-File: aclocal.m4 (only for ICU4C)
-Section: pkg.m4 - Macros to locate and utilise pkg-config.
-
-
-Copyright © 2004 Scott James Remnant <scott@netsplit.com>.
-Copyright © 2012-2015 Dan Nicholson <dbn.lists@gmail.com>
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-02111-1307, USA.
-
-As a special exception to the GNU General Public License, if you
-distribute this file as part of a program that contains a
-configuration script generated by Autoconf, you may include it under
-the same distribution terms that you use for the rest of that
-program.
-
-
-(The condition for the exception is fulfilled because
-ICU4C includes a configuration script generated by Autoconf,
-namely the `configure` script.)
-
-----------------------------------------------------------------------
-
-File: config.guess (only for ICU4C)
-
-
-This file is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, see <https://www.gnu.org/licenses/>.
-
-As a special exception to the GNU General Public License, if you
-distribute this file as part of a program that contains a
-configuration script generated by Autoconf, you may include it under
-the same distribution terms that you use for the rest of that
-program.  This Exception is an additional permission under section 7
-of the GNU General Public License, version 3 ("GPLv3").
-
-
-(The condition for the exception is fulfilled because
-ICU4C includes a configuration script generated by Autoconf,
-namely the `configure` script.)
-
-----------------------------------------------------------------------
-
-File: install-sh (only for ICU4C)
-
-
-Copyright 1991 by the Massachusetts Institute of Technology
-
-Permission to use, copy, modify, distribute, and sell this software and its
-documentation for any purpose is hereby granted without fee, provided that
-the above copyright notice appear in all copies and that both that
-copyright notice and this permission notice appear in supporting
-documentation, and that the name of M.I.T. not be used in advertising or
-publicity pertaining to distribution of the software without specific,
-written prior permission.  M.I.T. makes no representations about the
-suitability of this software for any purpose.  It is provided "as is"
-without express or implied warranty.
-
-````
-
-### Notice 96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430
-
-- libjpeg-turbo (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/e14cbfaa85529d47f9f55b0f104a579c1061f9ad/LICENSE.md?format=TEXT
-
-
-
-````text
-libjpeg-turbo Licenses
-======================
-
-libjpeg-turbo is covered by two compatible BSD-style open source licenses:
-
-- The IJG (Independent JPEG Group) License, which is listed in
-  [README.ijg](README.ijg)
-
-  This license applies to the libjpeg API library and associated programs,
-  including any code inherited from libjpeg and any modifications to that
-  code.  Note that the libjpeg-turbo SIMD source code bears the
-  [zlib License](https://opensource.org/licenses/Zlib), but in the context of
-  the overall libjpeg API library, the terms of the zlib License are subsumed
-  by the terms of the IJG License.
-
-- The Modified (3-clause) BSD License, which is listed below
-
-  This license applies to the TurboJPEG API library and associated programs, as
-  well as the build system.  Note that the TurboJPEG API library wraps the
-  libjpeg API library, so in the context of the overall TurboJPEG API library,
-  both the terms of the IJG License and the terms of the Modified (3-clause)
-  BSD License apply.
-
-
-Complying with the libjpeg-turbo Licenses
-=========================================
-
-This section provides a roll-up of the libjpeg-turbo licensing terms, to the
-best of our understanding.  This is not a license in and of itself.  It is
-intended solely for clarification.
-
-1.  If you are distributing a modified version of the libjpeg-turbo source,
-    then:
-
-    1.  You cannot alter or remove any existing copyright or license notices
-        from the source.
-
-        **Origin**
-        - Clause 1 of the IJG License
-        - Clause 1 of the Modified BSD License
-        - Clauses 1 and 3 of the zlib License
-
-    2.  You must add your own copyright notice to the header of each source
-        file you modified, so others can tell that you modified that file.  (If
-        there is not an existing copyright header in that file, then you can
-        simply add a notice stating that you modified the file.)
-
-        **Origin**
-        - Clause 1 of the IJG License
-        - Clause 2 of the zlib License
-
-    3.  You must include the IJG README file, and you must not alter any of the
-        copyright or license text in that file.
-
-        **Origin**
-        - Clause 1 of the IJG License
-
-2.  If you are distributing only libjpeg-turbo binaries without the source, or
-    if you are distributing an application that statically links with
-    libjpeg-turbo, then:
-
-    1.  Your product documentation must include a message stating:
-
-        This software is based in part on the work of the Independent JPEG
-        Group.
-
-        **Origin**
-        - Clause 2 of the IJG license
-
-    2.  If your binary distribution includes or uses the TurboJPEG API, then
-        your product documentation must include the text of the Modified BSD
-        License (see below.)
-
-        **Origin**
-        - Clause 2 of the Modified BSD License
-
-3.  You cannot use the name of the IJG or The libjpeg-turbo Project or the
-    contributors thereof in advertising, publicity, etc.
-
-    **Origin**
-    - IJG License
-    - Clause 3 of the Modified BSD License
-
-4.  The IJG and The libjpeg-turbo Project do not warrant libjpeg-turbo to be
-    free of defects, nor do we accept any liability for undesirable
-    consequences resulting from your use of the software.
-
-    **Origin**
-    - IJG License
-    - Modified BSD License
-    - zlib License
-
-
-The Modified (3-clause) BSD License
-===================================
-
-Copyright (C)2009-2024 D. R. Commander.  All Rights Reserved.<br>
-Copyright (C)2015 Viktor Szathmáry.  All Rights Reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-- Redistributions of source code must retain the above copyright notice,
-  this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-- Neither the name of the libjpeg-turbo Project nor the names of its
-  contributors may be used to endorse or promote products derived from this
-  software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS",
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-
-Why Two Licenses?
-=================
-
-The zlib License could have been used instead of the Modified (3-clause) BSD
-License, and since the IJG License effectively subsumes the distribution
-conditions of the zlib License, this would have effectively placed
-libjpeg-turbo binary distributions under the IJG License.  However, the IJG
-License specifically refers to the Independent JPEG Group and does not extend
-attribution and endorsement protections to other entities.  Thus, it was
-desirable to choose a license that granted us the same protections for new code
-that were granted to the IJG for code derived from their software.
-
-````
-
-### Notice 75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6
-
-- libjpeg-turbo (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/e14cbfaa85529d47f9f55b0f104a579c1061f9ad/README.ijg?format=TEXT
-
-
-
-````text
-libjpeg-turbo note:  This file has been modified by The libjpeg-turbo Project
-to include only information relevant to libjpeg-turbo, to wordsmith certain
-sections, and to remove impolitic language that existed in the libjpeg v8
-README.  It is included only for reference.  Please see README.md for
-information specific to libjpeg-turbo.
-
-
-The Independent JPEG Group's JPEG software
-==========================================
-
-This distribution contains a release of the Independent JPEG Group's free JPEG
-software.  You are welcome to redistribute this software and to use it for any
-purpose, subject to the conditions under LEGAL ISSUES, below.
-
-This software is the work of Tom Lane, Guido Vollbeding, Philip Gladstone,
-Bill Allombert, Jim Boucher, Lee Crocker, Bob Friesenhahn, Ben Jackson,
-Julian Minguillon, Luis Ortiz, George Phillips, Davide Rossi, Ge' Weijers,
-and other members of the Independent JPEG Group.
-
-IJG is not affiliated with the ISO/IEC JTC1/SC29/WG1 standards committee
-(also known as JPEG, together with ITU-T SG16).
-
-
-DOCUMENTATION ROADMAP
-=====================
-
-This file contains the following sections:
-
-OVERVIEW            General description of JPEG and the IJG software.
-LEGAL ISSUES        Copyright, lack of warranty, terms of distribution.
-REFERENCES          Where to learn more about JPEG.
-ARCHIVE LOCATIONS   Where to find newer versions of this software.
-FILE FORMAT WARS    Software *not* to get.
-TO DO               Plans for future IJG releases.
-
-Other documentation files in the distribution are:
-
-User documentation:
-  doc/usage.txt         Usage instructions for cjpeg, djpeg, jpegtran,
-                        rdjpgcom, and wrjpgcom.
-  doc/*.1               Unix-style man pages for programs (same info as
-                        usage.txt).
-  doc/wizard.txt        Advanced usage instructions for JPEG wizards only.
-  doc/change.log        Version-to-version change highlights.
-Programmer and internal documentation:
-  doc/libjpeg.txt       How to use the JPEG library in your own programs.
-  src/example.c         Sample code for calling the JPEG library.
-  doc/structure.txt     Overview of the JPEG library's internal structure.
-  doc/coderules.txt     Coding style rules --- please read if you contribute
-                        code.
-
-Please read at least usage.txt.  Some information can also be found in the JPEG
-FAQ (Frequently Asked Questions) article.  See ARCHIVE LOCATIONS below to find
-out where to obtain the FAQ article.
-
-If you want to understand how the JPEG code works, we suggest reading one or
-more of the REFERENCES, then looking at the documentation files (in roughly
-the order listed) before diving into the code.
-
-
-OVERVIEW
-========
-
-This package contains C software to implement JPEG image encoding, decoding,
-and transcoding.  JPEG (pronounced "jay-peg") is a standardized compression
-method for full-color and grayscale images.  JPEG's strong suit is compressing
-photographic images or other types of images that have smooth color and
-brightness transitions between neighboring pixels.  Images with sharp lines or
-other abrupt features may not compress well with JPEG, and a higher JPEG
-quality may have to be used to avoid visible compression artifacts with such
-images.
-
-JPEG is normally lossy, meaning that the output pixels are not necessarily
-identical to the input pixels.  However, on photographic content and other
-"smooth" images, very good compression ratios can be obtained with no visible
-compression artifacts, and extremely high compression ratios are possible if
-you are willing to sacrifice image quality (by reducing the "quality" setting
-in the compressor.)
-
-This software implements JPEG baseline, extended-sequential, progressive, and
-lossless compression processes.  Provision is made for supporting all variants
-of these processes, although some uncommon parameter settings aren't
-implemented yet.  We have made no provision for supporting the hierarchical
-processes defined in the standard.
-
-We provide a set of library routines for reading and writing JPEG image files,
-plus two sample applications "cjpeg" and "djpeg", which use the library to
-perform conversion between JPEG and some other popular image file formats.
-The library is intended to be reused in other applications.
-
-In order to support file conversion and viewing software, we have included
-considerable functionality beyond the bare JPEG coding/decoding capability;
-for example, the color quantization modules are not strictly part of JPEG
-decoding, but they are essential for output to colormapped file formats.  These
-extra functions can be compiled out of the library if not required for a
-particular application.
-
-We have also included "jpegtran", a utility for lossless transcoding between
-different JPEG processes, and "rdjpgcom" and "wrjpgcom", two simple
-applications for inserting and extracting textual comments in JFIF files.
-
-The emphasis in designing this software has been on achieving portability and
-flexibility, while also making it fast enough to be useful.  In particular,
-the software is not intended to be read as a tutorial on JPEG.  (See the
-REFERENCES section for introductory material.)  Rather, it is intended to
-be reliable, portable, industrial-strength code.  We do not claim to have
-achieved that goal in every aspect of the software, but we strive for it.
-
-We welcome the use of this software as a component of commercial products.
-No royalty is required, but we do ask for an acknowledgement in product
-documentation, as described under LEGAL ISSUES.
-
-
-LEGAL ISSUES
-============
-
-In plain English:
-
-1. We don't promise that this software works.  (But if you find any bugs,
-   please let us know!)
-2. You can use this software for whatever you want.  You don't have to pay us.
-3. You may not pretend that you wrote this software.  If you use it in a
-   program, you must acknowledge somewhere in your documentation that
-   you've used the IJG code.
-
-In legalese:
-
-The authors make NO WARRANTY or representation, either express or implied,
-with respect to this software, its quality, accuracy, merchantability, or
-fitness for a particular purpose.  This software is provided "AS IS", and you,
-its user, assume the entire risk as to its quality and accuracy.
-
-This software is copyright (C) 1991-2020, Thomas G. Lane, Guido Vollbeding.
-All Rights Reserved except as specified below.
-
-Permission is hereby granted to use, copy, modify, and distribute this
-software (or portions thereof) for any purpose, without fee, subject to these
-conditions:
-(1) If any part of the source code for this software is distributed, then this
-README file must be included, with this copyright and no-warranty notice
-unaltered; and any additions, deletions, or changes to the original files
-must be clearly indicated in accompanying documentation.
-(2) If only executable code is distributed, then the accompanying
-documentation must state that "this software is based in part on the work of
-the Independent JPEG Group".
-(3) Permission for use of this software is granted only if the user accepts
-full responsibility for any undesirable consequences; the authors accept
-NO LIABILITY for damages of any kind.
-
-These conditions apply to any software derived from or based on the IJG code,
-not just to the unmodified library.  If you use our work, you ought to
-acknowledge us.
-
-Permission is NOT granted for the use of any IJG author's name or company name
-in advertising or publicity relating to this software or products derived from
-it.  This software may be referred to only as "the Independent JPEG Group's
-software".
-
-We specifically permit and encourage the use of this software as the basis of
-commercial products, provided that all warranty or liability claims are
-assumed by the product vendor.
-
-
-REFERENCES
-==========
-
-We recommend reading one or more of these references before trying to
-understand the innards of the JPEG software.
-
-The best short technical introduction to the JPEG compression algorithm is
-        Wallace, Gregory K.  "The JPEG Still Picture Compression Standard",
-        Communications of the ACM, April 1991 (vol. 34 no. 4), pp. 30-44.
-(Adjacent articles in that issue discuss MPEG motion picture compression,
-applications of JPEG, and related topics.)  If you don't have the CACM issue
-handy, a PDF file containing a revised version of Wallace's article is
-available at http://www.ijg.org/files/Wallace.JPEG.pdf.  The file (actually
-a preprint for an article that appeared in IEEE Trans. Consumer Electronics)
-omits the sample images that appeared in CACM, but it includes corrections
-and some added material.  Note: the Wallace article is copyright ACM and IEEE,
-and it may not be used for commercial purposes.
-
-A somewhat less technical, more leisurely introduction to JPEG can be found in
-"The Data Compression Book" by Mark Nelson and Jean-loup Gailly, published by
-M&T Books (New York), 2nd ed. 1996, ISBN 1-55851-434-1.  This book provides
-good explanations and example C code for a multitude of compression methods
-including JPEG.  It is an excellent source if you are comfortable reading C
-code but don't know much about data compression in general.  The book's JPEG
-sample code is far from industrial-strength, but when you are ready to look
-at a full implementation, you've got one here...
-
-The best currently available description of JPEG is the textbook "JPEG Still
-Image Data Compression Standard" by William B. Pennebaker and Joan L.
-Mitchell, published by Van Nostrand Reinhold, 1993, ISBN 0-442-01272-1.
-Price US$59.95, 638 pp.  The book includes the complete text of the ISO JPEG
-standards (DIS 10918-1 and draft DIS 10918-2).
-
-The original JPEG standard is divided into two parts, Part 1 being the actual
-specification, while Part 2 covers compliance testing methods.  Part 1 is
-titled "Digital Compression and Coding of Continuous-tone Still Images,
-Part 1: Requirements and guidelines" and has document numbers ISO/IEC IS
-10918-1, ITU-T T.81.  Part 2 is titled "Digital Compression and Coding of
-Continuous-tone Still Images, Part 2: Compliance testing" and has document
-numbers ISO/IEC IS 10918-2, ITU-T T.83.
-
-The JPEG standard does not specify all details of an interchangeable file
-format.  For the omitted details, we follow the "JFIF" conventions, revision
-1.02.  JFIF version 1 has been adopted as ISO/IEC 10918-5 (05/2013) and
-Recommendation ITU-T T.871 (05/2011): Information technology - Digital
-compression and coding of continuous-tone still images: JPEG File Interchange
-Format (JFIF).  It is available as a free download in PDF file format from
-https://www.iso.org/standard/54989.html and http://www.itu.int/rec/T-REC-T.871.
-A PDF file of the older JFIF 1.02 specification is available at
-http://www.w3.org/Graphics/JPEG/jfif3.pdf.
-
-The TIFF 6.0 file format specification can be obtained from
-http://mirrors.ctan.org/graphics/tiff/TIFF6.ps.gz.  The JPEG incorporation
-scheme found in the TIFF 6.0 spec of 3-June-92 has a number of serious
-problems.  IJG does not recommend use of the TIFF 6.0 design (TIFF Compression
-tag 6).  Instead, we recommend the JPEG design proposed by TIFF Technical Note
-#2 (Compression tag 7).  Copies of this Note can be obtained from
-http://www.ijg.org/files/.  It is expected that the next revision
-of the TIFF spec will replace the 6.0 JPEG design with the Note's design.
-Although IJG's own code does not support TIFF/JPEG, the free libtiff library
-uses our library to implement TIFF/JPEG per the Note.
-
-
-ARCHIVE LOCATIONS
-=================
-
-The "official" archive site for this software is www.ijg.org.
-The most recent released version can always be found there in
-directory "files".
-
-The JPEG FAQ (Frequently Asked Questions) article is a source of some
-general information about JPEG.  It is available at
-http://www.faqs.org/faqs/jpeg-faq.
-
-
-FILE FORMAT COMPATIBILITY
-=========================
-
-This software implements ITU T.81 | ISO/IEC 10918 with some extensions from
-ITU T.871 | ISO/IEC 10918-5 (JPEG File Interchange Format-- see REFERENCES).
-Informally, the term "JPEG image" or "JPEG file" most often refers to JFIF or
-a subset thereof, but there are other formats containing the name "JPEG" that
-are incompatible with the original JPEG standard or with JFIF (for instance,
-JPEG 2000 and JPEG XR).  This software therefore does not support these
-formats.  Indeed, one of the original reasons for developing this free software
-was to help force convergence on a common, interoperable format standard for
-JPEG files.
-
-JFIF is a minimal or "low end" representation.  TIFF/JPEG (TIFF revision 6.0 as
-modified by TIFF Technical Note #2) can be used for "high end" applications
-that need to record a lot of additional data about an image.
-
-
-TO DO
-=====
-
-Please send bug reports, offers of help, etc. to jpeg-info@jpegclub.org.
-
-````
-
-### Notice 8405932022a556380c2d8c272eff154a923feb197233f348ce5f7334fb0a5ede
-
-- libjxl (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/external/gitlab.com/wg1/jpeg-xl.git/+/a205468bc5d3a353fb15dae2398a101dff52f2d3/LICENSE?format=TEXT
-
-
-
-````text
-Copyright (c) the JPEG XL Project Authors.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-````
-
-### Notice 91915f8ae056a68a3c5bdf05d9f6f78bb6903e27a8ca3a8434c9e4ac87300575
-
-- libjxl (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/external/gitlab.com/wg1/jpeg-xl.git/+/a205468bc5d3a353fb15dae2398a101dff52f2d3/PATENTS?format=TEXT
-
-
-
-````text
-Additional IP Rights Grant (Patents)
-
-"This implementation" means the copyrightable works distributed by
-Google as part of the JPEG XL project.
-
-Google hereby grants to You a perpetual, worldwide, non-exclusive,
-no-charge, royalty-free, irrevocable (except as stated in this section)
-patent license to make, have made, use, offer to sell, sell, import,
-transfer and otherwise run, modify and propagate the contents of this
-implementation of JPEG XL, where such license applies only to those patent
-claims, both currently owned or controlled by Google and acquired in
-the future, licensable by Google that are necessarily infringed by this
-implementation of JPEG XL.  This grant does not include claims that would be
-infringed only as a consequence of further modification of this
-implementation.  If you or your agent or exclusive licensee institute or
-order or agree to the institution of patent litigation against any
-entity (including a cross-claim or counterclaim in a lawsuit) alleging
-that this implementation of JPEG XL or any code incorporated within this
-implementation of JPEG XL constitutes direct or contributory patent
-infringement, or inducement of patent infringement, then any patent
-rights granted to you under this License for this implementation of JPEG XL
-shall terminate as of the date such litigation is filed.
-
-````
-
-### Notice bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526
-
-- libpng (inside @napi-rs/canvas@0.1.100): https://skia.googlesource.com/third_party/libpng.git/+/d5515b5b8be3901aac04e5bd8bd5c89f287bcd33/LICENSE?format=TEXT
-
-
-
-````text
-COPYRIGHT NOTICE, DISCLAIMER, and LICENSE
-=========================================
-
-PNG Reference Library License version 2
----------------------------------------
-
- * Copyright (c) 1995-2026 The PNG Reference Library Authors.
- * Copyright (c) 2018-2026 Cosmin Truta.
- * Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson.
- * Copyright (c) 1996-1997 Andreas Dilger.
- * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
-
-The software is supplied "as is", without warranty of any kind,
-express or implied, including, without limitation, the warranties
-of merchantability, fitness for a particular purpose, title, and
-non-infringement.  In no event shall the Copyright owners, or
-anyone distributing the software, be liable for any damages or
-other liability, whether in contract, tort or otherwise, arising
-from, out of, or in connection with the software, or the use or
-other dealings in the software, even if advised of the possibility
-of such damage.
-
-Permission is hereby granted to use, copy, modify, and distribute
-this software, or portions hereof, for any purpose, without fee,
-subject to the following restrictions:
-
- 1. The origin of this software must not be misrepresented; you
-    must not claim that you wrote the original software.  If you
-    use this software in a product, an acknowledgment in the product
-    documentation would be appreciated, but is not required.
-
- 2. Altered source versions must be plainly marked as such, and must
-    not be misrepresented as being the original software.
-
- 3. This Copyright notice may not be removed or altered from any
-    source or altered source distribution.
-
-
-PNG Reference Library License version 1 (for libpng 0.5 through 1.6.35)
------------------------------------------------------------------------
-
-libpng versions 1.0.7, July 1, 2000, through 1.6.35, July 15, 2018 are
-Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson, are
-derived from libpng-1.0.6, and are distributed according to the same
-disclaimer and license as libpng-1.0.6 with the following individuals
-added to the list of Contributing Authors:
-
-    Simon-Pierre Cadieux
-    Eric S. Raymond
-    Mans Rullgard
-    Cosmin Truta
-    Gilles Vollant
-    James Yu
-    Mandar Sahastrabuddhe
-    Google Inc.
-    Vadim Barkov
-
-and with the following additions to the disclaimer:
-
-    There is no warranty against interference with your enjoyment of
-    the library or against infringement.  There is no warranty that our
-    efforts or the library will fulfill any of your particular purposes
-    or needs.  This library is provided with all faults, and the entire
-    risk of satisfactory quality, performance, accuracy, and effort is
-    with the user.
-
-Some files in the "contrib" directory and some configure-generated
-files that are distributed with libpng have other copyright owners, and
-are released under other open source licenses.
-
-libpng versions 0.97, January 1998, through 1.0.6, March 20, 2000, are
-Copyright (c) 1998-2000 Glenn Randers-Pehrson, are derived from
-libpng-0.96, and are distributed according to the same disclaimer and
-license as libpng-0.96, with the following individuals added to the
-list of Contributing Authors:
-
-    Tom Lane
-    Glenn Randers-Pehrson
-    Willem van Schaik
-
-libpng versions 0.89, June 1996, through 0.96, May 1997, are
-Copyright (c) 1996-1997 Andreas Dilger, are derived from libpng-0.88,
-and are distributed according to the same disclaimer and license as
-libpng-0.88, with the following individuals added to the list of
-Contributing Authors:
-
-    John Bowler
-    Kevin Bracey
-    Sam Bushell
-    Magnus Holmgren
-    Greg Roelofs
-    Tom Tanner
-
-Some files in the "scripts" directory have other copyright owners,
-but are released under this license.
-
-libpng versions 0.5, May 1995, through 0.88, January 1996, are
-Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
-
-For the purposes of this copyright and license, "Contributing Authors"
-is defined as the following set of individuals:
-
-    Andreas Dilger
-    Dave Martindale
-    Guy Eric Schalnat
-    Paul Schmidt
-    Tim Wegner
-
-The PNG Reference Library is supplied "AS IS".  The Contributing
-Authors and Group 42, Inc. disclaim all warranties, expressed or
-implied, including, without limitation, the warranties of
-merchantability and of fitness for any purpose.  The Contributing
-Authors and Group 42, Inc. assume no liability for direct, indirect,
-incidental, special, exemplary, or consequential damages, which may
-result from the use of the PNG Reference Library, even if advised of
-the possibility of such damage.
-
-Permission is hereby granted to use, copy, modify, and distribute this
-source code, or portions hereof, for any purpose, without fee, subject
-to the following restrictions:
-
- 1. The origin of this source code must not be misrepresented.
-
- 2. Altered versions must be plainly marked as such and must not
-    be misrepresented as being the original source.
-
- 3. This Copyright notice may not be removed or altered from any
-    source or altered source distribution.
-
-The Contributing Authors and Group 42, Inc. specifically permit,
-without fee, and encourage the use of this source code as a component
-to supporting the PNG file format in commercial products.  If you use
-this source code in a product, acknowledgment is not required but would
-be appreciated.
-
-````
-
-### Notice 5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf
-
-- libwebp (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/webm/libwebp.git/+/845d5476a866141ba35ac133f856fa62f0b7445f/COPYING?format=TEXT
-
-
-
-````text
-Copyright (c) 2010, Google Inc. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-  * Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
-
-  * Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in
-    the documentation and/or other materials provided with the
-    distribution.
-
-  * Neither the name of Google nor the names of its contributors may
-    be used to endorse or promote products derived from this software
-    without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
-````
-
-### Notice cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c
-
-- libwebp (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/webm/libwebp.git/+/845d5476a866141ba35ac133f856fa62f0b7445f/PATENTS?format=TEXT
-
-
-
-````text
-Additional IP Rights Grant (Patents)
-------------------------------------
-
-"These implementations" means the copyrightable works that implement the WebM
-codecs distributed by Google as part of the WebM Project.
-
-Google hereby grants to you a perpetual, worldwide, non-exclusive, no-charge,
-royalty-free, irrevocable (except as stated in this section) patent license to
-make, have made, use, offer to sell, sell, import, transfer, and otherwise
-run, modify and propagate the contents of these implementations of WebM, where
-such license applies only to those patent claims, both currently owned by
-Google and acquired in the future, licensable by Google that are necessarily
-infringed by these implementations of WebM. This grant does not include claims
-that would be infringed only as a consequence of further modification of these
-implementations. If you or your agent or exclusive licensee institute or order
-or agree to the institution of patent litigation or any other patent
-enforcement activity against any entity (including a cross-claim or
-counterclaim in a lawsuit) alleging that any of these implementations of WebM
-or any code incorporated within any of these implementations of WebM
-constitute direct or contributory patent infringement, or inducement of
-patent infringement, then any patent rights granted to you under this License
-for these implementations of WebM shall terminate as of the date such
-litigation is filed.
-
-````
-
-### Notice e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c
-
-- zlib (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/chromium/src/third_party/zlib/+/646b7f569718921d7d4b5b8e22572ff6c76f2596/LICENSE?format=TEXT
-
-
-
-````text
-version 1.2.12, March 27th, 2022
-
-Copyright (C) 1995-2022 Jean-loup Gailly and Mark Adler
-
-This software is provided 'as-is', without any express or implied
-warranty.  In no event will the authors be held liable for any damages
-arising from the use of this software.
-
-Permission is granted to anyone to use this software for any purpose,
-including commercial applications, and to alter it and redistribute it
-freely, subject to the following restrictions:
-
-1. The origin of this software must not be misrepresented; you must not
-   claim that you wrote the original software. If you use this software
-   in a product, an acknowledgment in the product documentation would be
-   appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be
-   misrepresented as being the original software.
-3. This notice may not be removed or altered from any source distribution.
-
-````
-
-### Notice 58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd
-
-- piex (inside @napi-rs/canvas@0.1.100): https://android.googlesource.com/platform/external/piex.git/+/bb217acdca1cc0c16b704669dd6f91a1b509c406/LICENSE?format=TEXT
-
-
-
-````text
-
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
-
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
-
-   1. Definitions.
-
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
-
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
-
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
-
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
-
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
-
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
-
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
-
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
-
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
-
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
-
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
-
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
-
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
-
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
-
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
-
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
-
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
-
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
-
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
-
-   APPENDIX: How to apply the Apache License to your work.
-
-      To apply the Apache License to your work, attach the following
-      boilerplate notice, with the fields enclosed by brackets "[]"
-      replaced with your own identifying information. (Don't include
-      the brackets!)  The text should be enclosed in the appropriate
-      comment syntax for the file format. We also recommend that a
-      file or class name and description of purpose be included on the
-      same "printed page" as the copyright notice for easier
-      identification within third-party archives.
-
-   Copyright [yyyy] [name of copyright owner]
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-````
-
-### Notice 3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94
-
-- brotli (inside @napi-rs/canvas@0.1.100): https://raw.githubusercontent.com/google/brotli/6d03dfbedda1615c4cba1211f8d81735575209c8/LICENSE
-
-
-
-````text
-Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-````
-
-### Notice 37398454f23ddeb02f0b81113fef9ebdc4571b7297cb6e18376c1ccb9bb1453e
-
-- libjpeg-turbo arithmetic coding (inside @napi-rs/canvas@0.1.100): https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/e14cbfaa85529d47f9f55b0f104a579c1061f9ad/src/jcarith.c?format=TEXT
-
-
-
-````text
-/*
- * jcarith.c
- *
- * This file was part of the Independent JPEG Group's software:
- * Developed 1997-2009 by Guido Vollbeding.
- * libjpeg-turbo Modifications:
- * Copyright (C) 2015, 2018, 2021-2022, D. R. Commander.
- * For conditions of distribution and use, see the accompanying README.ijg
- * file.
- *
- * This file contains portable arithmetic entropy encoding routines for JPEG
- * (implementing Recommendation ITU-T T.81 | ISO/IEC 10918-1).
- *
- * Both sequential and progressive modes are supported in this single module.
- *
- * Suspension is not currently supported in this module.
- *
- * NOTE: All referenced figures are from
- * Recommendation ITU-T T.81 (1992) | ISO/IEC 10918-1:1994.
- */
 
 ````
 

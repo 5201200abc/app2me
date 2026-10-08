@@ -1,0 +1,739 @@
+{
+  "schemaVersion": 1,
+  "scope": "Exact original publisher grants and notice preservation; embedded binary obligations are reviewed separately.",
+  "packages": [
+    {
+      "package": "unsafe-pointer@0.2.0",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-unsafe-pointer-0.2.0.json",
+      "metadataSha256": "37499deab16ce6f167d63cdca00ab26468948a02f3bd38a189054bf6b728a00f",
+      "archiveFile": "third-party/source-archives/publisher-unsafe-pointer-0.2.0.tgz",
+      "archiveSha256": "9c9795688a9e224759468aeee2ff88d917fadc65f7b3480e62571f0853eaa446",
+      "registryIntegrity": "sha512-5AzhXe8ZGzV/wVVfomw7KszPt4RPOpVcsWi66DrMrzy6fi86+rTiTx3Gu88UshFhfQLAXbFvgRyHVpQ+nZ7bvg==",
+      "source": "https://registry.npmjs.org/unsafe-pointer/-/unsafe-pointer-0.2.0.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/src/binding.c",
+          "sha256": "57b5aaf6b8811665b160f29194f86a67433a6dcefcd629d91b63f4abe9768bea"
+        },
+        {
+          "path": "package/binding.gyp",
+          "sha256": "e816d1aaca711a9dfa9c6973d5076cd05abef9e60abe2ad570220e8c4f5f73c8"
+        },
+        {
+          "path": "package/index.js",
+          "sha256": "6116ffc86689aa28b3f547faf32a4481d9158ba0236b8763d35243dcacff63cd"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "0ff64f19f2ac1659ec232cfc6f8d5517f8a40c41b67819b0749541a058877dd5"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "8a37f04b4927ff5751875b3a95e1df2af838aca89961a28a6983965cbc3bf8a7"
+        },
+        {
+          "path": "package/index.mjs",
+          "sha256": "3fb12f8a4aa7217ad80b5ee7984751f8f8ee4180e069eaecc4b6e9865d891ebf"
+        },
+        {
+          "path": "package/prebuilds/linux-arm64/unsafe-pointer.glibc.node",
+          "sha256": "cf99f907a788fb9ce8822473c82e8855409e0819ee0b6547c1bd3bf76e235636"
+        },
+        {
+          "path": "package/prebuilds/linux-x64/unsafe-pointer.glibc.node",
+          "sha256": "5cee10342facf87f1a7c68071012455dd9a6f39bfdd3a5f945268dcef7344631"
+        },
+        {
+          "path": "package/prebuilds/linux-arm64/unsafe-pointer.musl.node",
+          "sha256": "2a2491bd5ad3fca11a493ce83b53798f2cef1b28b14443168c6aac0055b50f92"
+        },
+        {
+          "path": "package/prebuilds/linux-x64/unsafe-pointer.musl.node",
+          "sha256": "f812cf6952f9cd450021a3e2b52cd171f8d1f27fbac9b7a16370559d083fddfe"
+        },
+        {
+          "path": "package/prebuilds/darwin-arm64/unsafe-pointer.node",
+          "sha256": "64419c009bf7e26937240554a57cdec2672555038db5c08b66998b81432e64da"
+        },
+        {
+          "path": "package/prebuilds/darwin-x64/unsafe-pointer.node",
+          "sha256": "5f45b0211404c673d5f4ac6764fe7b3ba5c92767aa1f6c84edf4cd5bd5aedc70"
+        },
+        {
+          "path": "package/prebuilds/win32-arm64/unsafe-pointer.node",
+          "sha256": "ee9e3e6e555f3db67594efa85168dd7dfb0404f703601bc4ae045c9f0f23099e"
+        },
+        {
+          "path": "package/prebuilds/win32-x64/unsafe-pointer.node",
+          "sha256": "bcce70c78f155e3208364ac6518e66e1a8e1ec809eb9ac2d70cfa806c5af0fe6"
+        },
+        {
+          "path": "package/index.d.ts",
+          "sha256": "e6fdd3443b327c0ff3c88fc650526d8502cd7d07841fcc159dfc783b6c40b0d9"
+        }
+      ],
+      "noticeMembers": ["package/package.json"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "react-remove-scroll-bar@2.3.8",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-react-remove-scroll-bar-2.3.8.json",
+      "metadataSha256": "826c618ece09367334160c1ab3a272fd54f8f12e3b0a45f75b0f2660d285855a",
+      "archiveFile": "third-party/source-archives/publisher-react-remove-scroll-bar-2.3.8.tgz",
+      "archiveSha256": "ccc872d7a2dc007cbf9d755f30d56b8d80eabdbe22c44c95a709129bfdc46f01",
+      "registryIntegrity": "sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==",
+      "source": "https://registry.npmjs.org/react-remove-scroll-bar/-/react-remove-scroll-bar-2.3.8.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/dist/es2015/component.js",
+          "sha256": "3baec61523006aedf14321423427b0c50aa17bfe48faf344bebff9d883149f29"
+        },
+        {
+          "path": "package/dist/es2019/component.js",
+          "sha256": "ac214bb2783fdf743a0c949fef47784741db109dcc6f4426f46e77386dee1c8f"
+        },
+        {
+          "path": "package/dist/es5/component.js",
+          "sha256": "d95ae68cda75b262f01b7c3eba3d530c6a24579778cbb3e320b2449348dabb13"
+        },
+        {
+          "path": "package/dist/es2015/constants.js",
+          "sha256": "1c73582ef730bbca1d536a6995c7eea438dcd0632fee2856337627e44b5872e2"
+        },
+        {
+          "path": "package/dist/es2019/constants.js",
+          "sha256": "f597b4036280caca4cc58d3476ffc02dc5c16564090229e6685e98b80a8e2a33"
+        },
+        {
+          "path": "package/dist/es5/constants.js",
+          "sha256": "20bf238e562be0830b10b1813d36fa321e81cd07fd99b27724833132304b73bc"
+        },
+        {
+          "path": "package/dist/es2015/index.js",
+          "sha256": "130bc4c810a84aeae180ba8fe1e7fd96f706d5d3a0cf6728419ff2c74708185f"
+        },
+        {
+          "path": "package/dist/es2019/index.js",
+          "sha256": "130bc4c810a84aeae180ba8fe1e7fd96f706d5d3a0cf6728419ff2c74708185f"
+        },
+        {
+          "path": "package/dist/es5/index.js",
+          "sha256": "0e1ab245d6b12ef80409b988b0f29b498c562b6cff6e7365714cb0c351914a12"
+        },
+        {
+          "path": "package/dist/es2015/utils.js",
+          "sha256": "2c4105ab772a5cbf4b3d1e54f49e94d03fde867d20767b46bb3e5c27f4d82f00"
+        },
+        {
+          "path": "package/dist/es2019/utils.js",
+          "sha256": "dafd773a756cca848d359153df92315235becb2ed8e10b1146458be4bfd38826"
+        },
+        {
+          "path": "package/dist/es5/utils.js",
+          "sha256": "ee6c64e8690475db96ec1a1b2ede342ffdc45ccf739bd28dd6f86c8c9a5917c3"
+        },
+        {
+          "path": "package/constants/package.json",
+          "sha256": "9b557c166960d4a096abc83259b8787a4072516f666856f8cf51656e38ed904b"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "e372f857ce05f266137c65293436b5380fec42ac311e6acb9378ed78b98d75d0"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "486442209236ffa3893312e508694699a6b8834d30a2f9c083c1f3379983e4f9"
+        },
+        {
+          "path": "package/dist/es2015/component.d.ts",
+          "sha256": "8b9441c9166045f81e5000001f95521319692124baea142b228efdc370883736"
+        },
+        {
+          "path": "package/dist/es2019/component.d.ts",
+          "sha256": "8b9441c9166045f81e5000001f95521319692124baea142b228efdc370883736"
+        },
+        {
+          "path": "package/dist/es5/component.d.ts",
+          "sha256": "8b9441c9166045f81e5000001f95521319692124baea142b228efdc370883736"
+        },
+        {
+          "path": "package/dist/es2015/constants.d.ts",
+          "sha256": "cd9dd3a7b0b95c3068f3b43b82da6dc6bee018f56d975b248d4bb6c484e61ed1"
+        },
+        {
+          "path": "package/dist/es2019/constants.d.ts",
+          "sha256": "cd9dd3a7b0b95c3068f3b43b82da6dc6bee018f56d975b248d4bb6c484e61ed1"
+        },
+        {
+          "path": "package/dist/es5/constants.d.ts",
+          "sha256": "cd9dd3a7b0b95c3068f3b43b82da6dc6bee018f56d975b248d4bb6c484e61ed1"
+        },
+        {
+          "path": "package/dist/es2015/index.d.ts",
+          "sha256": "130bc4c810a84aeae180ba8fe1e7fd96f706d5d3a0cf6728419ff2c74708185f"
+        },
+        {
+          "path": "package/dist/es2019/index.d.ts",
+          "sha256": "130bc4c810a84aeae180ba8fe1e7fd96f706d5d3a0cf6728419ff2c74708185f"
+        },
+        {
+          "path": "package/dist/es5/index.d.ts",
+          "sha256": "130bc4c810a84aeae180ba8fe1e7fd96f706d5d3a0cf6728419ff2c74708185f"
+        },
+        {
+          "path": "package/dist/es2015/utils.d.ts",
+          "sha256": "c4304c2114b48bb2778de565b4a0274ebbbbd71f6d7f5c57e116bd1656ea2c32"
+        },
+        {
+          "path": "package/dist/es2019/utils.d.ts",
+          "sha256": "c4304c2114b48bb2778de565b4a0274ebbbbd71f6d7f5c57e116bd1656ea2c32"
+        },
+        {
+          "path": "package/dist/es5/utils.d.ts",
+          "sha256": "c4304c2114b48bb2778de565b4a0274ebbbbd71f6d7f5c57e116bd1656ea2c32"
+        }
+      ],
+      "noticeMembers": ["package/package.json", "package/README.md"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "quickjs-wasi@2.2.0",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-quickjs-wasi-2.2.0.json",
+      "metadataSha256": "19e41cc0661fdd4afcc4443aec970120ac38a8781e3d8b09081063f711d2f1c7",
+      "archiveFile": "third-party/source-archives/publisher-quickjs-wasi-2.2.0.tgz",
+      "archiveSha256": "f4dd386c2e705ffb8692a8afdc1e3b8ff09c6b8ef3aee48d0537ff71d8839cd1",
+      "registryIntegrity": "sha512-zQxXmQMrEoD3S+jQdYsloq4qAuaxKFHZj6hHqOYGwB2iQZH+q9e/lf5zQPXCKOk0WJuAjzRFbO4KwHIp2D05Iw==",
+      "source": "https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-2.2.0.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/dist/base64.js",
+          "sha256": "b063472325372dc123a45a2d7d54b1902212a2699c3e994a3e42b962cc7a330a"
+        },
+        {
+          "path": "package/dist/crypto.js",
+          "sha256": "541835815fffacd8f13077d3f42f8413c3ef02cf2c6ad19b99237143479667b8"
+        },
+        {
+          "path": "package/dist/encoding.js",
+          "sha256": "55a7e310b4552e351a485084dada5abae825384b60bc475e2437272c2af19bb5"
+        },
+        {
+          "path": "package/dist/extensions.js",
+          "sha256": "9662299693f6ddd8d56d6e2f91b4bd2202e2cfebe06e834bf9a2b16fa15c4e08"
+        },
+        {
+          "path": "package/dist/headers.js",
+          "sha256": "48c9667774a49a46c598a361ac7437969d5b494d5bf7849f1ccd7fa20e19e4dc"
+        },
+        {
+          "path": "package/dist/index.js",
+          "sha256": "8c3bb8dded242434cbd8484439b7d63cf7905d15da311d20df642f5449919b0b"
+        },
+        {
+          "path": "package/dist/structured-clone.js",
+          "sha256": "e7181ebbd2395376ee6789f7319c9d81c0f0850b7030d4858fbd8184f8b2774b"
+        },
+        {
+          "path": "package/dist/url.js",
+          "sha256": "f2eebbc5a5c15c34615504735c3ddf88733b8798375d39b3f8cf97d5debd6692"
+        },
+        {
+          "path": "package/dist/version.js",
+          "sha256": "9d4e057cc728237255fd6f6e8fe36ce91721ef749c94030dc412e9978d3fa3de"
+        },
+        {
+          "path": "package/dist/wasi-shim.js",
+          "sha256": "79af15cf5158d181d11021158abb22541fd6d35beca569652317859819960eac"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "d8831d3987b5c62af1f32f62f9dec26a16394bda2962ac19a41151a8d57e5a59"
+        },
+        {
+          "path": "package/dist/base64.d.ts.map",
+          "sha256": "8169ce23ef75aaf405e45d7850a561231f917ed7429238a257a204184e6e4d6c"
+        },
+        {
+          "path": "package/dist/base64.js.map",
+          "sha256": "da57282a2041ff52be68e467f3a1736347733d7205979b7d4d1c60bb3570d835"
+        },
+        {
+          "path": "package/dist/crypto.d.ts.map",
+          "sha256": "d631f91823585ab74e906bec3dbe320bf8dc3faa36a717e5f018c73458a2686d"
+        },
+        {
+          "path": "package/dist/crypto.js.map",
+          "sha256": "2edcc038f03c16303c0396cec093694333f656c96539076bfc0864dae55f4576"
+        },
+        {
+          "path": "package/dist/encoding.d.ts.map",
+          "sha256": "1d7e944ac792bd440ef9c955b3e0fd3b53f01819b5aaab48ab549daa69127c54"
+        },
+        {
+          "path": "package/dist/encoding.js.map",
+          "sha256": "863a2fe872e90275e3275ee6217536d66104e340a65de4668b00c86766f048bb"
+        },
+        {
+          "path": "package/dist/extensions.d.ts.map",
+          "sha256": "83949d14632d3f763c8f580a0106ad261c1199e9655e4951fc64a1c3343e4b85"
+        },
+        {
+          "path": "package/dist/extensions.js.map",
+          "sha256": "14d01bca3e08f6a43734b808a11bb8652455e5d433688dee1744e56c0d6c20e6"
+        },
+        {
+          "path": "package/dist/headers.d.ts.map",
+          "sha256": "ea7c23ca88a7d72e8d26c38a6d5ac412d116d4bca555877c0ac484766aac4895"
+        },
+        {
+          "path": "package/dist/headers.js.map",
+          "sha256": "c6930d521920908d56ceb2ade733781024417e707f1e066b4e4bd6b26fe21de6"
+        },
+        {
+          "path": "package/dist/index.d.ts.map",
+          "sha256": "1c0f0b8ea709f291ee6c17f4c489260624d4f0ef9e560165869df3a0546a0757"
+        },
+        {
+          "path": "package/dist/index.js.map",
+          "sha256": "86dee7dc7df8d7ee79661fac73e3a9765f467c181641425fd673b429b9ce1d98"
+        },
+        {
+          "path": "package/dist/structured-clone.d.ts.map",
+          "sha256": "42934738d5c64385c80d46c0a8957efdc0a41fb3341ed45e136f9c888513d9a6"
+        },
+        {
+          "path": "package/dist/structured-clone.js.map",
+          "sha256": "ec2123b01b6358e8d29a8e952937143602e7f5bce9633b71c4d0d564aa2e3d41"
+        },
+        {
+          "path": "package/dist/url.d.ts.map",
+          "sha256": "905820ccae748dd101a732db79e418fe8e3a623269b83f7fbedae3a1d1b9d9e4"
+        },
+        {
+          "path": "package/dist/url.js.map",
+          "sha256": "fdc13242b1f476a68dc116c9244c9a4471b5d506caabc5ff04aeed8317fc4b67"
+        },
+        {
+          "path": "package/dist/version.d.ts.map",
+          "sha256": "46ea570882aef0f1600f261a2ec101de075cf346a2f610ae76c74ec3a8050f84"
+        },
+        {
+          "path": "package/dist/version.js.map",
+          "sha256": "ae1b8e97880771e406064f971eaa84901afab7923fe2d19109d3413ea824f1b0"
+        },
+        {
+          "path": "package/dist/wasi-shim.d.ts.map",
+          "sha256": "dd3ddec7e6047c6fc3a8a6717510b4d66bb8115a9d5c8e95c9dad48653fd15c5"
+        },
+        {
+          "path": "package/dist/wasi-shim.js.map",
+          "sha256": "0c24d6daf884794e5a91d0acbd816d6521a4bb5d8075a439421335c67d219c8c"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "f8db37af6ecfe7a7fba9483ff42e22409ef5dd395e60d762c9b5f3ca31229d9a"
+        },
+        {
+          "path": "package/extensions/base64/base64.so",
+          "sha256": "f51012d6c63195a53ca9f2daa6c3de6b0995873888c8106979813015b3388adc"
+        },
+        {
+          "path": "package/extensions/crypto/crypto.so",
+          "sha256": "3c0ca1e0ecbca51f88ae22ae5da75ee83e6f87170ec8c7efc2ec9ba52b1bd913"
+        },
+        {
+          "path": "package/extensions/encoding/encoding.so",
+          "sha256": "50af2847297183c0be2f97948cd83473b0888b424b98af51aaf4200160dce77f"
+        },
+        {
+          "path": "package/extensions/headers/headers.so",
+          "sha256": "fcc7d25dfdda38d1d57d0a532540f3baa56a957f76f85548919716a174ac9037"
+        },
+        {
+          "path": "package/extensions/structured-clone/structured-clone.so",
+          "sha256": "76356bc2983ce24b6c503a0cb1fa0308e09c18e60aa38d44ca737454ee769c06"
+        },
+        {
+          "path": "package/extensions/url/url.so",
+          "sha256": "54167390c210290f0703752527000ba44885606c4ed1ae12be30462c147a9215"
+        },
+        {
+          "path": "package/dist/base64.d.ts",
+          "sha256": "bd325250408a842c0dde72eee502f1c2f0a4716a3fadcc78d540c0ee1ad8d626"
+        },
+        {
+          "path": "package/dist/crypto.d.ts",
+          "sha256": "a3f0148a61fca9f3fc6e02d0f5634d5ff63cac601a8005d497371eb45eb25ba0"
+        },
+        {
+          "path": "package/dist/encoding.d.ts",
+          "sha256": "4579c34f0d9c3ed4c18797da2b5b609b2fbc79c82099d606654c2e8219bacb26"
+        },
+        {
+          "path": "package/dist/extensions.d.ts",
+          "sha256": "e5017edccc3535664ee6b890c96f428b468a6025c14f0fd2cc6094845398157e"
+        },
+        {
+          "path": "package/dist/headers.d.ts",
+          "sha256": "575553d9e67b780db3abc68b1cfd30291a884f867a7db4d2dc627c3c5f56eb7f"
+        },
+        {
+          "path": "package/dist/index.d.ts",
+          "sha256": "7db73a453eeb97564a57368087f5316964bc9a3a59a49e9e97b95a171d528020"
+        },
+        {
+          "path": "package/dist/structured-clone.d.ts",
+          "sha256": "1858f6558f5be84a37a9d2a43bc85925b76a0de82f772425ee6a0cf169735d38"
+        },
+        {
+          "path": "package/dist/url.d.ts",
+          "sha256": "5637ee820c3476622333d54325997f44b284176571c395ce92acef8316e20be6"
+        },
+        {
+          "path": "package/dist/version.d.ts",
+          "sha256": "ac3fe406b2858a6e146dd891533157dcb9293fdcbee18d1efa2ff16faaad5546"
+        },
+        {
+          "path": "package/dist/wasi-shim.d.ts",
+          "sha256": "4a619730d5a5d75b41deeb11dcedf5cbb4b7c60fb429e2e3f0315901e02166db"
+        },
+        {
+          "path": "package/quickjs.wasm",
+          "sha256": "b92a9f3d9cd20c7a0b0163269437115314c96712e3248d2da1b631ca1c8b008e"
+        }
+      ],
+      "noticeMembers": ["package/package.json", "package/README.md"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "@hono/node-ws@1.3.0",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-@hono-node-ws-1.3.0.json",
+      "metadataSha256": "d0bb5df5a75d08dc2cb27c04e7bb8497aab60679cd83364b826e868dbe7b63bc",
+      "archiveFile": "third-party/source-archives/publisher-@hono-node-ws-1.3.0.tgz",
+      "archiveSha256": "48b94f87b85ca84428491d7275f0fad16450254bd49d9b2b4f621539fda8a2af",
+      "registryIntegrity": "sha512-ju25YbbvLuXdqBCmLZLqnNYu1nbHIQjoyUqA8ApZOeL1k4skuiTcw5SW77/5SUYo2Xi2NVBJoVlfQurnKEp03Q==",
+      "source": "https://registry.npmjs.org/@hono/node-ws/-/node-ws-1.3.0.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/CHANGELOG.md",
+          "sha256": "c48b37f65885c47e0a389303589041f9e667c3c7883a2afca26067e7e11794c2"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "5fbb43438fcc582491d1b089fff6b4e024a43c1856ae1c9f9c5a4b6441acbe66"
+        },
+        {
+          "path": "package/dist/index.cjs",
+          "sha256": "1f88a24b3fb0b71588f3b999539fbbebe51f495e0eb597f6e3f3982fd78dd622"
+        },
+        {
+          "path": "package/dist/index.d.cts",
+          "sha256": "df71ca50ce3e15176e13ab3bcc9718a806efa8e4614e284b99b078b0a0855a54"
+        },
+        {
+          "path": "package/dist/index.d.cts.map",
+          "sha256": "17ea6470ddfa5a7c07cea15e32044cfa1ebef141b129471fe2052f930baee632"
+        },
+        {
+          "path": "package/dist/index.d.ts",
+          "sha256": "ccd5ceecc6a803a8faaea0a2e0b7c0666eefe37685731ffcaea0cd84ac486f3d"
+        },
+        {
+          "path": "package/dist/index.d.ts.map",
+          "sha256": "a6105577eb861514346c1e701619ea76832d8b57f60f9a6c6d8969a4fb351388"
+        },
+        {
+          "path": "package/dist/index.js",
+          "sha256": "ac4c19c1c0b4fd9e5bb5096ce0813970f31d2bed9e44a41752b521e3515e2a3c"
+        },
+        {
+          "path": "package/dist/index.js.map",
+          "sha256": "52f7b3258c8a4fcd36e09de6890ce31dc270ce591b37f28c173c7c9486bbe6c7"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "beeb4cfbd16d5d08ebe19b3ca588b914a24b60bde41d4129f6f1d60a083ef874"
+        }
+      ],
+      "noticeMembers": ["package/README.md", "package/package.json"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "strict-event-emitter@0.5.1",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-strict-event-emitter-0.5.1.json",
+      "metadataSha256": "42980c581490b5d9f4bede4f49a4a0a5953df27689621bf573d8f3e6877896a4",
+      "archiveFile": "third-party/source-archives/publisher-strict-event-emitter-0.5.1.tgz",
+      "archiveSha256": "43c456f72612074a13e8399c29ffd59c8c277274924b633f6e4fa07342f63cab",
+      "registryIntegrity": "sha512-vMgjE/GGEPEFnhFub6pa4FmJBRBVOLpIII2hvCZ8Kzb7K0hlHo7mQv6xYrBvCL2LtAIBwFUK8wvuJgTVSQ5MFQ==",
+      "source": "https://registry.npmjs.org/strict-event-emitter/-/strict-event-emitter-0.5.1.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/lib/index.js",
+          "sha256": "6342408b1a3cb66fca68067e8a069cc84d251ac568a903dd5a3c9fa8bc1151e5"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "dc958d0bfc8127388c7d651646749f7017990cb1d1aa01618a0a84915e5eff9a"
+        },
+        {
+          "path": "package/lib/index.js.map",
+          "sha256": "07aec3da695fc3ca68baa82c3530e9096147ae22ad3926d6c19a94e7938b5294"
+        },
+        {
+          "path": "package/lib/index.mjs.map",
+          "sha256": "b4b377a5b00746d407e0da9f7c93c2d0658f40a8893913eb086acf5ab52a6ad5"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "c99806746abe863eaa7e941fed608eadf89d1ff9bde0216ea76d024ee0e14843"
+        },
+        {
+          "path": "package/lib/index.mjs",
+          "sha256": "a8d227e767a28af78ba563a3e198275e6658b9cacd880d9fd4570ee91bb30c5f"
+        },
+        {
+          "path": "package/lib/index.d.ts",
+          "sha256": "3b9c88853864c2b7518cdde70631901f844275d7cd786df431ef17b222a8ce9f"
+        }
+      ],
+      "noticeMembers": ["package/package.json", "package/README.md"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "lazy-val@1.0.5",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-lazy-val-1.0.5.json",
+      "metadataSha256": "b89c1fd70f2fdef869138eaa43addcc73719738762bb84cd6a1bbd3d776b841f",
+      "archiveFile": "third-party/source-archives/publisher-lazy-val-1.0.5.tgz",
+      "archiveSha256": "7d8602ad98db3d19fbd5b46fbf3831dd996197a013ef1ff7badc205e41435372",
+      "registryIntegrity": "sha512-0/BnGCCfyUMkBpeDgWihanIAF9JmZhHBgUhEqzvf+adhNGLoP6TaiI5oF8oyb3I45P+PcnrqihSf01M0l0G5+Q==",
+      "source": "https://registry.npmjs.org/lazy-val/-/lazy-val-1.0.5.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/out/main.js",
+          "sha256": "358fa8cba70c9140edafa85c0b7b25c7261939480186167e6b3440905f5b47da"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "a5096f95098452cf6fe5c8ac9be8f13f59ab7c9f605ba5ef92c91b2c505744f0"
+        },
+        {
+          "path": "package/out/main.js.map",
+          "sha256": "aa3e70f08a0ce115832e5324c4b96aa1475a3b8b36728f50091ebd22aa0f6646"
+        },
+        {
+          "path": "package/readme.md",
+          "sha256": "87dd77cd27b045ab279f6f2c99acedaeec6b7c92e296a354bb2687b9f2965438"
+        },
+        {
+          "path": "package/out/main.d.ts",
+          "sha256": "e4bd94e97e08af3a3b8a6b2e85c6b93a690f572c1bffca113681ee7390f53411"
+        }
+      ],
+      "noticeMembers": ["package/package.json"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "semaphore@1.1.0",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-semaphore-1.1.0.json",
+      "metadataSha256": "0188d053cd8e7d3886910b253ef322be456cc118e33411d216b351838dfe50d6",
+      "archiveFile": "third-party/source-archives/publisher-semaphore-1.1.0.tgz",
+      "archiveSha256": "72002cc502d607af8e2dbcbdafa3495bf4efe34394e1a037b92038d157f077a2",
+      "registryIntegrity": "sha512-O4OZEaNtkMd/K0i6js9SL+gqy0ZCBMgUvlSqHKi4IBdjhe7wB8pwztUk1BbZ1fmrvpwFrPbHzqd2w5pTcJH6LA==",
+      "source": "https://registry.npmjs.org/semaphore/-/semaphore-1.1.0.tgz",
+      "declarationMember": "package/bower.json",
+      "members": [
+        {
+          "path": "package/package.json",
+          "sha256": "5e9f2a33e61b07906ddab0abd05ae0aff382954774ede7aeee30e6964ae1a37a"
+        },
+        {
+          "path": "package/.npmignore",
+          "sha256": "204f2ad804a26d32bd0696901f37636ec0fb4e87d47c76fbb0d01ed65fac1609"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "be2a8a71f8055b65f5b5d2724418aef1642c5d4ba243f3206eebd915d35ba228"
+        },
+        {
+          "path": "package/.travis.yml",
+          "sha256": "7d7e2b24d7b81d8092c722fcab45cdad6049f9d12e11b4a133b551efca428c38"
+        },
+        {
+          "path": "package/bower.json",
+          "sha256": "e7fced0a4cbdd98d9048254733d85935685f904912c7d1dc6fd13eac8e949b48"
+        },
+        {
+          "path": "package/lib/semaphore.js",
+          "sha256": "ba3897805a024a5453bcf891179484d8b842fcb12cdf8783a6e144f82db6f846"
+        },
+        {
+          "path": "package/test/semaphore.js",
+          "sha256": "3a05ca5e474290f9ce23b9c5a5b7abaa0ffe80871ba166d3e09d26bbe3ff6cdb"
+        }
+      ],
+      "noticeMembers": ["package/README.md", "package/bower.json"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "boolbase@1.0.0",
+      "license": "ISC",
+      "metadataFile": "third-party/source-reviews/publisher-boolbase-1.0.0.json",
+      "metadataSha256": "cdbdd0892df76fdcb117aa6c87cef12aeb99225cb90b8e12f182f3f6f1efce3b",
+      "archiveFile": "third-party/source-archives/publisher-boolbase-1.0.0.tgz",
+      "archiveSha256": "69628ff8092c5ff940ea4a0f29da98d520615bae138755c9e059033606c6caa8",
+      "registryIntegrity": "sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==",
+      "source": "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/package.json",
+          "sha256": "ca09c0dccbfc43be6be0ac89e9ffa19b64b30f9c74c64da27f719a7244a25e30"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "9cac5bfc290d30ccd13fa833923cb545584481e8ced66380bf758f1053f9d81d"
+        },
+        {
+          "path": "package/index.js",
+          "sha256": "c62510fca8738c7444cdf5012bdd0ce214a1b6f7eaff7facb3a919e4656d7341"
+        }
+      ],
+      "noticeMembers": ["package/package.json"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "@open-draft/deferred-promise@2.2.0",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-@open-draft-deferred-promise-2.2.0.json",
+      "metadataSha256": "11629b539d361afffd0f84f340a15da656eedf59fb846fba3c6c0e1298f750ab",
+      "archiveFile": "third-party/source-archives/publisher-@open-draft-deferred-promise-2.2.0.tgz",
+      "archiveSha256": "57f8d0cf303951c66dcdab2a10c2fe57194ad4cbb851880c604d4c3e521def2b",
+      "registryIntegrity": "sha512-CecwLWx3rhxVQF6V4bAgPS5t+So2sTbPgAzafKkVizyi7tlwpcFpdFqq+wqF2OwNBmqFuu6tOyouTuxgpMfzmA==",
+      "source": "https://registry.npmjs.org/@open-draft/deferred-promise/-/deferred-promise-2.2.0.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/build/index.js",
+          "sha256": "af0e1901eb44ae4068b1bb43aaf091620037a52703351d7fffcfcc84f9d26448"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "36d6e1dda37c34e5559f0f10e09ae1ae5ce9d50ac2b872c2d287365bf52ad33c"
+        },
+        {
+          "path": "package/build/index.js.map",
+          "sha256": "1b5b137a6e7b2084191b675010a67b4a3db24c4bc1ad97324991d5978548a734"
+        },
+        {
+          "path": "package/build/index.mjs.map",
+          "sha256": "304e050426d552ca79144861715e0ffcb5f98dba53917acfff41f0bc40483b02"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "494d6ba6d6c0b322c66efebc2468232d98b59e92c9e5d3fab78d174950d83929"
+        },
+        {
+          "path": "package/build/index.mjs",
+          "sha256": "ccb4e16c5148b3bb1fada2209b5513c87b563ef754edb1d404485fc124650343"
+        },
+        {
+          "path": "package/build/index.d.mts",
+          "sha256": "e06ac247bcc9063f81106cda7d54cbab69c721286e2d37a7ac1d978ed462edb7"
+        },
+        {
+          "path": "package/build/index.d.ts",
+          "sha256": "e06ac247bcc9063f81106cda7d54cbab69c721286e2d37a7ac1d978ed462edb7"
+        }
+      ],
+      "noticeMembers": ["package/package.json"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "is-node-process@1.2.0",
+      "license": "MIT",
+      "metadataFile": "third-party/source-reviews/publisher-is-node-process-1.2.0.json",
+      "metadataSha256": "e26b82b8553458d990d164a90ad98f6f87e0af4f51a4a7f8ffb57c55c17fe884",
+      "archiveFile": "third-party/source-archives/publisher-is-node-process-1.2.0.tgz",
+      "archiveSha256": "810d5c86ac247ffbfab3dcdee3cef95fb830e1f5eea9674858e8dcd6de4accba",
+      "registryIntegrity": "sha512-Vg4o6/fqPxIjtxgUH5QLJhwZ7gW5diGCVlXpuUfELC62CuxM1iHcRe51f2W1FDy04Ai4KJkagKjx3XaqyfRKXw==",
+      "source": "https://registry.npmjs.org/is-node-process/-/is-node-process-1.2.0.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/lib/index.js",
+          "sha256": "3402d7f8fbe2a7e0d19685f5f74116524d406745ba4dafb5d90c00582e1ba398"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "3bf5781dc5e98b9f9923249b0a8e8bae3dc36699841a417bf9b7451f68fc012a"
+        },
+        {
+          "path": "package/lib/index.js.map",
+          "sha256": "938e2c0bf492c35e0c598ff012808742ea445347bf7f562d669f496fe197ce0d"
+        },
+        {
+          "path": "package/lib/index.mjs.map",
+          "sha256": "e477c1433b61df81a6853ee85b67849d070cce7414621aa7b7c7bbfdbbe2655f"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "99ec68724abdc41fb27309e31cd81700a9ac17c7ba33802ccc8bd72695dd27b4"
+        },
+        {
+          "path": "package/lib/index.mjs",
+          "sha256": "6dc508c1da958f5e11d3306258f49e618e39b33e074969331d7e63a3c718f3c6"
+        },
+        {
+          "path": "package/lib/index.d.ts",
+          "sha256": "fdf4bb283ec352cf74f300fd13891f9f825ceacd5d7471ba82d50e6378758236"
+        }
+      ],
+      "noticeMembers": ["package/package.json"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    },
+    {
+      "package": "ansi-to-react@6.2.6",
+      "license": "BSD-3-Clause",
+      "metadataFile": "third-party/source-reviews/publisher-ansi-to-react-6.2.6.json",
+      "metadataSha256": "97034123b60cd1bdbaa6f5430137b95abf3250547776e98bd37639fda3784893",
+      "archiveFile": "third-party/source-archives/publisher-ansi-to-react-6.2.6.tgz",
+      "archiveSha256": "e06fc6be19323cf447f0058975cfcf41923d3422ea613cff2e67d8fd8ee1d655",
+      "registryIntegrity": "sha512-Eqi0iaMK5OZ3jsVFxWvU2B74UZBnGuHlkflKMX6wTOeH+luy9KE2O0gUkc2PxhIP1R4IO0xohv62UMFInQOSeg==",
+      "source": "https://registry.npmjs.org/ansi-to-react/-/ansi-to-react-6.2.6.tgz",
+      "declarationMember": "package/package.json",
+      "members": [
+        {
+          "path": "package/lib/index.js",
+          "sha256": "dc6c8ec2b4c4582d1ca4367d6685ed793c944f02306baaa7f42f423d698baaa5"
+        },
+        {
+          "path": "package/package.json",
+          "sha256": "6669789531a5fb393815b54aaa6ee853be53a60e00054c9de436dfc11a90c6ae"
+        },
+        {
+          "path": "package/README.md",
+          "sha256": "b681c6d6ab80ff5412c6b377a8b88941d2aefa312a7d74e32972ae5eadceb67a"
+        },
+        {
+          "path": "package/lib/index.d.ts",
+          "sha256": "0240592f18cdb0c0ebd67f5064f9ea2164e103a373ee536bfa7ba8955559620f"
+        }
+      ],
+      "noticeMembers": ["package/package.json", "package/README.md"],
+      "copyright": "No copyright notice supplied in the original textual package members. No holder or year has been invented."
+    }
+  ]
+}

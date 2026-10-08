@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "inputHashEncoding": "UTF-8 with CRLF normalized to LF; notice and source snapshot hashes remain byte-exact",
   "scope": "Production dependency union across current workspace projects, copied source/assets and native tools; not a per-installer SBOM or a certification of all licensing obligations.",
-  "noticesSha256": "6f4306c54ab01785a5b3a246a491e04bde8dd10f123194dd1ed798db74250519",
+  "noticesSha256": "a152aec6b952fa7075ef5d192fb99e9bca98e7cfb26b8d378f6d31ac8426c1cb",
   "inputs": {
     ".agents/skills/agent-browser/references/authentication.md": "e2488c6dfaa280e973ff46a5b1744dff08ebd394070de05cf955c3f46bd19814",
     ".agents/skills/agent-browser/references/commands.md": "0e2f2b26ca5a75c7dfd7d31c6bb592911747f988327db5b27ba042842d63f993",
@@ -168,9 +168,9 @@
     "apps/mycode-cli/packages/tui/package.json": "fb9ee88f93e05e4af80c1a3bcfeb3ac1493113c66c33627c5c5b0d44fb3d2cb3",
     "apps/mycode-cli/tools/prompt-trajectory/package.json": "3050f65d23c68de4f85c598570a63f1487fd78adac82585da60851ce92e7a363",
     "apps/mycode-cli/tools/typescript/package.json": "b8d6290591f0aa72d1ac3e230b55c4ec31b07e4e4aa34ee96eca0a2ce0b1f828",
-    "package.json": "b405af7f2d9dd84ccacbf67baf15635ac06a9d32df5d492e3ddc437736e89d28",
+    "package.json": "5506daec0570f90134faf5521ceaee70135c02640dc1d82ba89f65394d119ce0",
     "packages/client/package.json": "8cc2c5bf1292c8139c8c6b460d15f8df07b79831836b84f37cda184499c7bbbc",
-    "packages/desktop/package.json": "51310aae0c3484c25f965b994b3c6324ceb8c775e48c40432a3411d84bc1c6c5",
+    "packages/desktop/package.json": "61e268bbb58e37def2f13d09c23dcd78614d32595fbf9d85cfae07ded90c723e",
     "packages/desktop/src/renderer/public/material-icons/3d.svg": "9527b849f0fba57ca7640e2717b3a19cb5f5e046712cbbd8b75d73af338c68fb",
     "packages/desktop/src/renderer/public/material-icons/abap.svg": "1335bd7eb9a0ed49deb622330d680c2e97731726a7a5eee8e4f46dc1e5db4de4",
     "packages/desktop/src/renderer/public/material-icons/abc.svg": "d1a68020e8f020ef29dca5f94dc8613b7ae8fb5b212d8b1cc23b0f975ac7acda",
@@ -2597,13 +2597,15 @@
     "packages/web/public/material-icons/zip.svg": "dad79a45f756542d37abd422502ecfbea15720b92ea1c9d80ef0439ab6b9448a",
     "patches/@ai-sdk__anthropic@3.0.81.patch": "1babbd18b5f31224bb972cb358069344f8ad3e6006614a53d3a3723cd119002b",
     "patches/@ai-sdk__openai-compatible@2.0.60.patch": "7e5caed2d616b058ca70cb586ae58dde575868fafb44eadd4de8850e520c8a6f",
-    "pnpm-lock.yaml": "b58fa4ec3eed54092a345f93b2c1598742ecac0d88939585c34ed5567a00b8b1",
+    "pnpm-lock.yaml": "8126403090f122aabba486f6739d810c6b3702da9e96d533807825ff8b2a8d77",
     "pnpm-workspace.yaml": "391175a4a90e820d51ae4e0cf8c16accf827f4c057b0d64fd9aec3d74ba6d30e",
+    "scripts/build-windows-ripgrep.mjs": "0c32d890f5822bdc5447c4aa95ec11e9ae82e77e01fa76ccb502bbb3e32cc4b2",
     "scripts/license-texts/Apache-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
-    "scripts/native-search-tools-config.mjs": "11d031b9d69b32edd7778131bde4d705670ed68017cdddf188a0c8ec46947165",
+    "scripts/native-search-tools-config.mjs": "5200b9aa19bab6f16c35fcdfe12d16afda5e7af4f07dc05f8e2dc499863d866f",
     "scripts/remote-native-search-tools-config.mjs": "472322a66f84c7452f96aa9e16e9c4e0600f7c2588a03dc6bc869229161b1cb2",
     "third-party/copied-components.json": "2783702a6d3676216485cbcda6e15b22af1a5fde6d0cc3973a7a17748dce4863",
-    "third-party/embedded-components.json": "9586ccca15897f56d4ca1d703dffe9e02880fedd766c1dff93f7ac1f52ea891a",
+    "third-party/embedded-components.json": "3b5fd44dc4f7f4a488c4042104976013c06caca2d5b8f035e5e3418654d777b7",
+    "third-party/embedded-reviews.json": "5e0f67976a2db1e6950ab3362d58c6c08cf46e10672f815b871be41eb3d9b92e",
     "third-party/native-search/licenses/00373c9bf56a894b2ed67586596bc1e8b0630cabbaf1ab46c75fc754b6bcd1ce.txt": "00373c9bf56a894b2ed67586596bc1e8b0630cabbaf1ab46c75fc754b6bcd1ce",
     "third-party/native-search/licenses/01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f.txt": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
     "third-party/native-search/licenses/029d615cc92cc216eeefa50fea59bb9838e8e8f22a9f19ec5ee224a31ec9f383.txt": "029d615cc92cc216eeefa50fea59bb9838e8e8f22a9f19ec5ee224a31ec9f383",
@@ -2718,8 +2720,9 @@
     "third-party/native-search/licenses/f8a6a9a718ca8be13701d706d208dd0d7b4d2b41cb1df3342fc5a6d602bd1dac.txt": "f8a6a9a718ca8be13701d706d208dd0d7b4d2b41cb1df3342fc5a6d602bd1dac",
     "third-party/native-search/licenses/f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af.txt": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af",
     "third-party/native-search/licenses/f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505.txt": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505",
-    "third-party/native-search/sources.json": "67dbedc0c642d414e442e617f2bc0cfd8a3a657d1107b06d08e716eef9a92c67",
-    "third-party/npm-overrides.json": "090457a5af3491f55fd56df0b71fcba290e76f2bb69160038bc8cab75186dbf7",
+    "third-party/native-search/sources.json": "c9992ec33e0b411566f42eea908967f98e4d617207c5acc94b00f443c10bd0c3",
+    "third-party/npm-overrides.json": "183efb36ba31000baa96e984430daad50f9653797c9c7b7d174a53dcf333fa9f",
+    "third-party/publisher-reviews.json": "1bd52991afc6ed5b944f03ce566df4d0c47f7d30d1620aaf8a0e99e3481318e7",
     "third-party/runtime/node-22.16.0-LICENSE.txt": "1ae62e2015784ba438db7b04ebd33f3c4ff3efdb824c111c4ececd99945fd52d",
     "third-party/runtime/node-24.14.0-LICENSE.txt": "4573185d56580da2b890ba34a85a409257640f1c5632eade4300137266194d18",
     "third-party/runtime/sources.json": "b27bc8d81aeb71108e523602364ffbb6a1b19c2d5d47733fd43094b769006741",
@@ -2731,7 +2734,6 @@
     "third-party/upstream/0c74e86d37d6fc7e8f22b4b8e3b801f6737c263c27a71d81c86cd8de0b6a84e5.txt": "0c74e86d37d6fc7e8f22b4b8e3b801f6737c263c27a71d81c86cd8de0b6a84e5",
     "third-party/upstream/0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138.txt": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
     "third-party/upstream/1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f.txt": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f",
-    "third-party/upstream/17510cf7a58b4879b887ec05a45d72cf1b73544dd9ec7e72f20110ed104229ee.txt": "17510cf7a58b4879b887ec05a45d72cf1b73544dd9ec7e72f20110ed104229ee",
     "third-party/upstream/1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d.txt": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d",
     "third-party/upstream/1b8910ad1a22011c632f7ff544708be6cf08818ef80e8d4b45b6808ee8b05c17.txt": "1b8910ad1a22011c632f7ff544708be6cf08818ef80e8d4b45b6808ee8b05c17",
     "third-party/upstream/23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3.txt": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
@@ -2740,35 +2742,21 @@
     "third-party/upstream/2c88816684a40c718113a10062a8335b665cec00d3c7b32e2b3fe9c620a3e03e.txt": "2c88816684a40c718113a10062a8335b665cec00d3c7b32e2b3fe9c620a3e03e",
     "third-party/upstream/2d2349188616c4b64ceeae33e1386bb546b0658864b4f7f8c9785757cb065b5d.txt": "2d2349188616c4b64ceeae33e1386bb546b0658864b4f7f8c9785757cb065b5d",
     "third-party/upstream/3007cd45c9afdf93812c0c8a7643ea32a7db0b24e495dc0f2312c8a43990b0dd.txt": "3007cd45c9afdf93812c0c8a7643ea32a7db0b24e495dc0f2312c8a43990b0dd",
-    "third-party/upstream/31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87.txt": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87",
     "third-party/upstream/34dee5fd5e5cc756efb5ad4d64652bce719bdf5e900ca5d7538253e737930bc4.txt": "34dee5fd5e5cc756efb5ad4d64652bce719bdf5e900ca5d7538253e737930bc4",
-    "third-party/upstream/37398454f23ddeb02f0b81113fef9ebdc4571b7297cb6e18376c1ccb9bb1453e.txt": "37398454f23ddeb02f0b81113fef9ebdc4571b7297cb6e18376c1ccb9bb1453e",
-    "third-party/upstream/3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94.txt": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
     "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
     "third-party/upstream/417fa227d75b1e22a15d8389ca8b5e8b7b86241c3b1b17288d20523016ef6fa6.txt": "417fa227d75b1e22a15d8389ca8b5e8b7b86241c3b1b17288d20523016ef6fa6",
-    "third-party/upstream/43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1.txt": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
-    "third-party/upstream/4a1d35b6325ede5ff9fc338fe7e6fdcaa9fe770767a0114242b817dcba28253f.txt": "4a1d35b6325ede5ff9fc338fe7e6fdcaa9fe770767a0114242b817dcba28253f",
     "third-party/upstream/508d4676d4083e874df706f302d9d42e5e7f9aed3f5a7ea614dc6d2b2252a22f.txt": "508d4676d4083e874df706f302d9d42e5e7f9aed3f5a7ea614dc6d2b2252a22f",
     "third-party/upstream/5129f8779dca579cfcb235570688a2f15822b270575e04f27ef906aabbcc0355.txt": "5129f8779dca579cfcb235570688a2f15822b270575e04f27ef906aabbcc0355",
     "third-party/upstream/52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85.txt": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
     "third-party/upstream/52c49219748499a9a56e0d8d10a73a2d7741f5ecf5c88bdff30593599d6dfbb6.txt": "52c49219748499a9a56e0d8d10a73a2d7741f5ecf5c88bdff30593599d6dfbb6",
     "third-party/upstream/539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b.txt": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b",
-    "third-party/upstream/58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd.txt": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
     "third-party/upstream/59c38e93a395817bc9d674d868af7c062fcea8b37468af8b3f6f075133eb1756.txt": "59c38e93a395817bc9d674d868af7c062fcea8b37468af8b3f6f075133eb1756",
-    "third-party/upstream/5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f.txt": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f",
-    "third-party/upstream/5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf.txt": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf",
     "third-party/upstream/5f745b8244890bde0a2258fe32342d60c577fad043e8601d923690a5bfe1b54f.txt": "5f745b8244890bde0a2258fe32342d60c577fad043e8601d923690a5bfe1b54f",
-    "third-party/upstream/5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd.txt": "5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd",
     "third-party/upstream/66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101.txt": "66aa9feab8bb39aceebd69f2a357015d57ceab486d3c7a19ff8d3d4110a6d101",
     "third-party/upstream/6ae13df543a24b3fb18c25182cf4f084132f799ea9225410f7037888401b7469.txt": "6ae13df543a24b3fb18c25182cf4f084132f799ea9225410f7037888401b7469",
-    "third-party/upstream/75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6.txt": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6",
-    "third-party/upstream/8405932022a556380c2d8c272eff154a923feb197233f348ce5f7334fb0a5ede.txt": "8405932022a556380c2d8c272eff154a923feb197233f348ce5f7334fb0a5ede",
-    "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
     "third-party/upstream/8a1efa755d19446b51a18e1c15f6308728da0b36283c4d38050698ad6954b69a.txt": "8a1efa755d19446b51a18e1c15f6308728da0b36283c4d38050698ad6954b69a",
-    "third-party/upstream/91915f8ae056a68a3c5bdf05d9f6f78bb6903e27a8ca3a8434c9e4ac87300575.txt": "91915f8ae056a68a3c5bdf05d9f6f78bb6903e27a8ca3a8434c9e4ac87300575",
     "third-party/upstream/93f24a47f95aea2be1b0dad78de98dc6d3de01ce22c0b72dc73e453c7917b955.txt": "93f24a47f95aea2be1b0dad78de98dc6d3de01ce22c0b72dc73e453c7917b955",
     "third-party/upstream/9480271317925265e806a9a196aaa33410a962fa9d4d1e248a4a5187bc8c9df9.txt": "9480271317925265e806a9a196aaa33410a962fa9d4d1e248a4a5187bc8c9df9",
-    "third-party/upstream/96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430.txt": "96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430",
     "third-party/upstream/96f73f9d2a16c21a36b418f06073be26e7d6d5e7c1bc99756b21a4f2c74ef171.txt": "96f73f9d2a16c21a36b418f06073be26e7d6d5e7c1bc99756b21a4f2c74ef171",
     "third-party/upstream/992490064b90ec94c302fe5f29dcc14cb44145857064e46f9ffe6c8f511c1093.txt": "992490064b90ec94c302fe5f29dcc14cb44145857064e46f9ffe6c8f511c1093",
     "third-party/upstream/9b405ef4c89342f5eae1dd828882f931747f71001cfba7d114801039b52ad09b.txt": "9b405ef4c89342f5eae1dd828882f931747f71001cfba7d114801039b52ad09b",
@@ -2779,20 +2767,14 @@
     "third-party/upstream/b1688598c3e32605b3973902a546225e0159349c05a0f74db67f76e08e116e65.txt": "b1688598c3e32605b3973902a546225e0159349c05a0f74db67f76e08e116e65",
     "third-party/upstream/b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529.txt": "b4f9adb7c568904834d0dd6cc98d16c390d21ca32fc17ae7a267715269bd5529",
     "third-party/upstream/b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db.txt": "b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db",
-    "third-party/upstream/ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64.txt": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64",
-    "third-party/upstream/bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526.txt": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526",
     "third-party/upstream/c0779290c1d4783169aa3dbfb55feb505e563ef8a004bbf55298ceffcfbda8d9.txt": "c0779290c1d4783169aa3dbfb55feb505e563ef8a004bbf55298ceffcfbda8d9",
     "third-party/upstream/c5adaf9051f20a1bbeecfb39de415cac1fef591d4fcda2b55d66b31354fdba1e.txt": "c5adaf9051f20a1bbeecfb39de415cac1fef591d4fcda2b55d66b31354fdba1e",
     "third-party/upstream/c681d64256e752c1435814cf045f4467720a8473e425ea54103a0f5128bfc817.txt": "c681d64256e752c1435814cf045f4467720a8473e425ea54103a0f5128bfc817",
     "third-party/upstream/c8b789cf5a746611e6300a0cc7750dbf92b61912a709d04e639245f7290656d0.txt": "c8b789cf5a746611e6300a0cc7750dbf92b61912a709d04e639245f7290656d0",
     "third-party/upstream/cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9.txt": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9",
-    "third-party/upstream/cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c.txt": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c",
     "third-party/upstream/cdab3014d4f69b49dde2b85e81792208c72de613aa6aed7f7a9b5c6609b89670.txt": "cdab3014d4f69b49dde2b85e81792208c72de613aa6aed7f7a9b5c6609b89670",
     "third-party/upstream/cf81859d85e99ff2fad83d51d9dfd85ca5189b23c4442aacf1890c54665d92f4.txt": "cf81859d85e99ff2fad83d51d9dfd85ca5189b23c4442aacf1890c54665d92f4",
-    "third-party/upstream/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
-    "third-party/upstream/d65ff929f8a373ea16b21d45d5489557d51389ba6583a5c9959d5487c02ce965.txt": "d65ff929f8a373ea16b21d45d5489557d51389ba6583a5c9959d5487c02ce965",
     "third-party/upstream/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
-    "third-party/upstream/e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c.txt": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c",
     "third-party/upstream/e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c.txt": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c",
     "third-party/upstream/ebb2e920800c6353474e3e23d84f714ee8aaecd8f5a71851aa03594a4129d855.txt": "ebb2e920800c6353474e3e23d84f714ee8aaecd8f5a71851aa03594a4129d855",
     "third-party/upstream/f158b3bd10b867740fdbf81447216f1f8685473acf61e6a105ef91ba9fe8ebc3.txt": "f158b3bd10b867740fdbf81447216f1f8685473acf61e6a105ef91ba9fe8ebc3",
@@ -2836,7 +2818,48 @@
     "third-party/source-reviews/ubjs-node-linux-x64-musl-0.31.0-3.json": "e11cf498a0d2a35fe84dadd4e2baaf147aaaf723fec01061885503770037cbfb",
     "third-party/source-reviews/ubjs-node-linux-x64-gnu-0.31.0-3.json": "b5b49b499f5268064fb92b5911a25a31e336da266c5a26180789620cd0ebef24",
     "third-party/source-reviews/ubjs-node-win32-arm64-msvc-0.31.0-3.json": "eed2fad826ad26f3bd987958421d473e6216eca542bf6326171603f93738ae56",
-    "third-party/source-reviews/ubjs-node-win32-x64-msvc-0.31.0-3.json": "7f9d68570ab235625d4e000daf672b08ceeb56e48d879d12962c00445aec4820"
+    "third-party/source-reviews/ubjs-node-win32-x64-msvc-0.31.0-3.json": "7f9d68570ab235625d4e000daf672b08ceeb56e48d879d12962c00445aec4820",
+    "third-party/source-reviews/publisher-unsafe-pointer-0.2.0.json": "37499deab16ce6f167d63cdca00ab26468948a02f3bd38a189054bf6b728a00f",
+    "third-party/source-archives/publisher-unsafe-pointer-0.2.0.tgz": "9c9795688a9e224759468aeee2ff88d917fadc65f7b3480e62571f0853eaa446",
+    "third-party/source-reviews/publisher-react-remove-scroll-bar-2.3.8.json": "826c618ece09367334160c1ab3a272fd54f8f12e3b0a45f75b0f2660d285855a",
+    "third-party/source-archives/publisher-react-remove-scroll-bar-2.3.8.tgz": "ccc872d7a2dc007cbf9d755f30d56b8d80eabdbe22c44c95a709129bfdc46f01",
+    "third-party/source-reviews/publisher-quickjs-wasi-2.2.0.json": "19e41cc0661fdd4afcc4443aec970120ac38a8781e3d8b09081063f711d2f1c7",
+    "third-party/source-archives/publisher-quickjs-wasi-2.2.0.tgz": "f4dd386c2e705ffb8692a8afdc1e3b8ff09c6b8ef3aee48d0537ff71d8839cd1",
+    "third-party/source-reviews/publisher-@hono-node-ws-1.3.0.json": "d0bb5df5a75d08dc2cb27c04e7bb8497aab60679cd83364b826e868dbe7b63bc",
+    "third-party/source-archives/publisher-@hono-node-ws-1.3.0.tgz": "48b94f87b85ca84428491d7275f0fad16450254bd49d9b2b4f621539fda8a2af",
+    "third-party/source-reviews/publisher-strict-event-emitter-0.5.1.json": "42980c581490b5d9f4bede4f49a4a0a5953df27689621bf573d8f3e6877896a4",
+    "third-party/source-archives/publisher-strict-event-emitter-0.5.1.tgz": "43c456f72612074a13e8399c29ffd59c8c277274924b633f6e4fa07342f63cab",
+    "third-party/source-reviews/publisher-lazy-val-1.0.5.json": "b89c1fd70f2fdef869138eaa43addcc73719738762bb84cd6a1bbd3d776b841f",
+    "third-party/source-archives/publisher-lazy-val-1.0.5.tgz": "7d8602ad98db3d19fbd5b46fbf3831dd996197a013ef1ff7badc205e41435372",
+    "third-party/source-reviews/publisher-semaphore-1.1.0.json": "0188d053cd8e7d3886910b253ef322be456cc118e33411d216b351838dfe50d6",
+    "third-party/source-archives/publisher-semaphore-1.1.0.tgz": "72002cc502d607af8e2dbcbdafa3495bf4efe34394e1a037b92038d157f077a2",
+    "third-party/source-reviews/publisher-boolbase-1.0.0.json": "cdbdd0892df76fdcb117aa6c87cef12aeb99225cb90b8e12f182f3f6f1efce3b",
+    "third-party/source-archives/publisher-boolbase-1.0.0.tgz": "69628ff8092c5ff940ea4a0f29da98d520615bae138755c9e059033606c6caa8",
+    "third-party/source-reviews/publisher-@open-draft-deferred-promise-2.2.0.json": "11629b539d361afffd0f84f340a15da656eedf59fb846fba3c6c0e1298f750ab",
+    "third-party/source-archives/publisher-@open-draft-deferred-promise-2.2.0.tgz": "57f8d0cf303951c66dcdab2a10c2fe57194ad4cbb851880c604d4c3e521def2b",
+    "third-party/source-reviews/publisher-is-node-process-1.2.0.json": "e26b82b8553458d990d164a90ad98f6f87e0af4f51a4a7f8ffb57c55c17fe884",
+    "third-party/source-archives/publisher-is-node-process-1.2.0.tgz": "810d5c86ac247ffbfab3dcdee3cef95fb830e1f5eea9674858e8dcd6de4accba",
+    "third-party/source-reviews/publisher-ansi-to-react-6.2.6.json": "97034123b60cd1bdbaa6f5430137b95abf3250547776e98bd37639fda3784893",
+    "third-party/source-archives/publisher-ansi-to-react-6.2.6.tgz": "e06fc6be19323cf447f0058975cfcf41923d3422ea613cff2e67d8fd8ee1d655",
+    "third-party/source-reviews/quickjs-tree.json": "e5828000ff9f4292f74605e4e05b7e4de859b44916624ebc20ed0d77880c2250",
+    "third-party/source-archives/quickjs-wasi-cc1fea4a6a4ac1d960e0db68d35e1459064a1a23.tar.gz": "21d280b8c2a8c3e9c9666c9f75418248397262a87c3b9c08e8ae19fc615f93e1",
+    "third-party/upstream/5f745b8244890bde0a2258fe32342d60c577fad043e8601d923690a5bfe1b54f.txt": "5f745b8244890bde0a2258fe32342d60c577fad043e8601d923690a5bfe1b54f",
+    "third-party/upstream/96f73f9d2a16c21a36b418f06073be26e7d6d5e7c1bc99756b21a4f2c74ef171.txt": "96f73f9d2a16c21a36b418f06073be26e7d6d5e7c1bc99756b21a4f2c74ef171",
+    "third-party/upstream/9b405ef4c89342f5eae1dd828882f931747f71001cfba7d114801039b52ad09b.txt": "9b405ef4c89342f5eae1dd828882f931747f71001cfba7d114801039b52ad09b",
+    "third-party/upstream/2711a8b5a5cdfef0e639f96c1aca12ae23d7d64a02d0507f1bdf14d2b27bbc3a.txt": "2711a8b5a5cdfef0e639f96c1aca12ae23d7d64a02d0507f1bdf14d2b27bbc3a",
+    "third-party/upstream/a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2.txt": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "third-party/upstream/268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5.txt": "268872b9816f90fd8e85db5a28d33f8150ebb8dd016653fb39ef1f94f2686bc5",
+    "third-party/upstream/23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3.txt": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3",
+    "third-party/upstream/c8b789cf5a746611e6300a0cc7750dbf92b61912a709d04e639245f7290656d0.txt": "c8b789cf5a746611e6300a0cc7750dbf92b61912a709d04e639245f7290656d0",
+    "third-party/upstream/f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af.txt": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af",
+    "third-party/upstream/539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b.txt": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b",
+    "third-party/upstream/e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c.txt": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c",
+    "third-party/upstream/1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d.txt": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d",
+    "third-party/upstream/af0d7d2cef91fc243cf4ad98570b03d1f26f5e0227cad0f5f4a7376e2feb3160.txt": "af0d7d2cef91fc243cf4ad98570b03d1f26f5e0227cad0f5f4a7376e2feb3160",
+    "third-party/upstream/508d4676d4083e874df706f302d9d42e5e7f9aed3f5a7ea614dc6d2b2252a22f.txt": "508d4676d4083e874df706f302d9d42e5e7f9aed3f5a7ea614dc6d2b2252a22f",
+    "third-party/upstream/52c49219748499a9a56e0d8d10a73a2d7741f5ecf5c88bdff30593599d6dfbb6.txt": "52c49219748499a9a56e0d8d10a73a2d7741f5ecf5c88bdff30593599d6dfbb6",
+    "third-party/upstream/0c74e86d37d6fc7e8f22b4b8e3b801f6737c263c27a71d81c86cd8de0b6a84e5.txt": "0c74e86d37d6fc7e8f22b4b8e3b801f6737c263c27a71d81c86cd8de0b6a84e5",
+    "third-party/upstream/3007cd45c9afdf93812c0c8a7643ea32a7db0b24e495dc0f2312c8a43990b0dd.txt": "3007cd45c9afdf93812c0c8a7643ea32a7db0b24e495dc0f2312c8a43990b0dd"
   },
   "packages": [
     {
@@ -4818,114 +4841,6 @@
         {
           "member": "LICENSE.md",
           "sha256": "bb3a5cb8fb224f632970e31425348f556f7a83b165d5384ea5e142575f5c412e"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-darwin-arm64",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-darwin-x64",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-linux-arm64-gnu",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-linux-arm64-musl",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-linux-x64-gnu",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-linux-x64-musl",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-win32-arm64-msvc",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas-win32-x64-msvc",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
-        }
-      ]
-    },
-    {
-      "name": "@napi-rs/canvas",
-      "version": "0.1.100",
-      "license": "MIT",
-      "repository": "git+https://github.com/Brooooooklyn/canvas.git",
-      "notices": [
-        {
-          "member": "LICENSE",
-          "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6"
         }
       ]
     },
@@ -9729,6 +9644,22 @@
         {
           "member": "README.md (license section)",
           "sha256": "dafa243c2b1674d24bfad40e0930a446f711cca096339ff9f4c910c3ab161f27"
+        }
+      ]
+    },
+    {
+      "name": "debug",
+      "version": "4.4.3",
+      "license": "MIT",
+      "repository": "git://github.com/debug-js/debug.git",
+      "notices": [
+        {
+          "member": "LICENSE",
+          "sha256": "3a61c6c96caf5c1d9b623fb9b04c822b783dfcb78aa7e49c76a3f643e6ed7f95"
+        },
+        {
+          "member": "README.md (license section)",
+          "sha256": "d6f83842cafbe3a73d4f9db8731524aa09ea74d0709ee3287f3ab7c01e749835"
         }
       ]
     },
@@ -18681,20 +18612,7 @@
       ]
     }
   ],
-  "notInstalled": [
-    {
-      "name": "@napi-rs/canvas-android-arm64",
-      "version": "0.1.100"
-    },
-    {
-      "name": "@napi-rs/canvas-linux-arm-gnueabihf",
-      "version": "0.1.100"
-    },
-    {
-      "name": "@napi-rs/canvas-linux-riscv64-gnu",
-      "version": "0.1.100"
-    }
-  ],
+  "notInstalled": [],
   "copied": [
     {
       "id": "shadcn",
@@ -29240,8 +29158,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "9c9795688a9e224759468aeee2ff88d917fadc65f7b3480e62571f0853eaa446",
         "sourceRevision": "f9771c0c21e863e4938a7aed0af89575f9673152",
         "sourceTreeUrl": "https://api.github.com/repos/justjake/node-unsafe-pointer/git/trees/f9771c0c21e863e4938a7aed0af89575f9673152?recursive=1",
@@ -29260,8 +29178,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "ccc872d7a2dc007cbf9d755f30d56b8d80eabdbe22c44c95a709129bfdc46f01"
       }
     },
@@ -29279,8 +29197,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "f4dd386c2e705ffb8692a8afdc1e3b8ff09c6b8ef3aee48d0537ff71d8839cd1"
       }
     },
@@ -29296,8 +29214,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "48b94f87b85ca84428491d7275f0fad16450254bd49d9b2b4f621539fda8a2af",
         "sourceRevision": "2c026b9d5bfff006dc9abdc1b33c53856d2d784f",
         "sourceTreeUrl": "https://api.github.com/repos/honojs/middleware/git/trees/2c026b9d5bfff006dc9abdc1b33c53856d2d784f?recursive=1",
@@ -29318,8 +29236,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "43c456f72612074a13e8399c29ffd59c8c277274924b633f6e4fa07342f63cab",
         "sourceRevision": "56e004cf2793053ea9ece4330fd52cace96acbff",
         "sourceTreeUrl": "https://api.github.com/repos/open-draft/strict-event-emitter/git/trees/56e004cf2793053ea9ece4330fd52cace96acbff?recursive=1",
@@ -29338,8 +29256,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "7d8602ad98db3d19fbd5b46fbf3831dd996197a013ef1ff7badc205e41435372",
         "sourceRevision": "b69ad4119f1b19bdab13c61ee2fcc88d46b89071",
         "sourceTreeUrl": "https://api.github.com/repos/develar/lazy-val/git/trees/b69ad4119f1b19bdab13c61ee2fcc88d46b89071?recursive=1",
@@ -29358,8 +29276,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "72002cc502d607af8e2dbcbdafa3495bf4efe34394e1a037b92038d157f077a2",
         "sourceRevision": "88a33875b168cc7b5943d7fe987c36d08321d252",
         "sourceTreeUrl": "https://api.github.com/repos/abrkn/semaphore.js/git/trees/88a33875b168cc7b5943d7fe987c36d08321d252?recursive=1",
@@ -29380,8 +29298,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "ISC",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "69628ff8092c5ff940ea4a0f29da98d520615bae138755c9e059033606c6caa8"
       }
     },
@@ -29397,8 +29315,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "57f8d0cf303951c66dcdab2a10c2fe57194ad4cbb851880c604d4c3e521def2b",
         "sourceRevision": "b30f1b683311030e92fcdd08d2bd6574d652b77f",
         "sourceTreeUrl": "https://api.github.com/repos/open-draft/deferred-promise/git/trees/b30f1b683311030e92fcdd08d2bd6574d652b77f?recursive=1",
@@ -29419,8 +29337,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "MIT",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "810d5c86ac247ffbfab3dcdee3cef95fb830e1f5eea9674858e8dcd6de4accba",
         "sourceRevision": "8a6152c795d8705be97166bd5167e70ac6efc67c",
         "sourceTreeUrl": "https://api.github.com/repos/mswjs/is-node-process/git/trees/8a6152c795d8705be97166bd5167e70ac6efc67c?recursive=1",
@@ -29439,8 +29357,8 @@
       "evidenceKind": "publisher-license-identifier-and-standard-terms",
       "license": "BSD-3-Clause",
       "reviewEvidence": {
-        "checkedOn": "2026-09-21",
-        "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+        "checkedOn": "2026-10-08",
+        "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
         "npmArchiveSha256": "e06fc6be19323cf447f0058975cfcf41923d3422ea613cff2e67d8fd8ee1d655",
         "sourceRevision": "145140971e9d83ccac32265f24b1c55dea437896",
         "sourceTreeUrl": "https://api.github.com/repos/nteract/ansi-to-react/git/trees/145140971e9d83ccac32265f24b1c55dea437896?recursive=1",
@@ -29450,139 +29368,10 @@
   ],
   "embedded": [
     {
-      "id": "Skia",
-      "parentPackage": "@napi-rs/canvas@0.1.100",
-      "revision": "fe2718df5f53a681087be6f0539045ca1b4b8c09",
-      "source": "https://github.com/Brooooooklyn/canvas/tree/db337893b9b53483050ca7b24c6d306e4da06741/skia",
-      "reviewRequired": "Skia core notice retained. Per-platform linked third-party libraries and their exact build provenance still require a complete audit.",
-      "notices": [
-        {
-          "source": "https://raw.githubusercontent.com/google/skia/fe2718df5f53a681087be6f0539045ca1b4b8c09/LICENSE",
-          "file": "third-party/upstream/5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd.txt",
-          "sha256": "5f787c1dee3c56547f09ccc2906ab5f5293c4d8dd6c8654e573216c38e908dbd"
-        },
-        {
-          "component": "expat",
-          "source": "https://chromium.googlesource.com/external/github.com/libexpat/libexpat.git/+/6154446fccefbf3ca644894f598969113b0c7bcd/expat/COPYING?format=TEXT",
-          "file": "third-party/upstream/31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87.txt",
-          "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87"
-        },
-        {
-          "component": "freetype",
-          "source": "https://chromium.googlesource.com/chromium/src/third_party/freetype2.git/+/264b5fbf5b912b39f98d038bf75d39be0a73f21b/docs/FTL.TXT?format=TEXT",
-          "file": "third-party/upstream/5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f.txt",
-          "sha256": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f"
-        },
-        {
-          "component": "harfbuzz",
-          "source": "https://chromium.googlesource.com/external/github.com/harfbuzz/harfbuzz.git/+/9cb1fee51069b206effb4736e443b038d230789d/COPYING?format=TEXT",
-          "file": "third-party/upstream/ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64.txt",
-          "sha256": "ba8f810f2455c2f08e2d56bb49b72f37fcf68f1f4fade38977cfd7372050ad64"
-        },
-        {
-          "component": "highway",
-          "source": "https://chromium.googlesource.com/external/github.com/google/highway.git/+/424360251cdcfc314cfc528f53c872ecd63af0f0/LICENSE?format=TEXT",
-          "file": "third-party/upstream/43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1.txt",
-          "sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
-        },
-        {
-          "component": "icu",
-          "source": "https://chromium.googlesource.com/chromium/deps/icu.git/+/364118a1d9da24bb5b770ac3d762ac144d6da5a4/LICENSE?format=TEXT",
-          "file": "third-party/upstream/17510cf7a58b4879b887ec05a45d72cf1b73544dd9ec7e72f20110ed104229ee.txt",
-          "sha256": "17510cf7a58b4879b887ec05a45d72cf1b73544dd9ec7e72f20110ed104229ee"
-        },
-        {
-          "component": "libjpeg-turbo",
-          "source": "https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/e14cbfaa85529d47f9f55b0f104a579c1061f9ad/LICENSE.md?format=TEXT",
-          "file": "third-party/upstream/96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430.txt",
-          "sha256": "96f5b328adbb78eeaaec6980d73fd558cb1e4d62560ed615646bc3cf5e532430"
-        },
-        {
-          "component": "libjpeg-turbo",
-          "source": "https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/e14cbfaa85529d47f9f55b0f104a579c1061f9ad/README.ijg?format=TEXT",
-          "file": "third-party/upstream/75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6.txt",
-          "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6"
-        },
-        {
-          "component": "libjxl",
-          "source": "https://chromium.googlesource.com/external/gitlab.com/wg1/jpeg-xl.git/+/a205468bc5d3a353fb15dae2398a101dff52f2d3/LICENSE?format=TEXT",
-          "file": "third-party/upstream/8405932022a556380c2d8c272eff154a923feb197233f348ce5f7334fb0a5ede.txt",
-          "sha256": "8405932022a556380c2d8c272eff154a923feb197233f348ce5f7334fb0a5ede"
-        },
-        {
-          "component": "libjxl",
-          "source": "https://chromium.googlesource.com/external/gitlab.com/wg1/jpeg-xl.git/+/a205468bc5d3a353fb15dae2398a101dff52f2d3/PATENTS?format=TEXT",
-          "file": "third-party/upstream/91915f8ae056a68a3c5bdf05d9f6f78bb6903e27a8ca3a8434c9e4ac87300575.txt",
-          "sha256": "91915f8ae056a68a3c5bdf05d9f6f78bb6903e27a8ca3a8434c9e4ac87300575"
-        },
-        {
-          "component": "libpng",
-          "source": "https://skia.googlesource.com/third_party/libpng.git/+/d5515b5b8be3901aac04e5bd8bd5c89f287bcd33/LICENSE?format=TEXT",
-          "file": "third-party/upstream/bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526.txt",
-          "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526"
-        },
-        {
-          "component": "libwebp",
-          "source": "https://chromium.googlesource.com/webm/libwebp.git/+/845d5476a866141ba35ac133f856fa62f0b7445f/COPYING?format=TEXT",
-          "file": "third-party/upstream/5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf.txt",
-          "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf"
-        },
-        {
-          "component": "libwebp",
-          "source": "https://chromium.googlesource.com/webm/libwebp.git/+/845d5476a866141ba35ac133f856fa62f0b7445f/PATENTS?format=TEXT",
-          "file": "third-party/upstream/cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c.txt",
-          "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
-        },
-        {
-          "component": "wuffs",
-          "source": "https://skia.googlesource.com/external/github.com/google/wuffs-mirror-release-c.git/+/e3f919ccfe3ef542cfc983a82146070258fb57f8/LICENSE?format=TEXT",
-          "file": "third-party/upstream/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt",
-          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
-        },
-        {
-          "component": "zlib",
-          "source": "https://chromium.googlesource.com/chromium/src/third_party/zlib/+/646b7f569718921d7d4b5b8e22572ff6c76f2596/LICENSE?format=TEXT",
-          "file": "third-party/upstream/e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c.txt",
-          "sha256": "e1cfcc55c325b3f78cf55df9664abaa066e2271dffe8213347d9fccdfbac8f2c"
-        },
-        {
-          "component": "piex",
-          "source": "https://android.googlesource.com/platform/external/piex.git/+/bb217acdca1cc0c16b704669dd6f91a1b509c406/LICENSE?format=TEXT",
-          "file": "third-party/upstream/58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd.txt",
-          "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd"
-        },
-        {
-          "component": "brotli",
-          "source": "https://raw.githubusercontent.com/google/brotli/6d03dfbedda1615c4cba1211f8d81735575209c8/LICENSE",
-          "file": "third-party/upstream/3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94.txt",
-          "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94"
-        },
-        {
-          "component": "libjpeg-turbo arithmetic coding",
-          "source": "https://chromium.googlesource.com/chromium/deps/libjpeg_turbo.git/+/e14cbfaa85529d47f9f55b0f104a579c1061f9ad/src/jcarith.c?format=TEXT",
-          "file": "third-party/upstream/37398454f23ddeb02f0b81113fef9ebdc4571b7297cb6e18376c1ccb9bb1453e.txt",
-          "sha256": "37398454f23ddeb02f0b81113fef9ebdc4571b7297cb6e18376c1ccb9bb1453e"
-        }
-      ],
-      "buildEvidence": [
-        {
-          "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/scripts/build-skia.js",
-          "file": "third-party/upstream/4a1d35b6325ede5ff9fc338fe7e6fdcaa9fe770767a0114242b817dcba28253f.txt",
-          "sha256": "4a1d35b6325ede5ff9fc338fe7e6fdcaa9fe770767a0114242b817dcba28253f"
-        },
-        {
-          "source": "https://raw.githubusercontent.com/google/skia/fe2718df5f53a681087be6f0539045ca1b4b8c09/DEPS",
-          "file": "third-party/upstream/d65ff929f8a373ea16b21d45d5489557d51389ba6583a5c9959d5487c02ce965.txt",
-          "sha256": "d65ff929f8a373ea16b21d45d5489557d51389ba6583a5c9959d5487c02ce965"
-        }
-      ]
-    },
-    {
       "id": "QuickJS-NG",
       "parentPackage": "quickjs-wasi@2.2.0",
       "revision": "dec012362bd93876449f3ecff4f835b2eba89bab",
       "source": "https://github.com/vercel-labs/quickjs-wasi/tree/cc1fea4a6a4ac1d960e0db68d35e1459064a1a23/quickjs-ng",
-      "reviewRequired": "Engine notice retained. WASI libc and extension link provenance is not fully established by the npm package.",
       "notices": [
         {
           "source": "https://raw.githubusercontent.com/quickjs-ng/quickjs/dec012362bd93876449f3ecff4f835b2eba89bab/LICENSE",
@@ -29694,7 +29483,11 @@
           "file": "third-party/upstream/5f745b8244890bde0a2258fe32342d60c577fad043e8601d923690a5bfe1b54f.txt",
           "sha256": "5f745b8244890bde0a2258fe32342d60c577fad043e8601d923690a5bfe1b54f"
         }
-      ]
+      ],
+      "reviewEvidence": {
+        "manifest": "third-party/embedded-reviews.json",
+        "result": "Original publisher source revisions, supported build inputs, dependency notice coverage and original binary producer identities are verified by scripts/license-embedded-reviews.mjs. Scope is the conservative source/build-option union, not a per-installer SBOM."
+      }
     }
   ],
   "runtimes": {
@@ -29713,62 +29506,5 @@
       }
     ]
   },
-  "reviewRequired": [
-    {
-      "id": "unsafe-pointer@0.2.0",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "react-remove-scroll-bar@2.3.8",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "quickjs-wasi@2.2.0",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "@hono/node-ws@1.3.0",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "strict-event-emitter@0.5.1",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "lazy-val@1.0.5",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "semaphore@1.1.0",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "boolbase@1.0.0",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "@open-draft/deferred-promise@2.2.0",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "is-node-process@1.2.0",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "ansi-to-react@6.2.6",
-      "reason": "Original version-specific publisher copyright/license material remains incomplete."
-    },
-    {
-      "id": "Skia",
-      "reason": "Skia core notice retained. Per-platform linked third-party libraries and their exact build provenance still require a complete audit."
-    },
-    {
-      "id": "QuickJS-NG",
-      "reason": "Engine notice retained. WASI libc and extension link provenance is not fully established by the npm package."
-    },
-    {
-      "id": "rust-standard-library@6a6eaca656978778f7c1c750ee0c3db87f8bffb2",
-      "reason": "No original notice snapshot for this recorded native component."
-    }
-  ]
+  "reviewRequired": []
 }

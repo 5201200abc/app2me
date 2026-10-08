@@ -20,4 +20,18 @@ Verify retired SDK imports and package graph entries are absent, business code t
 
 ## Installed-graph admission
 
-The earlier serial CLI scan still produces EMFILE in hosted runners. Read and compare the repository lockfile and pnpm's installed lock snapshot as parsed documents before obtaining the production graph with pnpm's lockfile-only mode. Continue verifying every required exact version against its real installed package directory. This preserves stale-install rejection while removing the unbounded installed-tree CLI traversal. Tests reject changed snapshots and missing installed versions.
+The earlier serial CLI scan still produces EMFILE in hosted runners. Read and compare the repository lockfile and pnpm's installed lock snapshot as parsed documents before deriving the production graph directly from the lockfile's importer and snapshot records. The pnpm CLI is not invoked: hosted Windows runners read installed manifests even in lockfile-only mode. Traverse production and optional edges, including peer-resolved snapshot identities and linked workspace packages, while excluding dependency roots used only for development. Continue verifying every required exact version against its real installed package directory. This preserves stale-install rejection while removing the unbounded installed-tree CLI traversal. Tests reject changed snapshots and missing installed versions.
+
+## Publisher declarations without standalone license files
+
+A missing standalone LICENSE is not itself proof that the publisher withheld redistribution permission. Review exact original npm archives, their registry integrity, original package or bower license declarations, README license sections and every textual copyright/permission notice. Preserve these original materials and the declared standard terms in the distribution; do not invent a copyright holder or year when none was supplied. Admission is specific to a verified artifact and declared permissive license, not a general missing-notice exception. Validate the archive identity, original declaration, complete file hashes, and all original notice-bearing members; reject edited bytes, changed declarations, missing coverage and unreviewed versions. Embedded native/WASM and copyleft obligations are separate and remain subject to their own evidence checks.
+
+## Windows ripgrep compiler provenance
+
+Replace only the two Windows Microsoft ripgrep archives that contain an unavailable vendor Rust revision. Build the same ripgrep 14.1.1 source revision with official Rust 1.88.0, its known 6b00bc3880198600130e1cf62b8f8a93494488cc standard-library revision and statically linked PCRE2. Keep x64 and ARM64 Windows target validation, runtime search contracts, release version and native cache integrity. Record the exact source archive and compiler in distributed provenance. Delete the unused Windows archives and their unavailable-compiler record only after the build plans no longer consume them. A failed build or compiler identity mismatch must block packaging.
+
+## Unused Node canvas removal and embedded QuickJS evidence
+
+PDF preview runs in the browser renderer using DOM canvas; desktop packaging already excludes the optional Node-only canvas binaries. Remove only `pdfjs-dist>@napi-rs/canvas` through a root dependency override, retaining PDF preview and all other optional native dependencies. Regenerate the installed lock graph and remove Skia evidence that no remaining component references. Keep the existing packaging exclusion as a regression guard.
+
+QuickJS remains required for PAC proxy evaluation. Validate its exact source and submodule revisions, WASI SDK 32 library notices and compiler revision against the producer sections of every original publisher WASM binary. Missing source, notices or mismatched binary identities must remain blocking.

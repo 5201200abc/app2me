@@ -7,8 +7,9 @@
     "gcc-runtime": "GPL-3.0 with GCC Runtime Library Exception 3.1; this does not relicense MyCode as GPL"
   },
   "inputs": {
-    "scripts/native-search-tools-config.mjs": "11d031b9d69b32edd7778131bde4d705670ed68017cdddf188a0c8ec46947165",
-    "scripts/remote-native-search-tools-config.mjs": "472322a66f84c7452f96aa9e16e9c4e0600f7c2588a03dc6bc869229161b1cb2"
+    "scripts/native-search-tools-config.mjs": "5200b9aa19bab6f16c35fcdfe12d16afda5e7af4f07dc05f8e2dc499863d866f",
+    "scripts/remote-native-search-tools-config.mjs": "472322a66f84c7452f96aa9e16e9c4e0600f7c2588a03dc6bc869229161b1cb2",
+    "scripts/build-windows-ripgrep.mjs": "0c32d890f5822bdc5447c4aa95ec11e9ae82e77e01fa76ccb502bbb3e32cc4b2"
   },
   "archives": [
     {
@@ -177,16 +178,6 @@
       "compilerVersionStrings": []
     },
     {
-      "toolId": "ripgrep",
-      "version": "14.1.1",
-      "release": "v14.1.1-1",
-      "platform": "win32-arm64",
-      "archive": "ripgrep-v14.1.1-1/ripgrep-v14.1.1-1-aarch64-pc-windows-msvc.zip",
-      "sha256": "88660d96f822d2e0329e254031068e82028f9c13efcec9b2d78c5a19d3f9ac47",
-      "pcre2VersionStrings": ["10.43 2024-02-16"],
-      "compilerVersionStrings": []
-    },
-    {
       "toolId": "ugrep",
       "version": "7.8.4",
       "release": "v7.8.4-1",
@@ -199,12 +190,28 @@
     {
       "toolId": "ripgrep",
       "version": "14.1.1",
-      "release": "v14.1.1-1",
+      "release": "v14.1.1-source-rust1.88.0",
+      "platform": "win32-arm64",
+      "archive": "third-party/source-archives/ripgrep-4649aa9700619f94cf9c66876e9549d83420e16c.tar.gz",
+      "sha256": "0e815611527b663310e024ea73e0672c8f6a4fa277207037affad1d8905f515c",
+      "origin": "source-build",
+      "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+      "toolchain": "1.88.0",
+      "compilerRevision": "6b00bc3880198600130e1cf62b8f8a93494488cc",
+      "features": ["pcre2-static"]
+    },
+    {
+      "toolId": "ripgrep",
+      "version": "14.1.1",
+      "release": "v14.1.1-source-rust1.88.0",
       "platform": "win32-x64",
-      "archive": "ripgrep-v14.1.1-1/ripgrep-v14.1.1-1-x86_64-pc-windows-msvc.zip",
-      "sha256": "ede1d7f533f30d7e2870f77139d0fb9d7591daad5260b80d6a525e0bb5bd440e",
-      "pcre2VersionStrings": ["10.43 2024-02-16"],
-      "compilerVersionStrings": []
+      "archive": "third-party/source-archives/ripgrep-4649aa9700619f94cf9c66876e9549d83420e16c.tar.gz",
+      "sha256": "0e815611527b663310e024ea73e0672c8f6a4fa277207037affad1d8905f515c",
+      "origin": "source-build",
+      "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+      "toolchain": "1.88.0",
+      "compilerRevision": "6b00bc3880198600130e1cf62b8f8a93494488cc",
+      "features": ["pcre2-static"]
     }
   ],
   "components": [
@@ -3153,12 +3160,6 @@
           "sha256": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af"
         }
       ]
-    },
-    {
-      "id": "rust-standard-library",
-      "version": "6a6eaca656978778f7c1c750ee0c3db87f8bffb2",
-      "url": "https://github.com/rust-lang/rust/tree/6a6eaca656978778f7c1c750ee0c3db87f8bffb2",
-      "notices": []
     },
     {
       "id": "rust-standard-library",

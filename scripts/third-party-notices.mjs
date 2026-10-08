@@ -143,7 +143,17 @@ export async function stageNativeSearchNotices(
             toolId: artifact.toolId,
             version: artifact.version,
             sha256: hash(await readFile(artifact.binaryPath)),
-            origin: builtFromSource ? "source-build" : "repository-archive",
+            origin:
+              builtFromSource || artifact.source === "source-build"
+                ? "source-build"
+                : "repository-archive",
+            ...(artifact.sourceRevision
+              ? {
+                  sourceRevision: artifact.sourceRevision,
+                  toolchain: artifact.toolchain,
+                  compilerRevision: artifact.compilerRevision,
+                }
+              : {}),
             ...(!builtFromSource ? { sourceArchiveSha256: artifact.archiveSha256 } : {}),
           },
         },

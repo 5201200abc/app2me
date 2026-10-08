@@ -11,6 +11,13 @@ function sha256(path) {
 function expectedBundleMeta(artifact, platformKey, binarySha256) {
   return {
     ...(artifact.archiveSha256 ? { archiveSha256: artifact.archiveSha256 } : {}),
+    ...(artifact.sourceRevision
+      ? {
+          sourceRevision: artifact.sourceRevision,
+          toolchain: artifact.toolchain,
+          compilerRevision: artifact.compilerRevision,
+        }
+      : {}),
     binaryName: artifact.binaryName,
     platform: platformKey,
     provider: "native-search-tool",

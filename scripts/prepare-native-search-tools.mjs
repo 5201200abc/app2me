@@ -11,6 +11,7 @@ import {
 import { resolveNativeSearchPrebuiltPlan } from "./native-search-tools-config.mjs";
 import { verifyNativeSearchBinaryTarget } from "./native-search-tools-verify.mjs";
 import { extractPrebuiltBinary, verifyPrebuiltArchiveSha256 } from "./prebuilt-binary-extract.mjs";
+import { buildWindowsRipgrep } from "./build-windows-ripgrep.mjs";
 import { stageNativeSearchNotices } from "./third-party-notices.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -68,6 +69,13 @@ export async function prepareNativeSearchTools({
         const reason = error instanceof Error ? error.message : String(error);
         console.log(`    [repair] ${artifact.toolId} 目标校验失败: ${reason}`);
       }
+    }
+
+    if (artifact.source === "source-build") {
+      await buildWindowsRipgrep(artifact, plan);
+      validateBinary(artifact.binaryPath);
+      writeNativeSearchBundleMeta(artifact, plan.platformKey);
+      continue;
     }
 
     console.log(`    [extract] ${artifact.archivePath}`);

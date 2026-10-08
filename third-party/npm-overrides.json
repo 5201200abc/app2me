@@ -21,8 +21,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "9c9795688a9e224759468aeee2ff88d917fadc65f7b3480e62571f0853eaa446",
       "sourceRevision": "f9771c0c21e863e4938a7aed0af89575f9673152",
       "sourceTreeUrl": "https://api.github.com/repos/justjake/node-unsafe-pointer/git/trees/f9771c0c21e863e4938a7aed0af89575f9673152?recursive=1",
@@ -39,8 +39,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "ccc872d7a2dc007cbf9d755f30d56b8d80eabdbe22c44c95a709129bfdc46f01"
     }
   },
@@ -54,8 +54,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "f4dd386c2e705ffb8692a8afdc1e3b8ff09c6b8ef3aee48d0537ff71d8839cd1"
     }
   },
@@ -123,8 +123,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "48b94f87b85ca84428491d7275f0fad16450254bd49d9b2b4f621539fda8a2af",
       "sourceRevision": "2c026b9d5bfff006dc9abdc1b33c53856d2d784f",
       "sourceTreeUrl": "https://api.github.com/repos/honojs/middleware/git/trees/2c026b9d5bfff006dc9abdc1b33c53856d2d784f?recursive=1",
@@ -141,8 +141,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "43c456f72612074a13e8399c29ffd59c8c277274924b633f6e4fa07342f63cab",
       "sourceRevision": "56e004cf2793053ea9ece4330fd52cace96acbff",
       "sourceTreeUrl": "https://api.github.com/repos/open-draft/strict-event-emitter/git/trees/56e004cf2793053ea9ece4330fd52cace96acbff?recursive=1",
@@ -174,54 +174,6 @@
     "source": "node_modules/@tokenizer/token/README.md"
   },
   {
-    "package": "@napi-rs/canvas-darwin-arm64@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
-    "package": "@napi-rs/canvas-linux-x64-gnu@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
-    "package": "@napi-rs/canvas-linux-x64-musl@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
-    "package": "@napi-rs/canvas-win32-arm64-msvc@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
-    "package": "@napi-rs/canvas-win32-x64-msvc@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
-    "package": "@napi-rs/canvas-linux-arm64-musl@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
-    "package": "@napi-rs/canvas-darwin-x64@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
-    "package": "@napi-rs/canvas-linux-arm64-gnu@0.1.100",
-    "file": "third-party/upstream/8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6.txt",
-    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
-    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/db337893b9b53483050ca7b24c6d306e4da06741/LICENSE"
-  },
-  {
     "package": "lazy-val@1.0.5",
     "repo": "develar/lazy-val",
     "refs": ["b69ad4119f1b19bdab13c61ee2fcc88d46b89071"],
@@ -231,8 +183,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "7d8602ad98db3d19fbd5b46fbf3831dd996197a013ef1ff7badc205e41435372",
       "sourceRevision": "b69ad4119f1b19bdab13c61ee2fcc88d46b89071",
       "sourceTreeUrl": "https://api.github.com/repos/develar/lazy-val/git/trees/b69ad4119f1b19bdab13c61ee2fcc88d46b89071?recursive=1",
@@ -249,8 +201,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "72002cc502d607af8e2dbcbdafa3495bf4efe34394e1a037b92038d157f077a2",
       "sourceRevision": "88a33875b168cc7b5943d7fe987c36d08321d252",
       "sourceTreeUrl": "https://api.github.com/repos/abrkn/semaphore.js/git/trees/88a33875b168cc7b5943d7fe987c36d08321d252?recursive=1",
@@ -273,8 +225,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "ISC",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "69628ff8092c5ff940ea4a0f29da98d520615bae138755c9e059033606c6caa8"
     }
   },
@@ -288,8 +240,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "57f8d0cf303951c66dcdab2a10c2fe57194ad4cbb851880c604d4c3e521def2b",
       "sourceRevision": "b30f1b683311030e92fcdd08d2bd6574d652b77f",
       "sourceTreeUrl": "https://api.github.com/repos/open-draft/deferred-promise/git/trees/b30f1b683311030e92fcdd08d2bd6574d652b77f?recursive=1",
@@ -396,8 +348,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "810d5c86ac247ffbfab3dcdee3cef95fb830e1f5eea9674858e8dcd6de4accba",
       "sourceRevision": "8a6152c795d8705be97166bd5167e70ac6efc67c",
       "sourceTreeUrl": "https://api.github.com/repos/mswjs/is-node-process/git/trees/8a6152c795d8705be97166bd5167e70ac6efc67c?recursive=1",
@@ -422,8 +374,8 @@
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "BSD-3-Clause",
     "reviewEvidence": {
-      "checkedOn": "2026-09-21",
-      "result": "The versioned npm archive contains no standalone complete LICENSE; existing publisher declaration and original README license sections remain preserved. Upstream authorization/copyright material is still required to close this review.",
+      "checkedOn": "2026-10-08",
+      "result": "Exact original publisher archive integrity, explicit license declaration, all member hashes and every original textual notice were reviewed and preserved. No original copyright notice was supplied; no holder or year was invented. See third-party/publisher-reviews.json. Embedded obligations are reviewed separately.",
       "npmArchiveSha256": "e06fc6be19323cf447f0058975cfcf41923d3422ea613cff2e67d8fd8ee1d655",
       "sourceRevision": "145140971e9d83ccac32265f24b1c55dea437896",
       "sourceTreeUrl": "https://api.github.com/repos/nteract/ansi-to-react/git/trees/145140971e9d83ccac32265f24b1c55dea437896?recursive=1",

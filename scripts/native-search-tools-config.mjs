@@ -133,18 +133,17 @@ export const NATIVE_SEARCH_OFFICIAL_RIPGREP_ASSETS = Object.freeze({
     revision: NATIVE_SEARCH_RIPGREP_REVISION,
     sha256: "1154dd91f7b144cee490b91f1ab27ce04f8f01d8876cde2d9c0eff845c8ab012",
   }),
-  "win32-x64": Object.freeze({
-    archiveExt: "zip",
-    releaseFileName: "ripgrep-v14.1.1-1-x86_64-pc-windows-msvc.zip",
-    revision: NATIVE_SEARCH_RIPGREP_REVISION,
-    sha256: "ede1d7f533f30d7e2870f77139d0fb9d7591daad5260b80d6a525e0bb5bd440e",
-  }),
-  "win32-arm64": Object.freeze({
-    archiveExt: "zip",
-    releaseFileName: "ripgrep-v14.1.1-1-aarch64-pc-windows-msvc.zip",
-    revision: NATIVE_SEARCH_RIPGREP_REVISION,
-    sha256: "88660d96f822d2e0329e254031068e82028f9c13efcec9b2d78c5a19d3f9ac47",
-  }),
+  "win32-x64": Object.freeze({ revision: null }),
+  "win32-arm64": Object.freeze({ revision: null }),
+});
+
+export const WINDOWS_RIPGREP_SOURCE = Object.freeze({
+  revision: "4649aa9700619f94cf9c66876e9549d83420e16c",
+  archiveFile:
+    "third-party/source-archives/ripgrep-4649aa9700619f94cf9c66876e9549d83420e16c.tar.gz",
+  sha256: "0e815611527b663310e024ea73e0672c8f6a4fa277207037affad1d8905f515c",
+  toolchain: "1.88.0",
+  compilerRevision: "6b00bc3880198600130e1cf62b8f8a93494488cc",
 });
 
 export const NATIVE_SEARCH_PRODUCER_ARCHIVE_SHA256_BY_TARGET = Object.freeze({
@@ -366,6 +365,22 @@ export function resolveNativeSearchPrebuiltPlan({
     ...buildPlan,
     artifacts: buildPlan.runtimeToolIds.map((toolId) => {
       if (toolId === "ripgrep") {
+        if (buildPlan.platform === "win32")
+          return {
+            toolId,
+            version: NATIVE_SEARCH_TOOL_VERSIONS.ripgrep,
+            release: "v14.1.1-source-rust1.88.0",
+            source: "source-build",
+            archiveExt: "tar.gz",
+            archivePath: resolve(repoRoot, WINDOWS_RIPGREP_SOURCE.archiveFile),
+            archiveSha256: WINDOWS_RIPGREP_SOURCE.sha256,
+            sourceRevision: WINDOWS_RIPGREP_SOURCE.revision,
+            toolchain: WINDOWS_RIPGREP_SOURCE.toolchain,
+            compilerRevision: WINDOWS_RIPGREP_SOURCE.compilerRevision,
+            binaryName: "rg.exe",
+            binaryPath: buildPlan.binaries.ripgrep,
+          };
+
         if (!officialRipgrepAsset) {
           throw new Error(`missing Microsoft ripgrep asset for ${buildPlan.platformKey}`);
         }

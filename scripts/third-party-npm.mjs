@@ -1,18 +1,10 @@
-import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile, readdir, realpath } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { promisify, isDeepStrictEqual } from "node:util";
+import { isDeepStrictEqual } from "node:util";
 import { parse as parseYaml } from "yaml";
-import { resolveSpawnRuntimeOptions } from "./spawn-command.mjs";
 
-const exec = promisify(execFile);
 export const hashBytes = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const unsupportedCanvas = new Set([
-  "@napi-rs/canvas-android-arm64",
-  "@napi-rs/canvas-linux-arm-gnueabihf",
-  "@napi-rs/canvas-linux-riscv64-gnu",
-]);
 const noticeName =
   /(?:^|[._-])(?:licen[sc]es?|copying|notice|copyright|unlicense|third.party|ofl)(?:[._-]|$)/iu;
 
@@ -69,9 +61,7 @@ function productionPackages(projects) {
 export function assertProductionGraphs(lockedProjects, installedProjects) {
   const locked = productionPackages(lockedProjects);
   const installed = productionPackages(installedProjects);
-  const missing = [...locked].filter(
-    ([key, item]) => !installed.has(key) && !unsupportedCanvas.has(item.name),
-  );
+  const missing = [...locked].filter(([key]) => !installed.has(key));
   const stale = [...installed.keys()].filter((key) => !locked.has(key));
   if (missing.length || stale.length) {
     throw new Error(
@@ -81,23 +71,58 @@ export function assertProductionGraphs(lockedProjects, installedProjects) {
   return locked;
 }
 
-export async function readWorkspaceProductionGraph(root, execute = exec) {
+export function productionGraphFromLock(root, lock) {
+  if (Number(lock.lockfileVersion) !== 9 || !lock.importers || !lock.snapshots || !lock.packages)
+    throw new Error("Unsupported or incomplete pnpm lockfile graph");
+  const required = new Map();
+  const visited = new Set();
+  function visit(alias, reference) {
+    if (reference.startsWith("link:")) return;
+    const key = `${alias}@${reference}`;
+    if (visited.has(key)) return;
+    const snapshot = lock.snapshots[key];
+    if (!snapshot) throw new Error(`Missing production lock snapshot: ${key}`);
+    const base = key.split("(")[0];
+    const metadata = lock.packages[base];
+    const match = /^(@[^/]+\/[^@]+|[^@/]+)@(.+)$/.exec(base);
+    if (!metadata || !match) throw new Error(`Missing production package identity: ${key}`);
+    visited.add(key);
+    required.set(base, { name: match[1], version: match[2] });
+    for (const [name, version] of Object.entries({
+      ...snapshot.dependencies,
+      ...snapshot.optionalDependencies,
+    }))
+      visit(name, version);
+  }
+  const projects = [];
+  for (const [path, importer] of Object.entries(lock.importers)) {
+    projects.push({ path: join(root, path) });
+    for (const [alias, dependency] of Object.entries({
+      ...importer.dependencies,
+      ...importer.optionalDependencies,
+    }))
+      visit(alias, dependency.version);
+  }
+  return { required, projects };
+}
+
+export async function readWorkspaceProductionGraph(root) {
   root = await realpath(root);
-  // 托管 CI 的 pnpm ls 实装树遍历即使串行也会 EMFILE。
-  // 先精确比较安装快照，再读锁图；后续逐个核验实装包版本，不豁免陈旧安装。
+  // 托管 Windows 中 pnpm 的 lockfile-only 模式仍遍历实装目录，导致 EMFILE。
+  // 直接遍历锁图并串行读取实装包；精确比较安装快照以继续阻断陈旧安装。
   const locked = parseYaml(await readFile(join(root, "pnpm-lock.yaml"), "utf8"));
   const installed = parseYaml(await readFile(join(root, "node_modules/.pnpm/lock.yaml"), "utf8"));
   if (!locked || !installed || !isDeepStrictEqual(locked, installed))
     throw new Error(
       "Installed lock snapshot differs from pnpm-lock.yaml. Run pnpm install --frozen-lockfile.",
     );
-  const { stdout } = await execute(
-    "pnpm",
-    ["-r", "ls", "--prod", "--json", "--depth", "Infinity", "--lockfile-only"],
-    { cwd: root, maxBuffer: 256 * 1024 * 1024, ...resolveSpawnRuntimeOptions("pnpm") },
-  );
-  const projects = JSON.parse(stdout);
-  return { required: productionPackages(projects), projects };
+  const graph = productionGraphFromLock(root, locked);
+  for (const project of graph.projects) {
+    const manifest = JSON.parse(await readFile(join(project.path, "package.json"), "utf8"));
+    if (!manifest.name) throw new Error(`Unnamed workspace package: ${project.path}`);
+    project.name = manifest.name;
+  }
+  return graph;
 }
 
 export async function scanInstalledPackages(root, projects) {
@@ -143,8 +168,7 @@ export async function scanInstalledPackages(root, projects) {
 export function missingProductionPackages(required, installed) {
   const missing = [...required].filter(([key]) => !installed.has(key)).map(([, item]) => item);
   for (const item of missing) {
-    if (!unsupportedCanvas.has(item.name))
-      throw new Error(`Missing installed dependency: ${item.name}@${item.version}`);
+    throw new Error(`Missing installed dependency: ${item.name}@${item.version}`);
   }
   return missing;
 }

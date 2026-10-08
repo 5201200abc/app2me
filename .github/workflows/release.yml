@@ -77,6 +77,12 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
       - run: pnpm install --frozen-lockfile
+      - name: Verify Windows search source build
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          node scripts/prepare-native-search-tools.mjs --platform win32 --arch ${{ matrix.arch }}
+          node --input-type=module -e "import { resolveNativeSearchBuildPlan } from './scripts/native-search-tools-config.mjs'; import { verifyBuiltNativeSearchTools } from './scripts/native-search-tools-verify.mjs'; const p = resolveNativeSearchBuildPlan({ platform: 'win32', arch: '${{ matrix.arch }}' }); verifyBuiltNativeSearchTools({ ...p, rgPath: p.binaries.ripgrep, ugrepPath: p.binaries.ugrep });"
       - run: node scripts/licenses.mjs notices
       - name: Release license gate
         run: node scripts/licenses.mjs check --strict
