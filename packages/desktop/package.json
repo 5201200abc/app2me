@@ -1,5 +1,6 @@
 {
   "name": "@app2me/desktop",
+  "version": "2026.1008.59040",
   "private": true,
   "description": "app2me Desktop App — MyCode and MyChat",
   "author": "app2me",
@@ -86,6 +87,5 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.2"
   },
-  "productName": "app2me",
-  "version": "2026.1008.55335"
+  "productName": "app2me"
 }

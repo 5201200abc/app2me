@@ -17,7 +17,7 @@ node apps/mycode-cli/packages/cli/dist/mycode.cjs --help
 pnpm --dir apps/mycode-cli check
 ```
 
-The Node CLI bundle is written to `packages/cli/dist/mycode.cjs` within this directory. For the combined TUI/Web distribution, see the root [README](../../README.en.md).
+The Node CLI bundle is written to `packages/cli/dist/mycode.cjs` within this directory. For the combined TUI/Web distribution, see the root [README](../../README.md).
 
 ## Project Layout
 

@@ -17,7 +17,7 @@ node apps/mycode-cli/packages/cli/dist/mycode.cjs --help
 pnpm --dir apps/mycode-cli check
 ```
 
-Node CLI 产物位于本目录下的 `packages/cli/dist/mycode.cjs`。包含 TUI/Web 的完整发行包见根目录 [README](../../README.md)。
+Node CLI 产物位于本目录下的 `packages/cli/dist/mycode.cjs`。包含 TUI/Web 的完整发行包见根目录 [README](../../README.zh-CN.md)。
 
 ## 目录结构
 

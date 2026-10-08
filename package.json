@@ -1,6 +1,6 @@
 {
   "name": "app2me",
-  "version": "2026.1008.55335",
+  "version": "2026.1008.59040",
   "private": true,
   "license": "Apache-2.0",
   "type": "module",
@@ -92,6 +92,6 @@
   "app2meRelease": {
     "prepared": true,
     "date": "2026-10-08",
-    "windowsBuildVersion": "2026.10.8.922"
+    "windowsBuildVersion": "2026.10.8.984"
   }
 }
