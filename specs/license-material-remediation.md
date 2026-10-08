@@ -41,3 +41,5 @@ Windows source extraction must use the existing bounded archive reader rather th
 Initialize the installed MSVC developer environment explicitly on both Windows architectures before dependency installation and compilation. The hosted images now use Visual Studio 2026, which older automatic compiler discovery does not recognize; discover its installation using vswhere, export only compiler/search environment variables, and invoke cl/lib from that environment. Fail if no C++ tools are present.
 
 The source archive contains one HomebrewFormula symlink used only by macOS packaging. Windows extraction skips symbolic links without creating them; the default publisher archive validator continues rejecting links. Compiler source and Cargo.lock are extracted as regular files.
+
+Run Windows source-build verification in PowerShell. Git Bash prepends its Unix tools directory and resolves link.exe to the Unix hard-link utility instead of the initialized MSVC linker. The Windows compiler step must preserve the developer environment PATH.

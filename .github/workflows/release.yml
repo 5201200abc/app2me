@@ -97,7 +97,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Verify Windows search source build
         if: runner.os == 'Windows'
-        shell: bash
+        shell: pwsh
         run: |
           node scripts/prepare-native-search-tools.mjs --platform win32 --arch ${{ matrix.arch }}
           node --input-type=module -e "import { resolveNativeSearchBuildPlan } from './scripts/native-search-tools-config.mjs'; import { verifyBuiltNativeSearchTools } from './scripts/native-search-tools-verify.mjs'; const p = resolveNativeSearchBuildPlan({ platform: 'win32', arch: '${{ matrix.arch }}' }); verifyBuiltNativeSearchTools({ ...p, rgPath: p.binaries.ripgrep, ugrepPath: p.binaries.ugrep });"

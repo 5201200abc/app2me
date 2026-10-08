@@ -204,6 +204,14 @@ test("workflow releases main pushes with six native targets and no write token i
   );
   assert.equal(workflow.permissions.contents, "read");
   assert.equal(workflow.jobs.build.permissions, undefined);
+  const steps = workflow.jobs.build.steps;
+  const initialization = steps.findIndex((step) => step.name === "Initialize Windows C++ tools");
+  const installation = steps.findIndex((step) => step.run === "pnpm install --frozen-lockfile");
+  assert.ok(initialization >= 0 && initialization < installation);
+  assert.equal(
+    steps.find((step) => step.name === "Verify Windows search source build").shell,
+    "pwsh",
+  );
   assert.deepEqual(workflow.jobs.publish.needs, ["version", "build"]);
   assert.equal(workflow.jobs.publish.concurrency["cancel-in-progress"], false);
   assert.ok(
