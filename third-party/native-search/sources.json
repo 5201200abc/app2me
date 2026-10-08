@@ -9,7 +9,7 @@
   "inputs": {
     "scripts/native-search-tools-config.mjs": "5200b9aa19bab6f16c35fcdfe12d16afda5e7af4f07dc05f8e2dc499863d866f",
     "scripts/remote-native-search-tools-config.mjs": "472322a66f84c7452f96aa9e16e9c4e0600f7c2588a03dc6bc869229161b1cb2",
-    "scripts/build-windows-ripgrep.mjs": "212251cd86318f6a095c779cf6a0f2a949b25ada7fcb6dbbc8fbfc8efc52cc8e"
+    "scripts/build-windows-ripgrep.mjs": "7af0f32ab6cc21e58d715f96a9a05e11ccaf7ac2029c4e0adb4992a253c1b714"
   },
   "archives": [
     {

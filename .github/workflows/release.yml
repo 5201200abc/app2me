@@ -100,6 +100,7 @@ jobs:
         shell: pwsh
         run: |
           node scripts/prepare-native-search-tools.mjs --platform win32 --arch ${{ matrix.arch }}
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node --input-type=module -e "import { resolveNativeSearchBuildPlan } from './scripts/native-search-tools-config.mjs'; import { verifyBuiltNativeSearchTools } from './scripts/native-search-tools-verify.mjs'; const p = resolveNativeSearchBuildPlan({ platform: 'win32', arch: '${{ matrix.arch }}' }); verifyBuiltNativeSearchTools({ ...p, rgPath: p.binaries.ripgrep, ugrepPath: p.binaries.ugrep });"
       - run: node scripts/licenses.mjs notices
       - name: Release license gate

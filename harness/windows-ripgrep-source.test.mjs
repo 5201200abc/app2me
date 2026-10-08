@@ -18,6 +18,7 @@ for (const arch of ["x64", "arm64"]) {
     await buildWindowsRipgrep(artifact, plan, async (command, args, options) => {
       calls.push([command, args]);
       assert.equal(options.env.PCRE2_SYS_STATIC, "1");
+      assert.equal(options.env.CARGO_ENCODED_RUSTFLAGS, "-C\x1ftarget-feature=+crt-static");
       assert.match(await readFile(join(options.cwd, "Cargo.toml"), "utf8"), /name = "ripgrep"/);
       assert.match(await readFile(join(options.cwd, "Cargo.lock"), "utf8"), /name = "pcre2-sys"/);
       if (args.includes("--verbose"))

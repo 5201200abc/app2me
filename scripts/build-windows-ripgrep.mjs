@@ -14,7 +14,13 @@ export async function buildWindowsRipgrep(artifact, plan, run = execute) {
   const options = {
     cwd: directory,
     maxBuffer: 32 * 1024 * 1024,
-    env: { ...process.env, PCRE2_SYS_STATIC: "1", CC: "cl", AR: "lib" },
+    env: {
+      ...process.env,
+      PCRE2_SYS_STATIC: "1",
+      CC: "cl",
+      AR: "lib",
+      CARGO_ENCODED_RUSTFLAGS: "-C\x1ftarget-feature=+crt-static",
+    },
   };
   try {
     const prefix = `ripgrep-${artifact.sourceRevision}/`;

@@ -43,3 +43,5 @@ Initialize the installed MSVC developer environment explicitly on both Windows a
 The source archive contains one HomebrewFormula symlink used only by macOS packaging. Windows extraction skips symbolic links without creating them; the default publisher archive validator continues rejecting links. Compiler source and Cargo.lock are extracted as regular files.
 
 Run Windows source-build verification in PowerShell. Git Bash prepends its Unix tools directory and resolves link.exe to the Unix hard-link utility instead of the initialized MSVC linker. The Windows compiler step must preserve the developer environment PATH.
+
+Both Windows source-build architectures must statically link the CRT as well as PCRE2. ARM64 does not inherit ripgrep’s x64-only Cargo configuration; pass the CRT target-feature explicitly for both targets and retain the existing PE import gate rejecting VC runtime DLL dependencies.
