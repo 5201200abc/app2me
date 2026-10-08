@@ -1,4 +1,4 @@
-import { BookOpenTextIcon } from "lucide-react";
+import { BookOpenTextIcon } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import { MessageResponse } from "@/components/ai-elements/message.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

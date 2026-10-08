@@ -20,7 +20,7 @@ import {
   IModelSelectionService,
   IProviderSettingsService,
   IUsageStatsService,
-  ICodingPlanSubscriptionService,
+  IRuntimeConfigService,
   IClientScenesService,
   ISkillsService,
   ISkillSyncService,
@@ -44,7 +44,7 @@ import {
   createSettingsSyncService,
   createBotsService,
   createUsageStatsService,
-  createCodingPlanSubscriptionService,
+  createRuntimeConfigService,
   createClientScenesService,
   createServiceLogger,
   createSubagentsService,
@@ -78,7 +78,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
   const localSettingService = createSettingService();
   const localCredentialService = createCredentialService();
   const localBroadcastService = createBroadcastService(params.parentPort);
-  const localCodingPlanSubscriptionService = createCodingPlanSubscriptionService();
+  const localRuntimeConfigService = createRuntimeConfigService();
   // Bug 修复：远端工作区同样不能通过旧分享客户端访问已退役的官方 API。
   const conversationShareService = createUnsupportedConversationShareService({
     message: "Conversation sharing integration has been removed",
@@ -239,7 +239,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
         mycodeAgentService: params.connectionServices.mycodeAgentService,
       }),
     )
-    .register(ICodingPlanSubscriptionService, localCodingPlanSubscriptionService)
+    .register(IRuntimeConfigService, localRuntimeConfigService)
     .register(IClientScenesService, createClientScenesService())
     // 远端 workspace 的项目级 skills/plugins/commands 位于 SSH/Docker 文件系统。
     // 这里必须透出远端服务，避免本机服务拿远端 workspacePath 去本机目录扫描。

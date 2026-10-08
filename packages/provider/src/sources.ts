@@ -1,8 +1,6 @@
 import {
-  ProviderConfig,
   ProviderConfigMap,
   ProviderTemplateMap,
-  ZhipuAccountAccessConfig,
   type ModelConfigRules,
 } from "./config/index.js";
 import type { AccountProviderStates } from "./account-provider-state.js";
@@ -35,21 +33,7 @@ export interface AccountProviderConfigSnapshot {
 export function createFailClosedAccountProviderConfigSnapshot(
   config: ProviderConfigSnapshot,
 ): AccountProviderConfigSnapshot {
-  const unentitledProviders = new ProviderConfigMap(
-    config.mycodeBuiltinProviders.entries().flatMap(([providerId, provider]) =>
-      provider.access?.type === "zhipu-account"
-        ? ([
-            [
-              providerId,
-              new ProviderConfig({
-                access: new ZhipuAccountAccessConfig({ entitled: false }),
-              }),
-            ],
-          ] as const)
-        : [],
-    ),
-  );
-  return createAccountProviderConfigSnapshot(config.mycodeBuiltinRevision, unentitledProviders);
+  return createAccountProviderConfigSnapshot(config.mycodeBuiltinRevision, new ProviderConfigMap());
 }
 
 export function createAccountProviderConfigSnapshot(

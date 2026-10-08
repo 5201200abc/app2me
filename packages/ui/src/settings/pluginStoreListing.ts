@@ -14,6 +14,7 @@ import {
   isPublicStoreMarketplaceId,
   resolveLocalizedText,
   resolvePluginDisplayName,
+  resolveOfficialPluginDescription,
   MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID,
   MYCODE_NODE_REPL_HOST_PLUGIN_ID,
 } from "@mycode/shared";
@@ -110,7 +111,10 @@ export function resolveItemDisplayName(item: StorePluginItem, locale: string): s
 export function resolveItemDescription(item: StorePluginItem, locale: string): string | undefined {
   const base =
     item.summary?.description ?? item.info?.description ?? item.installedMeta?.description;
-  return resolveLocalizedText(locale, base, item.listing?.descriptionI18n);
+  return (
+    resolveOfficialPluginDescription(item.id, locale) ??
+    resolveLocalizedText(locale, base, item.listing?.descriptionI18n)
+  );
 }
 
 /** 管理列表与商店复用完整 ID 关联的展示信息，避免英文 manifest 绕过本地化。 */
@@ -122,7 +126,9 @@ export function resolveManagedPluginDisplay(
   const matchingItem = item?.id === plugin.id ? item : undefined;
   return {
     name: resolvePluginDisplayName(matchingItem ?? plugin, locale),
-    description: matchingItem ? resolveItemDescription(matchingItem, locale) : plugin.description,
+    description: matchingItem
+      ? resolveItemDescription(matchingItem, locale)
+      : (resolveOfficialPluginDescription(plugin.id, locale) ?? plugin.description),
   };
 }
 

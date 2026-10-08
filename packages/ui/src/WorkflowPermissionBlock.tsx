@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon } from "@/components/icons/tabler.js";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import type { MyCodePermissionRequest } from "@mycode/shared";
 import { CodeBlock } from "@/components/ai-elements/code-block.js";

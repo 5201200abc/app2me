@@ -53,6 +53,14 @@ export const checkpointCreatedPayloadSchema = z
     snapshotRef: z.string().min(1),
     diffRef: z.string().min(1).optional(),
     fileCount: z.number().int().nonnegative().optional(),
+    fileChanges: z
+      .object({
+        files: z.number().int().nonnegative(),
+        additions: z.number().int().nonnegative(),
+        deletions: z.number().int().nonnegative(),
+      })
+      .strict()
+      .optional(),
     compactBoundaryId: z.string().min(1).optional(),
     coveredByCompact: z.boolean().optional(),
   })

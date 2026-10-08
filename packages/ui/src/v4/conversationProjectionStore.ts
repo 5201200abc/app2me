@@ -330,6 +330,8 @@ export class ConversationProjectionStore {
       > & { directoryRevision: number })
     | null = null;
   private closed = false;
+  /** Sources 对当前日志的完整资源需求也适用于正在进行的导航补拉，复用同一请求所有者。 */
+  private sourcesHistoryLogEpoch: string | undefined;
 
   constructor(
     readonly topic: string,
@@ -1032,7 +1034,11 @@ export class ConversationProjectionStore {
    * 已加载的几十轮。这里按协议上限分页读取，但等全部页成功后只换一次 snapshot，
    * 避免每 200 行重建一次 timeline render units 与两个 virtualizer。
    */
-  async loadAllOlder(): Promise<ConversationTurnNavigatorHydrationResult> {
+  async loadAllOlder(options?: {
+    includeSingleQueryHistory?: boolean;
+  }): Promise<ConversationTurnNavigatorHydrationResult> {
+    if (options?.includeSingleQueryHistory)
+      this.sourcesHistoryLogEpoch = this.state.snapshot?.logEpoch;
     const stale = (logEpoch = this.state.snapshot?.logEpoch ?? "unknown") => ({
       status: "stale" as const,
       logEpoch,
@@ -1045,7 +1051,11 @@ export class ConversationProjectionStore {
     const directoryRevision = this.state.turnNavigatorDirectoryRevision;
     if (
       this.turnNavigatorHydrationTerminal?.logEpoch === snapshot.logEpoch &&
-      this.turnNavigatorHydrationTerminal.directoryRevision === directoryRevision
+      this.turnNavigatorHydrationTerminal.directoryRevision === directoryRevision &&
+      !(
+        this.sourcesHistoryLogEpoch === snapshot.logEpoch &&
+        this.turnNavigatorHydrationTerminal.status === "not-enough-queries"
+      )
     ) {
       return this.turnNavigatorHydrationTerminal;
     }
@@ -1119,7 +1129,8 @@ export class ConversationProjectionStore {
         (count, row) => (row.kind === "userInput" && row.origin === "realUser" ? count + 1 : count),
         0,
       );
-      if (realUserQueryCount < 2) {
+      // Sources 需要所有资源，即使只有一个问题；问题导航的“两条提问”优化不能丢弃来源历史。
+      if (realUserQueryCount < 2 && this.sourcesHistoryLogEpoch !== initialLogEpoch) {
         if (preserveIncompleteLeadingTurn) {
           const window = mergeOlderRows(current.rows.window, olderRows);
           if (window === null) return stale(initialLogEpoch);

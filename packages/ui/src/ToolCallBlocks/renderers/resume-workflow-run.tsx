@@ -1,4 +1,4 @@
-import { RotateCcw, Workflow } from "lucide-react";
+import { RotateCcw, Workflow } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import { cn } from "@/components/lib/utils.js";
 import {

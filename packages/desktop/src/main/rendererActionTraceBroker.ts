@@ -241,7 +241,7 @@ function toReadableSpan(
     ended: true,
     resource,
     instrumentationScope: {
-      name: "@mycode/desktop-renderer-action-trace",
+      name: "@app2me/desktop-renderer-action-trace",
       version: "1",
     },
     droppedAttributesCount: 0,

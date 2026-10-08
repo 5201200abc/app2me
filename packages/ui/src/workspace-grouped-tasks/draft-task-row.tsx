@@ -1,5 +1,5 @@
 import type { KeyboardEvent, MouseEvent } from "react";
-import { X } from "lucide-react";
+import { X } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { TaskRowActionButton } from "@/workspace-grouped-tasks/task-row-action-button.js";
@@ -36,6 +36,7 @@ export function GroupedDraftTaskRow({
   return (
     <div className={cn("rounded-lg py-px transition-colors")}>
       <div
+        data-grouped-draft
         role="button"
         tabIndex={0}
         onClick={onSelect}
@@ -66,7 +67,10 @@ export function GroupedDraftTaskRow({
                 onClose && "group-hover/task-row:hidden",
               )}
             >
-              <span className="size-1.5 rounded-full bg-green-500 dark:bg-green-400" />
+              <span
+                data-grouped-draft-dot
+                className="size-1.5 rounded-full bg-green-500 dark:bg-green-400"
+              />
             </span>
             {onClose ? (
               <span className="absolute inset-0 hidden items-center justify-center group-hover/task-row:flex">

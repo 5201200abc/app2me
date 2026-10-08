@@ -1,4 +1,3 @@
-import { CodingPlanEntryButton } from "@/settings/CodingPlanEntryButton.js";
 /**
  * ChatErrorBanner — 错误提示组件
  *
@@ -13,7 +12,14 @@ import {
   TID_CHAT_ERROR_BANNER,
   TID_CHAT_ERROR_HOOK_ICON,
 } from "@mycode/shared";
-import { AnchorIcon, CopyIcon, InfoIcon, RocketIcon, SettingsIcon, X } from "lucide-react";
+import {
+  AnchorIcon,
+  CopyIcon,
+  InfoIcon,
+  RocketIcon,
+  SettingsIcon,
+  X,
+} from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "./i18n/IntlProvider.js";
 import type { IntlInstance } from "./i18n/IntlProvider.js";
 import { Button } from "./components/ui/button.js";
@@ -51,7 +57,6 @@ const LOCALIZED_ERROR_CODES = new Set([
   // 服务层错误 message 是跨进程兜底，不能作为最终 UI 语言来源。
   // 历史任务模型不可用要按稳定 code 本地化，避免英文界面显示中文提示。
   "MYCODE_RUNTIME_MODEL_UNAVAILABLE",
-  "MYCODE_BIGMODEL_TEAM_PLAN_MEMBER_REQUIRED",
 ]);
 
 const MODEL_CONFIG_MISSING_CODES = new Set([

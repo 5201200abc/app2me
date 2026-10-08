@@ -9,7 +9,7 @@ import {
   MinusIcon,
   RefreshCw,
   XIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type {
   SettingsSyncAgentSummary,
   SettingsSyncCategory,

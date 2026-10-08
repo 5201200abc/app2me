@@ -76,13 +76,20 @@ function readDisplayFileDiffSummaries(...values: unknown[]): RawToolCallFileSumm
 
       seenPaths.add(path);
       const descriptor = resolveFileDisplayDescriptor(path);
+      // 新文件 diff 的旧起点为 0；不能把所有 file_diff 写死成 Edited，也不能把普通追加误认成创建。
+      const patches = Array.isArray(display.structuredPatch) ? display.structuredPatch : [];
+      const created =
+        patches.length > 0 &&
+        patches.every(
+          (patch) => isPlainRecord(patch) && patch.oldStart === 0 && patch.oldLines === 0,
+        );
       // MyCode agent 的 edit/write/apply_patch 工具会把真实 diff 放在
       // rawOutput.display(file_diff/file_diffs)。summary 和工具轨迹必须复用这份结构化事实，
       // 否则会出现工具行能展开 diff、底部摘要却只能显示“无法预览”的分叉。
       summaries.push({
         path,
-        actionLabel: "Edited",
-        operationKind: "edit",
+        actionLabel: created ? "Created" : "Edited",
+        operationKind: created ? "write" : "edit",
         fileName: descriptor.fileName,
         filePath: descriptor.filePath,
         fileIconSrc: descriptor.fileIconSrc,

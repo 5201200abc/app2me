@@ -12,7 +12,7 @@ import {
   RocketIcon,
   SearchIcon,
   Trash2Icon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { WorkspaceFileEntry, MyCodeTaskChangeSummary, MyCodeTaskMeta } from "@mycode/shared";
 import {
   Command,

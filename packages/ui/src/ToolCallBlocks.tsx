@@ -1,6 +1,10 @@
+import {
+  ToolPresentationScopeContext,
+  ToolPresentationStatusContext,
+} from "@/ToolCallBlocks/ToolPresentationContext.js";
+import { useContext } from "react";
 import { memo, type ReactNode, useEffect, useMemo, useState } from "react";
 import { TID_CHAT_TOOL_CALL_BLOCK, testId } from "@mycode/shared";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { mapToolStatus } from "@/lib/mapToolStatus.js";
 import { buildToolDisplayModel } from "@/lib/toolDisplay.js";
@@ -92,7 +96,7 @@ function ToolCallBlockComponent({
   workflowDraft,
   onLoadFullToolCallFields,
   suppressSourceLabel = false,
-  showTodoToolCalls = true,
+  showTodoToolCalls = false,
   disableSummaryContentAnimation = false,
   animateDiffCountOnMount = false,
   agentSummaryAction,
@@ -153,7 +157,6 @@ function ToolCallBlockComponent({
 }) {
   const { toolCall, childToolCalls } = toolCallNode;
   const { intl } = useMyCodeIntl();
-  const isOfficeMode = useIsOfficeMode();
   const toolEntranceAnimationKey = `${streamingEntranceKeyPrefix}:${toolCall.toolId}`;
   // tool 在流式对话中新出现时如果没有淡入，会和同一段文字的渐入节奏割裂。
   // 这里按 toolId 记录已经展示过的 tool，切换任务或虚拟列表重挂时不重复播放。
@@ -287,7 +290,6 @@ function ToolCallBlockComponent({
 
   const renderContext: ToolCallBlockRenderContext = useMemo(
     () => ({
-      isOfficeMode,
       toolCallNode,
       workspacePath,
       theme,
@@ -325,7 +327,6 @@ function ToolCallBlockComponent({
       onLoadFullToolCallFields,
     }),
     [
-      isOfficeMode,
       agentSummaryAction,
       authoritativeAgentType,
       childToolList,
@@ -362,30 +363,35 @@ function ToolCallBlockComponent({
   );
 
   const ToolCallRenderer = useMemo(() => resolveToolCallRenderer(renderContext), [renderContext]);
+  const inheritedScope = useContext(ToolPresentationScopeContext);
   // early return 必须在所有 hook 之后（见上方注释说明的崩溃原因）
   if (!showTodoToolCalls && identity.family === "todo") {
     return null;
   }
   return (
-    <div
-      className="w-full"
-      data-testid={testId(TID_CHAT_TOOL_CALL_BLOCK, toolCall.toolId)}
-      data-tool-call-id={toolCall.toolId}
-      data-tool-name={toolCall.toolName ?? toolCall.kind ?? ""}
-      data-status={toolCall.status}
-      data-mycode-tool-stream-animate={shouldPlayEntranceAnimation ? "true" : undefined}
-    >
-      {toolCall.kind === "cuaGroup" ? (
-        <CuaGroupToolCallBlock
-          {...renderContext}
-          events={cuaGroupEvents}
-          renderAssistantMessage={renderCuaAssistantMessage}
-          renderReasoning={renderCuaReasoning}
-        />
-      ) : (
-        <ToolCallRenderer {...renderContext} />
-      )}
-    </div>
+    <ToolPresentationScopeContext.Provider value={inheritedScope || workspacePath || ""}>
+      <ToolPresentationStatusContext.Provider value={toolCall.status}>
+        <div
+          className="w-full"
+          data-testid={testId(TID_CHAT_TOOL_CALL_BLOCK, toolCall.toolId)}
+          data-tool-call-id={toolCall.toolId}
+          data-tool-name={toolCall.toolName ?? toolCall.kind ?? ""}
+          data-status={toolCall.status}
+          data-mycode-tool-stream-animate={shouldPlayEntranceAnimation ? "true" : undefined}
+        >
+          {toolCall.kind === "cuaGroup" ? (
+            <CuaGroupToolCallBlock
+              {...renderContext}
+              events={cuaGroupEvents}
+              renderAssistantMessage={renderCuaAssistantMessage}
+              renderReasoning={renderCuaReasoning}
+            />
+          ) : (
+            <ToolCallRenderer {...renderContext} />
+          )}
+        </div>
+      </ToolPresentationStatusContext.Provider>
+    </ToolPresentationScopeContext.Provider>
   );
 }
 

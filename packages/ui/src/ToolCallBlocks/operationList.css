@@ -1,0 +1,107 @@
+/* 分组列表负责唯一滚动；子工具只保留自己的展开内容，不能再次限高。 */
+/* 全局 focus-visible 会强制清除 outline/阴影；命令原生按钮需保留明确的键盘焦点。 */
+button[data-tool-summary-sentence-button]:focus-visible {
+  outline: 2px solid var(--color-input-border-focused) !important;
+  outline-offset: 2px;
+}
+
+/* 单文件摘要不能沿用文件 chip 的提亮和小号统计；局部覆盖避免改变折叠汇总。 */
+[data-tool-file-sentence] {
+  --text-success: color-mix(in srgb, var(--color-success) 80%, var(--color-foreground));
+  --text-danger: color-mix(in srgb, var(--color-destructive) 80%, var(--color-foreground));
+  color: var(--color-foreground-subtle);
+  font-weight: 400;
+  font-family: var(--font-sans);
+}
+[data-tool-file-sentence] [data-file-verb],
+[data-tool-file-sentence] [data-file-added],
+[data-tool-file-sentence] [data-file-removed] {
+  transition: color 150ms;
+}
+[data-tool-file-sentence] > svg:last-child {
+  opacity: 0;
+}
+.tool-call-layout
+  > .group\/tool-summary[data-tool-file-sentence]:is(:hover, :focus-within)
+  > svg:last-child {
+  opacity: 1;
+}
+[data-tool-file-sentence]:is(:hover, :focus-within) [data-file-verb] {
+  color: var(--color-foreground);
+}
+[data-tool-file-sentence]:is(:hover, :focus-within) [data-file-added] {
+  color: var(--color-foreground-subtle);
+}
+[data-tool-file-sentence]:is(:hover, :focus-within) [data-file-removed] {
+  color: var(--color-foreground-subtle);
+}
+[data-tool-file-sentence]:focus-visible,
+[data-tool-file-sentence] button:focus-visible {
+  outline: 2px solid var(--color-input-border-focused) !important;
+  outline-offset: 2px;
+}
+
+.tool-call-layout[data-tool-layout-variant="operations"]
+  > [data-slot="collapsible-content"]
+  > div
+  > .tool-detail-scroll {
+  padding: 0;
+  background: transparent;
+  scrollbar-width: thin;
+}
+.tool-call-layout[data-tool-layout-variant="operations"] [data-conversation-work-items] {
+  gap: 0;
+}
+.tool-call-layout[data-operation-list-item] > .group\/tool-summary {
+  height: 24px;
+  min-height: 24px;
+}
+.tool-call-layout[data-operation-list-item] > .group\/tool-summary > svg:last-child {
+  opacity: 0;
+}
+.tool-call-layout[data-operation-list-item]
+  > .group\/tool-summary:is(:hover, :focus-visible)
+  > svg:last-child {
+  opacity: 1;
+}
+.tool-call-layout[data-operation-list-item] .tool-summary-content button {
+  text-decoration: underline solid;
+  text-underline-offset: 3px;
+}
+.tool-call-layout[data-operation-list-item] .tool-summary-content button img {
+  display: none;
+}
+.tool-call-layout[data-operation-list-item] [data-tool-file-path] {
+  display: none;
+}
+.tool-call-layout[data-operation-list-item] .tool-summary-content [class*="text-diff-"] {
+  color: var(--color-foreground-subtlest);
+}
+.tool-call-layout[data-tool-layout-variant="image"]
+  > [data-slot="collapsible-content"]
+  > div
+  > .tool-detail-scroll {
+  padding: 4px 0;
+  background: transparent;
+}
+.tool-call-layout[data-tool-layout-variant="image"] [data-node-repl-image-gallery] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+.tool-call-layout[data-tool-layout-variant="image"] [data-image-thumbnail-trigger] {
+  width: 80px;
+  height: 80px;
+  max-width: none;
+  margin: 0;
+  border-radius: 8px;
+}
+.tool-call-layout[data-tool-layout-variant="image"] [data-image-thumbnail-trigger] img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  border: 0;
+  border-radius: 8px;
+  object-fit: cover;
+}

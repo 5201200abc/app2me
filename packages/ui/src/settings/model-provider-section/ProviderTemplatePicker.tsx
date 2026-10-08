@@ -1,5 +1,5 @@
 import type { ProviderSettingsView } from "@mycode/services";
-import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ArrowLeftIcon, ChevronRightIcon } from "@/components/icons/tabler.js";
 import { resolveProviderTemplateName } from "@mycode/provider";
 import type { ReactNode } from "react";
 import {

@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- 命令管理面板集中维护列表、表单和外部导入入口，拆分会增加跨状态跳转成本 */
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import type { CommandConfig, UserCommand, MyCodeCommand } from "@mycode/shared";
 import { isPluginCommand, isUserCommand, MYCODE_COMMAND_AGENT_SOURCE } from "@mycode/shared";
@@ -452,7 +452,6 @@ export function CommandsSection({
           <section className={hideInstalledGroup ? "hidden" : "space-y-4"}>
             <SettingsResourceGroupHeader
               actions={headerActions}
-              count={groupedCommands.local.length}
               title={intl.formatMessage({
                 id: "settings.plugin.commands.installed",
               })}
@@ -479,7 +478,6 @@ export function CommandsSection({
           {pluginCommandGroups.map(([pluginId, items]) => (
             <section key={pluginId} className="space-y-4">
               <SettingsResourceGroupHeader
-                count={items.length}
                 title={resolvePluginDisplayName(
                   {
                     name: items[0]?.pluginName ?? pluginId,

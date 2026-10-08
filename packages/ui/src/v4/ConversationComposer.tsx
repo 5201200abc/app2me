@@ -1,3 +1,4 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 /* oxlint-disable eslint(max-lines) -- composer 集中收口输入区 wiring（附件/草稿/历史/mention），拆分会打散收口粒度。 */
 import { getLocalTtftObserver } from "@/v4/telemetry/localTtftObserver.js";
 /**
@@ -51,12 +52,11 @@ import type {
 } from "@mycode/shared/mycode-protocol-v4";
 import {
   ArrowUpIcon,
-  ClipboardPenLineIcon,
   InfoIcon,
   RotateCcwIcon,
   SquareIcon,
   XIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import {
   ChatErrorBanner,
@@ -151,7 +151,10 @@ import { useOpenPptxElementReference } from "@/v4/composer/useOpenPptxElementRef
 import type { CodeViewerSource } from "@/lib/codeViewer.js";
 import { useConversationSelectionReferences } from "@/v4/composer/useConversationSelectionReferences.js";
 import { ConversationBackgroundWorkTrigger } from "@/v4/composer/ConversationBackgroundWorkTrigger.js";
-import { V4ComposerCuaEntry } from "@/v4/composer/V4ComposerCuaEntry.js";
+import {
+  V4ComposerContextUsage,
+  V4ComposerSubmitControls,
+} from "@/v4/composer/V4ComposerSubmitControls.js";
 import {
   V4ComposerModeSwitch,
   V4ComposerModelControls,
@@ -378,7 +381,7 @@ interface ConversationComposerProps {
    * 切换器，渲染在编辑器上方（旧 ChatViewComposer contextHeaderContent 同位）。
    * 仅草稿态由宿主下发；会话建立后为空。
    */
-  contextHeader?: ReactNode;
+  contextHeader?: ReactNode | ((modeControls: ReactNode) => ReactNode);
   /** 居中草稿布局（旧 shouldUseCenteredDraftChatLayout）：收窄 max-w-2xl、去 sticky。 */
   centered?: boolean;
   /**
@@ -468,11 +471,10 @@ interface ConversationComposerProps {
    */
   composerRestoreRequest?: ComposerRestoreRequest | null;
   onComposerRestoreApplied?: (requestId: number) => void;
-  /** 副屏会话不提供 goal 能力；协议层仍会拒绝直接调用。 */
-  suppressGoalCommands?: boolean;
   /** App 层本地斜杠命令（如 `/side`），由 SessionPane 按门禁组装后透传。 */
   appSlashCommands?: readonly AppSlashCommand[];
   /** 把 composer 的 drop 路由暴露给整个对话 pane / 桌面草稿标题栏。 */
+  attachmentPickerRef?: { current: (() => void) | null };
   onDropTargetControllerChange?: (controller: ConversationDropTargetController | null) => void;
 }
 
@@ -532,8 +534,8 @@ function ConversationComposerImpl({
   externalTextInsertRequest = null,
   onExternalTextInsertApplied,
   composerRestoreRequest = null,
+  attachmentPickerRef,
   onComposerRestoreApplied,
-  suppressGoalCommands = false,
   appSlashCommands,
   onDropTargetControllerChange,
 }: ConversationComposerProps) {
@@ -548,6 +550,7 @@ function ConversationComposerImpl({
   const workspaceKey = workspaceIdentity?.trim() || workspacePath;
   const configPickerScopeKey = `${workspaceKey}\0${draftScopeId}`;
   const [text, setText] = useState("");
+  const [goalMarkerContainer, setGoalMarkerContainer] = useState<HTMLSpanElement | null>(null);
   const [pending, setPending] = useState(false);
   const [configPickerState, setConfigPickerState] = useState<{
     scopeKey: string;
@@ -631,6 +634,13 @@ function ConversationComposerImpl({
     disabled,
     listenAddToChatEvents: listenAddToChatEvents && !disabled,
   });
+  useEffect(() => {
+    if (!attachmentPickerRef) return;
+    attachmentPickerRef.current = attachmentsApi.openAttachmentPicker;
+    return () => {
+      attachmentPickerRef.current = null;
+    };
+  }, [attachmentPickerRef, attachmentsApi.openAttachmentPicker]);
   // 对齐旧版 useChatComposer：窗口级 dragover 会在指针进入 ChatView 前预先点亮
   // 整个聊天区与桌面草稿标题栏；workspace payload 的文案优先于系统附件。
   const { externalFileDragging, workspaceFileDragging } = usePromptEditorDragState({
@@ -1829,7 +1839,7 @@ function ConversationComposerImpl({
                       )}
                       fallbackIcon={
                         isClipboardTextAttachment ? (
-                          <ClipboardPenLineIcon className="size-3.5 text-muted-foreground" />
+                          <WriteIcon className="size-3.5 text-muted-foreground" />
                         ) : (
                           <FileDisplayIcon
                             src={fileDisplayDescriptor.fileIconSrc}
@@ -2015,10 +2025,7 @@ function ConversationComposerImpl({
     openPptxElementReference,
   ]);
 
-  // 发送/停止控制簇（对齐旧 ChatViewComposer.submitControlNode 结构：
-  // 左侧 model/thought/usage 簇 + 右侧 stop 或 send）。
-  // useMemo：composer 随流式 snapshot 高频重渲染，控制簇只在语义依赖变化时重建，
-  // 避免每个 token 批次都重建 Tooltip/Select 子树。
+  // 权限随发送控件固定在右侧，用量跟随左侧模型，复用原快照和配置回调。
   const composerUsage = snapshot?.usage ?? null;
   const composerPhase = snapshot?.control.phase ?? null;
   const handleSelectModelTrace = useCallback(
@@ -2035,32 +2042,72 @@ function ConversationComposerImpl({
       }),
     [onSelectModel],
   );
+  const modelControlsNode = (
+    <span className="flex min-w-0 shrink items-center gap-1 empty:hidden">
+      <V4ComposerModelControls
+        workspacePath={workspacePath}
+        workspaceIdentity={workspaceIdentity}
+        modelSelectionView={modelSelectionView}
+        modelSelectionState={modelSelectionState}
+        modelSelectionReload={modelSelectionReload}
+        sessionId={sessionId ?? null}
+        phase={composerPhase}
+        provider={provider}
+        draftMode={draftMode}
+        draftConfig={draftConfig}
+        usage={composerUsage}
+        disabled={disabled}
+        activeConfigPicker={activeConfigPicker}
+        onConfigPickerOpenChange={handleConfigPickerOpenChange}
+        onSelectModel={handleSelectModelTrace}
+        onSelectThought={onSelectThought}
+        onSwitchMode={onSwitchMode}
+        onRecoverCustomModelSelection={onRecoverCustomModelSelection}
+      />
+    </span>
+  );
+  const modeSwitchNode = useMemo(
+    () => (
+      <span data-composer-permission-actions className="flex min-w-0 items-center gap-1">
+        <V4ComposerModeSwitch
+          workspacePath={workspacePath}
+          workspaceIdentity={workspaceIdentity}
+          provider={provider}
+          draftConfig={draftConfig}
+          disabled={disabled}
+          activeConfigPicker={activeConfigPicker}
+          onConfigPickerOpenChange={handleConfigPickerOpenChange}
+          onSwitchMode={onSwitchMode}
+          onGoalMarkerContainerChange={setGoalMarkerContainer}
+        />
+      </span>
+    ),
+    [
+      workspacePath,
+      workspaceIdentity,
+      provider,
+      draftConfig,
+      composerUsage,
+      onSendCompressionCommand,
+      disabled,
+      activeConfigPicker,
+      handleConfigPickerOpenChange,
+      onSwitchMode,
+    ],
+  );
+
+  const contextUsageNode = (
+    <V4ComposerContextUsage
+      usage={composerUsage}
+      provider={provider}
+      disabled={disabled}
+      onSendCompressionCommand={onSendCompressionCommand}
+    />
+  );
   const submitControlNode = useMemo(
     () => (
-      <div className="flex min-w-0 items-center gap-1">
-        <span className="flex min-w-0 shrink items-center gap-1 overflow-hidden empty:hidden">
-          <V4ComposerModelControls
-            workspacePath={workspacePath}
-            workspaceIdentity={workspaceIdentity}
-            modelSelectionView={modelSelectionView}
-            modelSelectionState={modelSelectionState}
-            modelSelectionReload={modelSelectionReload}
-            sessionId={sessionId ?? null}
-            phase={composerPhase}
-            provider={provider}
-            draftMode={draftMode}
-            draftConfig={draftConfig}
-            usage={composerUsage}
-            disabled={disabled}
-            activeConfigPicker={activeConfigPicker}
-            onConfigPickerOpenChange={handleConfigPickerOpenChange}
-            onSelectModel={handleSelectModelTrace}
-            onSelectThought={onSelectThought}
-            onSwitchMode={onSwitchMode}
-            onRecoverCustomModelSelection={onRecoverCustomModelSelection}
-            onSendCompressionCommand={onSendCompressionCommand}
-          />
-        </span>
+      <V4ComposerSubmitControls>
+        {modeSwitchNode}
         {showStopControl ? (
           <ControlHintTooltip title={stopTooltipTitle} shortcut="Esc">
             <Button
@@ -2096,9 +2143,10 @@ function ConversationComposerImpl({
             </Button>
           </ControlHintTooltip>
         )}
-      </div>
+      </V4ComposerSubmitControls>
     ),
     [
+      modeSwitchNode,
       canSend,
       activeConfigPicker,
       composerPhase,
@@ -2134,29 +2182,11 @@ function ConversationComposerImpl({
     ],
   );
 
-  // 左下：模式选择 + CUA 入口 + 当前 session 后台任务入口。followupMode 由 app 设置页同步到 CLI，
+  // 左下只保留当前 session 后台任务入口。followupMode 由 app 设置页同步到 CLI，
   // 不在 composer 暴露局部开关；后台入口只消费同一 snapshot，不维护第二份任务状态。
   const leadingActionsNode = useMemo(
     () => (
       <>
-        <V4ComposerModeSwitch
-          workspacePath={workspacePath}
-          workspaceIdentity={workspaceIdentity}
-          provider={provider}
-          draftConfig={draftConfig}
-          disabled={disabled}
-          activeConfigPicker={activeConfigPicker}
-          onConfigPickerOpenChange={handleConfigPickerOpenChange}
-          onSwitchMode={onSwitchMode}
-        />
-        {/* 附件画廊重构曾整段覆盖 leadingActions，误删 CUA 常驻入口。
-            入口自身继续负责平台、远程与设置可见性，不在 composer 重复判定。 */}
-        <V4ComposerCuaEntry
-          workspacePath={workspacePath}
-          workspaceIdentity={workspaceIdentity}
-          remoteSessionId={remoteSessionId}
-          currentSessionBusy={canStop}
-        />
         <ConversationBackgroundWorkTrigger
           backgroundWorks={snapshot?.backgroundWorks ?? []}
           runningSubagentCount={runningSubagentCount}
@@ -2176,6 +2206,7 @@ function ConversationComposerImpl({
       onSwitchMode,
       provider,
       remoteSessionId,
+      sessionId,
       runningSubagentCount,
       snapshot?.backgroundWorks,
       workspaceIdentity,
@@ -2202,7 +2233,7 @@ function ConversationComposerImpl({
       style={isBlockedByInteraction ? { display: "none" } : undefined}
       className={cn(
         "chat-composer-region z-20 w-full shrink-0 @container/composer",
-        centered && "max-w-2xl",
+        centered && "max-w-[680px]",
       )}
     >
       {/* 旧 ChatViewComposer 同款隐藏 file input（web/无 native picker 平台回退）。 */}
@@ -2229,12 +2260,20 @@ function ConversationComposerImpl({
       <div
         className={cn(
           "chat-composer-input-surface w-full",
-          contextHeader && "rounded-2xl bg-surface shadow-xl/5",
+          contextHeader && "rounded-[18px] bg-surface/60 shadow-xs",
         )}
       >
         {contextHeader ? (
           // 旧 ChatViewComposer contextHeaderContent 同款包装（workspace 菜单 + Git 分支）。
-          <div className="p-1.5 flex min-w-0 flex-wrap items-center gap-0">{contextHeader}</div>
+          <div data-composer-project-controls className="flex min-w-0 items-center gap-1 p-1">
+            {typeof contextHeader === "function" ? (
+              contextHeader(null)
+            ) : (
+              <>
+                <div className="flex min-w-0 items-center">{contextHeader}</div>
+              </>
+            )}
+          </div>
         ) : null}
         {conversationSelectionLimitReason ? (
           <div
@@ -2273,15 +2312,26 @@ function ConversationComposerImpl({
           showMentionButton
           topContent={topContentNode}
           attachmentAction={attachmentAction}
+          planAction={{
+            enabled: draftConfig?.planEnabled ?? false,
+            onSelect: () => onSwitchMode(draftConfig?.planEnabled ? "plan-off" : "plan"),
+          }}
           inputTestId={TID_V4_COMPOSER_INPUT}
           inputApiRef={inputApiRef}
           promptHistory={promptHistory}
           // 命令目录必须完整来自 CLI workspace slash catalog；UI 只在
           // secondary pane 按产品能力隐藏 goal，不再追加任何内建命令或别名。
-          excludedSlashCommandNames={suppressGoalCommands ? ["goal"] : undefined}
           appSlashCommands={appSlashCommands}
           enableMentionPanel
-          leadingActions={leadingActionsNode}
+          leadingActions={
+            <>
+              {modelControlsNode}
+              {contextUsageNode}
+              {leadingActionsNode}
+            </>
+          }
+          goalMarkerContainer={goalMarkerContainer}
+          uniformToolbar
           submitControl={submitControlNode}
           className="p-0"
           onChange={handleEditorChange}

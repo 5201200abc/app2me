@@ -1,4 +1,4 @@
-import { Gauge } from "lucide-react";
+import { Gauge } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import type { ToolCallGetWorkflowRunDisplay } from "@mycode/shared/mycode-protocol-v4";
 import { CodeBlock, CodeBlockHeader } from "@/components/ai-elements/code-block.js";

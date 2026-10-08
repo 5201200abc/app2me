@@ -1,18 +1,20 @@
+import { stripDisplayEmoji } from "@/lib/compactConversationDisplay.js";
 /*
  * Derived from vercel/ai-elements (packages/elements/src/reasoning.tsx).
  * Copyright 2023 Vercel, Inc. Licensed under Apache-2.0.
  * Modified by MyCode: local integration, formatting and adaptations.
  * See THIRD-PARTY-NOTICES.md in the repository root for license and provenance.
  */
-"use client";
+("use client");
 
 import { useControllableState } from "@radix-ui/react-use-controllable-state";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible.js";
 import { cn } from "../lib/utils.js";
 import { TID_CHAT_REASONING_CONTENT, TID_CHAT_REASONING_TRIGGER } from "@mycode/shared";
-import { BrainIcon, ChevronRightIcon } from "lucide-react";
+import "./reasoning.css";
+import { ProcessRowContent } from "@/components/ui/process-row.js";
+import { LightbulbIcon, ChevronRightIcon } from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-import { QueuedSummaryContent } from "@/ToolCallBlocks/QueuedSummaryContent.js";
 import type { ComponentProps, CSSProperties, ReactNode } from "react";
 import {
   EMPTY_SCROLL_MASK_STATE,
@@ -56,7 +58,8 @@ export type ReasoningProps = ComponentProps<typeof Collapsible> & {
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  duration?: number;
+  duration?: number | null;
+  startedAt?: number;
 };
 
 const MS_IN_S = 1000;
@@ -87,6 +90,12 @@ export function isReasoningScrollAtBottom(metrics: ScrollMetrics) {
   return getReasoningBottomDistance(metrics) <= REASONING_BOTTOM_LOCK_DISTANCE_PX;
 }
 
+export function normalizeReasoningDurationSeconds(duration: number | null | undefined) {
+  return typeof duration === "number" && Number.isFinite(duration) && duration > 0
+    ? Math.max(1, Math.floor(duration))
+    : undefined;
+}
+
 export const Reasoning = memo(
   ({
     className,
@@ -96,6 +105,7 @@ export const Reasoning = memo(
     defaultOpen = false,
     onOpenChange,
     duration: durationProp,
+    startedAt,
     children,
     ...props
   }: ReasoningProps) => {
@@ -105,10 +115,10 @@ export const Reasoning = memo(
       onChange: onOpenChange,
       prop: open,
     });
-    const [duration, setDuration] = useControllableState<number | undefined>({
-      defaultProp: undefined,
-      prop: durationProp,
-    });
+    const [measuredDuration, setMeasuredDuration] = useState<number | undefined>();
+    const duration = isStreaming
+      ? measuredDuration
+      : (normalizeReasoningDurationSeconds(durationProp) ?? measuredDuration);
 
     const startTimeRef = useRef<number | null>(null);
     const contentUnmountDelayRef = useRef<number | null>(null);
@@ -129,33 +139,26 @@ export const Reasoning = memo(
     useEffect(() => {
       if (!isStreaming) {
         if (startTimeRef.current !== null) {
-          setDuration(Math.ceil((Date.now() - startTimeRef.current) / MS_IN_S));
+          setMeasuredDuration(
+            Math.max(1, Math.floor((Date.now() - startTimeRef.current) / MS_IN_S)),
+          );
         }
         startTimeRef.current = null;
         return;
       }
 
       if (startTimeRef.current === null) {
-        startTimeRef.current = Date.now();
+        startTimeRef.current = startedAt ?? Date.now();
       }
-
-      // 收起态展示流式摘要，不需要为了隐藏的耗时每秒触发整块 reasoning 重渲染；
-      // 展开时再按同一个开始时间补算并持续更新时间。
-      if (!isOpen) {
-        return;
-      }
-
       const updateDuration = () => {
-        if (startTimeRef.current === null) {
-          return;
-        }
-        setDuration(Math.max(1, Math.ceil((Date.now() - startTimeRef.current) / MS_IN_S)));
+        if (startTimeRef.current === null) return;
+        setMeasuredDuration(Math.max(1, Math.floor((Date.now() - startTimeRef.current) / MS_IN_S)));
       };
-
+      // 旧行没有耗时不能按挂载时间估算；仅实时行开启展示计时，收起时也继续更新。
       updateDuration();
       const durationTimer = window.setInterval(updateDuration, MS_IN_S);
       return () => window.clearInterval(durationTimer);
-    }, [isOpen, isStreaming, setDuration]);
+    }, [isStreaming, startedAt]);
 
     useEffect(() => {
       const previousAutoCollapseKey = previousAutoCollapseKeyRef.current;
@@ -227,7 +230,7 @@ export const Reasoning = memo(
           open={isOpen}
           {...props}
         >
-          {children}
+          {typeof children === "string" ? stripDisplayEmoji(children) : children}
         </Collapsible>
       </ReasoningContext.Provider>
     );
@@ -287,132 +290,63 @@ export const ReasoningTrigger = memo(
     className,
     children,
     getThinkingMessage,
-    streamingText = "",
+    streamingText: _streamingText,
     ...props
   }: ReasoningTriggerProps) => {
     const { isStreaming, isOpen, duration } = useReasoning();
     const { intl } = useMyCodeIntl();
-    const streamingSummary =
-      isStreaming && !isOpen ? resolveReasoningStreamingSummary(streamingText) : null;
-    const streamingSummaryRef = useRef<HTMLSpanElement | null>(null);
-    const streamingSummaryTextRef = useRef<HTMLSpanElement | null>(null);
-    const [isStreamingSummaryOverflowing, setIsStreamingSummaryOverflowing] = useState(false);
-
-    useEffect(() => {
-      const viewport = streamingSummaryRef.current;
-      if (!viewport || !streamingSummary) {
-        return;
-      }
-
-      const syncSummaryViewport = () => {
-        setIsStreamingSummaryOverflowing((current) => {
-          const next = isReasoningSummaryOverflowing(viewport);
-          return current === next ? current : next;
-        });
-        // 流式摘要超过可用宽度后，普通 overflow-hidden 会固定显示旧前缀，
-        // 最新 token 被裁在右侧。每次内容增长后把单行视口推到末尾，让旧内容向左移。
-        scrollReasoningSummaryToEnd(viewport);
-      };
-
-      syncSummaryViewport();
-      if (typeof ResizeObserver === "undefined") {
-        return;
-      }
-      const resizeObserver = new ResizeObserver(syncSummaryViewport);
-      resizeObserver.observe(viewport);
-      if (streamingSummaryTextRef.current) {
-        resizeObserver.observe(streamingSummaryTextRef.current);
-      }
-      return () => resizeObserver.disconnect();
-    }, [streamingSummary?.text]);
-
-    const thinkingMessage =
-      getThinkingMessage?.(isStreaming, duration) ??
-      (isStreaming && !isOpen ? (
-        <span className="animated-gradient-text font-medium">
-          {intl.formatMessage({ id: "chat.reasoning.thinking" })}
-        </span>
-      ) : duration === undefined ? (
-        <span className="inline-flex items-center gap-2">
-          {/* 完成态“思考”单独使用 semibold，比同列工具类型标签更粗。
-              统一为 medium，保持对话时间线的视觉层级一致。 */}
-          <span className="font-medium text-foreground-subtlest">
-            {intl.formatMessage({ id: "chat.reasoning.thought" })}
-          </span>
-          <span className="font-normal text-foreground-subtlest">·</span>
-          <span className="font-normal text-foreground-subtlest">
-            {intl.formatMessage({ id: "chat.reasoning.durationFewSeconds" })}
-          </span>
-        </span>
-      ) : (
-        <span className="inline-flex items-center gap-2">
-          <span className="font-medium text-foreground-subtlest">
-            {intl.formatMessage({ id: "chat.reasoning.thought" })}
-          </span>
-          <span className="font-normal text-foreground-subtlest">·</span>
-          <span className="font-normal text-foreground-subtlest">
-            {intl.formatMessage(
-              { id: "chat.reasoning.durationSeconds" },
-              { seconds: String(duration) },
-            )}
-          </span>
-        </span>
-      ));
-
+    const seconds = normalizeReasoningDurationSeconds(duration);
+    const thinkingMessage = getThinkingMessage?.(isStreaming, seconds) ?? (
+      <span className="font-normal text-foreground-subtle" data-reasoning-label="true">
+        {intl.formatMessage({
+          id: isStreaming ? "chat.reasoning.thinking" : "chat.reasoning.thought",
+        })}
+      </span>
+    );
     return (
       <CollapsibleTrigger
+        data-process-row
         data-testid={TID_CHAT_REASONING_TRIGGER}
+        data-reasoning-status={isStreaming ? "streaming" : "complete"}
         className={cn(
-          "group/reasoning inline-flex max-w-full min-w-0 items-center gap-2 self-start text-ui-base transition-colors",
+          "group/reasoning flex h-7 min-h-7 w-full min-w-0 items-center gap-1.5 rounded-lg text-left text-ui-base text-foreground-subtlest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-input-border-focused",
           className,
         )}
         {...props}
       >
         {children ?? (
-          <>
-            {/* thinking 会在长流式回复里持续存在，旋转 loader 会长期占用渲染资源；
-            运行态保留文案扫光，图标固定为静态思考语义。 */}
-            <BrainIcon className="size-4 shrink-0 text-foreground-subtlest" />
-            {/* 右侧流式摘要是可伸缩内容；如果左侧标签也参与 flex shrink，
-                长摘要会把思考状态标签挤成多行。固定语义标签宽度，只让摘要占剩余空间。 */}
-            <span className="shrink-0 whitespace-nowrap" data-reasoning-label="true">
-              {thinkingMessage}
-            </span>
-            {streamingSummary ? <span className="shrink-0 text-foreground-subtlest">·</span> : null}
-            {streamingSummary ? (
-              <span
-                ref={streamingSummaryRef}
-                className="min-w-0 flex-1 overflow-hidden whitespace-nowrap text-foreground-subtle"
-                data-reasoning-streaming-mask={isStreamingSummaryOverflowing ? "both" : "none"}
-                data-reasoning-streaming-line="true"
-                data-reasoning-streaming-roll="true"
-                style={getReasoningSummaryMaskStyle(isStreamingSummaryOverflowing)}
-              >
-                <QueuedSummaryContent
-                  contentKey={`reasoning-line:${streamingSummary.key}`}
-                  contentRefreshVersion={streamingSummary.text}
-                  primaryText={
-                    <span
-                      ref={streamingSummaryTextRef}
-                      className="inline-block min-w-max"
-                      data-reasoning-streaming-text="true"
-                    >
-                      {streamingSummary.text}
-                    </span>
-                  }
-                  enabled
-                />
-              </span>
+          <ProcessRowContent icon={<LightbulbIcon />} iconClassName="reasoning-indicator">
+            {thinkingMessage}
+            {seconds !== undefined ? (
+              <>
+                <span
+                  data-process-stat
+                  className="font-normal text-foreground-subtlest"
+                  aria-hidden
+                >
+                  ·
+                </span>
+                <span
+                  className="whitespace-nowrap font-normal text-foreground-subtlest"
+                  data-reasoning-duration="true"
+                >
+                  {intl.formatMessage(
+                    { id: "chat.reasoning.durationSeconds" },
+                    { seconds: String(seconds) },
+                  )}
+                </span>
+              </>
             ) : null}
             <ChevronRightIcon
+              aria-hidden
+              size={16}
+              data-process-chevron
               className={cn(
-                "size-4 shrink-0 text-foreground-subtlest transition-opacity transition-transform",
-                isOpen
-                  ? "rotate-90 opacity-100"
-                  : "rotate-0 opacity-0 group-hover/reasoning:opacity-100",
+                "size-4 shrink-0 text-foreground-subtlest transition-transform duration-150",
+                isOpen ? "rotate-90" : "rotate-0",
               )}
             />
-          </>
+          </ProcessRowContent>
         )}
       </CollapsibleTrigger>
     );
@@ -540,17 +474,16 @@ export const ReasoningContent = memo(
         {...props}
       >
         {shouldRenderChildren ? (
-          <div className="pt-3">
+          <div className="pt-2">
             <div
               ref={scrollRef}
               className={cn(
-                "max-h-60 space-y-2 overflow-auto text-ui-base text-foreground-subtlest",
+                "max-h-[220px] space-y-2 overflow-auto rounded-lg bg-foreground/[0.04] px-3 py-2 font-mono text-foreground-subtle",
                 // CUA Group 已提供清晰的父级边界；子思考继续显示左导线与缩进会形成重复层级。
-                variant === "default" && "ml-2 border-border border-l pl-3.5",
               )}
               data-reasoning-scroll-mask={scrollMaskData}
               onScroll={handleScroll}
-              style={scrollMaskStyle}
+              style={{ ...scrollMaskStyle }}
             >
               {/* 思考块之前打开时把 Radix content 一起按需挂载并强制 forceMount，
                   content 首帧已经是 open 状态，高度动画来不及从 closed 状态过渡，看起来像突然展开。
@@ -560,9 +493,9 @@ export const ReasoningContent = memo(
                   每次 chunk 都会重跑 Markdown 解析和插件渲染，字数越多越卡；这里按纯文本展示并保留换行。 */}
               <div
                 ref={contentRef}
-                className="min-w-0 whitespace-pre-wrap break-words text-foreground-subtlest"
+                className="min-w-0 whitespace-pre-wrap break-words text-foreground-subtle"
               >
-                {children}
+                {typeof children === "string" ? stripDisplayEmoji(children) : children}
               </div>
             </div>
           </div>

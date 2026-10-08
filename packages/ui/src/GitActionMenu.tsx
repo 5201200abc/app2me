@@ -60,7 +60,7 @@ import {
   GitCommitIcon,
   LoaderIcon,
   SparklesIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 
 interface GitActionMenuProps {
   workspacePath: string;

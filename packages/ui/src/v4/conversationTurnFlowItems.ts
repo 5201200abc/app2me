@@ -5,6 +5,7 @@ import type {
   UserInputRow,
 } from "@mycode/shared/mycode-protocol-v4";
 import type { ConversationCuaGroupRenderItem } from "@/v4/conversationCuaGroups.js";
+import { resolveToolCallIdentity } from "@/lib/toolIdentity.js";
 
 export type AssistantWorkRow = Exclude<ConversationRow, TurnHeaderRow | UserInputRow>;
 
@@ -57,6 +58,12 @@ export function buildConversationFlowItems(options: {
   const items: ConversationTurnFlowItem[] = [];
 
   for (const row of options.orderedRows) {
+    // 旧日志中的 Todo 仍可回放，但不能产生空的工作分组或任务步骤入口。
+    if (
+      row.kind === "toolCall" &&
+      resolveToolCallIdentity({ toolName: row.toolName, kind: row.toolName }).family === "todo"
+    )
+      continue;
     if (isUserInputRow(row)) {
       items.push({ kind: "userInput", row });
       continue;

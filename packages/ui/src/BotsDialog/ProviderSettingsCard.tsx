@@ -8,7 +8,7 @@ import {
   LoaderCircle,
   QrCode,
   Unlink,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import QRCode from "qrcode";
 import { useEffect, useState, type ReactNode } from "react";
 import type { BotConfig, BotServiceStatus } from "@mycode/shared";

@@ -3,5 +3,6 @@ import type { SqliteMigration } from "./migration-types.js";
 export const migration0022: SqliteMigration = {
   appVersion: "0.16.5",
   id: "0022_backfilled_session_reasoning",
+  retiredChecksum: "aee472fe499e9c25d2e71df0fbc68d92e462b30d1d02919ca35d540bf133c99a",
   sql: BACKFILLED_SESSION_REASONING_MIGRATION_SQL,
 };

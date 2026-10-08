@@ -43,8 +43,8 @@ const TASK_GROUP_COUNT_BADGE_CLASS =
 const TASK_GROUP_CONTENT_CLASS = "ml-4 border-l py-px pl-2";
 // 行是纵向列：首行（标题 + 右侧元信息）固定 28px，其下可挂工作流运行行，所以外层只定 min-h。
 const TASK_GROUP_ROW_CLASS =
-  "flex min-h-7 w-full min-w-0 flex-col justify-center rounded-lg border border-transparent pl-2.5 pr-1 text-left text-ui-base transition-[background-color,border-color,color,opacity]";
-const TASK_GROUP_ROW_LINE_CLASS = "flex h-7 w-full min-w-0 items-center gap-2";
+  "flex min-h-6.5 w-full min-w-0 flex-col justify-center rounded-lg border border-transparent pl-2.5 pr-1 text-left text-ui-caption transition-[background-color,border-color,color,opacity]";
+const TASK_GROUP_ROW_LINE_CLASS = "flex h-6 w-full min-w-0 items-center gap-1.5";
 export {
   TASK_GROUP_ROW_LINE_CLASS,
   TASK_GROUP_COLOR_CLASS,

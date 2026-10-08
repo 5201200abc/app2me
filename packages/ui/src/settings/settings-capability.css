@@ -1,0 +1,60 @@
+.settings-capability-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: calc(var(--ui-space) * 3);
+  padding: calc(var(--ui-space) * 4);
+}
+.settings-capability-logo {
+  position: relative;
+  width: calc(var(--ui-space) * 10);
+  height: calc(var(--ui-space) * 10);
+  flex: none;
+  color: var(--color-foreground);
+}
+.settings-capability-logo-computer {
+  border-radius: calc(var(--ui-space) * 2.5);
+  background:
+    radial-gradient(at 85% 20%, var(--color-white), transparent 65%),
+    linear-gradient(135deg, var(--color-icon-blue), var(--color-fuchsia-500));
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+.settings-capability-logo-computer > svg {
+  width: 100%;
+  height: 100%;
+}
+.settings-capability-browser-window {
+  width: 100%;
+  height: 100%;
+}
+.settings-capability-browser-pointer {
+  position: absolute;
+  width: 55%;
+  height: 55%;
+  bottom: 0;
+  right: 0;
+  fill: var(--color-card);
+}
+.settings-capability-detail {
+  grid-column: 2 / -1;
+}
+/* 仅能力卡复用截图中的强调色开关，不改变其他设置的 Switch。 */
+.settings-capability-row .settings-capability-switch {
+  width: calc(var(--ui-space) * 8);
+  height: calc(var(--ui-space) * 4.5);
+}
+.settings-capability-row .settings-capability-switch[data-checked],
+.settings-capability-row .settings-capability-switch[data-state="checked"] {
+  background: var(--color-brand);
+}
+.settings-capability-row .settings-capability-switch [data-slot="switch-thumb"] {
+  background: var(--color-white);
+  width: calc(var(--ui-space) * 4);
+  height: calc(var(--ui-space) * 4);
+}
+@media (max-width: 480px) {
+  .settings-capability-row {
+    gap: calc(var(--ui-space) * 2);
+    padding: calc(var(--ui-space) * 3);
+  }
+}

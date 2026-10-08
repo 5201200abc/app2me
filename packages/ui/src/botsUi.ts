@@ -77,9 +77,9 @@ export function getBotProviderRegionTagLabelId(
 ): string | null {
   switch (provider) {
     case "lark":
-      return "login.oauth.regionTag.zai";
+      return "bots.region.global";
     case "feishu":
-      return "login.oauth.regionTag.bigmodel";
+      return "bots.region.china";
     default:
       return null;
   }

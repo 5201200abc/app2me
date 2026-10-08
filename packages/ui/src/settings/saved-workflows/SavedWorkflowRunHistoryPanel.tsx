@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
-import { Ban, ChevronRight, CircleCheck, Loader2, TriangleAlert } from "lucide-react";
+import {
+  Ban,
+  ChevronRight,
+  CircleCheck,
+  Loader2,
+  TriangleAlert,
+} from "@/components/icons/tabler.js";
 import { TID_WORKFLOW_RUN_ROW, testId, type MyCodeSavedWorkflowRun } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";

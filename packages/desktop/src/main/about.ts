@@ -52,34 +52,29 @@ interface AboutSnapshotOptions {
   };
 }
 
-const ABOUT_APPLICATION_NAME = "MyCode Desktop App";
-// 自定义 About 内容本体是 256x280；原生窗口如果同尺寸会让内容贴满透明窗口边界。
-// 这里给 BrowserWindow 额外留出背景呼吸空间，避免正式 About 看起来比 demo 更局促。
-const ABOUT_WINDOW_WIDTH = 256;
-const ABOUT_WINDOW_HEIGHT = 312;
+const ABOUT_APPLICATION_NAME = "app2me Desktop App";
+const ABOUT_WINDOW_WIDTH = 264;
+const ABOUT_WINDOW_HEIGHT = 248;
 const ABOUT_MESSAGES: Record<
   Locale,
   {
     aboutTitle: string;
     versionLabel: string;
     okButtonLabel: string;
-    optimizedForAppleSilicon: string;
     copyright: (year: number) => string;
   }
 > = {
   "zh-CN": {
-    aboutTitle: "关于 MyCode",
+    aboutTitle: "关于 app2me",
     versionLabel: "版本",
     okButtonLabel: "确定",
-    optimizedForAppleSilicon: "已针对 Apple Silicon 优化。",
-    copyright: (year) => `版权所有 © ${year} MyCode。`,
+    copyright: (year) => `版权所有 © ${year} app2me。`,
   },
   "en-US": {
-    aboutTitle: "About MyCode",
+    aboutTitle: "About app2me",
     versionLabel: "version",
     okButtonLabel: "OK",
-    optimizedForAppleSilicon: "Optimized for Apple Silicon.",
-    copyright: (year) => `Copyright © ${year} MyCode.`,
+    copyright: (year) => `Copyright © ${year} app2me.`,
   },
 };
 
@@ -197,17 +192,6 @@ function formatAboutCopyright(
   return getAboutMessages(locale).copyright(year);
 }
 
-function formatAboutOptimizationLine(
-  snapshot: Pick<AboutSnapshot, "osPlatform" | "osArch">,
-  locale: Locale = DEFAULT_LOCALE,
-): string {
-  if (snapshot.osPlatform === "darwin" && snapshot.osArch === "arm64") {
-    return getAboutMessages(locale).optimizedForAppleSilicon;
-  }
-
-  return "";
-}
-
 function resolveAboutIconPath(isPackaged: boolean): string {
   return isPackaged
     ? join(process.resourcesPath, "icon.png")
@@ -258,7 +242,6 @@ export async function showAboutDialog(
         applicationName: ABOUT_APPLICATION_NAME,
         appVersion: snapshot.appVersion,
         copyright: formatAboutCopyright(undefined, locale),
-        optimizationLine: formatAboutOptimizationLine(snapshot, locale),
         versionLabel: aboutMessages.versionLabel,
         okButtonLabel: aboutMessages.okButtonLabel,
       }),

@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveApp2meReleaseIdentity } from "../../../scripts/app2me-release-identity.mjs";
 
 const require = createRequire(import.meta.url);
 const moduleDir = import.meta.dirname;
@@ -35,7 +36,7 @@ function findPackageDir(packageName, startDirs) {
   throw new Error(`Unable to find package directory for ${packageName}`);
 }
 
-const desktopDir = findPackageDir("@mycode/desktop", [
+const desktopDir = findPackageDir("@app2me/desktop", [
   moduleDir,
   resolve(moduleDir, ".."),
   process.cwd(),
@@ -84,7 +85,10 @@ export function collectBuildMetadata() {
   const desktopPackageJson = readJson(resolve(desktopDir, "package.json"));
 
   return {
-    appVersion: normalizeVersion(rootPackageJson.version),
+    appVersion: process.env.APP2ME_RELEASE_DATE
+      ? (process.env.APP2ME_APP_VERSION ??
+        resolveApp2meReleaseIdentity(process.env.APP2ME_RELEASE_DATE).appVersion)
+      : normalizeVersion(rootPackageJson.version),
     buildCommitId: resolveCommitId(),
     buildTime: new Date().toISOString(),
     electronBuilderVersion: resolveInstalledPackageVersion(

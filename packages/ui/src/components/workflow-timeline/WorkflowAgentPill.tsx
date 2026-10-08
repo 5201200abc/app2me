@@ -6,7 +6,7 @@ import {
   CircleXIcon,
   LoaderCircleIcon,
   TerminalIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type { LaneClass, StepRunStatus } from "@/components/workflow-graph/types.js";

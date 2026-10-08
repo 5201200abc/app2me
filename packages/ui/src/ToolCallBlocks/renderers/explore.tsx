@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Explore 聚合渲染同时维护分类、父级摘要和可复用子工具摘要，拆开会让父子展示规则更难对齐 */
-import { SearchIcon } from "lucide-react";
+import { BookOpenIcon, SearchIcon } from "@/components/icons/tabler.js";
 import { extractPlanStepsFromToolInput, extractPlanStepsFromToolOutput } from "@mycode/shared";
 import { ToolCallBlock } from "@/ToolCallBlocks.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";
@@ -15,7 +15,9 @@ import { useCallback, type ReactNode } from "react";
 import type { TaskChatToolCallTreeNode } from "@/lib/toolCallTree.js";
 import type { MyCodePlanStep } from "@mycode/shared";
 
-const EXPLORE_TOOL_ICON = <SearchIcon className="size-4 shrink-0 text-foreground-subtle" />;
+const EXPLORE_TOOL_ICON = (
+  <SearchIcon className="size-3.5 shrink-0 text-foreground-subtle" strokeWidth={1.5} />
+);
 
 type IntlLike = {
   formatMessage: (descriptor: { id: string }, values?: Record<string, string>) => string;
@@ -452,7 +454,13 @@ export function ExploreToolCallBlock(context: ToolCallBlockRenderContext) {
     <>
       <ToolLayout
         toolId={toolCall.toolId}
-        icon={EXPLORE_TOOL_ICON}
+        icon={
+          counts.file > 0 && counts.search === 0 && counts.list === 0 ? (
+            <BookOpenIcon className="size-3.5 shrink-0 text-foreground-subtle" strokeWidth={1.5} />
+          ) : (
+            EXPLORE_TOOL_ICON
+          )
+        }
         canToggle={context.canToggle ?? true}
         forceOpen={context.forceOpen ?? false}
         kindLabel={kindLabel}

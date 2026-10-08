@@ -178,8 +178,6 @@ function createWebPlatform(): IPlatformService {
       window.open(url, "_blank", "noopener,noreferrer");
     },
     openFeedback: () => Promise.resolve(),
-    openCommunity: () => Promise.resolve(),
-    canOpenCommunity: () => Promise.resolve(false),
     openInFileManager: () =>
       Promise.resolve({ success: false, error: "Not supported in web mode" }),
     openExternalFile: () => Promise.resolve({ success: false, error: "Not supported in web mode" }),
@@ -369,11 +367,8 @@ async function bootstrapWebApp() {
             preferDirectoryBrowser
             supportsEmbeddedBrowser={false}
             allowRemoteWorkspace={false}
-            initialWorkspaceLoadingFallback={
-              <RootStartupLoading label="Loading workspace..." />
-            }
+            initialWorkspaceLoadingFallback={<RootStartupLoading label="Loading workspace..." />}
           />
-
         </MyCodeIntlProvider>
       </AppErrorBoundary>,
     );

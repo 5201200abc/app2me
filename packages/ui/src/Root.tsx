@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- Root 当前集中编排启动和 workspace shell wiring，先保持入口收口避免跨层状态拆散。 */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { LucideProvider, RefreshCw } from "lucide-react";
+import { IconProvider, RefreshCw } from "@/components/icons/tabler.js";
 import {
   APP_RUNTIME_PREFERENCES_CHANGED_BROADCAST_CHANNEL,
   DesktopCommandIds,
@@ -71,7 +71,7 @@ import {
   reconcileConversationTelemetryWorkspaceScopes,
 } from "@/v4/telemetry/ConversationTelemetryAttachment.js";
 
-const DEFAULT_LUCIDE_STROKE_WIDTH = 1.5;
+const DEFAULT_ICON_STROKE_WIDTH = 2;
 interface RemoteConnectionOpenPreference {
   preferredKind?: RemoteTarget["kind"];
   preferredWslDistro?: string;
@@ -84,13 +84,8 @@ interface RemoteConnectionOpenPreference {
  */
 export function Root(props: RootProps) {
   return (
-    <LucideProvider strokeWidth={DEFAULT_LUCIDE_STROKE_WIDTH}>
-      {/*
-       * 之前通过 lucide.tsx 包装每个图标，把默认 strokeWidth 固定成 1.5。
-       * 现在移除包装文件后，如果不在根层统一注入，按钮、列表和工具栏里的 Lucide 图标会回退到 2，
-       * 导致同一套 size class 下视觉显得更粗、更挤。这里改用官方 LucideProvider 保持默认值，
-       * 同时保留个别图标显式传入 strokeWidth 时的覆盖能力。
-       */}
+    <IconProvider strokeWidth={DEFAULT_ICON_STROKE_WIDTH}>
+      {/* 操作图形统一使用 Tabler，根层只注入默认线宽，显式 SVG 属性仍可覆盖。 */}
       <TooltipProvider>
         {/*
          * 大会话消息动作里会出现大量 tooltip。Provider 如果跟随每个 tooltip 实例创建，
@@ -112,7 +107,7 @@ export function Root(props: RootProps) {
           </PlatformProvider>
         </ServiceProvider>
       </TooltipProvider>
-    </LucideProvider>
+    </IconProvider>
   );
 }
 
@@ -160,7 +155,7 @@ function RootInner({
   // 动态工作流灰度快照的唯一取数点：
   // 放在 app 级 ServiceProvider 这一层取一次，自动化页与 run 面板只读。消费方可能位于
   // 工作区级 ServiceProvider 内（远程 Host 的 accessor），由它们取数会拿到另一台 Host 的答案。
-  useDynamicWorkflowAvailabilityLoader(services.codingPlanSubscriptionService);
+  useDynamicWorkflowAvailabilityLoader(services.runtimeConfigService);
 
   const { intl, locale } = useMyCodeIntl();
   const theme = useMyCodeStore((state) => state.theme);

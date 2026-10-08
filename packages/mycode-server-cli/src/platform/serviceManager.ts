@@ -30,7 +30,7 @@ export function createDaemonServiceDescriptor(options: {
       options.platform === "win32" ? "mycode.cmd" : "mycode",
     ),
     args: ["serve", "--supervisor", "--service-entry", "--server-root", options.layout.serverRoot],
-    name: `com.zhipu.mycode.server.${stablePathId(options.layout.serverRoot)}`,
+    name: `com.app2me.server.${stablePathId(options.layout.serverRoot)}`,
   });
 }
 
@@ -46,7 +46,7 @@ export function createServiceDescriptor(options: {
   args?: string[];
   name?: string;
 }): ServiceDescriptor {
-  const name = options.name ?? "com.zhipu.mycode.server";
+  const name = options.name ?? "com.app2me.server";
   const args = options.args ?? ["serve", "--daemon"];
   if (options.platform === "darwin") {
     return {

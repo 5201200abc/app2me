@@ -18,8 +18,6 @@ Commands:
   app-server Run the MyCode Protocol stdio app server
   commands   List custom slash commands (\`commands list\`)
   doctor     Inspect runtime and packaging assumptions
-  login [zai|bigmodel]  Sign in through browser authorization
-  logout     Remove the shared Z.AI login credentials
   plugins    Manage plugins and marketplaces (\`plugins list|install|uninstall|enable|disable|update|validate|marketplace ...\`; alias: plugin)
   skills     List local skills (\`skills list\`)
   tui        Open the terminal UI
@@ -54,8 +52,6 @@ Options:
 
 Slash Commands:
   /help [command]       Show slash command help
-  /login                Choose Z.AI or BigModel browser login
-  /logout               Remove the shared Z.AI login credentials
   /compact [instructions]  Compact the current conversation
   /expert [status|resume|stop|<task>]  Run or manage the expert workflow
   /dwf [list|cancel|resume]  List, cancel, or resume dynamic workflow runs
@@ -105,34 +101,7 @@ Slash Commands:
     loginSetup: {
       emptyMessage: "No login options are available.",
       help: "Use Up/Down to choose, Enter to select.",
-      options: {
-        bigmodelApiKey: {
-          inputPrimary: "Enter BigModel Coding Plan API Key",
-          inputSecondary: "Paste the key here. It is hidden while typing.",
-          primary: "BigModel Coding Plan API Key",
-          secondary: "Paste a Coding Plan API key manually.",
-        },
-        bigmodelOauth: {
-          pendingPrimary: "Waiting for BigModel authorization",
-          pendingSecondary:
-            "Complete sign-in in your browser. Authorization is detected automatically.",
-          primary: "BigModel Coding Plan",
-          secondary: "Open browser login; authorization is detected automatically.",
-        },
-        zaiApiKey: {
-          inputPrimary: "Enter Z.AI Coding Plan API Key",
-          inputSecondary: "Paste the key here. It is hidden while typing.",
-          primary: "Z.AI Coding Plan API Key",
-          secondary: "Paste a Coding Plan API key manually.",
-        },
-        zaiOauth: {
-          pendingPrimary: "Waiting for Z.AI authorization",
-          pendingSecondary:
-            "Complete sign-in in your browser. I will continue when authorization finishes.",
-          primary: "Z.AI Coding Plan",
-          secondary: "Open browser login and create a Coding Plan API key.",
-        },
-      },
+      options: {},
       pending: {
         cancelStatus: "Login cancelled. Choose a setup method.",
         help: "Esc cancels and returns to setup choices.",

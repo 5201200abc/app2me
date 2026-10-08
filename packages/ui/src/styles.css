@@ -4,6 +4,7 @@
 @import "shadcn/tailwind.css";
 @import "@xterm/xterm/css/xterm.css";
 @import "katex/dist/katex.min.css";
+@import "./conversation-reference.css";
 @source "../../../node_modules/streamdown/dist/*.js"; /* 显式扫描 streamdown 的运行时类名 */
 
 @plugin "@tailwindcss/typography";
@@ -55,12 +56,49 @@ body,
 }
 
 :root {
-  --ui-font-size: 14px;
+  --ui-font-size: 1rem;
+  --ui-space: calc(var(--ui-font-size) * 0.2666666667);
+  --ui-body-line-height: 1.7;
+  --color-conversation-bubble: #7e4426;
+  --color-conversation-bubble-foreground: #ffffff;
+  --color-conversation-link: #e59a69;
+  --color-conversation-send: #c46537;
+  --color-conversation-send-disabled: var(--color-conversation-send);
+  --color-conversation-send-foreground: #ffffff;
+  --color-conversation-panel: var(--color-popover);
+  --color-composer-outer: var(--color-surface);
+  --color-placeholder: var(--color-foreground-subtlest);
+  --color-draft-border: var(--color-border);
+  --color-draft-dot: var(--color-success);
 }
 
 body {
+  font-size: var(--text-ui-base);
   margin: 0;
   overflow: hidden;
+}
+
+/* 回复行尾此前因自然分词与长内联代码形成参差或越界；统一正文两端对齐，
+ * 只允许内联片段在阅读区换行，代码块继续保留自己的预格式与滚动。 */
+.conversation-answer {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.conversation-answer :is(p, li) {
+  text-align: justify;
+  text-align-last: start;
+  text-justify: inter-character;
+}
+
+.conversation-answer :is(p, li, td) code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  vertical-align: baseline;
+  margin-inline: 0;
+  -webkit-box-decoration-break: slice;
+  box-decoration-break: slice;
 }
 
 /* 中文模板描述按单字断行会拆开“简报”等词组，并把标点挤到下一行。
@@ -140,15 +178,15 @@ body {
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
     "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", monospace;
-  --text-ui-xl: calc(var(--ui-font-size) + 4px);
-  --text-ui-lg: calc(var(--ui-font-size) + 2px);
+  --text-ui-xl: calc(var(--ui-font-size) * 1.25);
+  --text-ui-lg: calc(var(--ui-font-size) * 1.125);
   --text-ui-base: var(--ui-font-size);
-  --text-ui-caption: calc(var(--ui-font-size) - 1px);
-  --text-ui-sm: calc(var(--ui-font-size) - 2px);
-  --text-ui-xs: calc(var(--ui-font-size) - 4px);
+  --text-ui-caption: calc(var(--ui-font-size) * 0.9375);
+  --text-ui-sm: calc(var(--ui-font-size) * 0.8125);
+  --text-ui-xs: calc(var(--ui-font-size) * 0.6875);
   /* 例外刻度：仅限工作流图轴面（刻度标签、通道码、单位后缀），不得用于内容文本。
    * 见 DESIGN.md「UI font tokens」。 */
-  --text-ui-2xs: calc(var(--ui-font-size) - 5px);
+  --text-ui-2xs: calc(var(--ui-font-size) * 0.625);
   /* 大写等宽微标签（CAUSALITY GRAPH / TIMEBASE / KEY）在 9-10px 需要加宽字距。 */
   --tracking-wf-label: 0.09em;
   /* iOS Safari 会缩放小于 16px 的聚焦输入；该平台下限不能跟随界面字号降低。 */
@@ -233,7 +271,7 @@ body {
   --color-context-breakdown-5: var(--color-sky-200);
   --color-context-breakdown-6: var(--color-sky-100);
   --color-context-breakdown-7: color-mix(in oklab, var(--color-sky-100) 72%, var(--color-white));
-  /*  热力图之前复用 brand 色，Zai 主题下 brand 是黑/白，无法保持 sky 语义。 */
+
   --color-usage-heatmap-0: color-mix(in oklab, var(--color-sky-500) 0%, var(--color-surface));
   --color-usage-heatmap-1: color-mix(in oklab, var(--color-sky-500) 18%, var(--color-surface));
   --color-usage-heatmap-2: color-mix(in oklab, var(--color-sky-500) 36%, var(--color-surface));
@@ -301,8 +339,6 @@ body {
   --color-plugin-node: color-mix(in oklab, var(--color-amber-600) 14%, transparent);
   --color-plugin-node-hover: color-mix(in oklab, var(--color-amber-600) 20%, transparent);
   --color-plugin-node-foreground: var(--color-amber-600);
-  --color-plugin-paid-plan-badge: #ffe3c8;
-  --color-plugin-paid-plan-badge-foreground: #4b280f;
 }
 
 .dark {
@@ -454,8 +490,6 @@ body {
   --color-plugin-node: color-mix(in oklab, var(--color-amber-400) 18%, transparent);
   --color-plugin-node-hover: color-mix(in oklab, var(--color-amber-400) 24%, transparent);
   --color-plugin-node-foreground: var(--color-amber-300);
-  --color-plugin-paid-plan-badge: #5a341b;
-  --color-plugin-paid-plan-badge-foreground: #ffd8b8;
 }
 
 .theme-mycode-light {
@@ -599,17 +633,26 @@ body {
   --color-plugin-node: rgba(184, 122, 26, 0.1);
   --color-plugin-node-hover: rgba(184, 122, 26, 0.16);
   --color-plugin-node-foreground: #b87a1a;
-  --color-plugin-paid-plan-badge: #ffe3c8;
-  --color-plugin-paid-plan-badge-foreground: #4b280f;
 }
 
 .theme-mycode-dark {
   --animated-gradient-text-strong: rgba(255, 255, 255, 1);
   --animated-gradient-text-soft: rgba(255, 255, 255, 0.22);
-  --color-background: #161616;
-  --color-background-win-alt: #2b2b2b;
-  --color-background-alt: color-mix(in oklab, var(--color-background-win-alt) 60%, transparent);
-  --color-brand: #ffffff;
+  --color-background: #1f1f23;
+  --color-chat-input: #2a2a30;
+  --color-chat-placeholder: #9a9aa3;
+  --color-conversation-panel: #333338;
+  --color-composer-outer: #26262b;
+  --color-conversation-link: #e58660;
+  --color-conversation-send: #e0805a;
+  --color-conversation-send-disabled: #634438;
+  --color-conversation-send-foreground: var(--color-white);
+  --color-placeholder: var(--color-foreground-subtle);
+  --color-draft-border: rgba(255, 255, 255, 0.25);
+  --color-draft-dot: #37e478;
+  --color-background-win-alt: #1e1e1e;
+  --color-background-alt: var(--color-sidebar);
+  --color-brand: #e0805a;
   --color-trajectory-user: #60a5fa;
   --color-trajectory-assistant: #2dd4bf;
   --color-trajectory-reasoning: #a78bfa;
@@ -621,15 +664,15 @@ body {
   --color-accent: #001d3d;
   --color-find-highlight: #542500;
   --color-find-highlight-active: #ff8a30;
-  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border: rgba(255, 255, 255, 0.08);
   --color-border-hover: rgba(255, 255, 255, 0.15);
-  --color-hover: rgba(255, 255, 255, 0.05);
-  --color-selected: rgba(255, 255, 255, 0.1);
-  --color-header: #202020;
+  --color-hover: rgba(255, 255, 255, 0.08);
+  --color-selected: rgba(255, 255, 255, 0.08);
+  --color-header: var(--color-background);
   --color-panel: #202020;
-  --color-sidebar: #161616;
+  --color-sidebar: #17171a;
   --color-surface: rgba(255, 255, 255, 0.05);
-  --color-surface-hover: rgba(255, 255, 255, 0.1);
+  --color-surface-hover: rgba(255, 255, 255, 0.08);
   --color-card: #2b2b2b;
   --color-card-selected: var(--color-input);
   --color-card-border: var(--color-border);
@@ -637,11 +680,11 @@ body {
   --color-popover-foreground: var(--color-foreground);
   --color-popover-header: #202020;
   --color-popover-border: var(--color-border);
-  --color-input: #2b2b2b;
+  --color-input: #2e2e35;
   --color-input-focused: var(--color-input);
   --color-input-border: var(--color-border);
   --color-input-border-hover: var(--color-border-hover);
-  --color-input-border-focused: var(--color-border-hover);
+  --color-input-border-focused: var(--color-brand);
   --color-terminal-bg: var(--color-background);
   --color-terminal-fg: var(--color-foreground);
   --color-terminal-cursor: #f8f8f8;
@@ -695,16 +738,16 @@ body {
   --color-interaction-ask-fill: rgba(70, 191, 114, 0.24);
   --color-interaction-confirmation-surface: rgba(70, 191, 114, 0.16);
   --color-interaction-confirmation-foreground: #87d9a4;
-  --color-foreground: var(--color-neutral-300);
-  --color-foreground-subtle: color-mix(in oklab, var(--color-neutral-300) 60%, transparent);
-  --color-foreground-subtlest: color-mix(in oklab, var(--color-neutral-300) 30%, transparent);
+  --color-foreground: #ececf1;
+  --color-foreground-subtle: #a1a1aa;
+  --color-foreground-subtlest: #9b9ba5;
   --color-foreground-inverse: #000000;
-  --color-success: #46bf72;
+  --color-success: #50d982;
   --color-success-foreground: #000000;
   --color-idle-task: #7b5ce5;
   --color-idle-task-surface: #160d38;
   --color-destructive: #ff5c5c;
-  /* Zai Dark 曾把 destructive 前景设为黑色，与红色危险按钮的固定白字设计冲突。 */
+
   --color-destructive-foreground: #ffffff;
   --color-warning: #ff8a30;
   --color-feedback-privacy-hint: var(--color-yellow-300);
@@ -745,8 +788,6 @@ body {
   --color-plugin-node: rgba(224, 174, 112, 0.16);
   --color-plugin-node-hover: rgba(224, 174, 112, 0.22);
   --color-plugin-node-foreground: #efc58f;
-  --color-plugin-paid-plan-badge: #5a341b;
-  --color-plugin-paid-plan-badge-foreground: #ffd8b8;
 }
 
 /*
@@ -2058,32 +2099,430 @@ body {
 }
 .thought-strength-slider {
   appearance: none;
-  height: 1.75rem;
+  height: 0.625rem;
   border-radius: 9999px;
-  border: 1px solid var(--color-border);
+  border: 0;
   cursor: pointer;
+  background: linear-gradient(
+    to right,
+    var(--thought-strength-color) 0%,
+    var(--thought-strength-color) var(--thought-strength-position),
+    var(--color-hover) var(--thought-strength-position),
+    var(--color-hover) 100%
+  );
+  transition:
+    --thought-strength-position 180ms ease,
+    --thought-strength-color 180ms ease;
 }
 .thought-strength-slider:focus-visible {
-  outline: 2px solid var(--color-reasoning-accent);
+  outline: 2px solid var(--thought-strength-color);
   outline-offset: 5px;
 }
 .thought-strength-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 2rem;
-  height: 2rem;
+  width: 0.875rem;
+  height: 0.875rem;
   border-radius: 50%;
-  background: white;
-  box-shadow: 0 1px 5px #0002;
+  background: var(--color-foreground);
+  box-shadow: 0 1px 2px #0002;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
 }
 .thought-strength-slider::-moz-range-thumb {
-  width: 2rem;
-  height: 2rem;
+  width: 0.875rem;
+  height: 0.875rem;
   border: 0;
   border-radius: 50%;
-  background: white;
-  box-shadow: 0 1px 5px #0002;
+  background: var(--color-foreground);
+  box-shadow: 0 1px 2px #0002;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+.thought-strength-slider:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--thought-strength-color) 20%, transparent);
+}
+.thought-strength-slider:active::-moz-range-thumb {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--thought-strength-color) 20%, transparent);
 }
 .thought-strength-slider:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+@property --thought-strength-position {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --thought-strength-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #9ca3af;
+}
+@media (prefers-reduced-motion: reduce) {
+  /* 不把不同浏览器的专用伪元素合并：未知伪元素会使 Chromium 丢弃整组规则。 */
+  .thought-strength-slider {
+    transition: none;
+  }
+  .thought-strength-slider::-webkit-slider-thumb {
+    transition: none;
+  }
+  .thought-strength-slider::-moz-range-thumb {
+    transition: none;
+  }
+}
+
+/* 设置页各模块共享紧凑控件尺寸，避免独立模块仍保留大按钮与大圆角。 */
+/* 能力分组与迁入常规的记忆仍使用紧凑文字；代码、Diff 与终端不参与归一化。 */
+.settings-compact:is(
+  [data-settings-group="integrations"],
+  [data-settings-group="coding"],
+  [data-settings-group="tools"]
+),
+.settings-compact:is(
+    [data-settings-group="integrations"],
+    [data-settings-group="coding"],
+    [data-settings-group="tools"]
+  )
+  [class*="text-ui-"],
+.settings-compact [data-general-settings-memory],
+.settings-compact [data-general-settings-memory] [class*="text-ui-"],
+.agent-settings-typography,
+.agent-settings-typography [class*="text-ui-"] {
+  font-size: var(--text-ui-caption);
+}
+.settings-compact [data-slot="card"] {
+  border-radius: var(--radius-lg);
+  box-shadow: none;
+}
+.settings-compact :is([data-slot="button"], [data-slot="input"], [data-slot="select-trigger"]) {
+  min-height: 1.75rem;
+  height: 1.75rem;
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  font-size: var(--text-ui-caption);
+}
+.settings-compact [data-slot="button"][data-size^="icon"] {
+  width: 1.75rem;
+  padding: 0;
+}
+/* 两行能力页头保持标题层级和搜索轮廓，不受旧模块字号归一化覆盖。 */
+.settings-compact [data-settings-resource-page-header] .text-ui-xl {
+  font-size: var(--text-ui-xl);
+}
+.settings-compact [data-settings-resource-page-header] input[type="search"] {
+  border-radius: calc(infinity * 1px);
+}
+/* 字号步进共用一个输入框；通用按钮的 28px 高度会把两枚箭头撑出容器。 */
+.settings-compact .appearance-font-stepper [data-slot="button"] {
+  min-height: 0;
+  height: auto;
+  border-radius: 0;
+}
+.settings-compact .shortcut-settings [data-slot="button"][data-size^="icon"] {
+  width: 1.5rem;
+  height: 1.5rem;
+  min-height: 1.5rem;
+}
+.composer-action-menu [role="option"] {
+  gap: 0.5rem;
+  border-radius: var(--radius-md);
+  font-size: var(--text-ui-caption);
+}
+.composer-action-menu [role="option"] :is(.text-ui-base, .text-ui-caption) {
+  font-size: var(--text-ui-caption);
+  font-weight: 400;
+}
+.composer-action-menu [data-trigger="+"] {
+  border-radius: var(--radius-xl);
+  border-color: color-mix(in oklab, var(--color-border) 60%, transparent);
+}
+.composer-action-menu svg,
+.workspace-sidebar svg,
+.workspace-sidebar-footer svg {
+  stroke-width: 1.5;
+}
+.workspace-sidebar [data-size="lg"] {
+  height: 2rem;
+  font-size: var(--text-ui-base);
+  color: var(--color-foreground-subtle);
+}
+.workspace-sidebar :is(.text-ui-base, .text-ui-sm) {
+  font-size: var(--text-ui-base);
+}
+/* 欢迎语复用 xl 语义字号，在局部放大，并跟随界面字号设置。 */
+.draft-welcome-title {
+  --text-ui-xl: max(1.375rem, calc(var(--ui-font-size) * 1.6666666667));
+}
+.chat-composer-input-surface [data-prompt-editor-shell] {
+  border-radius: var(--conversation-composer-radius, 16px);
+}
+.chat-composer-region [data-prompt-editor-shell] {
+  border-color: color-mix(in oklab, var(--color-input-border) 65%, transparent);
+}
+[data-workspace-conversation-frame] {
+  --workspace-toolbar-edge: 8px;
+  border-color: color-mix(in oklab, var(--color-border) 60%, transparent);
+  box-shadow: none;
+}
+[data-testid="workspace-header"] > div:last-child {
+  padding-inline-end: var(--workspace-toolbar-edge, 8px);
+}
+.platform-mac-desktop [data-workspace-conversation-frame] {
+  border-radius: 8px;
+}
+.composer-action-menu [data-testid^="prompt-suggestion-section"] {
+  font-size: var(--text-ui-xs);
+  font-weight: 500;
+}
+@media (pointer: coarse) {
+  .workspace-sidebar-footer button {
+    min-height: 2.25rem;
+  }
+  .workspace-sidebar-footer button[data-size^="icon"] {
+    min-width: 2.25rem;
+  }
+  .settings-compact :is([data-slot="button"], [data-slot="input"], [data-slot="select-trigger"]) {
+    min-height: 2.25rem;
+    height: 2.25rem;
+  }
+  .settings-compact [data-slot="button"][data-size^="icon"] {
+    width: 2.25rem;
+  }
+  .settings-compact .shortcut-settings [data-slot="button"][data-size^="icon"] {
+    width: 2.25rem;
+    height: 2.25rem;
+    min-height: 2.25rem;
+  }
+  .settings-compact .appearance-font-stepper [data-slot="button"] {
+    min-height: 0;
+    height: auto;
+  }
+}
+
+.workspace-preferences-menu
+  :is(
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-sub-trigger"],
+    [data-slot="dropdown-menu-radio-item"]
+  ) {
+  min-height: 24px;
+  gap: 4px;
+  padding-block: 2px;
+  font-size: var(--text-ui-sm);
+  line-height: 20px;
+  font-weight: 400;
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+}
+.workspace-preferences-menu svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  stroke-width: 1.5;
+}
+.conversation-message-actions button svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+.composer-action-menu [role="option"] svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+@media (pointer: coarse) {
+  .workspace-preferences-menu
+    :is(
+      [data-slot="dropdown-menu-item"],
+      [data-slot="dropdown-menu-sub-trigger"],
+      [data-slot="dropdown-menu-radio-item"]
+    ) {
+    min-height: 2.25rem;
+  }
+}
+
+.tool-call-layout .tool-summary-kind-label {
+  font-weight: 400;
+}
+
+.composer-model-menu
+  :is(
+    [data-slot="dropdown-menu-item"],
+    [data-slot="dropdown-menu-radio-item"],
+    [data-slot="dropdown-menu-sub-trigger"],
+    [data-slot="dropdown-menu-label"]
+  ) {
+  min-height: 28px;
+  padding-block: 4px;
+  font-size: var(--text-ui-caption);
+  line-height: 20px;
+  font-weight: 400;
+}
+.composer-model-menu svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 1.5;
+}
+
+/* 字号与密度共用全局 token；只缩放指定控件，保留布局宽度与圆角。 */
+:where([data-slot="button"][data-size^="icon"]) {
+  --ui-button-units: 7;
+  width: calc(var(--ui-space) * var(--ui-button-units));
+  height: calc(var(--ui-space) * var(--ui-button-units));
+}
+:where([data-slot="button"][data-size="icon-xs"]) {
+  --ui-button-units: 5;
+}
+:where([data-slot="button"][data-size="icon-sm"]) {
+  --ui-button-units: 6;
+}
+:where([data-slot="button"][data-size="icon-lg"]) {
+  --ui-button-units: 8;
+}
+:where([data-slot="button"][data-size^="icon"]) > svg {
+  width: calc(var(--ui-space) * var(--ui-glyph-units, 4));
+  height: calc(var(--ui-space) * var(--ui-glyph-units, 4));
+}
+:where([data-slot="button"][data-size^="icon"]) > svg:where(.size-2\.5) {
+  --ui-glyph-units: 2.5;
+}
+:where([data-slot="button"][data-size^="icon"]) > svg:where(.size-3) {
+  --ui-glyph-units: 3;
+}
+:where([data-slot="button"][data-size^="icon"]) > svg:where(.size-3\.5) {
+  --ui-glyph-units: 3.5;
+}
+:where([data-slot="button"][data-size^="icon"]) > svg:where(.size-4) {
+  --ui-glyph-units: 4;
+}
+:where([data-slot="button"][data-size^="icon"]) > svg:where(.size-5) {
+  --ui-glyph-units: 5;
+}
+.workspace-sidebar [data-size="lg"] {
+  height: calc(var(--ui-space) * 8);
+}
+.workspace-sidebar :is([data-task-item-key], [data-grouped-task-key]) {
+  min-height: calc(var(--ui-space) * 7);
+  padding-block: 0;
+}
+.workspace-sidebar [data-task-title-marquee-track] {
+  font-size: var(--text-ui-caption);
+}
+.workspace-sidebar [data-task-time] {
+  font-size: var(--text-ui-sm);
+}
+.workspace-sidebar
+  :is([data-task-item-key], [data-grouped-task-key]):not(:hover)
+  :has(> [data-task-title-marquee-track]) {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.workspace-sidebar
+  :is([data-task-item-key], [data-grouped-task-key]):not(:hover)
+  [data-task-title-marquee-track] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+.workspace-sidebar
+  :is([data-task-item-key], [data-grouped-task-key]):not(:hover)
+  [data-task-title-copy="original"] {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspace-sidebar
+  :is([data-task-item-key], [data-grouped-task-key]):not(:hover)
+  [data-task-title-copy="duplicate"] {
+  display: none;
+}
+[data-testid="workspace-title"] {
+  font-size: var(--text-ui-base);
+}
+[data-v4-user-input-meta] {
+  font-size: var(--text-ui-sm);
+}
+
+/* MyChat 使用相同主题 owner，只把输入面和占位色映射到其第三层。 */
+.theme-mycode-dark .mychat-surface {
+  --color-input: var(--color-chat-input);
+  --color-placeholder: var(--color-chat-placeholder);
+}
+.theme-mycode-dark :is(.workspace-sidebar, .mychat-surface .sidebar) [data-task-time],
+.theme-mycode-dark [data-grouped-draft] {
+  color: var(--color-foreground-subtle);
+}
+.theme-mycode-dark [data-grouped-draft] {
+  border-color: var(--color-draft-border);
+}
+.theme-mycode-dark [data-grouped-draft] > span:first-child {
+  color: var(--color-foreground-subtle);
+}
+.theme-mycode-dark [data-grouped-draft-dot] {
+  background: var(--color-draft-dot);
+}
+.theme-mycode-dark .draft-welcome-title {
+  color: var(--color-foreground);
+}
+
+.theme-mycode-dark [data-testid="workspace-header"] {
+  background: var(--color-header);
+  border-bottom-color: var(--color-border);
+}
+
+.theme-mycode-dark .workspace-sidebar [data-grouped-draft]:hover {
+  background: var(--color-hover);
+}
+.theme-mycode-dark [data-grouped-draft].bg-selected > span:first-child {
+  color: var(--color-foreground);
+}
+
+/* 主界面系统文本不再依靠粗体分层，字号与语义颜色继续由既有 token 管理。 */
+.workspace-sidebar,
+.conversation-reference-surface {
+  --font-weight-medium: 400;
+  --font-weight-semibold: 400;
+  --font-weight-bold: 400;
+  font-weight: 400;
+}
+.conversation-reference-surface .conversation-work-summary button {
+  font-size: var(--text-ui-base);
+}
+/* 主导航的 group 无边框，而 Button 有 1px 透明边框；统一移除后首字可精确对齐。 */
+.workspace-sidebar [data-sidebar-primary-actions] {
+  gap: calc(var(--ui-space) * 0.5);
+  padding-block: calc(var(--ui-space) * 2);
+}
+.workspace-sidebar
+  [data-sidebar-primary-actions]
+  :is([data-size="lg"], [data-testid="task-new-button"]) {
+  height: calc(var(--ui-space) * 8);
+  padding-inline: calc(var(--ui-space) * 2);
+  border-width: 0;
+  gap: calc(var(--ui-space) * 2);
+  font-weight: 400;
+  font-size: var(--text-ui-base);
+}
+.workspace-sidebar [data-sidebar-primary-actions] [data-testid="task-new-button"] > div {
+  gap: calc(var(--ui-space) * 2);
+  font-size: var(--text-ui-base);
+}
+.workspace-sidebar [data-sidebar-primary-actions] svg {
+  width: calc(var(--ui-space) * 4.5);
+  height: calc(var(--ui-space) * 4.5);
+  flex: none;
+}
+
+/* 列表从 margin 留白改为统一 gap，减少单行高度且保留工作流额外内容的自然高度。 */
+.workspace-sidebar [data-sidebar-task-list] {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--ui-space) * 0.25);
+}
+.workspace-sidebar [data-sidebar-task-list] > * {
+  margin-block: 0;
 }

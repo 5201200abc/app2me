@@ -1,5 +1,5 @@
 import type { MyCodeGroupedTaskViewNode, MyCodeTaskGroupColor } from "@mycode/services";
-import { ChevronDownIcon, ChevronRightIcon, MessageCirclePlus } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, MessageCirclePlus } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import {

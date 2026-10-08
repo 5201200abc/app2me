@@ -1,10 +1,11 @@
+import { stripDisplayEmoji } from "@/lib/compactConversationDisplay.js";
 /*
  * Derived from vercel/ai-elements (packages/elements/src/tool.tsx).
  * Copyright 2023 Vercel, Inc. Licensed under Apache-2.0.
  * Modified by MyCode: local integration, formatting and adaptations.
  * See THIRD-PARTY-NOTICES.md in the repository root for license and provenance.
  */
-"use client";
+("use client");
 
 import { Badge } from "../ui/badge.js";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible.js";
@@ -12,12 +13,12 @@ import { cn } from "../lib/utils.js";
 import type { DynamicToolUIPart, ToolUIPart } from "ai";
 import {
   CheckCircleIcon,
-  ChevronDownIcon,
+  ChevronRightIcon,
   CircleIcon,
   ClockIcon,
-  WrenchIcon,
+  SquareTerminalIcon,
   XCircleIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { ComponentProps, ReactNode } from "react";
 import { isValidElement } from "react";
 
@@ -89,11 +90,11 @@ export const ToolHeader = ({
       {...props}
     >
       <div className="flex items-center gap-2">
-        <WrenchIcon className="size-4 text-muted-foreground" />
+        <SquareTerminalIcon className="size-4 text-muted-foreground" />
         <span className="font-medium text-ui-base">{title ?? derivedName}</span>
         {getStatusBadge(state)}
       </div>
-      <ChevronDownIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+      <ChevronRightIcon className="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-90" />
     </CollapsibleTrigger>
   );
 };
@@ -161,7 +162,7 @@ export const ToolOutput = ({ className, output, errorText, ...props }: ToolOutpu
           // 工具失败时很多 provider 会把错误同时塞进 output.error 和原始 payload。
           // 之前这里会一边显示错误，一边继续把 JSON result 整块渲染出来，视觉上像“报错被参数淹没”。
           // 失败态只保留可读错误文本，避免用户继续读无效结构化数据。
-          <div className="whitespace-pre-wrap p-3">{errorText}</div>
+          <div className="whitespace-pre-wrap p-3">{stripDisplayEmoji(errorText)}</div>
         ) : null}
         {Output}
       </div>

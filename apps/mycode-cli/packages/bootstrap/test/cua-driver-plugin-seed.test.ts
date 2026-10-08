@@ -7,6 +7,7 @@ test("Computer Use seed carries the native skill, docs and matching manifest ver
   const source = resolveFilesystemSeedSource();
   const plugin = source?.plugins.find(({ definition }) => definition.name === "computer-use");
   assert.ok(plugin, "Computer Use source was not discoverable");
+  assert.equal(plugin.definition.listing?.displayName_i18n?.["zh-CN"], "计算机使用");
   assert.deepEqual(plugin.missingSeedPaths, []);
   assert.deepEqual(plugin.definition.hostMcpServerNames, ["cua_driver"]);
   assert.deepEqual(plugin.definition.runtimeTopLevelPaths, []);

@@ -1,25 +1,26 @@
 /**
  * 构建期开关：为真时安装包使用 Preview 身份，而后端环境仍由 `MYCODE_ENV` 单独决定。
  * 典型用法是 `MYCODE_ENV=production MYCODE_PREVIEW_IDENTITY=1`，得到一个连接生产后端、
- * 可与正式版并排安装的 `MyCode Preview`。
+ * 可与正式版并排安装的 `app2me Preview`。
  */
 export const MYCODE_PREVIEW_IDENTITY_ENV = "MYCODE_PREVIEW_IDENTITY";
 
+// 应用名属于 app2me；既有 appId 是安装与系统授权身份，保留以兼容旧安装。
 const PRODUCTION_IDENTITY = Object.freeze({
   flavor: "production",
   appId: "dev.mycode.app",
-  productName: "MyCode",
-  linuxExecutableName: "mycode",
-  linuxPackageName: "mycode",
+  productName: "app2me",
+  linuxExecutableName: "app2me",
+  linuxPackageName: "app2me",
   cuaHelperInstallVariant: null,
 });
 
 const PREVIEW_IDENTITY = Object.freeze({
   flavor: "preview",
   appId: "dev.mycode.app.preview",
-  productName: "MyCode Preview",
-  linuxExecutableName: "mycode-preview",
-  linuxPackageName: "mycode-preview",
+  productName: "app2me Preview",
+  linuxExecutableName: "app2me-preview",
+  linuxPackageName: "app2me-preview",
   cuaHelperInstallVariant: "preview",
 });
 
@@ -69,7 +70,7 @@ export function resolveDesktopProductIdentity(env = process.env) {
 
 /**
  * 产物文件名后缀标记的是后端环境而不是身份：`_TEST` 只出现在测试后端的安装包上。
- * 生产后端的 Preview 包靠 productName（`MyCode Preview-<version>-...`）与正式包区分。
+ * 生产后端的 Preview 包靠 productName（`app2me Preview-<version>-...`）与正式包区分。
  */
 export function resolveDesktopArtifactSuffix(env = process.env) {
   return normalizeDesktopMyCodeEnv(env) === "test" ? "_TEST" : "";

@@ -1,0 +1,129 @@
+name: Release app2me
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Main branch commit SHA to retry
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.version.outputs.sha }}
+      version: ${{ steps.version.outputs.version }}
+      date: ${{ steps.version.outputs.date }}
+      windows_version: ${{ steps.version.outputs.windows_version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - id: version
+        name: Prepare each source commit version
+        env:
+          AFTER: ${{ inputs.commit || github.sha }}
+          BEFORE: ${{ github.event.before }}
+          RELEASE_GIT_NAME: 5201200abc
+          RELEASE_GIT_EMAIL: 5201200abc@gmail.com
+        run: node scripts/app2me-ci-version.mjs --push "$AFTER" "$BEFORE" main
+
+  build:
+    needs: version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: mac, arch: x64, runner: macos-15-intel }
+          - { os: mac, arch: arm64, runner: macos-15 }
+          - { os: win, arch: x64, runner: windows-2025 }
+          - { os: win, arch: arm64, runner: windows-11-arm }
+          - { os: linux, arch: x64, runner: ubuntu-24.04 }
+          - { os: linux, arch: arm64, runner: ubuntu-24.04-arm }
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.0
+          cache: pnpm
+      - name: Linux packaging tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
+      - run: pnpm install --frozen-lockfile
+      - run: node scripts/licenses.mjs notices
+      - name: Release license gate
+        run: node scripts/licenses.mjs check --strict
+      - run: pnpm bootstrap
+      - name: Build architecture
+        run: pnpm release -- --date ${{ needs.version.outputs.date }} --os ${{ matrix.os }} --arch ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-${{ matrix.arch }}
+          path: releases/current/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: [version, build]
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: app2me-publish-latest
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.sha }}
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          path: releases/ci-input
+      - id: current
+        name: Reject superseded release
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          git fetch origin main
+          current=$(git show origin/main:package.json | node -e 'let s="";process.stdin.on("data",c=>s+=c);process.stdin.on("end",()=>process.stdout.write(JSON.parse(s).version))')
+          if [ "$current" = "$VERSION" ]; then echo "publish=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Verify and publish all architectures
+        if: steps.current.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/app2me-ci-artifacts.mjs releases/ci-input releases/ci-combined --publish

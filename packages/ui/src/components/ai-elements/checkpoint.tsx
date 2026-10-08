@@ -10,8 +10,8 @@ import { Button } from "../ui/button.js";
 import { Separator } from "../ui/separator.js";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip.js";
 import { cn } from "../lib/utils.js";
-import type { LucideProps } from "lucide-react";
-import { BookmarkIcon } from "lucide-react";
+import type { UiIconProps } from "@/components/icons/tabler.js";
+import { BookmarkIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps, HTMLAttributes } from "react";
 
 export type CheckpointProps = HTMLAttributes<HTMLDivElement>;
@@ -26,7 +26,7 @@ export const Checkpoint = ({ className, children, ...props }: CheckpointProps) =
   </div>
 );
 
-export type CheckpointIconProps = LucideProps;
+export type CheckpointIconProps = UiIconProps;
 
 export const CheckpointIcon = ({ className, children, ...props }: CheckpointIconProps) =>
   children ?? <BookmarkIcon className={cn("size-4 shrink-0", className)} {...props} />;

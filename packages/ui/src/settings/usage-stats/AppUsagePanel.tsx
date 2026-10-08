@@ -1,5 +1,5 @@
-import { RefreshCcw } from "lucide-react";
-import { Fragment, lazy, useState } from "react";
+import { RefreshCcw } from "@/components/icons/tabler.js";
+import { lazy, useState } from "react";
 import { APP_USAGE_RANGES } from "@mycode/shared";
 import type { AppUsageRange, AppUsageSnapshot } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
@@ -39,7 +39,7 @@ export function AppUsagePanel() {
 
   if (loading && !snapshot) {
     return (
-      <div className="space-y-5">
+      <div className="space-y-3">
         <AppUsageLifetimeSummaryStrip snapshot={lifetimeSnapshot} />
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-ui-base font-medium text-foreground">
@@ -60,7 +60,7 @@ export function AppUsagePanel() {
 
   if (!snapshot) {
     return (
-      <div className="space-y-5">
+      <div className="space-y-3">
         <AppUsageLifetimeSummaryStrip snapshot={lifetimeSnapshot} />
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-ui-base font-medium text-foreground">
@@ -80,7 +80,7 @@ export function AppUsagePanel() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3">
       <AppUsageLifetimeSummaryStrip snapshot={lifetimeSnapshot} />
       {lifetimeSnapshot?.heatmap.weeks.length ? (
         <UsageHeatmap locale={locale} intl={intl} weeks={lifetimeSnapshot.heatmap.weeks} />
@@ -117,12 +117,12 @@ export function AppUsagePanel() {
           type="button"
           variant="outline"
           size="sm"
-          className="h-8 rounded-md bg-background"
+          className="h-7 gap-1.5 rounded-md bg-background text-ui-caption"
           onClick={() => {
             void Promise.all([refresh(), refreshLifetime()]);
           }}
         >
-          <RefreshCcw className="size-3.5" />
+          <RefreshCcw className="size-3" strokeWidth={1.5} />
           {intl.formatMessage({ id: "settings.usage.refresh" })}
         </Button>
       </div>
@@ -158,17 +158,12 @@ function AppUsageLifetimeSummaryStrip({ snapshot }: { snapshot: AppUsageSnapshot
   ];
 
   return (
-    <section className="flex flex-col overflow-hidden rounded-xl bg-surface sm:flex-row sm:items-center">
-      {items.map((item, index) => (
-        <Fragment key={item.label}>
-          {index > 0 ? (
-            <div aria-hidden="true" className="hidden h-7 w-px bg-border sm:block" />
-          ) : null}
-          <div className="min-w-0 flex-1 px-4 py-3 text-center">
-            <div className="truncate text-ui-lg font-medium text-foreground">{item.value}</div>
-            <div className="mt-1 truncate text-ui-base text-foreground-subtle">{item.label}</div>
-          </div>
-        </Fragment>
+    <section className="grid grid-cols-2 overflow-hidden rounded-lg border border-border/40 bg-surface/40 sm:grid-cols-5">
+      {items.map((item) => (
+        <div key={item.label} className="min-w-0 px-2.5 py-2 text-center">
+          <div className="truncate text-ui-base font-medium text-foreground">{item.value}</div>
+          <div className="mt-0.5 truncate text-ui-sm text-foreground-subtle">{item.label}</div>
+        </div>
       ))}
     </section>
   );

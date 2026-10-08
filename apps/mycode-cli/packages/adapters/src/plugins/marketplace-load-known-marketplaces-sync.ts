@@ -32,7 +32,7 @@ export function ensureDefaultPluginMarketplaces(storageRoot: string): KnownMarke
   if (officialIndex >= 0) {
     const official = known[officialIndex];
     if (official && (official.source.source !== "bundled" || official.lastRefreshFailure)) {
-      // 旧官方来源指向已退役的 z.ai CDN；迁移后只能从打包清单刷新。
+
       const { lastRefreshFailure: _retiredFailure, ...record } = official;
       known[officialIndex] = { ...record, source: { source: "bundled" } };
       migrated = true;
@@ -159,7 +159,6 @@ export function parseEntryStoreListing(
   if (examplePromptsI18n) listing.examplePromptsI18n = examplePromptsI18n;
   // 付费套餐提示只认显式布尔 true；字符串 "true"、1 等歧义写法一律按无需套餐处理，
   // 避免目录写错就给免费插件挂上付费提示。
-  if (entry.requiresPaidPlan === true) listing.requiresPaidPlan = true;
   return Object.keys(listing).length > 0 ? listing : undefined;
 }
 

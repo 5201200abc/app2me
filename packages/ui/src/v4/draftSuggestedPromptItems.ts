@@ -15,7 +15,7 @@ export type DraftSuggestedPromptAction =
 
 export interface DraftSuggestedPromptItem {
   id: string;
-  /** Lucide canonical 名称，只来自 ClientSceneItem.img；不使用 imgs。 */
+  /** 已发布的场景图标语义名称，只来自 ClientSceneItem.img；不使用 imgs。 */
   iconName?: string;
   /** 官方推荐项的市场图标。 */
   iconUrl?: string;

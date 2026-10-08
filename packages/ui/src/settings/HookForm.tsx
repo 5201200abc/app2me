@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- Hook 表单集中维护 runner 类型、Scope 与高级兼容字段。 */
 import { useCallback, useState, type ReactNode } from "react";
-import { ChevronRight, Trash2 } from "lucide-react";
+import { ChevronRight, Trash2 } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";
 import { Label } from "@/components/ui/label.js";
@@ -194,7 +194,7 @@ export function HookForm({
                 <SelectTrigger id="hook-event" size="lg" className="w-full md:w-48">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="agent-settings-typography">
                   {HOOK_EVENTS.map((hookEvent) => (
                     <SelectItem key={hookEvent} value={hookEvent}>
                       {hookEvent}
@@ -208,7 +208,7 @@ export function HookForm({
                 <SelectTrigger id="hook-runner" size="lg" className="w-full md:w-48">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="agent-settings-typography">
                   {(["process", "command"] as const).map((hookType) => (
                     <SelectItem key={hookType} value={hookType}>
                       {intl.formatMessage({

@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { ChevronDown, ChevronRight, GripVertical } from "lucide-react";
+import { ChevronDown, ChevronRight, GripVertical } from "@/components/icons/tabler.js";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {

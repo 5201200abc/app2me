@@ -1,7 +1,7 @@
 import { decodeCustomModelValue, encodeCustomModelValue } from "./custom-model-value.js";
 import {
   migrateLegacyModelProviderId,
-  migrateLegacyOfficialGlmModelId,
+  migrateLegacyOfficialModelId,
 } from "./legacy-model-provider-identity.js";
 import { parseModelPickerValue, type ModelSelection } from "./model-selection.js";
 
@@ -47,7 +47,7 @@ function migrateModelValue(value: string): string {
     const providerId = migrateLegacyModelProviderId(decoded.providerId);
     if (!providerId || providerId === decoded.providerId) return value;
     // 未改名的模型保留编码原文（包括 %24 和 %2F），不把模型名再当 Picker 解析。
-    const modelId = migrateLegacyOfficialGlmModelId(decoded.providerId, decoded.modelName);
+    const modelId = migrateLegacyOfficialModelId(decoded.providerId, decoded.modelName);
     const body = value.slice("custom:".length);
     const separator = body.startsWith("builtin:")
       ? body.indexOf(":", "builtin:".length)
@@ -67,7 +67,7 @@ function migrateModelValue(value: string): string {
   const name = reasoningIndex < 0 ? modelId : modelId.slice(0, reasoningIndex);
   const suffix = reasoningIndex < 0 ? "" : modelId.slice(reasoningIndex);
   return providerId
-    ? providerId + "/" + migrateLegacyOfficialGlmModelId(oldProvider, name) + suffix
+    ? providerId + "/" + migrateLegacyOfficialModelId(oldProvider, name) + suffix
     : value;
 }
 

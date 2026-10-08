@@ -1,6 +1,11 @@
 import { useMemo } from "react";
 import type { GitDiffResult } from "@mycode/shared";
-import { ChevronDownIcon, CopyIcon, FolderOpenIcon, ListTreeIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  CopyIcon,
+  FolderOpenIcon,
+  ListTreeIcon,
+} from "@/components/icons/tabler.js";
 import { DiffViewer } from "@/components/ui/diff-viewer.js";
 import { cn } from "@/components/lib/utils.js";
 import {

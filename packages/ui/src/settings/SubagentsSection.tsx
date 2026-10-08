@@ -1,8 +1,15 @@
 /* eslint-disable max-lines -- 子智能体管理页集中维护作用域列表、表单和启用状态，避免状态分散 */
-import { useStartPlanRecommendation } from "@/hooks/useStartPlanRecommendation.js";
-import { hasExplicitModelChanged } from "@/lib/startPlanRecommendation.js";
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { Bot, Check, Plus, Trash2 } from "lucide-react";
+import { getSubagentDisplayName } from "@/lib/subagentDisplayName.js";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
+import { Bot, Check, Trash2 } from "@/components/icons/tabler.js";
 import { completeNewModelSelection } from "@mycode/provider";
 import {
   TID_SUBAGENT_BUILT_IN_MODEL_TRIGGER,
@@ -42,6 +49,7 @@ import { settingsResourceRowInteraction } from "@/settings/settingsResourceRowIn
 import { useConfirmDialog } from "@/hooks/useConfirmDialog.js";
 import { useModelSelectionServiceView } from "@/hooks/useModelSelectionView.js";
 import { useBaseWorkspaceServices } from "@/hooks/useWorkspaceServices.js";
+import { isPluginScopeWorkspaceSelectable } from "@/lib/pluginScopeWorkspaces.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import {
   buildRegistryModelSelectGroups,
@@ -53,6 +61,7 @@ import { encodeCustomModelValue } from "@/lib/mycodeCustomModelValue.js";
 import { SUBAGENT_COLORS, SUBAGENT_COLOR_CLASS } from "@/lib/subagentColors.js";
 import { SettingsResourceGroupHeader } from "@/settings/SettingsResourceGroupHeader.js";
 import { SettingsResourceHeaderActions } from "@/settings/SettingsResourceHeaderActions.js";
+import { SettingsResourcePageHeader } from "@/settings/SettingsResourcePageHeader.js";
 import { SettingsBreadcrumbReporter } from "@/settings/SettingsHeaderBreadcrumb.js";
 import { SettingsFormTextarea } from "@/settings/SettingsFormTextarea.js";
 import {
@@ -60,18 +69,10 @@ import {
   type SubagentReasoningFieldState,
 } from "@/settings/SubagentReasoningField.js";
 import { refreshLoadedSubagentsStoreForWorkspace } from "@/store/subagentsStore.js";
-import {
-  PluginScopeMenu,
-  getPluginWorkspaceKey,
-  isPluginScopeWorkspaceConnected,
-} from "@/settings/PluginScopeMenu.js";
+import { PluginScopeMenu, getPluginWorkspaceKey } from "@/settings/PluginScopeMenu.js";
 import { useTabStore } from "@/store/TabStoreProvider.js";
 import { isWorkspaceTab, type WorkspaceTabState } from "@/store/tabStore.js";
-import {
-  PluginInstallEmptyState,
-  PluginLoadingState,
-  PluginSearchEmptyState,
-} from "@/settings/PluginInstallEmptyState.js";
+import { PluginLoadingState, PluginSearchEmptyState } from "@/settings/PluginInstallEmptyState.js";
 import {
   resolvePluginDisplayName,
   resolveUniquePluginListingByName,
@@ -93,7 +94,6 @@ const TOOL_OPTIONS = [
   "Write",
   "WebFetch",
   "WebSearch",
-  "TodoWrite",
 ] as const;
 const TOOL_OPTION_SET = new Set<string>(TOOL_OPTIONS);
 const RISKY_TOOLS = new Set<string>(["Bash", "Edit", "Write"]);
@@ -125,6 +125,7 @@ interface SubagentFormInitialState {
 
 interface SubagentsSectionProps {
   onManageModels?: () => void;
+  navigationTabs?: ReactNode;
   workspacePath?: string | null;
   workspaceIdentity?: string;
 }
@@ -162,6 +163,22 @@ function getBuiltInSubagentName(agent: AgentSummary): BuiltInSubagentName | null
     return null;
   }
   return agent.name === "general-purpose" || agent.name === "Explore" ? agent.name : null;
+}
+
+function getAgentDescription(
+  agent: AgentSummary,
+  formatMessage: (message: { id: string }) => string,
+): string {
+  const builtInName = getBuiltInSubagentName(agent);
+  if (builtInName) {
+    return formatMessage({
+      id:
+        builtInName === "general-purpose"
+          ? "settings.subagents.workerDescription"
+          : "settings.subagents.searcherDescription",
+    });
+  }
+  return agent.description || formatMessage({ id: "settings.subagents.noDescription" });
 }
 
 function getKnownTools(values: readonly string[] | undefined): string[] {
@@ -474,6 +491,7 @@ function AgentListRow({
   const editable = isEditableUserAgent(agent);
   const showEnabledToggle = supportsEnabledToggle(agent);
   const rowEditable = editable && !isOperating;
+  const hasAvatar = !isBuiltInAgent(agent);
   const hasModelOverrideControl = supportsModelOverride(agent);
   // 有覆盖控件的行由控件本身表达模型，不再重复显示模型徽标。
   const showModelBadge = !hasModelOverrideControl;
@@ -489,42 +507,43 @@ function AgentListRow({
   const toolsLabel = allowsAllTools(agent.tools)
     ? intl.formatMessage({ id: "settings.subagents.tools.all" })
     : intl.formatMessage({ id: "settings.subagents.toolsCount" }, { count: String(toolCount) });
-  const displayName =
-    agent.source === "plugin" && agent.name.includes(":")
-      ? agent.name.slice(agent.name.indexOf(":") + 1)
-      : agent.name;
+  const displayName = getSubagentDisplayName(agent);
 
   return (
     <div
       data-testid={testId(TID_SUBAGENT_ROW, agent.name)}
       className={cn(
-        "grid cursor-default items-center gap-3 px-4 py-3 transition-colors",
+        "grid cursor-default items-center gap-2 px-3 py-2 transition-colors",
         rowEditable && "hover:bg-hover",
-        hasModelOverrideControl
-          ? "grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto]"
-          : "grid-cols-[auto_minmax(0,1fr)_auto]",
+        hasAvatar
+          ? hasModelOverrideControl
+            ? "grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto]"
+            : "grid-cols-[auto_minmax(0,1fr)_auto]"
+          : "grid-cols-[minmax(0,1fr)] sm:grid-cols-[minmax(0,1fr)_auto]",
       )}
       {...settingsResourceRowInteraction(rowEditable ? () => onEdit(agent) : undefined)}
     >
-      <div className="relative shrink-0" aria-hidden="true">
-        {pluginIconItem ? (
-          <PluginStoreAvatar
-            item={pluginIconItem}
-            className="size-9 bg-background"
-            fallbackIcon={<Bot className="size-4" />}
-          />
-        ) : (
-          <div className="flex size-9 items-center justify-center rounded-xl bg-background text-foreground-subtle">
-            <Bot className="size-4" />
-          </div>
-        )}
-        {agent.color ? (
-          // 右下角颜色点之前溢出头像容器，会让列表行视觉高度变高。
-          <span className="absolute -bottom-1 -right-1 inline-flex size-3.5 items-center justify-center rounded-full border border-card bg-card p-px leading-none">
-            <AgentColorDot color={agent.color} />
-          </span>
-        ) : null}
-      </div>
+      {hasAvatar && (
+        <div className="relative shrink-0" aria-hidden="true">
+          {pluginIconItem ? (
+            <PluginStoreAvatar
+              item={pluginIconItem}
+              className="size-9 bg-background"
+              fallbackIcon={<Bot className="size-4" />}
+            />
+          ) : (
+            <div className="flex size-9 items-center justify-center rounded-xl bg-background text-foreground-subtle">
+              <Bot className="size-4" />
+            </div>
+          )}
+          {agent.color ? (
+            // 右下角颜色点之前溢出头像容器，会让列表行视觉高度变高。
+            <span className="absolute -bottom-1 -right-1 inline-flex size-3.5 items-center justify-center rounded-full border border-card bg-card p-px leading-none">
+              <AgentColorDot color={agent.color} />
+            </span>
+          ) : null}
+        </div>
+      )}
 
       <div className="min-w-0">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -533,7 +552,7 @@ function AgentListRow({
           <AgentBadge>{toolsLabel}</AgentBadge>
         </div>
         <p className="mt-0.5 line-clamp-2 text-ui-sm text-foreground-subtle">
-          {agent.description || intl.formatMessage({ id: "settings.subagents.noDescription" })}
+          {getAgentDescription(agent, intl.formatMessage)}
         </p>
       </div>
 
@@ -541,7 +560,9 @@ function AgentListRow({
         className={cn(
           "flex items-center gap-2",
           hasModelOverrideControl
-            ? "col-span-2 min-w-0 justify-end sm:col-span-1 sm:shrink-0"
+            ? hasAvatar
+              ? "col-span-2 min-w-0 justify-end sm:col-span-1 sm:shrink-0"
+              : "min-w-0 justify-end sm:shrink-0"
             : "shrink-0",
         )}
       >
@@ -562,7 +583,7 @@ function AgentListRow({
             disabled={isOperating}
             aria-label={intl.formatMessage(
               { id: "settings.subagents.toggleAria" },
-              { name: agent.name },
+              { name: displayName },
             )}
           />
         ) : null}
@@ -604,7 +625,6 @@ function SubagentModelOverrideControl({
     config: { model?: string; thoughtLevel?: string },
   ) => Promise<void>;
 }) {
-  const recommendStartPlan = useStartPlanRecommendation(modelSelectionView, "subagent");
   const { intl } = useMyCodeIntl();
   const [pending, setPending] = useState(false);
   const [config, setConfig] = useState<{
@@ -669,7 +689,7 @@ function SubagentModelOverrideControl({
         let selectedConfig = nextConfig;
         if (nextConfig.model && nextConfig.model !== config.model) {
           const selection = toSubagentModelSelection(nextConfig.model, nextConfig.thoughtLevel);
-          const chosen = selection ? await recommendStartPlan(selection) : null;
+          const chosen = selection;
           if (!chosen) {
             setConfig(previousConfig);
             return;
@@ -687,7 +707,7 @@ function SubagentModelOverrideControl({
         setPending(false);
       }
     },
-    [agent, config, onModelOverrideChange, pending, recommendStartPlan],
+    [agent, config, onModelOverrideChange, pending],
   );
   const handleValueChange = useCallback(
     (nextValue: string) => {
@@ -754,10 +774,11 @@ function SubagentModelOverrideControl({
             })}
             contentSide="top"
             contentAlign="end"
+            contentClassName="agent-settings-typography"
             focusSelectorOnClose={null}
             labelVisibilityClassName="inline-flex min-w-0"
-            triggerClassName="h-8 w-fit max-w-52 min-w-0 justify-between rounded-lg border border-input-border bg-input px-3 py-1.5 text-foreground hover:border-input-border-hover hover:bg-input focus-visible:border-input-border-focused focus-visible:bg-input-focused"
-            triggerLabelClassName="inline-flex min-w-0 truncate text-left"
+            triggerClassName="h-7 w-fit max-w-52 min-w-0 justify-between rounded-md border border-input-border bg-input px-2 py-1 text-foreground hover:border-input-border-hover hover:bg-input focus-visible:border-input-border-focused focus-visible:bg-input-focused"
+            triggerLabelClassName="inline-flex min-w-0 truncate text-left text-ui-caption"
             disabled={disabled || pending}
           />
         </span>
@@ -812,7 +833,6 @@ function SubagentForm({
   workspaceTabs: WorkspaceTabState[];
   onScopeKeyChange: (scopeKey: string) => void;
 }) {
-  const recommendStartPlan = useStartPlanRecommendation(modelSelectionView, "subagent");
   const { intl } = useMyCodeIntl();
   const initialFormStateKey = createSubagentFormInitialStateKey(initial);
   const initialFormState = useMemo(
@@ -1001,12 +1021,7 @@ function SubagentForm({
     if (!validate()) {
       return;
     }
-    let selection = toSubagentModelSelection(persistedModel, thoughtLevel);
-    if (hasExplicitModelChanged(initial?.modelSelection, selection)) {
-      const chosen = await recommendStartPlan(selection);
-      if (!chosen) return;
-      selection = chosen;
-    }
+    const selection = toSubagentModelSelection(persistedModel, thoughtLevel);
     await onSave({
       name: name.trim(),
       description: description.trim(),
@@ -1111,6 +1126,7 @@ function SubagentForm({
               // 聊天工具栏的模型菜单默认向上弹；Subagents add/edit 表单位于设置页正文，
               // 菜单项应贴着按钮下方展开，避免覆盖上面的表单字段。
               contentSide="bottom"
+              contentClassName="agent-settings-typography"
               focusSelectorOnClose={null}
               labelVisibilityClassName="inline-flex min-w-0"
               triggerClassName="h-8 w-fit max-w-full min-w-0 justify-between rounded-lg border border-input-border bg-input bg-clip-border px-3 py-1.5 text-foreground hover:border-input-border-hover hover:bg-input focus-visible:border-input-border-focused focus-visible:bg-input-focused"
@@ -1164,7 +1180,7 @@ function SubagentForm({
             <SelectTrigger size="lg" className="w-fit justify-between">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="agent-settings-typography">
               <SelectItem value="all">
                 {intl.formatMessage({
                   id: "settings.subagents.form.tools.mode.all",
@@ -1263,7 +1279,7 @@ function SubagentForm({
   );
 }
 
-export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
+export function SubagentsSection({ onManageModels, navigationTabs }: SubagentsSectionProps) {
   const { intl, locale } = useMyCodeIntl();
   const confirmDialog = useConfirmDialog();
   const plugins = usePluginManagementStore((state) => state.plugins);
@@ -1281,7 +1297,7 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
     return (
       tabs
         .filter(isWorkspaceTab)
-        .filter(isPluginScopeWorkspaceConnected)
+        .filter(isPluginScopeWorkspaceSelectable)
         // Subagent Settings 只管理 Local Environment；远程配置浏览/编辑是独立产品能力。
         .filter((tab) => !tab.remoteTarget && !tab.remoteSessionId && !tab.workspaceIdentity)
         .filter((tab) => {
@@ -1314,17 +1330,7 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
   const pluginInventoryWorkspacePath = targetWorkspacePath || workspaceTabs[0]?.workspacePath;
   const chatModelSelectGroups = useMemo(() => {
     if (!modelSelectionView) return [];
-    return buildRegistryModelSelectGroups(MYCODE_AGENT_PROVIDER, modelSelectionView, {
-      startPlanBadgeLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.startPlanBadge",
-      }),
-      apiKeyLabel: intl.formatMessage({
-        id: "settings.modelProvider.apiKey",
-      }),
-      codingPlanLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.codingPlan",
-      }),
-    });
+    return buildRegistryModelSelectGroups(MYCODE_AGENT_PROVIDER, modelSelectionView);
   }, [intl, modelSelectionView]);
   const subagentModelSelectGroups = chatModelSelectGroups;
   const loadAgents = useCallback(
@@ -1580,6 +1586,8 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
       }
       if (!normalizedQuery) return true;
       const haystack = [
+        getSubagentDisplayName(agent),
+        getAgentDescription(agent, intl.formatMessage),
         agent.name,
         agent.description,
         agent.modelSelection
@@ -1597,7 +1605,7 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
         .toLowerCase();
       return haystack.includes(normalizedQuery);
     });
-  }, [activeScope, agents, query, targetWorkspacePath]);
+  }, [activeScope, agents, intl, query, targetWorkspacePath]);
 
   const groupedAgents = useMemo(() => groupAgentsByScope(filteredAgents), [filteredAgents]);
   const pluginGroups = useMemo(
@@ -1630,7 +1638,7 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
 
   if (isFormView) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <SettingsBreadcrumbReporter
           items={[
             {
@@ -1679,7 +1687,7 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
   }
 
   const renderAgentList = (items: AgentSummary[]) => (
-    <div className="overflow-hidden rounded-xl bg-surface">
+    <div className="overflow-hidden rounded-lg bg-surface/60">
       {items.map((agent, index) => (
         <div key={agent.id}>
           {index > 0 ? <div className="h-px bg-border/50" aria-hidden="true" /> : null}
@@ -1712,32 +1720,48 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
 
   const hasSearchResultEmpty = Boolean(query.trim()) && filteredAgentCount === 0;
   return (
-    <div className="space-y-6">
-      <div className="flex min-w-0 flex-wrap items-center gap-3">
-        <div className="flex min-w-0 flex-wrap items-center gap-3">
-          <PluginScopeMenu
-            align="start"
-            selectedScopeKey={selectedScopeKey}
-            workspaceTabs={workspaceTabs}
-            onScopeKeyChange={setSelectedScopeKey}
-          />
-          <div className="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
-          <div className="flex h-7 items-center gap-1 px-3 text-ui-base font-medium text-foreground">
-            <span>{intl.formatMessage({ id: "settings.subagents.title" })}</span>
-            <span className="text-ui-sm text-foreground-subtle">{filteredAgentCount}</span>
+    <div className="space-y-4">
+      <SettingsResourcePageHeader
+        title={intl.formatMessage({
+          id: navigationTabs ? "settings.plugins.title" : "settings.subagents.title",
+        })}
+        description={
+          navigationTabs ? intl.formatMessage({ id: "settings.plugins.description" }) : undefined
+        }
+        filters={
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-3">
+              <PluginScopeMenu
+                align="start"
+                selectedScopeKey={selectedScopeKey}
+                workspaceTabs={workspaceTabs}
+                onScopeKeyChange={setSelectedScopeKey}
+              />
+              {navigationTabs ? (
+                <div className="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
+              ) : null}
+              {navigationTabs}
+            </div>
+            <SettingsSearchInput
+              containerClassName="w-full sm:ml-auto sm:w-64"
+              clearLabel={intl.formatMessage({ id: "settings.search.clear" })}
+              value={query}
+              onClear={() => setQuery("")}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={intl.formatMessage({
+                id: "settings.subagents.searchPlaceholder",
+              })}
+            />
           </div>
-        </div>
-        <SettingsSearchInput
-          containerClassName="w-full sm:ml-auto sm:w-64"
-          clearLabel={intl.formatMessage({ id: "settings.search.clear" })}
-          value={query}
-          onClear={() => setQuery("")}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={intl.formatMessage({
-            id: "settings.subagents.searchPlaceholder",
-          })}
-        />
-      </div>
+        }
+        actions={
+          <SettingsResourceHeaderActions
+            onRefresh={() => void Promise.all([refresh(), refreshMentionStore()])}
+            onNew={canManageUserAgents ? handleAddNew : undefined}
+            refreshing={refreshing}
+          />
+        }
+      />
 
       {error ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-ui-base text-destructive">
@@ -1764,49 +1788,16 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
 
       {loading ? (
         <PluginLoadingState label={intl.formatMessage({ id: "common.loading" })} />
-      ) : hasSearchResultEmpty ? (
+      ) : hasSearchResultEmpty || filteredAgentCount === 0 ? (
         <PluginSearchEmptyState label={intl.formatMessage({ id: "settings.subagents.empty" })} />
       ) : (
-        <div className="space-y-6">
-          <section
-            className={query.trim() && groupedAgents.user.length === 0 ? "hidden" : "space-y-4"}
-          >
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <SettingsResourceGroupHeader
-                count={groupedAgents.user.length}
-                title={intl.formatMessage({
-                  id: "settings.subagents.group.user",
-                })}
-              />
-              <SettingsResourceHeaderActions
-                onRefresh={() => void Promise.all([refresh(), refreshMentionStore()])}
-                onNew={canManageUserAgents ? handleAddNew : undefined}
-                refreshing={refreshing}
-              />
-            </div>
-            {groupedAgents.user.length > 0 ? (
-              renderAgentList(groupedAgents.user)
-            ) : (
-              <PluginInstallEmptyState
-                title={intl.formatMessage({ id: "settings.subagents.empty" })}
-                description={intl.formatMessage({
-                  id: "settings.subagents.addDescription",
-                })}
-                actions={
-                  canManageUserAgents ? (
-                    <Button type="button" variant="default" size="lg" onClick={handleAddNew}>
-                      <Plus data-icon="inline-start" aria-hidden="true" />
-                      {intl.formatMessage({ id: "settings.create.action" })}
-                    </Button>
-                  ) : null
-                }
-              />
-            )}
+        <div className="space-y-4">
+          <section className={groupedAgents.user.length === 0 ? "hidden" : "space-y-4"}>
+            {groupedAgents.user.length > 0 ? renderAgentList(groupedAgents.user) : null}
           </section>
           {pluginGroups.map(([pluginId, items]) => (
             <section key={pluginId} className="space-y-4">
               <SettingsResourceGroupHeader
-                count={items.length}
                 title={resolvePluginDisplayName(
                   {
                     name: items[0]?.pluginName ?? pluginId,
@@ -1826,7 +1817,6 @@ export function SubagentsSection({ onManageModels }: SubagentsSectionProps) {
           {groupedAgents.builtIn.length > 0 ? (
             <section className="space-y-4">
               <SettingsResourceGroupHeader
-                count={groupedAgents.builtIn.length}
                 title={intl.formatMessage({
                   id: "settings.subagents.group.builtIn",
                 })}

@@ -13,7 +13,7 @@ import {
   RotateCcwIcon,
   SlidersHorizontalIcon,
   SquareIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { WorkflowRunState, WorkflowRunUsage } from "@mycode/shared/mycode-protocol-v4";
 import { Button } from "@/components/ui/button.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";

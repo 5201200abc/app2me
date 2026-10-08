@@ -113,6 +113,8 @@ export function createCuaDriverMainBridge(deps: {
         };
       // Main 的实际应用名决定授权主体；授权布尔值不等于已执行 AX/截图功能探针。
       return {
+        // 公开可用性谓词要求显式 true；仅返回授权字段会让设置页一直显示未知。
+        available: true,
         grantOwner: result.grantOwner,
         grantOwnerDisplayName: result.grantOwner,
         accessibility: result.accessibility ? "granted" : "denied",

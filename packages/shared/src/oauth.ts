@@ -5,13 +5,6 @@
  * 只允许放在 services 的 provider 模块中，不能放 shared 层。
  */
 
-/** 内置 BigModel provider id */
-export const BIGMODEL_PROVIDER_ID = "bigmodel" as const;
-
-/** 内置 ZAI provider id */
-export const ZAI_PROVIDER_ID = "zai" as const;
-
-/** 凭据解密失败错误前缀 */
 export const CREDENTIAL_DECRYPT_ERROR_PREFIX = "凭据解密失败：" as const;
 
 /** 凭据解密失败稳定错误码 */
@@ -53,10 +46,7 @@ function readCredentialErrorMessage(error: unknown): string {
 }
 
 /** OAuth provider 标识 */
-export type OAuthProviderId =
-  | typeof BIGMODEL_PROVIDER_ID
-  | typeof ZAI_PROVIDER_ID
-  | (string & { readonly __oauthProviderBrand?: never });
+export type OAuthProviderId = string & { readonly __oauthProviderBrand?: never };
 
 /** Provider 展示元信息 */
 export interface OAuthProviderMeta {
@@ -90,13 +80,6 @@ export interface OAuthSessionCallbackResult {
   };
 }
 
-/** 只携带归因参数的 OAuth deep link 回调结果 */
-export interface OAuthAttributionCallbackResult {
-  kind: "attribution";
-  provider: OAuthProviderId;
-  attribution: OAuthLoginAttribution;
-}
-
 /** 同一登录已由 polling 完成后迟到的 deep link；调用方只需忽略。 */
 export interface OAuthDuplicateCallbackResult {
   kind: "duplicate";
@@ -104,10 +87,7 @@ export interface OAuthDuplicateCallbackResult {
 }
 
 /** OAuth 回调归一化结果 */
-export type OAuthCallbackResult =
-  | OAuthSessionCallbackResult
-  | OAuthAttributionCallbackResult
-  | OAuthDuplicateCallbackResult;
+export type OAuthCallbackResult = OAuthSessionCallbackResult | OAuthDuplicateCallbackResult;
 
 /** Main 进程路由 deep link 时使用的 state 上报结构 */
 export interface OAuthStateRegistration {
@@ -119,14 +99,6 @@ export interface OAuthStateRegistration {
 export interface OAuthCallbackParams {
   state: string;
   code: string;
-  attribution?: OAuthLoginAttribution;
-}
-
-/** OAuth 登录归因参数：来自官网中转页或投放链接 */
-export interface OAuthLoginAttribution {
-  channel_id?: string;
-  utm_source?: string;
-  utm_campaign?: string;
 }
 
 /** 归一化 token 结构 */

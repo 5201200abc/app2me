@@ -1,3 +1,4 @@
+import { dedupeConversationThoughts } from "@/lib/compactConversationDisplay.js";
 import type {
   AssistantTextRow,
   ConversationRow,
@@ -453,7 +454,7 @@ export function buildConversationTurnRenderUnits(
     return unit;
   };
 
-  for (const row of rows) {
+  for (const row of dedupeConversationThoughts(rows)) {
     const unit = getOrCreateUnit(row.turnId);
     if (isTurnHeaderRow(row)) {
       unit.header = row;

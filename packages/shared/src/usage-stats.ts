@@ -18,7 +18,7 @@ export interface UsageStatsRequest {
   range: UsageStatsRange;
   /** 使用统计数据源。App Usage 显式使用本地 session 聚合,Coding Plan 显式使用 monitor 接口。 */
   dataSource?: "local" | "monitor";
-  /** 设置页可传入用户当前选中的 Z.AI / BigModel 来源，避免两边都配置时只隐式读取第一家。 */
+
   preferredProviderId?: string;
   /** Registry 静态访问类别，或调用边界已解析的动态账号访问上下文。 */
   accountAccess?: MyCodeProviderAccountAccess | MyCodeAccountAccess;
@@ -49,7 +49,7 @@ export interface UsageEntitlementRequest {
   invalidateBalanceCache?: boolean;
   /** 兼容旧调用方的提示；Coding Plan 权益必须查询订阅并返回摘要，不再允许仅用额度推断权益。 */
   includeSubscription?: boolean;
-  /** 聊天输入区可传入当前选中的内置供应商,确保 BigModel/Z.AI 用量跟随模型选择。 */
+
   preferredProviderId?: string;
   /** 指定 Account Provider 的静态访问类别，或调用边界已解析的动态账号访问上下文。 */
   accountAccess?: MyCodeProviderAccountAccess | MyCodeAccountAccess;
@@ -151,10 +151,10 @@ export interface UsageStatsSnapshot {
    * 数据来源标识：用于 UI 识别供应商 monitor 接口或本地 session 聚合数据。
    * App Usage 显式读取本地 session 聚合；Coding Plan 显式读取当前 provider monitor。
    */
-  source?: "bigmodel-monitor" | "local";
-  /** 远端用量来源供应商，用于 UI 展示 BigModel / Z.AI 等来源。 */
+  source?: "local";
+
   sourceProvider?: UsageEntitlementProviderInfo | null;
-  /** 工具调用维度（仅 BigModel tool-usage 接口可用，本地聚合不填）。 */
+
   tools?: UsageStatsToolUsage[];
 }
 

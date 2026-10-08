@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Keyboard, Search, X } from "lucide-react";
+import { Keyboard, Search, X } from "@/components/icons/tabler.js";
 import { Input } from "@/components/ui/input.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { formatShortcutBindingLabel } from "@/shortcuts/label.js";
@@ -30,11 +30,14 @@ export function ShortcutSearchBar({
     keySearch.binding !== null ? formatShortcutBindingLabel(keySearch.binding) : null;
 
   return (
-    <div className="flex gap-2">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground-subtle" />
+    <div className="flex flex-wrap items-center gap-2">
+      <div className="relative min-w-0 flex-1">
+        <Search
+          className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-foreground-subtle"
+          strokeWidth={1.5}
+        />
         <Input
-          className={`pl-9 font-mono ${keyLabel !== null ? "pr-16 text-brand" : "pr-9"}`}
+          className={`h-7 rounded-md border-input-border/60 pl-8 text-ui-caption ${keyLabel !== null ? "pr-14 font-mono text-brand" : "pr-8"}`}
           placeholder={
             keySearch.armed
               ? intl.formatMessage({ id: "settings.shortcuts.keySearchPlaceholder" })
@@ -73,7 +76,7 @@ export function ShortcutSearchBar({
             keySearch.toggle();
           }}
         >
-          <Keyboard className="size-4" />
+          <Keyboard className="size-3.5" strokeWidth={1.5} />
         </button>
       </div>
       {actions}

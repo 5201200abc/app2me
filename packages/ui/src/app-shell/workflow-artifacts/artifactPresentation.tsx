@@ -1,5 +1,11 @@
 import type { ReactNode } from "react";
-import { ChartLineIcon, FileIcon, GaugeIcon, SquareKanbanIcon, TableIcon } from "lucide-react";
+import {
+  ChartLineIcon,
+  FileIcon,
+  GaugeIcon,
+  SquareKanbanIcon,
+  TableIcon,
+} from "@/components/icons/tabler.js";
 import type { WorkflowRunArtifactKind } from "@mycode/shared/mycode-protocol-v4";
 import { FileDisplayIcon, resolveFileDisplayDescriptor } from "@/lib/fileDisplay.js";
 import type {

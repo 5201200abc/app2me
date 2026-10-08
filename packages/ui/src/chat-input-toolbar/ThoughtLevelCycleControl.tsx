@@ -6,7 +6,7 @@ import {
   type MyCodeConfigOption,
   type MyCodeProvider,
 } from "@mycode/shared";
-import { BrainIcon, ChevronDownIcon } from "lucide-react";
+import { BrainIcon, ChevronDownIcon } from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
@@ -38,6 +38,7 @@ export function ThoughtLevelCycleControl({
   restoreFocusSelector = '[data-testid="chat-input"]',
   shortcutLabel,
   triggerClassName,
+  contentClassName,
   triggerRef,
   open,
   onOpenChange,
@@ -58,6 +59,7 @@ export function ThoughtLevelCycleControl({
   restoreFocusSelector?: string | null;
   shortcutLabel?: string;
   triggerClassName?: string;
+  contentClassName?: string;
   triggerRef: RefObject<HTMLSpanElement | null>;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -303,6 +305,7 @@ export function ThoughtLevelCycleControl({
           </SelectTrigger>
         </ControlHintTooltip>
         <SelectContent
+          className={contentClassName}
           position="popper"
           side="top"
           align="start"

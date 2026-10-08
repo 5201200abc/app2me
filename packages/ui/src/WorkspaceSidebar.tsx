@@ -28,7 +28,7 @@ import {
   Plus,
   Search,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import {
   DndContext,
   DragOverlay,
@@ -591,14 +591,16 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
       setGroupedStickyHeader(null);
     }
   }, [taskViewMode]);
-  const [createGroupedTaskGroupAction, setCreateGroupedTaskGroupAction] = useState<
-    (() => void) | null
-  >(null);
+  const pendingCreateGroupRef = useRef(false);
   const [createGroupedTaskDraftAction, setCreateGroupedTaskDraftAction] = useState<
     (() => void) | null
   >(null);
   const handleCreateGroupActionChange = useCallback((action: (() => void) | null) => {
-    setCreateGroupedTaskGroupAction(() => action);
+    // 创建能力只属于分组列表；项目入口跨视图后，注册到达即消费点击，避免用延迟重复创建。
+    if (action && pendingCreateGroupRef.current) {
+      pendingCreateGroupRef.current = false;
+      action();
+    }
   }, []);
   const handleCreateDraftTaskActionChange = useCallback((action: (() => void) | null) => {
     setCreateGroupedTaskDraftAction(() => action);
@@ -865,6 +867,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
   const showTaskSortOptions = activePrimaryTaskMode === "workspace" || showArchivedTasks;
   const handlePrimaryTaskModeChange = useCallback(
     (value: string) => {
+      pendingCreateGroupRef.current = false;
       logger.debug("[WorkspaceSidebar] 切换任务一级视图", {
         from: taskOrganizeBy,
         to: value,
@@ -1081,7 +1084,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
             ) : null}
           </div>
           <div className="flex shrink-0 items-center gap-1">
-            {taskViewMode === "grouped" ? (
+            {activePrimaryTaskMode === "workspace" && !showArchivedTasks ? (
               <ControlHintTooltip
                 title={workspaceReadOnlyReason ?? intl.formatMessage({ id: "taskGroup.newGroup" })}
               >
@@ -1093,10 +1096,13 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
                   aria-label={intl.formatMessage({
                     id: "taskGroup.newGroup",
                   })}
-                  disabled={workspaceReadOnly || !createGroupedTaskGroupAction}
+                  data-testid="sidebar-project-create-group"
+                  disabled={workspaceReadOnly}
                   onClick={() => {
                     if (!workspaceReadOnly) {
-                      createGroupedTaskGroupAction?.();
+                      pendingCreateGroupRef.current = true;
+                      setGroupedTaskGroupIdsHydrated(false);
+                      setTaskOrganizeBy("grouped");
                     }
                   }}
                 >
@@ -1120,12 +1126,16 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
                       aria-label={intl.formatMessage({
                         id: "workspaceSidebar.taskViewOptions",
                       })}
+                      data-testid="sidebar-task-sort"
                     >
                       <ListFilter className="size-3.5" />
                     </Button>
                   </DropdownMenuTrigger>
                 </ControlHintTooltip>
-                <DropdownMenuContent align="end" className="w-48 min-w-48">
+                <DropdownMenuContent
+                  align="end"
+                  className="sidebar-task-view-menu w-44 min-w-44 rounded-[10px] p-1 !shadow-xs focus:!shadow-xs focus-visible:!shadow-xs [&_[role=menuitemradio]]:min-h-6.5 [&_[role=menuitemradio]]:py-0.5 [&_[role=menuitemradio]]:text-ui-caption [&_[data-slot=dropdown-menu-label]]:py-1 [&_[data-slot=dropdown-menu-label]]:text-ui-sm [&_svg]:size-3.5 [&_svg]:stroke-[1.5]"
+                >
                   {showWorkspaceViewOptions ? (
                     <>
                       <DropdownMenuLabel>
@@ -1217,7 +1227,6 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
     [
       activePrimaryTaskMode,
       archivedTasksActionLabel,
-      createGroupedTaskGroupAction,
       handlePrimaryTaskModeChange,
       handleToggleAllTaskGroups,
       handleWorkspaceTaskViewChange,
@@ -1231,6 +1240,8 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
       taskViewMode,
       toggleAllTaskGroupsPresentation,
       workspaceTaskViewValue,
+      workspaceReadOnly,
+      workspaceReadOnlyReason,
     ],
   );
 
@@ -1238,7 +1249,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
     <aside
       data-testid={TID_SIDEBAR}
       // 这里用设计系统的结构面 token 固定侧栏层级，避免不同合成器把左侧容器混成异常灰块。
-      className="flex h-full flex-col overflow-hidden"
+      className="workspace-sidebar flex h-full flex-col overflow-hidden bg-sidebar text-ui-base text-foreground-subtle"
     >
       <div className="h-12 [app-region:drag]"></div>
       <div className="relative flex-1 min-h-0 overflow-hidden">
@@ -1249,7 +1260,10 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
           )}
           aria-hidden={isFileTreeOpen}
         >
-          <div className={cn("flex flex-col gap-1 px-2", isWindowsDesktop ? "py-2" : "py-3")}>
+          <div
+            data-sidebar-primary-actions
+            className={cn("flex flex-col gap-0.5 px-2", isWindowsDesktop ? "py-2" : "py-2.5")}
+          >
             <WorkspaceNewTaskTooltip disabledReason={workspaceReadOnlyReason}>
               <NewTaskButtonGroup
                 disabled={workspaceReadOnly}
@@ -1269,21 +1283,23 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
                 }}
               />
             </WorkspaceNewTaskTooltip>
-            <Button
-              variant="ghost"
-              onClick={onOpenCommandCenter}
-              data-icon="inline-start"
-              size="lg"
-              className="w-full justify-start gap-2 text-foreground hover:bg-surface-hover hover:text-foreground"
-            >
-              <Search className="size-4" />
-              <span className="min-w-0 flex-1 truncate text-left">
-                {intl.formatMessage({ id: "commandCenter.open" })}
-              </span>
-              <span className="ml-auto shrink-0 text-ui-xs font-normal text-foreground-subtlest">
-                {commandCenterShortcutLabel}
-              </span>
-            </Button>
+            {!isDesktop ? (
+              <Button
+                variant="ghost"
+                onClick={onOpenCommandCenter}
+                data-icon="inline-start"
+                size="lg"
+                className="w-full justify-start gap-2 text-foreground hover:bg-surface-hover hover:text-foreground"
+              >
+                <Search className="size-4" />
+                <span className="min-w-0 flex-1 truncate text-left">
+                  {intl.formatMessage({ id: "commandCenter.open" })}
+                </span>
+                <span className="ml-auto shrink-0 text-ui-xs font-normal text-foreground-subtlest">
+                  {commandCenterShortcutLabel}
+                </span>
+              </Button>
+            ) : null}
             {/* 远程入口展示策略统一走 useRemoteConnectionEntryVisibility，避免与其他入口出现分叉。*/}
             {/* {showRemoteConnectionEntry ? (
               <SSHDialog
@@ -1474,7 +1490,7 @@ export const WorkspaceSidebar = memo(function WorkspaceSidebarComponent({
                               }
                             >
                               {projectWorkspaceTabs.length === 0 ? (
-                                <div className="px-3 py-2 text-ui-base text-foreground-subtle">
+                                <div className="px-3 py-2 text-ui-caption font-normal text-foreground-subtle">
                                   {intl.formatMessage({
                                     id: "workspaceSidebar.noProjects",
                                   })}

@@ -9,8 +9,8 @@
 import { Button } from "../ui/button.js";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip.js";
 import { cn } from "../lib/utils.js";
-import type { LucideIcon } from "lucide-react";
-import { XIcon } from "lucide-react";
+import type { UiIcon } from "@/components/icons/tabler.js";
+import { XIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps, HTMLAttributes } from "react";
 
 export type ArtifactProps = HTMLAttributes<HTMLDivElement>;
@@ -76,7 +76,7 @@ export const ArtifactActions = ({ className, ...props }: ArtifactActionsProps) =
 export type ArtifactActionProps = ComponentProps<typeof Button> & {
   tooltip?: string;
   label?: string;
-  icon?: LucideIcon;
+  icon?: UiIcon;
 };
 
 export const ArtifactAction = ({

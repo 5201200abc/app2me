@@ -1,9 +1,8 @@
-import { Plus, X } from "lucide-react";
+import { Plus, X } from "@/components/icons/tabler.js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { IServiceAccessor } from "@mycode/services";
 import { TID_TERMINAL, TID_TERMINAL_CLOSE_BUTTON } from "@mycode/shared";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import { logger } from "@/logger.js";
 import { Button } from "@/components/ui/button.js";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs.js";
@@ -45,7 +44,6 @@ export function Terminal({
   onOpenBrowserUrl: (url: string) => void;
 }) {
   const { intl } = useMyCodeIntl();
-  const isOfficeMode = useIsOfficeMode();
   const workspaceKey = workspaceIdentity?.trim() || cwd || "__default__";
   const [panelState, setPanelState] = useState<TerminalPanelState>(() => {
     const { session, workspace } = createWorkspaceTerminalState({
@@ -329,7 +327,7 @@ export function Terminal({
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
-            {!isOfficeMode && (
+            {
               <Button
                 type="button"
                 size="icon-md"
@@ -340,7 +338,7 @@ export function Terminal({
               >
                 <Plus className="h-4 w-4" />
               </Button>
-            )}
+            }
             <Button
               type="button"
               size="icon-md"

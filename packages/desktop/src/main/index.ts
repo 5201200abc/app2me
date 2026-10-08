@@ -1,3 +1,4 @@
+import { shouldEnableDesktopUpdates } from "./app2meUpdateFeed.js";
 import { createLocalTtftExporter } from "./localTtftExporter.js";
 /* eslint-disable max-lines */
 import "./desktopEarlyDataBaseDirBootstrap.js";
@@ -121,7 +122,10 @@ import {
 } from "./desktopApplicationMenu.js";
 import { applyAppIcon } from "./desktopWindowChrome.js";
 import { resolveWindowsAppUserModelIdForFlavor } from "../../scripts/desktop-product-identity.mjs";
-import type { DesktopWindowSize } from "./desktopWindowSize.js";
+import {
+  flushDesktopWindowSizePersistenceForQuit,
+  type DesktopWindowSize,
+} from "./desktopWindowSize.js";
 import { maybeWarnArchitectureMismatch } from "./desktopArchitectureGuard.js";
 import { createWindowsDesktopTray, updateWindowsDesktopTrayMenu } from "./desktopTray.js";
 import { createWindowsCuaOperationIndicator } from "./windowsCuaOperationIndicator.js";
@@ -518,7 +522,8 @@ async function runBrowserCommandOnView(params: {
 let currentDesktopZoomLevel = 0;
 let currentDesktopWindowSize: DesktopWindowSize | undefined;
 const preloadPath = join(import.meta.dirname, "../preload/index.cjs");
-const settingsFile = join(homedir(), ".mycode", "v2", "setting.json");
+// 与 SettingsService 的显式 home 覆盖一致，避免隔离实例恢复真实 home 的失效历史目录。
+const settingsFile = join(runtimeHomePath ?? homedir(), ".mycode", "v2", "setting.json");
 let activeAppShutdownPolicy = resolveAppShutdownPolicy("normal", process.platform);
 let activeAppShutdownKind: AppShutdownKind | null = null;
 const WINDOWS_AGENT_FORCE_KILL_TIMEOUT_MS = 2_000;
@@ -1025,7 +1030,8 @@ async function prepareAppQuit(reason: string, kind: AppShutdownKind = "normal"):
 
   appQuitPreparationInFlight = Promise.all([
     // 退出屏障结束后再启动窗口尺寸写入，可能在 app.exit 前留下 setting.json.lock。
-    // 尺寸已在 resize 防抖或最大化状态变化时保存，退出屏障不再创建新的尺寸写入。
+    // 在退出开始时捕获最后 bounds，并在屏障内等待写入完成，冻结后续事件。
+    flushDesktopWindowSizePersistenceForQuit(),
     // 修复原因：Main 过去不会等待仍在发送的 /event/report，正常退出也会直接丢事件。
     // 与其它 owner 并行进入既有屏障，最多等待 2 秒，避免 telemetry 串行放大退出预算。
     appTelemetryCore.flushPendingReports({ timeoutMs: 2_000 }),
@@ -1977,8 +1983,12 @@ app.whenReady().then(async () => {
     env: process.env,
   });
   void initAutoUpdater({
-    // 旧默认 Manifest 指向 z.ai；没有替代源时禁止后台请求旧服务。
-    enabled: MYCODE_PRODUCT_FLAVOR === "production" && updateFeedSource !== undefined,
+    // 正式包使用固定 app2me latest；不能沿用旧 manifest 未配置即关闭的条件。
+    enabled: shouldEnableDesktopUpdates(
+      app.isPackaged,
+      MYCODE_PRODUCT_FLAVOR,
+      updateFeedSource !== undefined,
+    ),
     onBeforeQuitAndInstall: async () => {
       notifyStabilityLifecycle("update_install");
       await prepareAppQuit("auto-update quitAndInstall", "update-install");

@@ -1,8 +1,16 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { logger } from "@/logger.js";
 import { ScrollFadeViewport } from "@/components/ui/scroll-fade-viewport.js";
 
-export function ExecuteOutput({ text, running }: { text: string; running: boolean }) {
+export function ExecuteOutput({
+  text,
+  running,
+  children,
+}: {
+  text: string;
+  running: boolean;
+  children?: ReactNode;
+}) {
   const scroll = useRef<HTMLDivElement>(null);
   const previousTop = useRef(0);
   const hasStreamed = useRef(running);
@@ -22,9 +30,10 @@ export function ExecuteOutput({ text, running }: { text: string; running: boolea
     <ScrollFadeViewport
       ref={scroll}
       data-testid="bash-output-scroll"
+      data-command-scroll
       data-following={following}
       // 原预览与结果的高度上限不同且不吸底；共用五行上限，短内容自适应，结束时保留阅读状态。
-      className="min-w-0 max-w-full max-h-[5lh] flex-none overflow-auto leading-5"
+      className="min-w-0 max-w-full flex-none"
       tabIndex={0}
       onScroll={(event) => {
         const el = event.currentTarget;
@@ -39,12 +48,15 @@ export function ExecuteOutput({ text, running }: { text: string; running: boolea
         previousTop.current = el.scrollTop;
       }}
     >
-      <pre
-        data-testid={running ? "bash-output-preview-full" : "bash-result-output"}
-        className="whitespace-pre-wrap break-words font-mono text-ui-base leading-5 text-foreground-subtle"
-      >
-        {display}
-      </pre>
+      <div data-command-content>
+        {children}
+        <pre
+          data-testid={running ? "bash-output-preview-full" : "bash-result-output"}
+          className="whitespace-pre-wrap break-words font-mono text-ui-base leading-5 text-foreground-subtle"
+        >
+          {display}
+        </pre>
+      </div>
     </ScrollFadeViewport>
   );
 }

@@ -8,9 +8,7 @@ import { NATIVE_HANDLERS } from "./handlers/index.js";
 import type { V4CommandCoreHost } from "./types.js";
 
 const SELECTION_SIDE_CHAT_RESTRICTED_COMMANDS = new Set<CommandEnvelope["type"]>([
-  "sendGoalCommand",
-  "pauseGoal",
-  "resumeGoal",
+  // 辅助线程拥有独立的目标 runtime；按线程类型禁用目标曾让已有会话入口与协议不一致。
   "editUserQuery",
   "retryTurn",
   "forkAssistant",

@@ -1,4 +1,4 @@
-import { MessagesSquare } from "lucide-react";
+import { MessagesSquare } from "@/components/icons/tabler.js";
 import { FileDisplayInline } from "@/lib/fileDisplay.js";
 import type { MentionItem } from "@/mentions/mentionTypes.js";
 

@@ -18,7 +18,7 @@ import {
 } from "../ui/card.js";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible.js";
 import { cn } from "../lib/utils.js";
-import { ChevronsUpDownIcon } from "lucide-react";
+import { ChevronsUpDownIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 import { createContext, useContext, useMemo } from "react";
 

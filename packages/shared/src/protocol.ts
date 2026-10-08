@@ -195,7 +195,7 @@ export type PersistedWorkspaceSessionEntry =
 
 // ── Process Monitor ──
 
-/** 资源管理器分类：基础服务 / 内置插件 / 社区插件 */
+/** 资源管理器分类：基础服务 / 内置插件 / 第三方插件 */
 export type ResourceUsageCategory = "base" | "builtin-plugin" | "community-plugin";
 
 /** 基础服务分组键；插件分组键为插件名或 MCP server name */
@@ -284,10 +284,12 @@ export interface AppSettings {
   closeToTrayOnWindowsMigrationInitialized?: boolean;
   /** 桌面端全局页面缩放档位；用于重启后恢复界面缩放，Web/手机端忽略。 */
   desktopZoomLevel?: number;
-  /** 桌面主窗口最近一次非最大化宽高及最大化状态；Web/手机端忽略。 */
+  /** 桌面主窗口最近一次非最大化尺寸、位置及最大化状态；Web/手机端忽略。 */
   desktopWindowSize?: {
     width: number;
     height: number;
+    x?: number;
+    y?: number;
     maximized: boolean;
   };
   /** 桌面端 Chromium 硬件加速开关；只在下次启动 main 进程早期生效，Web/手机端忽略。 */
@@ -313,7 +315,7 @@ export interface AppSettings {
   modelIoFullRetentionEnabled?: boolean;
   /** 设置页中每个 Provider Family 当前唯一的结构化连接选择。 */
   providerFamilyConnectionSelections?: ProviderFamilyConnectionSelectionSettings;
-  /** 用户通过 WelcomeScreen 成功连接后确认的 ZAI / BigModel provider family 运行域。 */
+
   providerFamilyDomain?: ProviderFamilyDomain;
   /** 最近一次设置或清空 providerFamilyDomain 的时间。 */
   providerFamilyDomainUpdatedAt?: number;
@@ -339,7 +341,6 @@ export interface AppSettings {
     | "legal"
     | "other"
     | null;
-  proactiveSuggestionsEnabled?: boolean;
   /** 上次关闭时的完整 workspace 会话（含本地与远端 workspace） */
   lastWorkspaceSession?: PersistedWorkspaceSessionEntry[];
   /** 上次关闭时激活的 tab 索引 */

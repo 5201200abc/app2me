@@ -5,7 +5,7 @@ const workspaceRoot = resolve(import.meta.dirname, "..");
 
 const child = spawn(
   process.platform === "win32" ? "pnpm.cmd" : "pnpm",
-  ["--filter", "@mycode/desktop", "exec", "tsup", "--watch", "--sourcemap"],
+  ["--filter", "@app2me/desktop", "exec", "tsup", "--watch", "--sourcemap"],
   {
     cwd: workspaceRoot,
     stdio: ["inherit", "pipe", "pipe"],

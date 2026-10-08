@@ -19,7 +19,7 @@ import {
   PlayIcon,
   VideoIcon,
   XIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type {
   ComponentProps,
   HTMLAttributes,

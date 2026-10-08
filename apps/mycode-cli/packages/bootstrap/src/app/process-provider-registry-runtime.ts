@@ -4,7 +4,6 @@ import {
   type AccountProviderConfigSnapshot,
   type AccountProviderStates,
 } from "@mycode/provider";
-import { isBuiltinModelProviderId } from "@mycode/shared";
 import {
   NodeModelSelectionConfigRepository,
   NodeProviderRegistryRuntime,
@@ -95,17 +94,6 @@ export function parseProcessAccountProviderConfigSnapshot(input: {
     throw new Error("Account Config Built-in revision 不能为空");
   }
   const providers = parseAccountProviderConfigMap(input.providers);
-  for (const [providerId, provider] of providers.entries()) {
-    // 仅约束托管 Worker 的普通账号信封；独立 CLI、API 和闲时不需要 current。
-    if (
-      isBuiltinModelProviderId(providerId) &&
-      provider.access?.type === "zhipu-account" &&
-      provider.access.entitled &&
-      typeof input.states?.[providerId]?.current !== "boolean"
-    ) {
-      throw new Error(`Account State 缺少 current: ${providerId}`);
-    }
-  }
   return Object.freeze({
     revision,
     basedOnMyCodeBuiltinRevision,

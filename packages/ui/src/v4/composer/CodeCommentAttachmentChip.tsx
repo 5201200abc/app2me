@@ -1,4 +1,4 @@
-import { Code2Icon, MessageSquareTextIcon, Trash2Icon } from "lucide-react";
+import { Code2Icon, MessageSquareTextIcon, Trash2Icon } from "@/components/icons/tabler.js";
 import type { AttachmentHoverCardContentProps } from "@/components/ai-elements/attachments.js";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

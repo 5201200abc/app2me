@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { buildRemoteWorkspaceIdentity } from "@mycode/shared";
+import { isCuaPermissionStatusAvailable } from "@mycode/services";
 import { createCuaDriverMainBridge } from "./cuaDriverMainBridge.js";
 
 test("injects into an empty list, preserves browser and replaces only its own server", async () => {
@@ -115,6 +116,7 @@ test("read-only native permission status does not fabricate functional probe res
     hasActiveTurn: () => false,
   });
   const status = await bridge.permissionService.getStatus("/local");
+  assert.equal(isCuaPermissionStatusAvailable(status), true);
   assert.ok("accessibility" in status);
   assert.equal(status.grantOwnerDisplayName, "MyCode Dev");
   assert.equal(status.accessibility, "granted");

@@ -2,7 +2,7 @@
 import { ClipboardAddon } from "@xterm/addon-clipboard";
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal as XTerm } from "@xterm/xterm";
-import { ClipboardPaste, Copy } from "lucide-react";
+import { ClipboardPaste, Copy } from "@/components/icons/tabler.js";
 import { useCallback, useEffect, useRef } from "react";
 import type { ILink, ILinkHandler, ITheme, IWindowsPty } from "@xterm/xterm";
 import type { IServiceAccessor } from "@mycode/services";

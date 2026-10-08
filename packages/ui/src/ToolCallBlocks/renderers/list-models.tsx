@@ -1,4 +1,4 @@
-import { Cpu } from "lucide-react";
+import { Cpu } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import {
   getModelProviderFamilySpec,

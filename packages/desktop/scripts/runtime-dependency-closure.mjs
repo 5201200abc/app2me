@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, parse, resolve } from "node:path";
+import { dirname, isAbsolute, parse, resolve } from "node:path";
 import { createRequire } from "node:module";
 
 function findPackageRoot(entryPath) {
@@ -19,7 +19,15 @@ function readRuntimePackage(moduleLookupRoots, moduleName, parentPackagePath = n
   if (parentPackagePath) {
     try {
       const requireFromParent = createRequire(parentPackagePath);
-      const entryPath = requireFromParent.resolve(moduleName);
+      // string_decoder 同时是 Node 内置模块和 npm 依赖；先解析 package.json，
+      // 否则 resolve 返回裸模块名，dirname 会落到项目根目录并错误复制整个工作树。
+      let entryPath;
+      try {
+        entryPath = requireFromParent.resolve(`${moduleName}/package.json`);
+      } catch {
+        entryPath = requireFromParent.resolve(moduleName);
+      }
+      if (!isAbsolute(entryPath)) throw new Error(`No npm package path for ${moduleName}`);
       const packageRoot = findPackageRoot(entryPath);
       if (packageRoot) {
         const packageJsonPath = resolve(packageRoot, "package.json");

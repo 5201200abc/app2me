@@ -24,7 +24,7 @@ export const GOAL_SUMMARY_TITLE_QUERY_SOURCE = "goal_summary_title";
 
 const TITLE_GENERATION_TIMEOUT_MS = 60_000;
 const MAX_TITLE_INPUT_CHARS = 1_200;
-const MAX_TITLE_CHARS = 100;
+const MAX_TITLE_CHARS = 28;
 
 // 标题 sidecar 的 user message 是原始 query，弱约束时模型可能把它当成对话请求直接回答。
 // system prompt 必须明确 query 只作为标题素材，并禁止回答或执行；首句保持稳定供旧 model-io 识别。
@@ -43,6 +43,8 @@ Title rules:
 - Use the user's primary language.
 - Describe the user's primary task or topic, not its answer or outcome.
 - Use 3-7 words when possible.
+- For Chinese titles, aim for 8-16 characters. Never exceed 28 characters.
+- Do not use emoji.
 - Keep it recognizable in a session list.
 - Preserve important proper nouns, file names, APIs, and technology names.
 - Do not use generic titles such as "User Request", "Coding Task", or "Question".
@@ -237,12 +239,12 @@ function cleanGeneratedTitle(raw: string): string | null {
     .replace(/^#+\s*/, "")
     .replace(/^[\s"'`“”‘’]+|[\s"'`“”‘’]+$/g, "")
     .replace(/[.。!！?？:：,，;；]+$/g, "")
+    .replace(/\p{Extended_Pictographic}/gu, "")
     .replace(/\s+/g, " ")
     .trim();
   if (!/[A-Za-z0-9\u3400-\u9fff]/.test(cleaned)) return null;
-  return cleaned.length > MAX_TITLE_CHARS
-    ? `${cleaned.slice(0, MAX_TITLE_CHARS - 3).trim()}...`
-    : cleaned;
+  const chars = Array.from(cleaned);
+  return chars.length > MAX_TITLE_CHARS ? chars.slice(0, MAX_TITLE_CHARS - 1).join("").trim() + "…" : cleaned;
 }
 
 function parseTitleJson(text: string): string | null {

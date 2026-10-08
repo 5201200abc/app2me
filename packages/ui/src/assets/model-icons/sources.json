@@ -1,0 +1,21 @@
+{
+  "package": "@lobehub/icons-static-svg",
+  "version": "1.95.1",
+  "source": "https://github.com/lobehub/lobe-icons",
+  "license": "MIT",
+  "normalization": "Unmodified transparent monochrome SVG glyphs. CSS mask renders currentColor without background or border.",
+  "files": [
+    "alibabacloud.svg",
+    "anthropic.svg",
+    "deepseek.svg",
+    "grok.svg",
+    "huggingface.svg",
+    "kimi.svg",
+    "minimax.svg",
+    "openai.svg",
+    "opencode.svg",
+    "openrouter.svg",
+    "qwen.svg",
+    "xiaomimimo.svg"
+  ]
+}

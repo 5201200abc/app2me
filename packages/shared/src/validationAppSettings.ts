@@ -39,7 +39,9 @@ const electronReleaseChannelSchema = z.enum(["stable", "preview"]);
 const desktopZoomLevelSchema = z.number().int().min(-3).max(5);
 const desktopWindowSizeSchema = z.object({
   width: z.number().int().min(480),
-  height: z.number().int().min(640),
+  height: z.number().int().min(520),
+  x: z.number().int().optional(),
+  y: z.number().int().optional(),
   maximized: z.boolean(),
 });
 export const integratedTerminalShellSelectionSchema = z.discriminatedUnion("mode", [
@@ -54,7 +56,7 @@ export const integratedTerminalShellSelectionSchema = z.discriminatedUnion("mode
     path: nonEmptyStringSchema,
   }),
 ]);
-const providerFamilyDomainSchema = z.enum(["zai", "bigmodel"]);
+const providerFamilyDomainSchema = z.string();
 
 export const postUpdateReleaseNotesPayloadSchema = z.object({
   version: nonEmptyStringSchema,
@@ -460,7 +462,6 @@ const appSettingsObjectSchema = z.object({
   providerFamilyDomainMigrated: z.boolean().default(false),
   nativeSearchEnhancementsEnabled: z.boolean().default(true),
   onboardingOccupation: appSettingsOccupationSchema.nullish(),
-  proactiveSuggestionsEnabled: z.boolean().optional(),
   memoryEnabled: z.boolean().default(false),
   lastWorkspaceSession: z.array(appWorkspaceSessionEntrySchema).default([]),
   lastActiveTabIndex: z.number().int().nonnegative().default(0),
@@ -545,7 +546,6 @@ export const appSettingsPatchSchema = z.object({
       "other",
     ])
     .nullish(),
-  proactiveSuggestionsEnabled: z.boolean().optional(),
   memoryEnabled: z.boolean().optional(),
   lastWorkspaceSession: z.array(appWorkspaceSessionEntrySchema).optional(),
   lastActiveTabIndex: z.number().int().nonnegative().optional(),

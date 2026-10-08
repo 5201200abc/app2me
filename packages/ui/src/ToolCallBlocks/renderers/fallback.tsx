@@ -1,4 +1,5 @@
-import { WrenchIcon } from "lucide-react";
+import { stripDisplayEmoji } from "@/lib/compactConversationDisplay.js";
+import { SquareTerminalIcon } from "@/components/icons/tabler.js";
 import { useCallback, type ReactNode } from "react";
 import { ToolCallBody } from "@/ToolCallBlocks/ToolCallBody.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";
@@ -6,7 +7,9 @@ import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { ToolLayout } from "../ToolLayout.js";
 import type { ToolCallBlockRenderContext } from "../shared.js";
 
-const FALLBACK_TOOL_ICON = <WrenchIcon className="size-4 shrink-0 text-foreground-subtle" />;
+const FALLBACK_TOOL_ICON = (
+  <SquareTerminalIcon className="size-4 shrink-0 text-foreground-subtle" />
+);
 
 interface FallbackToolCallBlockProps extends ToolCallBlockRenderContext {
   iconOverride?: ReactNode;
@@ -62,7 +65,7 @@ export function FallbackToolCallBlock(context: FallbackToolCallBlockProps) {
         />
         {!hasInlinePreview && !context.hideRawFallback ? (
           <pre className="px-4 py-3 rounded-xl bg-surface text-ui-xs mt-1 text-foreground-subtle max-h-50 overflow-auto">
-            {JSON.stringify(toolCall, null, 2)}
+            {stripDisplayEmoji(JSON.stringify(toolCall, null, 2))}
           </pre>
         ) : null}
       </>

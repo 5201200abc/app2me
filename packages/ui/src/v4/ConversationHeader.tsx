@@ -4,7 +4,7 @@ import {
   TID_V4_SESSION_TITLE,
   TID_V4_SPLIT_CLOSE,
 } from "@mycode/shared";
-import { XIcon } from "lucide-react";
+import { XIcon } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { runUserAction } from "@/lib/userActionTelemetry.js";

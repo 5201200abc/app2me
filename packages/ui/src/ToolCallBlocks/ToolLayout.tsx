@@ -1,8 +1,15 @@
-import { memo, type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  ToolPresentationScopeContext,
+  ToolPresentationStatusContext,
+  ToolOperationListContext,
+} from "@/ToolCallBlocks/ToolPresentationContext.js";
+import "@/ToolCallBlocks/operationList.css";
+import { cleanToolDisplayNode } from "@/ToolCallBlocks/displayText.js";
+import { memo, type ReactNode, useEffect, useRef, useState, useContext } from "react";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible.js";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";
-import { CheckIcon, CopyIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, XIcon } from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import {
   Tooltip,
@@ -18,17 +25,17 @@ const toolLayoutOpenState = new Map<string, boolean>();
 uiMemoryDiagnosticsRegistry.register("toolLayout", () => ({ openState: toolLayoutOpenState.size }));
 const TOOL_CONTENT_COLLAPSE_UNMOUNT_DELAY_MS = 300;
 const TOOL_CONTENT_SHELL_CLASSNAME = "text-popover-foreground outline-none";
-const TOOL_CONTENT_SPACING_CLASSNAME = "pt-2";
+const TOOL_CONTENT_SPACING_CLASSNAME = "tool-detail-scroll mt-1 text-foreground-subtle";
 
 interface ToolLayoutProps {
+  variant?: "default" | "operations" | "image";
   toolId: string;
   persistOpenKey?: string;
   icon: ReactNode;
   showIcon?: boolean;
+  preserveIcon?: boolean;
   canToggle?: boolean;
   forceOpen?: boolean;
-  autoOpen?: boolean;
-  autoCollapseOnComplete?: boolean;
   kindLabel: ReactNode;
   expandedKindLabel?: ReactNode;
   kindDetail?: ReactNode;
@@ -62,17 +69,21 @@ interface ToolLayoutProps {
   content?: ReactNode;
   renderContent?: () => ReactNode;
   summaryAction?: ToolSummaryAction;
+  /** 无内部预览按钮的命令摘要，以同一行句子渲染并使用原生 button。 */
+  summaryText?: string;
+  /** 单文件句子仅改变摘要布局，保留文件预览与父行折叠的独立事件。 */
+  fileSentence?: boolean;
 }
 
 function ToolLayoutComponent({
+  variant = "default",
   toolId,
   persistOpenKey,
   icon,
   showIcon = true,
-  canToggle = true,
+  preserveIcon = false,
+  canToggle: requestedCanToggle = true,
   forceOpen = false,
-  autoOpen = false,
-  autoCollapseOnComplete = false,
   kindLabel,
   expandedKindLabel,
   kindDetail,
@@ -102,22 +113,26 @@ function ToolLayoutComponent({
   content,
   renderContent,
   summaryAction,
+  summaryText,
+  fileSentence,
 }: ToolLayoutProps) {
   const { intl } = useMyCodeIntl();
-  const resolvedPersistOpenKey = persistOpenKey ?? toolId;
+  // 默认统一提供折叠入口；forceOpen 仅用于已展开工作流内部的叶节点。
+  const canToggle = !forceOpen || requestedCanToggle;
+  const scope = useContext(ToolPresentationScopeContext);
+  const toolStatus = useContext(ToolPresentationStatusContext);
+  const operationList = useContext(ToolOperationListContext);
+  const resolvedPersistOpenKey = `${scope}:${persistOpenKey ?? toolId}`;
   const [isOpen, setIsOpen] = useState(
     () => toolLayoutOpenState.get(resolvedPersistOpenKey) ?? false,
   );
-  const hasSummaryAction = summaryAction !== undefined;
-  const isExpanded = !hasSummaryAction && (forceOpen || (canToggle && isOpen));
+  const isExpanded = forceOpen || (canToggle && isOpen);
   const [shouldRenderContent, setShouldRenderContent] = useState(isExpanded);
   const [isFailureTooltipCopied, setIsFailureTooltipCopied] = useState(false);
   const failureTooltipCopyResetRef = useRef<number | null>(null);
   const contentUnmountDelayRef = useRef<number | null>(null);
-  const hasAutoOpenedRef = useRef(false);
-  const previousIsRunningRef = useRef(isRunning);
   const shouldShowStatusLabel = (showStatusLabel || showFailureStatus) && statusLabel != null;
-  const shouldRenderResolvedContent = !hasSummaryAction && (isExpanded || shouldRenderContent);
+  const shouldRenderResolvedContent = isExpanded || shouldRenderContent;
   const resolvedContent = shouldRenderResolvedContent
     ? (renderContent?.() ?? content ?? null)
     : null;
@@ -129,7 +144,7 @@ function ToolLayoutComponent({
   const summarySecondaryText =
     isExpanded && expandedSecondaryText !== undefined
       ? expandedSecondaryText
-      : isExpanded && hideSecondaryTextWhenOpen
+      : isExpanded && hideSecondaryTextWhenOpen && !operationList
         ? null
         : secondaryText;
   const summaryTitle = isExpanded && expandedTitle !== undefined ? expandedTitle : title;
@@ -138,7 +153,16 @@ function ToolLayoutComponent({
   const shouldShowDiffCount = diffCount != null && !(isExpanded && hideDiffCountWhenOpen);
   // toolcall 在流式期间数量多且持续更新，旋转 loading 图标会让
   // 动画长期占用渲染资源；运行态改由文案扫光和状态文字表达，图标保持静态。
-  const summaryIcon = icon;
+  // 写入/编辑的笔用于识别操作类型，原来的状态替换会让失败行变成叉；保留笔，失败详情仍由状态提示呈现。
+  const summaryIcon = preserveIcon ? (
+    icon
+  ) : toolStatus === "completed" && !operationList && variant === "default" ? (
+    <CheckIcon className="size-3.5" strokeWidth={1.5} />
+  ) : toolStatus === "failed" ? (
+    <XIcon className="size-3.5" strokeWidth={1.5} />
+  ) : (
+    icon
+  );
   // 运行态需要保留 kind 文案扫光，用来表达当前工具仍在进行中；
   // 非运行态仍保持最浅文本色，避免摘要信息喧宾夺主。
   const kindLabelClassName = cn(
@@ -150,33 +174,6 @@ function ToolLayoutComponent({
     const persistedOpen = toolLayoutOpenState.get(resolvedPersistOpenKey);
     setIsOpen(persistedOpen ?? false);
   }, [resolvedPersistOpenKey]);
-
-  useEffect(() => {
-    // edit/read 这类工具有“完成后默认自动展开”的需求，
-    // 但 forceOpen 会把卡片彻底锁死成不可收起。
-    // 这里改成一次性的 autoOpen：首次满足条件时自动展开一次，之后仍允许用户手动关闭。
-    if (!autoOpen || hasAutoOpenedRef.current) {
-      return;
-    }
-
-    toolLayoutOpenState.set(resolvedPersistOpenKey, true);
-    setShouldRenderContent(true);
-    setIsOpen(true);
-    hasAutoOpenedRef.current = true;
-  }, [autoOpen, resolvedPersistOpenKey]);
-
-  useEffect(() => {
-    const wasRunning = previousIsRunningRef.current;
-    previousIsRunningRef.current = isRunning;
-
-    // 子智能体在执行完成后，如果继续保持展开，会把一长串子工具明细永久摊开，
-    // 聊天流里会迅速变得很长，也和“运行中自动展开、完成后回到摘要”这套交互不一致。
-    // 这里只在 running -> completed 的边沿自动收起一次，不影响用户后续手动再次展开查看细节。
-    if (autoCollapseOnComplete && !isRunning && wasRunning) {
-      toolLayoutOpenState.set(resolvedPersistOpenKey, false);
-      setIsOpen(false);
-    }
-  }, [autoCollapseOnComplete, isRunning, resolvedPersistOpenKey]);
 
   useEffect(() => {
     if (isExpanded) {
@@ -303,9 +300,9 @@ function ToolLayoutComponent({
 
   return (
     <Collapsible
-      open={!hasSummaryAction && (forceOpen || (canToggle && isOpen))}
+      open={isExpanded}
       onOpenChange={(open) => {
-        if (hasSummaryAction || forceOpen) {
+        if (forceOpen) {
           return;
         }
         toolLayoutOpenState.set(resolvedPersistOpenKey, open);
@@ -314,10 +311,12 @@ function ToolLayoutComponent({
         }
         setIsOpen(open);
       }}
-      className="w-full flex flex-col"
+      data-tool-layout-variant={variant}
+      data-operation-list-item={operationList || undefined}
+      className="tool-call-layout flex w-full min-w-0 flex-col"
     >
       <ToolSummaryRow
-        action={summaryAction}
+        inlineChevron={variant !== "default"}
         animateContent={animateSummaryContent}
         canToggle={canToggle}
         contentKey={resolvedSummaryContentKey}
@@ -327,12 +326,12 @@ function ToolLayoutComponent({
         forceOpen={forceOpen}
         icon={summaryIcon}
         isExpanded={isExpanded}
-        kindDetail={summaryKindDetail}
-        kindLabel={summaryKindLabel}
+        kindDetail={cleanToolDisplayNode(summaryKindDetail)}
+        kindLabel={cleanToolDisplayNode(summaryKindLabel)}
         kindLabelClassName={kindLabelClassName}
-        primaryText={summaryPrimaryText}
+        primaryText={cleanToolDisplayNode(summaryPrimaryText)}
         prioritizePrimaryText={prioritizePrimaryText}
-        secondaryText={summarySecondaryText}
+        secondaryText={cleanToolDisplayNode(summarySecondaryText)}
         separator={summaryContentSeparator}
         showIcon={showIcon}
         sourceLabel={sourceLabel}
@@ -342,15 +341,30 @@ function ToolLayoutComponent({
           id: isExpanded ? "chat.toolCall.collapseDetails" : "chat.toolCall.expandDetails",
         })}
         toolId={toolId}
+        summaryText={summaryText}
+        fileSentence={fileSentence}
+        fileActivity={fileSentence && isRunning}
       />
-      {!hasSummaryAction && canToggle ? (
+      {canToggle ? (
         <CollapsibleContent className={TOOL_CONTENT_SHELL_CLASSNAME}>
           {/* padding 直接挂在高度动画节点上时，主体归零后仍会停在 8px，
               直到延迟卸载切换 display:none 才瞬间消失。放入内部后会被外层 overflow
               随动画高度连续裁切到 0，保留原间距且不改变 300ms 的测量保护。 */}
-          <div className={TOOL_CONTENT_SPACING_CLASSNAME}>{resolvedContent}</div>
+          <div className={TOOL_CONTENT_SPACING_CLASSNAME}>
+            {summaryAction ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={summaryAction.onActivate}
+                aria-label={summaryAction.ariaLabel}
+              >
+                {cleanToolDisplayNode(summaryAction.ariaLabel)}
+              </Button>
+            ) : null}
+            {resolvedContent}
+          </div>
         </CollapsibleContent>
-      ) : !hasSummaryAction && forceOpen ? (
+      ) : forceOpen ? (
         <div className={cn(TOOL_CONTENT_SHELL_CLASSNAME, TOOL_CONTENT_SPACING_CLASSNAME)}>
           {resolvedContent}
         </div>
@@ -359,5 +373,13 @@ function ToolLayoutComponent({
   );
 }
 
-export const ToolLayout = memo(ToolLayoutComponent);
+function ScopedToolLayout(props: ToolLayoutProps) {
+  const scope = useContext(ToolPresentationScopeContext);
+  // 同 ID 的工具跨会话复用组件时，effect 清状态会短暂展示上个会话的详情；身份变化直接重建局部状态。
+  return (
+    <ToolLayoutComponent key={`${scope}:${props.persistOpenKey ?? props.toolId}`} {...props} />
+  );
+}
+
+export const ToolLayout = memo(ScopedToolLayout);
 ToolLayout.displayName = "ToolLayout";

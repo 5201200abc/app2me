@@ -208,15 +208,12 @@ export function createOnboardingRecordService(
       const occupation = appSettingsOccupationEnum.safeParse(latest.occupation);
       return {
         onboardingOccupation: (occupation.success ? occupation.data : null) ?? "other",
-        proactiveSuggestionsEnabled: latest.proactiveSuggestionsEnabled ?? false,
         memoryEnabled: latest.memoryEnabled ?? false,
       };
     },
 
     async updateRecordPreferences(
-      patch: Partial<
-        Pick<OnboardingRecordEntryInput, "memoryEnabled" | "proactiveSuggestionsEnabled">
-      >,
+      patch: Partial<Pick<OnboardingRecordEntryInput, "memoryEnabled">>,
     ): Promise<void> {
       const userId = await options.loadUserId();
       await enqueueWrite(async () => {

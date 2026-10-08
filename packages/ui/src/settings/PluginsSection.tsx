@@ -1,16 +1,14 @@
 /* eslint-disable max-lines -- 共享能力外壳聚合 Scope，并承载 Plugin tabs 与独立 Commands 入口。 */
 import { PluginAddMenu } from "@/settings/PluginAddMenu.js";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Loader2,
-  Monitor,
   MoreHorizontal,
-  Plus,
   RefreshCw,
   RotateCcw,
   Trash2,
   UploadCloud,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { toast } from "@/components/ui/toast.js";
 import {
@@ -23,22 +21,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.j
 import { Switch } from "@/components/ui/switch.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { TID_PLUGIN_STORE_BROWSE } from "@mycode/shared";
-import type { MyCodePluginInfo, MyCodePluginScope, MyCodePluginUserConfigOption } from "@mycode/shared";
+import type {
+  MyCodePluginInfo,
+  MyCodePluginScope,
+  MyCodePluginUserConfigOption,
+} from "@mycode/shared";
 import type { CreateTaskRequest } from "@/app-shell/types.js";
 import {
   useBaseWorkspaceServices,
   useWorkspaceServicesResolution,
 } from "@/hooks/useWorkspaceServices.js";
 import { getPathLeaf } from "@/lib/path.js";
+import { isPluginScopeWorkspaceSelectable } from "@/lib/pluginScopeWorkspaces.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { McpSettingsSection } from "@/settings/McpSettingsSection.js";
 import { SkillsSection } from "@/settings/SkillsSection.js";
+import { SubagentsSection } from "@/settings/SubagentsSection.js";
 import { CommandsSection } from "@/settings/CommandsSection.js";
 import { SettingsSearchInput } from "@/settings/SettingsSearchInput.js";
 import { SettingsResourceHeaderActions } from "@/settings/SettingsResourceHeaderActions.js";
-import { PluginStoreAvatar } from "@/settings/PluginStoreAvatar.js";
+import { SettingsResourcePageHeader } from "@/settings/SettingsResourcePageHeader.js";
 import { PluginUninstallConfirmDialog } from "@/settings/PluginUninstallConfirmDialog.js";
-import { PluginInstallEmptyState, PluginLoadingState } from "@/settings/PluginInstallEmptyState.js";
+import { PluginLoadingState } from "@/settings/PluginInstallEmptyState.js";
 import {
   PluginDetailRow,
   PluginHookDetails,
@@ -82,11 +86,6 @@ import {
   selectPluginsForScope,
 } from "@/settings/pluginCapabilityProjection.js";
 import {
-  isComputerUseRemoteOrLinux,
-  matchesComputerUseSearch,
-  resolveComputerUseAvailability,
-} from "@/settings/computerUseAvailability.js";
-import {
   PluginScopeMenu,
   getPluginWorkspaceKey,
   isPluginScopeWorkspaceConnected,
@@ -97,17 +96,11 @@ import {
   useRemoteSyncDialogIntent,
 } from "@/settings/RemoteSyncActions.js";
 
-type PluginTabTarget = "plugins" | "mcps" | "skills" | "commands";
+type PluginTabTarget = "plugins" | "mcps" | "skills" | "subagents" | "commands";
 type PluginTab = Exclude<PluginTabTarget, "commands">;
 
 function normalizePluginTab(tab: PluginTabTarget): PluginTab {
   return tab === "commands" ? "plugins" : tab;
-}
-
-function getPluginTabCountClass(tab: PluginTabTarget, selectedTab: PluginTabTarget): string {
-  return tab === selectedTab
-    ? "text-ui-sm text-foreground-subtle"
-    : "text-ui-sm text-foreground-subtlest";
 }
 
 type PluginScope =
@@ -124,6 +117,7 @@ interface PluginsSectionProps {
   workspacePath?: string | null;
   workspaceIdentity?: string;
   onCreateTask?: (request?: CreateTaskRequest) => void;
+  onManageModels?: () => void;
   onOpenPluginStore: (returnScopeKey?: string, intent?: "add-marketplace") => void;
   showMarketplaceBreadcrumb?: boolean;
 }
@@ -136,9 +130,7 @@ function PluginList({
   target,
   configScope,
   searchQuery,
-  isDesktop,
-  isMacDesktop,
-  isWindowsDesktop,
+  filters,
   onAdd,
   onCreateTask,
   onDetailOpenChange,
@@ -149,6 +141,7 @@ function PluginList({
   target: WorkspaceTabState | null;
   configScope: MyCodePluginScope;
   searchQuery: string;
+  filters?: ReactNode;
   isDesktop: boolean;
   isMacDesktop: boolean;
   isWindowsDesktop: boolean;
@@ -261,10 +254,6 @@ function PluginList({
     storeItemById,
     storeMatchesTarget,
   ]);
-  const scopedPlugins = useMemo(
-    () => (storeMatchesTarget ? selectPluginsForScope(plugins, installedPlugins, configScope) : []),
-    [configScope, installedPlugins, plugins, storeMatchesTarget],
-  );
   const builtInPluginIds = useMemo(
     () => new Set(selectBuiltInPlugins(plugins, installedPlugins).map((plugin) => plugin.id)),
     [installedPlugins, plugins],
@@ -273,40 +262,13 @@ function PluginList({
     () => partitionPluginsForSettings(visiblePlugins, builtInPluginIds),
     [builtInPluginIds, visiblePlugins],
   );
-  const scopedPluginGroups = useMemo(
-    () => partitionPluginsForSettings(scopedPlugins, builtInPluginIds),
-    [builtInPluginIds, scopedPlugins],
-  );
-  const visibleBuiltInPlugins = visiblePluginGroups.builtIn;
   const visibleInstalledPlugins = visiblePluginGroups.installed;
-  const installedPluginCount = scopedPluginGroups.installed.length;
-  const computerUseAvailability = resolveComputerUseAvailability({
-    isDesktop,
-    isMacDesktop,
-    isWindowsDesktop,
-    remoteSessionId: target?.remoteSessionId,
-    remoteTarget: target?.remoteTarget,
-    workspaceIdentity: target?.workspaceIdentity,
-  });
-  const showUnavailableComputerUse = Boolean(
-    configScope === "user" &&
-    target &&
-    !loading &&
-    isComputerUseRemoteOrLinux(computerUseAvailability) &&
-    matchesComputerUseSearch(searchQuery),
-  );
   const hasEmptySearchResult = Boolean(
-    target &&
-    !loading &&
-    searchQuery.trim() &&
-    visibleInstalledPlugins.length === 0 &&
-    visibleBuiltInPlugins.length === 0 &&
-    !showUnavailableComputerUse,
+    target && !loading && searchQuery.trim() && visibleInstalledPlugins.length === 0,
   );
-  const hideInstalledGroup = Boolean(searchQuery.trim() && visibleInstalledPlugins.length === 0);
   useEffect(() => {
-    onVisibleCountChange?.(visibleInstalledPlugins.length + visibleBuiltInPlugins.length);
-  }, [onVisibleCountChange, visibleBuiltInPlugins.length, visibleInstalledPlugins.length]);
+    onVisibleCountChange?.(visibleInstalledPlugins.length);
+  }, [onVisibleCountChange, visibleInstalledPlugins.length]);
   const refreshAfterPluginChange = useCallback(async () => {
     if (!target || !targetServiceResolution.rpcReady) return;
     await initialize({
@@ -482,12 +444,12 @@ function PluginList({
   }, [initialize, pluginManagementService, configScope, target, targetServiceResolution.rpcReady]);
 
   const renderPluginRows = (items: MyCodePluginInfo[]) => (
-    <div className="overflow-hidden rounded-xl bg-surface">
+    <div className="overflow-hidden rounded-lg bg-surface/60">
       {items.map((plugin, index) => (
         <Fragment key={plugin.id}>
           {index > 0 ? <div className="h-px bg-border/50" aria-hidden="true" /> : null}
           <div
-            className="group/plugin-row flex min-w-0 items-center gap-3 px-4 py-3 transition-colors hover:bg-hover"
+            className="group/plugin-row flex min-w-0 items-center gap-2 px-3 py-2 transition-colors hover:bg-hover"
             data-testid="plugin-settings-plugin-row"
             data-plugin-id={plugin.id}
           >
@@ -496,13 +458,9 @@ function PluginList({
               className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-input-border-focused"
               onClick={() => actions.onOpenDetail(plugin.id)}
             >
-              <PluginStoreAvatar
-                item={storeItemById.get(plugin.id) ?? { name: plugin.name }}
-                className="size-9 bg-background"
-              />
               <div className="min-w-0 flex-1">
                 <div className="flex min-w-0 items-center gap-1.5">
-                  <span className="min-w-0 truncate text-ui-base font-medium text-foreground">
+                  <span className="min-w-0 truncate text-ui-caption font-medium text-foreground">
                     {resolveManagedPluginDisplay(plugin, storeItemById.get(plugin.id), locale).name}
                   </span>
                   <PluginStoreUpdateBadge item={storeItemById.get(plugin.id)} />
@@ -638,32 +596,6 @@ function PluginList({
     </div>
   );
 
-  const renderUnavailableComputerUse = () => (
-    <div className="overflow-hidden rounded-xl bg-surface">
-      <div className="flex min-w-0 items-center gap-3 px-4 py-3 text-foreground-subtle">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-background text-foreground-subtle">
-          <Monitor className="size-4" aria-hidden="true" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-ui-base font-medium text-foreground">
-            {intl.formatMessage({ id: "settings.computerUse.title" })}
-          </div>
-          <div className="mt-0.5 text-ui-sm text-foreground-subtle">
-            {intl.formatMessage({
-              id:
-                computerUseAvailability.kind === "local-linux"
-                  ? "settings.computerUse.unsupported.linuxDescription"
-                  : "settings.computerUse.unsupported.remoteDescription",
-            })}
-          </div>
-        </div>
-        <span className="shrink-0 rounded-md bg-background px-2 py-1 text-ui-xs font-medium text-foreground-subtle">
-          {intl.formatMessage({ id: "settings.computerUse.unsupported.badge" })}
-        </span>
-      </div>
-    </div>
-  );
-
   if (selectedPlugin && selectedStoreItem && targetServiceResolution.rpcReady) {
     const pluginBreadcrumbLabel = resolvePluginDisplayName(selectedStoreItem, locale);
     const pluginsBreadcrumbLabel = intl.formatMessage({ id: "settings.plugins.title" });
@@ -767,26 +699,13 @@ function PluginList({
   }
 
   return (
-    <section className="space-y-6" aria-labelledby="plugin-installed-title">
-      {hasEmptySearchResult ? (
-        <EmptyState
-          message={intl.formatMessage({
-            id: "settings.plugin.plugins.empty",
-          })}
-        />
-      ) : null}
-      <div className={hideInstalledGroup ? "hidden" : "space-y-4"}>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3
-            id="plugin-installed-title"
-            className="flex h-7 items-center gap-1.5 text-ui-base font-medium text-foreground"
-          >
-            {intl.formatMessage({ id: "settings.plugin.plugins.installed" })}
-            <span className="text-ui-sm font-normal text-foreground-subtle">
-              {visibleInstalledPlugins.length}
-            </span>
-          </h3>
-          <div className="flex flex-wrap items-center gap-2">
+    <section className="space-y-6" data-settings-plugin-list>
+      <SettingsResourcePageHeader
+        title={intl.formatMessage({ id: "settings.plugins.title" })}
+        description={intl.formatMessage({ id: "settings.plugins.description" })}
+        filters={filters}
+        actions={
+          <>
             {connectedRemoteSyncTarget ? (
               <ControlHintTooltip
                 title={intl.formatMessage({
@@ -824,8 +743,13 @@ function PluginList({
                 />
               </>
             ) : null}
-          </div>
-        </div>
+          </>
+        }
+      />
+      {hasEmptySearchResult ? (
+        <EmptyState message={intl.formatMessage({ id: "settings.plugin.plugins.empty" })} />
+      ) : null}
+      <div className="space-y-4">
         {configScope === "workspace" && target ? (
           <div
             className="rounded-lg border border-border bg-card px-3 py-2 text-ui-sm text-foreground-subtle"
@@ -854,46 +778,8 @@ function PluginList({
           <PluginLoadingState label={intl.formatMessage({ id: "common.loading" })} />
         ) : visibleInstalledPlugins.length > 0 ? (
           renderPluginRows(visibleInstalledPlugins)
-        ) : installedPluginCount === 0 && !showUnavailableComputerUse ? (
-          <PluginInstallEmptyState
-            title={intl.formatMessage({
-              id: "settings.plugin.plugins.emptyInstalledTitle",
-            })}
-            description={intl.formatMessage({
-              id: "settings.plugin.plugins.emptyInstalledDescription",
-            })}
-            actions={
-              onAdd ? (
-                <Button type="button" variant="default" size="lg" onClick={onAdd}>
-                  <Plus aria-hidden="true" data-icon="inline-start" />
-                  {intl.formatMessage({
-                    id: "settings.plugin.plugins.browse",
-                  })}
-                </Button>
-              ) : undefined
-            }
-          />
         ) : null}
       </div>
-      {!hasEmptySearchResult && visibleBuiltInPlugins.length > 0 ? (
-        <div className="space-y-4">
-          <h3 className="flex h-7 items-center gap-1.5 text-ui-base font-medium text-foreground">
-            {intl.formatMessage({ id: "settings.plugin.plugins.builtIn" })}
-            <span className="text-ui-sm font-normal text-foreground-subtle">
-              {visibleBuiltInPlugins.length}
-            </span>
-          </h3>
-          {renderPluginRows(visibleBuiltInPlugins)}
-        </div>
-      ) : null}
-      {showUnavailableComputerUse ? (
-        <div className="space-y-4">
-          <h3 className="flex h-7 items-center text-ui-base font-medium text-foreground">
-            {intl.formatMessage({ id: "settings.computerUse.unsupported.group" })}
-          </h3>
-          {renderUnavailableComputerUse()}
-        </div>
-      ) : null}
       <PluginUninstallConfirmDialog
         open={uninstall.pendingPlugin !== null}
         pluginName={
@@ -940,7 +826,7 @@ function PluginList({
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-border px-4 py-8 text-center text-ui-base text-foreground-subtle">
+    <div className="rounded-lg border border-dashed border-border/60 px-3 py-5 text-center text-ui-caption text-foreground-subtle">
       {message}
     </div>
   );
@@ -956,6 +842,7 @@ export function PluginsSection({
   workspacePath,
   workspaceIdentity,
   onCreateTask,
+  onManageModels,
   onOpenPluginStore,
   showMarketplaceBreadcrumb = false,
 }: PluginsSectionProps) {
@@ -1006,7 +893,11 @@ export function PluginsSection({
     [activeWorkspaceIdentity, activeWorkspacePath, workspaceTabs],
   );
   const [pickedScopeKey, setPickedScopeKey] = useState(() => initialScopeKey?.trim() || "user");
-  const selectedScopeKey = pickedScopeKey;
+  const selectedScopeKey = workspaceTabs.some(
+    (tab) => workspaceKey(tab) === pickedScopeKey && !isPluginScopeWorkspaceSelectable(tab),
+  )
+    ? "user"
+    : pickedScopeKey;
   const fixedTab: PluginTabTarget | null =
     mode === "mcp" ? "mcps" : mode === "skill" ? "skills" : mode === "command" ? "commands" : null;
   const [interactiveTab, setInteractiveTab] = useState<PluginTab>(() =>
@@ -1021,13 +912,8 @@ export function PluginsSection({
     plugins: "",
     mcps: "",
     skills: "",
+    subagents: "",
     commands: "",
-  });
-  const [capabilityCounts, setCapabilityCounts] = useState<Record<PluginTabTarget, number>>({
-    plugins: 0,
-    mcps: 0,
-    skills: 0,
-    commands: 0,
   });
   const [mcpEditorOpen, setMcpEditorOpen] = useState(false);
   const [skillDetailOpen, setSkillDetailOpen] = useState(false);
@@ -1103,44 +989,96 @@ export function PluginsSection({
       );
     }
   }, [intl, pickedScopeKey, workspaceTabs]);
-  const selectedTargetKey = target ? workspaceKey(target) : "";
-
-  const updatePluginCount = useCallback(
-    (count: number) => {
-      setCapabilityCounts((current) =>
-        current.plugins === count ? current : { ...current, plugins: count },
-      );
-    },
-    [selectedScope.key, selectedTargetKey],
-  );
-  const updateMcpCount = useCallback(
-    (count: number) => {
-      setCapabilityCounts((current) =>
-        current.mcps === count ? current : { ...current, mcps: count },
-      );
-    },
-    [selectedScope.key, selectedTargetKey],
-  );
-  const updateSkillCount = useCallback(
-    (count: number) => {
-      setCapabilityCounts((current) =>
-        current.skills === count ? current : { ...current, skills: count },
-      );
-    },
-    [selectedScope.key, selectedTargetKey],
-  );
-  const updateCommandCount = useCallback(
-    (count: number) => {
-      setCapabilityCounts((current) =>
-        current.commands === count ? current : { ...current, commands: count },
-      );
-    },
-    [selectedScope.key, selectedTargetKey],
-  );
   const handleMcpEditorOpenChange = useCallback((open: boolean) => {
     setMcpEditorOpen(open);
     if (!open) setMcpFormScopeKey(null);
   }, []);
+
+  const pluginTabs = (
+    <TabsList variant="line" className="h-7 max-w-full gap-1 overflow-x-auto p-0">
+      {(
+        [
+          ["plugins", "settings.plugin.tab.plugins"],
+          ["mcps", "settings.plugin.tab.mcps"],
+          ["skills", "settings.plugin.tab.skills"],
+          ["subagents", "settings.subagents.title"],
+        ] as const
+      ).map(([value, titleId]) => (
+        <TabsTrigger
+          key={value}
+          value={value}
+          className="h-6 flex-none rounded-md px-2 text-ui-caption font-medium hover:bg-hover data-active:!bg-selected data-active:hover:!bg-hover after:hidden"
+        >
+          {intl.formatMessage({ id: titleId })}
+        </TabsTrigger>
+      ))}
+    </TabsList>
+  );
+
+  const resourceFilters = (
+    <div className="flex min-w-0 flex-wrap items-center gap-3">
+      <div className="flex min-w-0 flex-wrap items-center gap-3">
+        <PluginScopeMenu
+          align="start"
+          selectedScopeKey={selectedScopeKey}
+          triggerTestId="plugin-settings-scope-trigger"
+          userOptionTestId="plugin-settings-scope-user-option"
+          workspaceOptionTestIdPrefix="plugin-settings-scope-option"
+          workspaceTabs={workspaceTabs}
+          onScopeKeyChange={setPickedScopeKey}
+        />
+        <div className="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
+        {mode === "plugin" ? (
+          pluginTabs
+        ) : (
+          <div
+            data-settings-resource-title
+            className="flex h-7 items-center gap-1 px-3 text-ui-caption font-medium text-foreground"
+          >
+            <span>
+              {intl.formatMessage({
+                id:
+                  mode === "mcp"
+                    ? "settings.plugin.tab.mcps"
+                    : mode === "skill"
+                      ? "settings.plugin.tab.skills"
+                      : "settings.plugin.tab.commands",
+              })}
+            </span>
+          </div>
+        )}
+      </div>
+      <SettingsSearchInput
+        data-testid="plugin-settings-search"
+        containerClassName="w-full sm:ml-auto sm:w-64"
+        clearLabel={intl.formatMessage({ id: "settings.search.clear" })}
+        value={activeSearchQuery}
+        onClear={() => {
+          setSearchQueries((current) => ({
+            ...current,
+            [selectedTab]: "",
+          }));
+        }}
+        onChange={(event) => {
+          const value = event.target.value;
+          setSearchQueries((current) => ({
+            ...current,
+            [selectedTab]: value,
+          }));
+        }}
+        placeholder={intl.formatMessage({
+          id:
+            selectedTab === "plugins"
+              ? "settings.plugin.plugins.searchPlaceholder"
+              : selectedTab === "mcps"
+                ? "settings.mcp.searchPlaceholder"
+                : selectedTab === "skills"
+                  ? "settings.skills.searchPlaceholder"
+                  : "settings.commands.searchPlaceholder",
+        })}
+      />
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -1168,119 +1106,22 @@ export function PluginsSection({
           }
         }}
       >
-        {!mcpEditorOpen && !pluginDetailOpen && !commandEditorOpen ? (
-          <div className="flex min-w-0 flex-wrap items-center gap-3">
-            <div className="flex min-w-0 flex-wrap items-center gap-3">
-              <PluginScopeMenu
-                align="start"
-                selectedScopeKey={selectedScopeKey}
-                triggerTestId="plugin-settings-scope-trigger"
-                userOptionTestId="plugin-settings-scope-user-option"
-                workspaceOptionTestIdPrefix="plugin-settings-scope-option"
-                workspaceTabs={workspaceTabs}
-                onScopeKeyChange={setPickedScopeKey}
-              />
-              <div className="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
-              {mode === "plugin" ? (
-                <TabsList variant="line" className="h-7 max-w-full gap-1 overflow-x-auto p-0">
-                  <TabsTrigger
-                    value="plugins"
-                    className="h-7 flex-none rounded-full px-3 hover:bg-hover data-active:!bg-selected data-active:hover:!bg-hover after:hidden"
-                  >
-                    {intl.formatMessage({
-                      id: "settings.plugin.tab.plugins",
-                    })}
-                    <span className={getPluginTabCountClass("plugins", selectedTab)}>
-                      {capabilityCounts.plugins}
-                    </span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="mcps"
-                    className="h-7 flex-none rounded-full px-3 hover:bg-hover data-active:!bg-selected data-active:hover:!bg-hover after:hidden"
-                  >
-                    {intl.formatMessage({
-                      id: "settings.plugin.tab.mcps",
-                    })}
-                    <span className={getPluginTabCountClass("mcps", selectedTab)}>
-                      {capabilityCounts.mcps}
-                    </span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="skills"
-                    className="h-7 flex-none rounded-full px-3 hover:bg-hover data-active:!bg-selected data-active:hover:!bg-hover after:hidden"
-                  >
-                    {intl.formatMessage({
-                      id: "settings.plugin.tab.skills",
-                    })}
-                    <span className={getPluginTabCountClass("skills", selectedTab)}>
-                      {capabilityCounts.skills}
-                    </span>
-                  </TabsTrigger>
-                </TabsList>
-              ) : (
-                <div
-                  data-independent-capability-count="true"
-                  className="flex h-7 items-center gap-1 px-3 text-ui-base font-medium text-foreground"
-                >
-                  <span>
-                    {intl.formatMessage({
-                      id:
-                        mode === "mcp"
-                          ? "settings.plugin.tab.mcps"
-                          : mode === "skill"
-                            ? "settings.plugin.tab.skills"
-                            : "settings.plugin.tab.commands",
-                    })}
-                  </span>
-                  <span className="text-ui-sm text-foreground-subtle">
-                    {mode === "mcp"
-                      ? capabilityCounts.mcps
-                      : mode === "skill"
-                        ? capabilityCounts.skills
-                        : capabilityCounts.commands}
-                  </span>
-                </div>
-              )}
-            </div>
-            <SettingsSearchInput
-              data-testid="plugin-settings-search"
-              containerClassName="w-full sm:ml-auto sm:w-64"
-              clearLabel={intl.formatMessage({ id: "settings.search.clear" })}
-              value={activeSearchQuery}
-              onClear={() => {
-                setSearchQueries((current) => ({
-                  ...current,
-                  [selectedTab]: "",
-                }));
-              }}
-              onChange={(event) => {
-                const value = event.target.value;
-                setSearchQueries((current) => ({
-                  ...current,
-                  [selectedTab]: value,
-                }));
-              }}
-              placeholder={intl.formatMessage({
-                id:
-                  selectedTab === "plugins"
-                    ? "settings.plugin.plugins.searchPlaceholder"
-                    : selectedTab === "mcps"
-                      ? "settings.mcp.searchPlaceholder"
-                      : selectedTab === "skills"
-                        ? "settings.skills.searchPlaceholder"
-                        : "settings.commands.searchPlaceholder",
-              })}
-            />
-          </div>
-        ) : null}
+        {!mcpEditorOpen &&
+        !pluginDetailOpen &&
+        !commandEditorOpen &&
+        (selectedTab === "commands" ||
+          (selectedTab === "skills" && !target) ||
+          (selectedTab === "mcps" && !mcpTarget))
+          ? resourceFilters
+          : null}
+        {/* 只挂载当前资源，避免子智能体的本机目录加载与后台远端 inventory 初始化竞争。 */}
         {mode === "plugin" ? (
           <TabsContent
-            forceMount
             value="plugins"
             className={
               pluginDetailOpen
                 ? "data-[state=inactive]:hidden"
-                : "mt-6 data-[state=inactive]:hidden"
+                : "mt-3 data-[state=inactive]:hidden"
             }
           >
             <PluginList
@@ -1290,21 +1131,20 @@ export function PluginsSection({
               isMacDesktop={isMacDesktop}
               isWindowsDesktop={isWindowsDesktop}
               searchQuery={searchQueries.plugins}
+              filters={resourceFilters}
               onAdd={selectedScope.kind === "user" ? openPluginStoreForSelectedScope : undefined}
               onCreateTask={onCreateTask}
               onDetailOpenChange={setPluginDetailOpen}
               onOpenPluginStore={openPluginStoreForSelectedScope}
               showMarketplaceBreadcrumb={showMarketplaceBreadcrumb}
-              onVisibleCountChange={updatePluginCount}
             />
           </TabsContent>
         ) : null}
         {mode === "plugin" || mode === "mcp" ? (
           <TabsContent
-            forceMount
             value="mcps"
             className={
-              mcpEditorOpen ? "data-[state=inactive]:hidden" : "mt-6 data-[state=inactive]:hidden"
+              mcpEditorOpen ? "data-[state=inactive]:hidden" : "mt-3 data-[state=inactive]:hidden"
             }
           >
             {mcpTarget ? (
@@ -1318,7 +1158,7 @@ export function PluginsSection({
                 parentScopeKey={selectedScopeKey}
                 workspaceTabs={workspaceTabs}
                 searchQuery={searchQueries.mcps}
-                onVisibleCountChange={updateMcpCount}
+                filters={resourceFilters}
                 onEditorOpenChange={handleMcpEditorOpenChange}
                 onFormScopeKeyChange={setMcpFormScopeKey}
                 onOpenPluginStore={
@@ -1336,7 +1176,7 @@ export function PluginsSection({
           </TabsContent>
         ) : null}
         {mode === "plugin" || mode === "skill" ? (
-          <TabsContent forceMount value="skills" className="mt-6 data-[state=inactive]:hidden">
+          <TabsContent value="skills" className="mt-6 data-[state=inactive]:hidden">
             {target ? (
               <SkillsSection
                 workspacePath={target.workspacePath}
@@ -1345,6 +1185,7 @@ export function PluginsSection({
                 remoteTarget={target.remoteTarget}
                 scopeFilter={selectedScope.kind === "user" ? "user" : "workspace"}
                 searchQuery={searchQueries.skills}
+                filters={resourceFilters}
                 onCreateTask={onCreateTask}
                 onDetailOpenChange={setSkillDetailOpen}
                 onOpenPluginStore={
@@ -1352,7 +1193,6 @@ export function PluginsSection({
                 }
                 showMarketplaceBreadcrumb={showMarketplaceBreadcrumb}
                 reportDetailBreadcrumb={mode === "plugin"}
-                onVisibleCountChange={updateSkillCount}
               />
             ) : (
               <EmptyState
@@ -1363,14 +1203,18 @@ export function PluginsSection({
             )}
           </TabsContent>
         ) : null}
+        {mode === "plugin" ? (
+          <TabsContent value="subagents" className="mt-3 data-[state=inactive]:hidden">
+            <SubagentsSection onManageModels={onManageModels} navigationTabs={pluginTabs} />
+          </TabsContent>
+        ) : null}
         {mode === "command" ? (
           <TabsContent
-            forceMount
             value="commands"
             className={
               commandEditorOpen
                 ? "data-[state=inactive]:hidden"
-                : "mt-6 data-[state=inactive]:hidden"
+                : "mt-3 data-[state=inactive]:hidden"
             }
           >
             {commandTarget ? (
@@ -1381,7 +1225,6 @@ export function PluginsSection({
                 parentScopeKey={selectedScopeKey}
                 workspaceTabs={workspaceTabs}
                 searchQuery={searchQueries.commands}
-                onVisibleCountChange={updateCommandCount}
                 onEditorOpenChange={setCommandEditorOpen}
                 onFormScopeKeyChange={setCommandFormScopeKey}
               />

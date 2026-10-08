@@ -25,7 +25,7 @@ import {
   MessageCircle,
   SearchIcon,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { useRemoteConnectionEntryVisibility } from "@/hooks/useRemoteConnectionEntryVisibility.js";
 import { cn } from "@/components/lib/utils.js";
@@ -185,6 +185,8 @@ export function ChatEmptyWorkspacePreviewMenu({
   containerClassName,
   triggerClassName,
   triggerIndicator,
+  afterTrigger,
+  remoteConnectionPlacement = "menu",
 }: {
   workspacePath: string;
   workspaceIdentity?: string;
@@ -210,8 +212,11 @@ export function ChatEmptyWorkspacePreviewMenu({
   containerClassName?: string;
   /** 调用方局部调整 workspace trigger 视觉，不改变普通会话默认样式。 */
   triggerClassName?: string;
-  /** 调用方局部替换尾部 indicator；普通会话继续使用默认 Lucide chevron。 */
+  /** 调用方局部替换尾部 indicator；普通会话继续使用默认 Tabler chevron。 */
   triggerIndicator?: ReactNode;
+  /** 首页把唯一权限节点放在项目与远程入口之间；其他页面保留菜单入口。 */
+  afterTrigger?: ReactNode;
+  remoteConnectionPlacement?: "menu" | "inline";
 }) {
   const { intl } = useMyCodeIntl();
   const [sshDialogOpen, setSshDialogOpen] = useState(false);
@@ -261,6 +266,19 @@ export function ChatEmptyWorkspacePreviewMenu({
     : homeWorkspacePath === workspacePath
       ? House
       : Folder;
+  const openRemoteDialog = () => {
+    runUserAction({
+      input: {
+        featureId: "workspace.remote.lifecycle",
+        action: "open_dialog",
+        trigger: remoteConnectionPlacement === "inline" ? "button" : "menu",
+        workspaceKind: "remote",
+      },
+      operation: () => setSshDialogOpen(true),
+      completed: { resultSource: "local_commit" },
+      failureStage: "dialog_open",
+    });
+  };
 
   return (
     <DropdownMenu>
@@ -299,18 +317,19 @@ export function ChatEmptyWorkspacePreviewMenu({
           <Button
             type="button"
             variant="ghost"
-            size="default"
+            size="sm"
             className={cn(
-              "min-w-0 rounded-full bg-transparent text-ui-base/relaxed hover:bg-transparent",
-              "max-w-[15rem] pl-3 pr-2",
+              "h-7 min-w-0 gap-1.5 rounded-lg bg-transparent text-ui-caption font-normal text-foreground-subtle",
+              "max-w-[15rem] pl-2 pr-1.5",
               triggerClassName,
             )}
             aria-label={intl.formatMessage({ id: "chat.empty.workspaceMenu" })}
             data-testid={TID_COMPOSER_WORKSPACE_TRIGGER}
           >
             <CurrentWorkspaceIcon
+              strokeWidth={1.5}
               className={cn(
-                "size-4 text-foreground-subtle transition-opacity",
+                "size-3.5 text-foreground-subtle transition-opacity",
                 // 关闭按钮和项目图标占用同一位置。只有允许脱离项目时才隐藏底层图标，
                 // 否则 X 会直接叠在图标上；定时任务禁用该能力时则让项目图标保持可见。
                 canDetachProject &&
@@ -318,17 +337,40 @@ export function ChatEmptyWorkspacePreviewMenu({
               )}
             />
             <span className="block max-w-full truncate">{currentWorkspaceTitle}</span>
-            {triggerIndicator ?? <ChevronDownIcon className="size-3.5 text-foreground-subtle" />}
+            {triggerIndicator ?? (
+              <ChevronDownIcon className="size-3 text-foreground-subtle" strokeWidth={1.5} />
+            )}
           </Button>
         </DropdownMenuTrigger>
       </div>
-      <DropdownMenuContent align="start" side="top" className="w-72 p-0">
+      {afterTrigger}
+      {canUseRemoteWorkspace && remoteConnectionPlacement === "inline" ? (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          data-testid={TID_COMPOSER_REMOTE_CONNECTION}
+          aria-label={intl.formatMessage({ id: "remote.trigger" })}
+          onClick={openRemoteDialog}
+          className="h-7 shrink-0 gap-1 rounded-lg px-1.5 text-ui-caption font-normal text-foreground-subtle"
+        >
+          <Cloud className="size-3.5" strokeWidth={1.5} />
+          <span className="hidden @sm/composer:inline">
+            {intl.formatMessage({ id: "remote.trigger" })}
+          </span>
+        </Button>
+      ) : null}
+      <DropdownMenuContent
+        align="start"
+        side="top"
+        className="composer-workspace-menu w-60 max-w-[calc(100vw-2rem)] rounded-lg p-0 text-ui-caption [&_[role^=menuitem]]:min-h-7 [&_[role^=menuitem]]:py-1 [&_[role^=menuitem]]:text-ui-caption [&_svg]:size-3.5 [&_svg]:stroke-[1.5]"
+      >
         <div
           data-slot="command-input-wrapper"
           className="p-1 border-b border-border"
           onKeyDown={(event) => event.stopPropagation()}
         >
-          <InputGroup className="h-8 border-0 !bg-transparent hover:border-input-border-hover ">
+          <InputGroup className="h-7 border-0 !bg-transparent hover:border-input-border-hover ">
             <input
               data-slot="command-input"
               value={workspaceSearchQuery}
@@ -336,10 +378,13 @@ export function ChatEmptyWorkspacePreviewMenu({
                 id: "chat.empty.workspaceSearchPlaceholder",
               })}
               onChange={(event) => setWorkspaceSearchQuery(event.target.value)}
-              className="w-full text-ui-base/relaxed text-foreground outline-hidden placeholder:text-foreground-subtlest disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-7 w-full text-ui-caption text-foreground outline-hidden placeholder:text-foreground-subtlest disabled:cursor-not-allowed disabled:opacity-50"
             />
             <InputGroupAddon>
-              <SearchIcon className="size-4 shrink-0 text-foreground-subtlest" />
+              <SearchIcon
+                className="size-3.5 shrink-0 text-foreground-subtlest"
+                strokeWidth={1.5}
+              />
             </InputGroupAddon>
           </InputGroup>
         </div>
@@ -385,7 +430,7 @@ export function ChatEmptyWorkspacePreviewMenu({
             );
           })}
           {visibleWorkspaceTabs.length === 0 ? (
-            <div className="px-2 py-2 text-ui-base text-foreground-subtlest">
+            <div className="px-2 py-2 text-ui-caption text-foreground-subtlest">
               {intl.formatMessage({ id: "chat.empty.workspaceSearchEmpty" })}
             </div>
           ) : null}
@@ -397,7 +442,7 @@ export function ChatEmptyWorkspacePreviewMenu({
               <span>{intl.formatMessage({ id: "workspace.openFolder" })}</span>
             </DropdownMenuItem>
           ) : null}
-          {canUseRemoteWorkspace ? (
+          {canUseRemoteWorkspace && remoteConnectionPlacement === "menu" ? (
             <DropdownMenuItem
               data-testid={TID_COMPOSER_REMOTE_CONNECTION}
               onSelect={() => {
@@ -406,17 +451,7 @@ export function ChatEmptyWorkspacePreviewMenu({
                 logger.info(
                   `[ChatEmptyWorkspacePreviewMenu] open remote dialog from workspace menu workspace=${workspacePath}`,
                 );
-                runUserAction({
-                  input: {
-                    featureId: "workspace.remote.lifecycle",
-                    action: "open_dialog",
-                    trigger: "menu",
-                    workspaceKind: "remote",
-                  },
-                  operation: () => setSshDialogOpen(true),
-                  completed: { resultSource: "local_commit" },
-                  failureStage: "dialog_open",
-                });
+                openRemoteDialog();
               }}
             >
               <Cloud className="size-4 text-foreground-subtle" />

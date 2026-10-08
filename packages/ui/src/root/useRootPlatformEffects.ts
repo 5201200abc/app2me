@@ -1,3 +1,4 @@
+import { useMyCodeStore } from "@/store/StoreProvider.js";
 /* oxlint-disable eslint(max-lines) -- 平台事件和分享导入共用同一生命周期。 */
 import { useEffect, useRef, useState } from "react";
 import { useMyCodeSessionStore } from "@/store/mycodeSessionStore.js";
@@ -89,6 +90,10 @@ export function useRootPlatformEffects({
   const lastImportProgressToastRef = useRef<{ phase: string; at: number } | null>(null);
   const importToastIdRef = useRef<number | null>(null);
 
+  const interfaceMode = useMyCodeStore((state) => state.interfaceMode);
+  const interfaceModeRef = useRef(interfaceMode);
+  interfaceModeRef.current = interfaceMode;
+
   useEffect(() => {
     // 启动时必须先判断 OAuth 本地会话，再恢复历史/初始 workspace。
     // 如果这里抢先 addTab，未登录用户会先看到主界面，之后才被登录页覆盖。
@@ -151,6 +156,7 @@ export function useRootPlatformEffects({
       openWorkspace();
     });
     const disposeNewTask = platform.onNewTask(() => {
+      if (interfaceModeRef.current === "mychat") return;
       startNewTaskFromActiveWorkspace("onNewTask");
     });
     const disposeOpenWorkspace = platform.onOpenWorkspace(() => {
@@ -517,6 +523,7 @@ export function useRootPlatformEffects({
         return;
       }
       const isNewTaskShortcut = matchesPrimaryShortcut(event, "n");
+      if (isNewTaskShortcut && interfaceModeRef.current === "mychat") return;
       const isOpenWorkspaceShortcut = matchesPrimaryShortcut(event, "o");
 
       if (!isNewTaskShortcut && !isOpenWorkspaceShortcut) {

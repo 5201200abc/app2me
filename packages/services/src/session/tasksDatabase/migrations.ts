@@ -66,6 +66,15 @@ const definitions = [
   },
 ] as const;
 
+/** 精确接受已发布的退役迁移摘要；其他摘要仍按损坏处理。 */
+function matchesMigrationChecksum(id: string, applied: unknown, current: string): boolean {
+  return (
+    applied === current ||
+    (id === "0003_official_glm_selection" &&
+      applied === "8987adb50ae412a46c294141c1af89ccfc252f22d41351bdf4c7528f56edc8b4")
+  );
+}
+
 export function runTasksDatabaseMigrations(
   db: DatabaseSync,
   options: {
@@ -102,7 +111,7 @@ export function runTasksDatabaseMigrations(
         .prepare("SELECT checksum FROM tasks_schema_migration WHERE id=?")
         .get(migration.id);
       if (applied) {
-        if (applied.checksum !== checksum)
+        if (!matchesMigrationChecksum(migration.id, applied.checksum, checksum))
           throw Object.assign(
             new Error(`Task database migration checksum mismatch: ${migration.id}`),
             { kind: "checksum_mismatch" },
@@ -172,7 +181,7 @@ export function areTasksDatabaseMigrationsApplied(db: DatabaseSync): boolean {
     const expected = createHash("sha256")
       .update(JSON.stringify(migration.checksumInput))
       .digest("hex");
-    if (row.checksum !== expected)
+    if (!matchesMigrationChecksum(migration.id, row.checksum, expected))
       throw Object.assign(new Error(`Task database migration checksum mismatch: ${migration.id}`), {
         kind: "checksum_mismatch",
       });
@@ -192,8 +201,11 @@ export function inspectTasksMigrationKind(db: DatabaseSync): DatabaseMigrationFa
       : undefined;
     if (!row) pending = true;
     else if (
-      row.checksum !==
-      createHash("sha256").update(JSON.stringify(migration.checksumInput)).digest("hex")
+      !matchesMigrationChecksum(
+        migration.id,
+        row.checksum,
+        createHash("sha256").update(JSON.stringify(migration.checksumInput)).digest("hex"),
+      )
     )
       throw Object.assign(new Error(`Task database migration checksum mismatch: ${migration.id}`), {
         kind: "checksum_mismatch",

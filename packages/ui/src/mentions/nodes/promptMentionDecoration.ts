@@ -17,7 +17,7 @@ import {
   SUBAGENT_MENTION_ICON_NODE,
   WHITEBOARD_MENTION_ICON_NODE,
   WORKFLOW_COMMAND_MENTION_ICON_NODE,
-  type MentionLucideIconNode,
+  type MentionIconNode,
 } from "@/mentions/nodes/mentionIconDom.js";
 
 const pendingImages = new WeakMap<HTMLElement, HTMLImageElement>();
@@ -27,7 +27,7 @@ function cssUrl(url: string): string {
   return `url(${JSON.stringify(new URL(url, document.baseURI).href)})`;
 }
 
-function setMask(dom: HTMLElement, icon: MentionLucideIconNode) {
+function setMask(dom: HTMLElement, icon: MentionIconNode) {
   const svg = createMentionSvgIcon(icon);
   svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   dom.style.removeProperty("--mention-image");

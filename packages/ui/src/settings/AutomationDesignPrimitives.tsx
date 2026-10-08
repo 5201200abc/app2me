@@ -1,14 +1,7 @@
 import { TID_AUTOMATION_CREATE_MANUALLY, TID_AUTOMATION_CREATE_MENU } from "@mycode/shared";
 import type { ReactNode } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { AutomationSwitchToggle } from "@/settings/AutomationSwitchToggle.js";
-import { AutomationChevronDownIcon, AutomationInfoIcon } from "@/settings/AutomationIcons.js";
 import { Button } from "@/components/ui/button.js";
 import { SettingsSegmentedTabs } from "@/settings/SettingsSegmentedTabs.js";
 
@@ -83,10 +76,7 @@ export function AutomationKeepAwakeNotice({
       data-automations-keep-awake
       className="flex min-h-11 w-full items-center gap-3 overflow-hidden rounded-[10px] bg-surface px-3 py-3 text-foreground-subtle"
     >
-      <span className="flex size-5 shrink-0 items-center justify-center" aria-hidden="true">
-        <AutomationInfoIcon className="size-4" />
-      </span>
-      <p className="min-w-0 flex-1 text-ui-base leading-5">
+      <p className="min-w-0 flex-1 text-ui-caption leading-5">
         {intl.formatMessage({ id: "offPeak.keepAwakeBanner" })}
       </p>
       <AutomationSwitchToggle
@@ -100,7 +90,7 @@ export function AutomationKeepAwakeNotice({
   );
 }
 
-export function AutomationCreateDropdown({
+export function AutomationCreateActions({
   onViaChat,
   onManually,
 }: {
@@ -109,36 +99,26 @@ export function AutomationCreateDropdown({
 }) {
   const { intl } = useMyCodeIntl();
   return (
-    <DropdownMenu>
-      <div className="inline-flex h-7 items-center overflow-hidden rounded-lg">
-        <Button
-          type="button"
-          variant="default"
-          size="default"
-          className="rounded-none border-0"
-          data-testid={TID_AUTOMATION_CREATE_MANUALLY}
-          onClick={onManually}
-        >
-          {intl.formatMessage({ id: "automations.createManually" })}
-        </Button>
-        <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            variant="default"
-            size="icon-md"
-            data-testid={TID_AUTOMATION_CREATE_MENU}
-            aria-label={intl.formatMessage({ id: "automations.create" })}
-            className="!w-6 rounded-none border-0"
-          >
-            <AutomationChevronDownIcon size={14} />
-          </Button>
-        </DropdownMenuTrigger>
-      </div>
-      <DropdownMenuContent align="end" sideOffset={4} className="w-auto min-w-0">
-        <DropdownMenuItem className="pr-6" onSelect={onViaChat}>
-          {intl.formatMessage({ id: "automations.createViaChat" })}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div data-automation-create-actions className="grid w-fit max-w-full grid-cols-2 gap-2">
+      <Button
+        type="button"
+        size="sm"
+        className="w-full px-2 text-ui-caption"
+        data-testid={TID_AUTOMATION_CREATE_MANUALLY}
+        onClick={onManually}
+      >
+        {intl.formatMessage({ id: "automations.createManually" })}
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="w-full px-2 text-ui-caption"
+        data-testid={TID_AUTOMATION_CREATE_MENU}
+        onClick={onViaChat}
+      >
+        {intl.formatMessage({ id: "automations.createViaChat" })}
+      </Button>
+    </div>
   );
 }

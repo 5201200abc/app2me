@@ -41,7 +41,8 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, "..");
 const desktopDir = join(rootDir, "packages/desktop");
 const mockCdnDir = join(desktopDir, "mock-cdn");
-const version = require(join(rootDir, "package.json")).version;
+// app2me 日期发布仍需内部版本关联远程资源；不能把旧 root 版本的 manifest 打进新桌面包。
+const version = process.env.APP2ME_APP_VERSION ?? require(join(rootDir, "package.json")).version;
 const MYCODE_AGENT_RUNTIME = {
   glm: {
     version: readMyCodeAgentRuntimeVersion(),

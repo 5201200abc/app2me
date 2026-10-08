@@ -1,10 +1,12 @@
+import { remarkStripDisplayEmoji } from "@/lib/compactConversationDisplay.js";
+import { ConversationSiteIcon } from "@/components/ConversationSiteIcon.js";
 /*
  * Derived from vercel/ai-elements (packages/elements/src/message.tsx).
  * Copyright 2023 Vercel, Inc. Licensed under Apache-2.0.
  * Modified by MyCode: local integration, formatting and adaptations.
  * See THIRD-PARTY-NOTICES.md in the repository root for license and provenance.
  */
-"use client";
+("use client");
 
 import { Button } from "../ui/button.js";
 import { ButtonGroup, ButtonGroupText } from "../ui/button-group.js";
@@ -15,7 +17,12 @@ import { createMathPlugin } from "@streamdown/math";
 import { mermaid } from "@streamdown/mermaid";
 import type { EditorInfo, FileStat, OpenInEditorOptions } from "@mycode/shared";
 import type { UIMessage } from "ai";
-import { ChevronLeftIcon, ChevronRightIcon, CopyIcon, ExternalLinkIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CopyIcon,
+  ExternalLinkIcon,
+} from "@/components/icons/tabler.js";
 import remarkCjkFriendlyGfmStrikethrough from "remark-cjk-friendly-gfm-strikethrough";
 import type {
   ComponentProps,
@@ -353,8 +360,6 @@ export const MessageBranchPage = ({ className, ...props }: MessageBranchPageProp
 };
 
 export type MessageResponseProps = {
-  /** 办公模式的正式回答固定换行，不覆盖用户保存的代码预览设置。 */
-  forceCodeWrap?: boolean;
   className?: string;
   children?: ReactNode;
   dir?: "auto" | "ltr" | "rtl";
@@ -1053,7 +1058,7 @@ function MessageExternalLink({
           type="button"
           className={cn(
             messageLinkClassName,
-            "cursor-pointer bg-transparent p-0 text-left",
+            "conversation-external-link cursor-pointer bg-transparent p-0 text-left",
             className,
           )}
           title={href}
@@ -1062,6 +1067,7 @@ function MessageExternalLink({
           // 这里仍阻断原生 a 标签跳转，但不再把所有 http/https 都默认送进内置浏览器。
           onClick={handleClick}
         >
+          <ConversationSiteIcon href={href} />
           {children}
         </button>
       </ContextMenuTrigger>
@@ -1295,7 +1301,6 @@ export const messageResponsePropsAreEqual = (
   nextProps: Readonly<MessageResponseProps>,
 ): boolean =>
   prevProps.children === nextProps.children &&
-  prevProps.forceCodeWrap === nextProps.forceCodeWrap &&
   nextProps.streaming === prevProps.streaming &&
   nextProps.streamingAnimationKey === prevProps.streamingAnimationKey &&
   nextProps.workspacePath === prevProps.workspacePath &&
@@ -1315,7 +1320,6 @@ export const MessageResponse = memo(
   ({
     className,
     streaming = false,
-    forceCodeWrap = false,
     onOpenCodeViewer,
     onOpenFileLink,
     onOpenExternalUrl,
@@ -1330,7 +1334,7 @@ export const MessageResponse = memo(
     codePreviewSettings = DEFAULT_CODE_PREVIEW_SETTINGS,
     children,
   }: MessageResponseProps) => {
-    const wrapLongLines = forceCodeWrap || codePreviewSettings.wrapLongLines;
+    const wrapLongLines = codePreviewSettings.wrapLongLines;
     const rawMarkdown = useMemo(() => extractCodeText(children), [children]);
     const renderStreaming = streaming;
     const projectedCitationMarkdown = useMemo(
@@ -1355,6 +1359,7 @@ export const MessageResponse = memo(
         // 显式传 remarkPlugins 会覆盖 Streamdown 默认插件；
         // citation 必须和默认 GFM 插件一起传入，否则表格会退化成普通段落。
         ...messageDefaultRemarkPlugins,
+        remarkStripDisplayEmoji,
         // Windows 绝对路径链接里的 `\.` 会在 remark 解析期被当成标点转义吃掉
         // rehype 阶段已经看不到原文。这条还原必须无条件生效，不能挂在 citation 开关下。
         windowsFileLinkEscapeRemarkPlugin,
@@ -1397,25 +1402,22 @@ export const MessageResponse = memo(
       [codePreviewSettings.lightTheme, codePreviewSettings.darkTheme],
     );
     const streamdownRenderKey = useMemo(() => {
-      return (
-        buildMessageStreamdownRenderKey({
-          attachmentReaderEpoch: getAttachmentReaderEpoch(readAttachment),
-          codeBlockTheme,
-          fontSizePx: codePreviewSettings.fontSizePx,
-          renderMyCodeFileCitations,
-          sessionId,
-          workspacePath,
-          workspaceHomePath,
-          workspaceIdentity,
-          workspaceRemoteSessionId,
-          wrapLongLines,
-        }) + (forceCodeWrap ? ":wrap-locked" : "")
-      );
+      return buildMessageStreamdownRenderKey({
+        attachmentReaderEpoch: getAttachmentReaderEpoch(readAttachment),
+        codeBlockTheme,
+        fontSizePx: codePreviewSettings.fontSizePx,
+        renderMyCodeFileCitations,
+        sessionId,
+        workspacePath,
+        workspaceHomePath,
+        workspaceIdentity,
+        workspaceRemoteSessionId,
+        wrapLongLines,
+      });
     }, [
       codeBlockTheme,
       codePreviewSettings.fontSizePx,
       wrapLongLines,
-      forceCodeWrap,
       renderMyCodeFileCitations,
       readAttachment,
       sessionId,
@@ -1572,11 +1574,7 @@ export const MessageResponse = memo(
               appTheme={theme}
               wrapLongLines={wrapLongLines}
             >
-              <CodeBlockHeader
-                className="pl-3 pr-2 pt-2"
-                language={language}
-                showWrapButton={!forceCodeWrap}
-              />
+              <CodeBlockHeader className="pl-3 pr-2 pt-2" language={language} showWrapButton />
             </CodeBlock>
           );
         },
@@ -1595,7 +1593,6 @@ export const MessageResponse = memo(
         codeBlockTheme,
         codePreviewSettings.fontSizePx,
         wrapLongLines,
-        forceCodeWrap,
         onOpenFileLink,
         onOpenCodeViewer,
         onOpenExternalUrl,

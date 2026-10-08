@@ -1,28 +1,18 @@
-import { WorkspaceEditorButtonGroup } from "@/WorkspaceEditorButtonGroup.js";
 import { WorkspaceSidePaneToggleButton } from "@/WorkspaceSidePaneToggleButton.js";
-import { WorkspaceTerminalToggleButton } from "@/WorkspaceTerminalToggleButton.js";
+import { WorkspaceSummaryToggleButton } from "@/WorkspaceSummaryToggleButton.js";
 import { cn } from "@/components/lib/utils.js";
 import type { WorkspaceHeaderActionSectionProps } from "@/WorkspaceHeaderSections/shared.js";
-import { WorkspaceHelpMenuButton } from "@/WorkspaceHelpMenuButton.js";
 import { DesktopWindowControls } from "@/DesktopWindowControls.js";
 
 export type { WorkspaceHeaderActionSectionProps } from "@/WorkspaceHeaderSections/shared.js";
 
 export function WorkspaceHeaderActionSection({
   variant = "task",
-  readOnlyReason,
-  workspaceAbsPath,
-  workspaceIdentity,
-  remoteTarget,
-  isDesktop,
-  isTerminalOpen,
   isSidePaneOpen,
-  onToggleTerminal,
   onToggleSidePane,
+  isSummaryPanelExpanded = false,
+  onToggleSummaryPanel,
   toggleSidePaneShortcutLabel,
-  onSelectedEditorChange,
-  simplifyForNarrowRemote = false,
-  hideHelpMenu = false,
   showWindowControls = false,
   useWindowsCaptionSpacing = false,
 }: WorkspaceHeaderActionSectionProps) {
@@ -35,26 +25,11 @@ export function WorkspaceHeaderActionSection({
         useWindowsCaptionSpacing ? "-my-2 h-12 gap-0" : "gap-0.5",
       )}
     >
-      {variant === "task" ? (
-        <WorkspaceEditorButtonGroup
-          disabledReason={readOnlyReason}
-          workspaceAbsPath={workspaceAbsPath}
-          workspaceIdentity={workspaceIdentity}
-          remoteTarget={remoteTarget}
-          onSelectedEditorChange={onSelectedEditorChange}
+      {variant === "task" && onToggleSummaryPanel ? (
+        <WorkspaceSummaryToggleButton
+          expanded={isSummaryPanelExpanded}
+          onToggle={onToggleSummaryPanel}
         />
-      ) : null}
-      {!simplifyForNarrowRemote ? (
-        <>
-          {!hideHelpMenu ? <WorkspaceHelpMenuButton isDesktop={Boolean(isDesktop)} /> : null}
-          {/* 远程控制移动端头部空间过窄，终端入口在这里会和核心操作争抢宽度。*/}
-          <WorkspaceTerminalToggleButton
-            isTerminalOpen={isTerminalOpen}
-            onToggleTerminal={onToggleTerminal}
-            disabledReason={readOnlyReason}
-            useWindowsCaptionSpacing={useWindowsCaptionSpacing}
-          />
-        </>
       ) : null}
       {/* 远程控制移动端只保留图标，避免 diff 数字把按钮撑宽导致标题拥挤。 */}
       {!isSidePaneOpen ? (

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ChevronsDownIcon, XIcon } from "lucide-react";
+import { ChevronsDownIcon, XIcon } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import {

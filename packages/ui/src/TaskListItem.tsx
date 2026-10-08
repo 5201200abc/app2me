@@ -2,14 +2,14 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Archive,
+  CircleX,
   Clock,
   CloudUpload,
-  ListTree,
   LoaderIcon,
   Moon,
   Pin,
   Smartphone,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { isCronTask, isOffPeakTask, type MyCodeTaskMeta } from "@mycode/shared";
 import { TID_TASK_ARCHIVE, TID_TASK_ITEM, testId } from "@mycode/shared";
 import { Badge } from "@/components/ui/badge.js";
@@ -47,6 +47,7 @@ import { createTaskWorkbenchDragPreview } from "@/lib/taskWorkbenchDragPreview.j
 import { runUserAction } from "@/lib/userActionTelemetry.js";
 import { TaskRowActionButton } from "@/workspace-grouped-tasks/task-row-action-button.js";
 import { TaskWorkflowRunLines } from "@/components/workflow-run-line/TaskWorkflowRunLines.js";
+import { TaskRowMoreMenu } from "@/workspace-grouped-tasks/task-row-more-menu.js";
 
 type TaskListItemIntl = {
   formatMessage: (desc: { id: string }, values?: Record<string, string>) => string;
@@ -144,8 +145,10 @@ export const MemoTaskItem = memo(function TaskListItem({
   onCancelArchiveConfirm,
   isArchiveConfirming,
   onTogglePinTask,
+  onStartRenameTask,
+  onArchiveTask,
+  onMarkTaskAsUnread,
   onOpenTaskContextMenu,
-  onOpenFileTree,
   variant = "default",
   showPinAction = true,
   intl,
@@ -154,6 +157,7 @@ export const MemoTaskItem = memo(function TaskListItem({
 }: TaskListItemProps) {
   const [hoverActionsVisible, setHoverActionsVisible] = useState(false);
   const [focusActionsVisible, setFocusActionsVisible] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [isHoverNone] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -305,23 +309,6 @@ export const MemoTaskItem = memo(function TaskListItem({
   const handleContextMenu = useCallback(() => {
     onOpenTaskContextMenu?.(task.taskId);
   }, [onOpenTaskContextMenu, task.taskId]);
-  const handleOpenFileTree = useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (workspaceActionsDisabled) {
-        return;
-      }
-      runUserAction({
-        input: { featureId: "workbench.file", action: "open_tree", trigger: "button" },
-        operation: () => onOpenFileTree?.(task),
-        completed: { resultSource: "local_commit" },
-        failureStage: "file_tree_open",
-      });
-    },
-    [onOpenFileTree, task, workspaceActionsDisabled],
-  );
-
   const handleArchive = useCallback(
     (event: React.MouseEvent) => {
       if (workspaceActionsDisabled) {
@@ -401,7 +388,7 @@ export const MemoTaskItem = memo(function TaskListItem({
   ) : null;
   const changeSummaryNode =
     !hasPendingInteraction && taskChangeSummary ? (
-      <span className="shrink-0 text-ui-base">
+      <span className="shrink-0 text-ui-sm">
         {taskChangeSummary.added > 0 ? (
           <span className="text-diff-added">+{taskChangeSummary.added}</span>
         ) : null}
@@ -450,65 +437,54 @@ export const MemoTaskItem = memo(function TaskListItem({
           {isRemoteTask ? (
             // 本地和远端 task 混排时，统一 archive 图标无法提示操作会落在哪个 sqlite。
             // 远端任务使用 cloud 语义图标，避免用户误把远端归档当成本地归档。
-            <CloudUpload className="h-3.5 w-3.5" />
+            <CloudUpload className="size-3" strokeWidth={1.5} />
           ) : (
-            <Archive className="h-3.5 w-3.5" />
+            <Archive className="size-3" strokeWidth={1.5} />
           )}
         </TaskRowActionButton>
       )}
     </div>
   ) : null;
-  // 远端 task 的 session 未就绪时 resolver 会拒绝打开；渲染层同步隐藏入口，
-  // 避免展示一个点击后无反馈的按钮。本地 task 不依赖已打开 tab，仍可直接按路径打开。
-  const canOpenFileTree =
-    Boolean(onOpenFileTree) && (!task.workspaceIdentity?.trim() || Boolean(remoteSessionId));
-  const fileTreeActionNode =
-    canOpenFileTree &&
-    !workspaceActionsDisabled &&
-    !hasPendingInteraction &&
-    (shouldMountWorkspaceTaskActions || isMobileActive) ? (
-      <span className="inline-flex shrink-0">
-        {/* Pinned 文件树按钮曾手写 hover 背景和 tooltip，导致与 Grouped task
-            的同一操作视觉不一致。直接复用共享 action，统一 bg-hover、尺寸和 pointer 行为。 */}
-        <TaskRowActionButton
-          label={intl.formatMessage({ id: "git.action.showTree" })}
-          onClick={handleOpenFileTree}
-          showTooltip
-        >
-          <ListTree className="size-3.5" />
-        </TaskRowActionButton>
-      </span>
-    ) : null;
-  const taskActionGroupNode =
-    fileTreeActionNode || archiveActionNode ? (
-      <span data-task-row-actions="true" className="flex shrink-0 items-center gap-0.5">
-        {fileTreeActionNode}
-        {archiveActionNode}
-      </span>
-    ) : null;
-  const pinActionButton = (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon-xs"
-      disabled={workspaceActionsDisabled}
-      onMouseDown={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-      }}
-      onClick={handleTogglePin}
-      className="inline-flex size-4 min-w-0 rounded-sm p-0 text-foreground-subtle !bg-transparent hover:text-foreground"
-      aria-label={intl.formatMessage({
-        id: isPinned ? "taskList.unpin" : "taskList.pin",
-      })}
-    >
-      <Pin className="size-4" />
-    </Button>
-  );
-  // hover:none 只让右侧 task actions 常驻；如果也用它接管 leading 槽，
-  // 触屏端的错误、未读和 loading 状态会被 Pin 永久替换。
+  const pinLabel = intl.formatMessage({ id: isPinned ? "taskList.unpin" : "taskList.pin" });
+  // 置顶与归档统一在右侧；左侧状态槽不能再被 hover 置顶按钮替换。
   const shouldRenderPinAction =
-    showPinAction && (showPinnedState || shouldSuppressWorkspaceTaskMetadata);
+    showPinAction && !workspaceActionsDisabled && shouldMountWorkspaceTaskActions;
+  const taskActionGroupNode =
+    shouldRenderPinAction || archiveActionNode || isActive || moreMenuOpen ? (
+      <span data-task-row-actions="true" className="flex shrink-0 items-center gap-0.5">
+        {shouldRenderPinAction ? (
+          <TaskRowActionButton
+            label={pinLabel}
+            onClick={handleTogglePin}
+            showTooltip
+            disabledReason={workspaceActionsDisabledReason}
+          >
+            <Pin className="size-3" strokeWidth={1.5} />
+          </TaskRowActionButton>
+        ) : null}
+        {archiveActionNode}
+        <TaskRowMoreMenu
+          label={intl.formatMessage({ id: "common.more" })}
+          open={moreMenuOpen}
+          onOpenChange={setMoreMenuOpen}
+        >
+          <TaskListItemContextMenuContent
+            workspacePath={workspacePath}
+            remoteSessionId={remoteSessionId}
+            task={task}
+            isPinned={isPinned}
+            intl={intl}
+            menuKind="dropdown"
+            onTogglePinTask={onTogglePinTask}
+            onStartRenameTask={onStartRenameTask}
+            onArchiveTask={onArchiveTask}
+            onMarkTaskAsUnread={onMarkTaskAsUnread}
+            disableTaskActions={workspaceActionsDisabled}
+            disabledReason={workspaceActionsDisabledReason}
+          />
+        </TaskRowMoreMenu>
+      </span>
+    ) : null;
   return (
     <li
       ref={itemRef}
@@ -540,7 +516,7 @@ export const MemoTaskItem = memo(function TaskListItem({
         }
       }}
       className={cn(
-        "group/task-item flex cursor-pointer gap-2 rounded-lg pl-2.5 pr-1 py-1 transition-[background-color,border-color,box-shadow]",
+        "group/task-item flex cursor-pointer gap-1.5 rounded-lg pl-2 pr-1 py-0.5 transition-[background-color,border-color,box-shadow]",
         // 默认行 32px 时前置槽整行居中；长出工作流运行行后行体是两行的纵向列，槽改为对齐首行。
         variant === "timeline"
           ? "items-start py-1.5"
@@ -562,15 +538,21 @@ export const MemoTaskItem = memo(function TaskListItem({
         )}
       >
         <span
-          aria-hidden="true"
           className={cn(
             "flex size-4 items-center justify-center transition-opacity",
-            shouldRenderPinAction && "hidden",
             isMobileActive && "invisible",
           )}
         >
+          {/* 历史失败不是新的未读通知；用有说明的单色状态图标，避免红点被误认为持续报错。 */}
           {leadingIndicator === "error" ? (
-            <span data-error-indicator="true" className="h-1.5 w-1.5 rounded-full bg-destructive" />
+            <CircleX
+              data-error-indicator="true"
+              aria-label="上次执行失败"
+              className="size-3.5 text-foreground-subtlest"
+              strokeWidth={1.5}
+            >
+              <title>上次执行失败</title>
+            </CircleX>
           ) : leadingIndicator === "unread" ? (
             <span
               data-unread-indicator="true"
@@ -582,19 +564,12 @@ export const MemoTaskItem = memo(function TaskListItem({
             <span data-idle-indicator="true" className="h-1.5 w-1.5 rounded-full bg-border" />
           ) : null}
         </span>
-        {shouldRenderPinAction ? (
-          <ControlHintTooltip
-            title={
-              workspaceActionsDisabledReason ??
-              intl.formatMessage({
-                id: isPinned ? "taskList.unpin" : "taskList.pin",
-              })
-            }
-            side="top"
-            align="center"
-          >
-            {pinActionButton}
-          </ControlHintTooltip>
+        {showPinnedState ? (
+          <Pin
+            aria-hidden="true"
+            className="absolute size-3 text-foreground-subtle"
+            strokeWidth={1.5}
+          />
         ) : null}
       </div>
 
@@ -620,7 +595,7 @@ export const MemoTaskItem = memo(function TaskListItem({
               </ControlHintTooltip>
             ) : null}
             <TaskTitleOverflowText
-              className="text-ui-base text-foreground"
+              className="text-ui-caption text-foreground"
               title={taskTitleWithChanges}
             >
               {/* workspace/timeline task 标题之前使用 truncate，会在长标题末尾显示省略号；
@@ -639,7 +614,7 @@ export const MemoTaskItem = memo(function TaskListItem({
               </Badge>
             ) : null}
           </div>
-          <div className="flex min-w-0 items-center justify-between gap-2 text-ui-base text-foreground-subtle h-6">
+          <div className="flex min-w-0 items-center justify-between gap-2 text-ui-caption text-foreground-subtle h-6">
             <div className="flex min-w-0 items-center gap-1.5">
               <span className="truncate">{workspaceLabel}</span>
             </div>
@@ -677,7 +652,12 @@ export const MemoTaskItem = memo(function TaskListItem({
                       className="size-3.5 shrink-0"
                     />
                   ) : null}
-                  <span className="mr-1">{taskTimeLabel}</span>
+                  <span
+                    data-task-time
+                    className="mr-1 text-ui-caption font-normal tabular-nums text-foreground-subtlest"
+                  >
+                    {taskTimeLabel}
+                  </span>
                 </span>
               ) : null}
               {taskActionGroupNode}
@@ -712,7 +692,7 @@ export const MemoTaskItem = memo(function TaskListItem({
                 </ControlHintTooltip>
               ) : null}
               <TaskTitleOverflowText
-                className="text-ui-base text-foreground"
+                className="text-ui-caption text-foreground"
                 title={taskTitleWithChanges}
               >
                 {/* 默认 workspace task item 和 timeline item 共享标题溢出规则；
@@ -768,7 +748,12 @@ export const MemoTaskItem = memo(function TaskListItem({
                     className="size-3.5 shrink-0"
                   />
                 ) : null}
-                {taskTimeLabel}
+                <span
+                  data-task-time
+                  className="text-ui-caption font-normal tabular-nums text-foreground-subtlest"
+                >
+                  {taskTimeLabel}
+                </span>
               </span>
             ) : null}
 
@@ -795,6 +780,7 @@ export function TaskListItemContextMenuContent({
   onMarkTaskAsUnread,
   disableTaskActions = false,
   disabledReason,
+  menuKind,
 }: {
   workspacePath: string;
   remoteSessionId?: string;
@@ -807,6 +793,7 @@ export function TaskListItemContextMenuContent({
   onMarkTaskAsUnread: (taskId: string) => void;
   disableTaskActions?: boolean;
   disabledReason?: string;
+  menuKind?: "context" | "dropdown";
 }) {
   const workspaceActionsDisabled = useOptionalTabStore(
     (state) =>
@@ -892,6 +879,7 @@ export function TaskListItemContextMenuContent({
 
   return (
     <TaskListItemContextMenu
+      menuKind={menuKind}
       intl={intl}
       isPinned={isPinned}
       fileManagerLabel={fileManagerLabel}

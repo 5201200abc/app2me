@@ -10,7 +10,14 @@ import { Avatar, AvatarFallback } from "../ui/avatar.js";
 import { Button } from "../ui/button.js";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible.js";
 import { cn } from "../lib/utils.js";
-import { CheckIcon, CopyIcon, FileIcon, GitCommitIcon, MinusIcon, PlusIcon } from "lucide-react";
+import {
+  CheckIcon,
+  CopyIcon,
+  FileIcon,
+  GitCommitIcon,
+  MinusIcon,
+  PlusIcon,
+} from "@/components/icons/tabler.js";
 import type { ComponentProps, HTMLAttributes } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 

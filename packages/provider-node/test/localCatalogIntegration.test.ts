@@ -54,7 +54,7 @@ test("source rejects retired LKG, publishes complete local models, refreshes mem
       "xhigh",
     ]);
     await assert.rejects(service.createPersonalProvider(), /仅支持/);
-    await assert.rejects(service.createPersonalProvider({ templateId: "zai" }), /仅支持/);
+    await assert.rejects(service.createPersonalProvider({ templateId: "retired-template" }), /仅支持/);
     const created = await service.createPersonalProvider({ templateId: "deepseek" });
     assert.equal((await repo.read()).providers.getRule(created.providerId)?.templateId, "deepseek");
     await assert.rejects(

@@ -8,7 +8,7 @@
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible.js";
 import { cn } from "../lib/utils.js";
-import { ChevronDownIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 
 export type TaskItemFileProps = ComponentProps<"div">;

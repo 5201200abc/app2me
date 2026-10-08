@@ -43,6 +43,7 @@ export type EnumOptionSpecConfigInput = Readonly<z.infer<typeof enumOptionSpecDa
 export class EnumOptionSpecConfig extends ConfigOverlay<EnumOptionSpecConfig> {
   readonly values?: EnumOptionSpecConfigInput["values"];
   readonly map?: EnumOptionSpecConfigInput["map"];
+  readonly defaultValue?: EnumOptionSpecConfigInput["defaultValue"];
 
   constructor(input: EnumOptionSpecConfigInput = {}) {
     super();
@@ -53,13 +54,20 @@ export class EnumOptionSpecConfig extends ConfigOverlay<EnumOptionSpecConfig> {
           ? null
           : Object.freeze([...input.values]);
     this.map = input.map;
+    this.defaultValue = input.defaultValue;
     Object.freeze(this);
   }
 
   overlay(next: EnumOptionSpecConfig): EnumOptionSpecConfig {
+    // 用户覆盖值域时，不能继承已不属于新值域的官方默认值；仍校验显式声明的默认值。
+    const inheritedDefault =
+      this.defaultValue != null && next.values != null && !next.values.includes(this.defaultValue)
+        ? undefined
+        : this.defaultValue;
     return new EnumOptionSpecConfig({
       values: this.overlayValue(this.values, next.values),
       map: this.overlayValue(this.map, next.map),
+      defaultValue: this.overlayValue(inheritedDefault, next.defaultValue),
     });
   }
 
@@ -71,6 +79,7 @@ export class EnumOptionSpecConfig extends ConfigOverlay<EnumOptionSpecConfig> {
     return objectWithoutUndefined({
       values: this.values,
       map: this.map,
+      defaultValue: this.defaultValue,
     });
   }
 }
@@ -175,6 +184,7 @@ export class ModelOutputFormatConfig extends ConfigOverlay<ModelOutputFormatConf
 }
 
 export class ModelPropertiesConfig extends ConfigOverlay<ModelPropertiesConfig> {
+  readonly displayName?: ModelPropertiesConfigInput["displayName"];
   readonly requiresMfjsToolSchema?: ModelPropertiesConfigInput["requiresMfjsToolSchema"];
   readonly contextWindow?: ModelPropertiesConfigInput["contextWindow"];
   readonly inputFormat?: ModelInputFormatConfig | null;
@@ -202,6 +212,7 @@ export class ModelPropertiesConfig extends ConfigOverlay<ModelPropertiesConfig> 
 
   overlay(next: ModelPropertiesConfig): ModelPropertiesConfig {
     return new ModelPropertiesConfig({
+      displayName: this.overlayValue(this.displayName, next.displayName),
       requiresMfjsToolSchema: this.overlayValue(
         this.requiresMfjsToolSchema,
         next.requiresMfjsToolSchema,
@@ -231,6 +242,7 @@ export class ModelPropertiesConfig extends ConfigOverlay<ModelPropertiesConfig> 
 
   toJSON(): ModelPropertiesConfigInput {
     return objectWithoutUndefined({
+      displayName: this.displayName,
       requiresMfjsToolSchema: this.requiresMfjsToolSchema,
       contextWindow: this.contextWindow,
       inputFormat: this.inputFormat?.toJSON() ?? this.inputFormat,

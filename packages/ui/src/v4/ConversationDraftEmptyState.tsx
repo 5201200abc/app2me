@@ -1,19 +1,10 @@
-/**
- * 草稿态空态问候：时间问候语 + MyCode Logo。
- * 自旧版 ChatView/ChatViewEmptyState.tsx 恢复（该组件随旧 ChatView 删除，
- * i18n key `chat.empty.greeting.*` 一直保留）；边界时刻自动换档逻辑保真。
- * 手机远控复用同一组件，但继续保留 20px 紧凑标题；桌面草稿首页才按标题自身宽度适配。
- */
-import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
-import brandMark from "@/assets/mycode-mark.png";
-import { cn } from "@/components/lib/utils.js";
+/** 草稿首页保留时间问候，用紧凑文字与单色线稿呈现。 */
+import { useEffect, useState } from "react";
+import { Terminal } from "@/components/icons/tabler.js";
+import { ConversationEmptyStatePresentation } from "@/v4/ConversationEmptyStatePresentation.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
-import { logger } from "@/logger.js";
 
 const GREETING_BOUNDARY_HOURS = [5, 9, 12, 14, 18, 23] as const;
-const GREETING_MIN_FONT_SIZE_PX = 20;
-const GREETING_MAX_FONT_SIZE_PX = 30;
 
 type ChatEmptyGreetingMessageId =
   | "chat.empty.greeting.morningEarly"
@@ -51,164 +42,34 @@ function getNextChatEmptyGreetingDelayMs(date: Date = new Date()) {
   return Math.max(1, nextBoundary.getTime() - date.getTime());
 }
 
-function resolveGreetingFontSizePx({
-  availableWidthPx,
-  naturalTextWidthPx,
-}: {
-  availableWidthPx: number;
-  naturalTextWidthPx: number;
-}) {
-  if (
-    !Number.isFinite(availableWidthPx) ||
-    !Number.isFinite(naturalTextWidthPx) ||
-    availableWidthPx <= 0 ||
-    naturalTextWidthPx <= 0 ||
-    availableWidthPx >= naturalTextWidthPx
-  ) {
-    return GREETING_MAX_FONT_SIZE_PX;
-  }
-
-  return Math.max(
-    GREETING_MIN_FONT_SIZE_PX,
-    Math.min(
-      GREETING_MAX_FONT_SIZE_PX,
-      Math.floor(GREETING_MAX_FONT_SIZE_PX * (availableWidthPx / naturalTextWidthPx)),
-    ),
-  );
-}
-
 export function ConversationDraftEmptyState({ className }: { className?: string }) {
   const { intl } = useMyCodeIntl();
-  const isOfficeMode = useIsOfficeMode();
   const [greetingDate, setGreetingDate] = useState(() => new Date());
-  const [greetingFontSizePx, setGreetingFontSizePx] = useState(GREETING_MAX_FONT_SIZE_PX);
-  const greetingContainerRef = useRef<HTMLParagraphElement | null>(null);
-  const greetingMeasurementRef = useRef<HTMLSpanElement | null>(null);
   const greeting = intl.formatMessage({
-    id: isOfficeMode ? "chat.empty.greeting.office" : getChatEmptyGreetingMessageId(greetingDate),
+    id: getChatEmptyGreetingMessageId(greetingDate),
   });
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setGreetingDate(new Date());
-    }, getNextChatEmptyGreetingDelayMs(greetingDate));
-
-    return () => {
-      window.clearTimeout(timeout);
-    };
+    const timeout = window.setTimeout(
+      () => setGreetingDate(new Date()),
+      getNextChatEmptyGreetingDelayMs(greetingDate),
+    );
+    return () => window.clearTimeout(timeout);
   }, [greetingDate]);
 
-  useLayoutEffect(() => {
-    const container = greetingContainerRef.current;
-    const measurement = greetingMeasurementRef.current;
-    if (!container || !measurement) {
-      return;
-    }
-
-    let frameId: number | null = null;
-    const measure = () => {
-      frameId = null;
-      const containerStyle = window.getComputedStyle(container);
-      const horizontalPaddingPx =
-        Number.parseFloat(containerStyle.paddingLeft) +
-        Number.parseFloat(containerStyle.paddingRight);
-      const availableWidthPx = Math.max(
-        0,
-        container.getBoundingClientRect().width - horizontalPaddingPx,
-      );
-      const naturalTextWidthPx = measurement.getBoundingClientRect().width;
-      const nextFontSizePx = resolveGreetingFontSizePx({
-        availableWidthPx,
-        naturalTextWidthPx,
-      });
-
-      setGreetingFontSizePx((currentFontSizePx) => {
-        if (currentFontSizePx === nextFontSizePx) {
-          return currentFontSizePx;
-        }
-        logger.debug("[v4-draft-greeting] 标题自身可用宽度变化，更新字号", {
-          availableWidthPx: Math.round(availableWidthPx),
-          naturalTextWidthPx: Math.round(naturalTextWidthPx),
-          previousFontSizePx: currentFontSizePx,
-          nextFontSizePx,
-        });
-        return nextFontSizePx;
-      });
-    };
-    const scheduleMeasure = () => {
-      if (frameId !== null) {
-        return;
-      }
-      frameId = window.requestAnimationFrame(measure);
-    };
-
-    measure();
-
-    if (typeof ResizeObserver === "undefined") {
-      window.addEventListener("resize", scheduleMeasure);
-      return () => {
-        if (frameId !== null) {
-          window.cancelAnimationFrame(frameId);
-        }
-        window.removeEventListener("resize", scheduleMeasure);
-      };
-    }
-
-    // 标题字号曾直接绑定整个视口宽度，最小窗口里文字两侧仍有大量空间却被
-    // 强制缩到 20px。分别观察标题容器和 30px 原始文案，只在两者真实相撞时缩小。
-    const observer = new ResizeObserver(scheduleMeasure);
-    observer.observe(container);
-    observer.observe(measurement);
-    return () => {
-      if (frameId !== null) {
-        window.cancelAnimationFrame(frameId);
-      }
-      observer.disconnect();
-    };
-  }, [greeting]);
-
   return (
-    <div
-      className={cn(
-        "relative mb-10 flex w-full max-w-2xl flex-col items-center justify-center gap-6 text-foreground sm:mb-8",
-        className,
-      )}
-    >
-      <div
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none size-20 shrink-0 text-foreground-subtle",
-        )}
-      >
-        <MyCodeEmptyStateLogo className="h-full w-full" />
-      </div>
-      <p
-        ref={greetingContainerRef}
-        data-v4-draft-greeting="true"
-        style={
-          {
-            "--v4-draft-greeting-font-size": `${greetingFontSizePx}px`,
-          } as CSSProperties
-        }
-        className={cn(
-          "relative z-10 w-full px-4 text-center font-medium text-foreground",
-          "text-[length:var(--v4-draft-greeting-font-size)]/[1.2]",
-        )}
-      >
-        <span
-          ref={greetingMeasurementRef}
+    <ConversationEmptyStatePresentation
+      className={className}
+      greeting={greeting}
+      greetingTestId="v4-draft-greeting"
+      brand={
+        <Terminal
           aria-hidden="true"
-          className="pointer-events-none invisible absolute whitespace-nowrap text-3xl/[1.2]"
-        >
-          {greeting}
-        </span>
-        <span>{greeting}</span>
-      </p>
-    </div>
+          data-testid="v4-draft-brand"
+          size={48}
+          className="pointer-events-none size-12 shrink-0 text-foreground-subtle opacity-45"
+        />
+      }
+    />
   );
-}
-
-function MyCodeEmptyStateLogo({ className }: { className?: string }) {
-  // 旧字母轮廓绝对定位在标题背后，容易与文案重叠；新徽标独占一行并由 currentColor 适配主题。
-  return <span aria-hidden="true" data-testid="v4-draft-brand" className={cn("block bg-current opacity-65", className)} style={{ maskImage: `url(${brandMark})`, maskSize: "contain", maskPosition: "center", maskRepeat: "no-repeat" }} />;
 }

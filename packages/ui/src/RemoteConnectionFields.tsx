@@ -8,7 +8,13 @@ import type {
   SSHConfigAliasOption,
   WSLDistro,
 } from "@mycode/shared";
-import { AlertTriangleIcon, CheckIcon, ChevronDownIcon, LoaderIcon, Plus } from "lucide-react";
+import {
+  AlertTriangleIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  LoaderIcon,
+  Plus,
+} from "@/components/icons/tabler.js";
 import {
   TID_DOCKER_CONTAINER_INPUT,
   TID_DOCKER_CONTAINER_SELECT,

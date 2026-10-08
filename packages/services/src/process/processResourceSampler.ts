@@ -402,7 +402,7 @@ function ownerToRow(
   return {
     pid: sample.pid,
     name: isOwnerRoot ? child.serverName : commandDisplayName(sample.command),
-    // 用户裁决：官方市场插件是内置插件，其余（第三方市场 + 自定义 MCP）全部算社区插件。
+    // 用户裁决：官方市场插件是内置插件，其余（第三方市场 + 自定义 MCP）全部算第三方插件。
     category: child.mcpSource === "builtin" ? "builtin-plugin" : "community-plugin",
     groupKey: `${child.mcpSource}:${groupLabel}`,
     groupLabel,

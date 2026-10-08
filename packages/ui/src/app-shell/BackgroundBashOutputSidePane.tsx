@@ -1,5 +1,5 @@
 import { memo, useLayoutEffect, useRef } from "react";
-import { ArrowDownIcon, LoaderCircleIcon } from "lucide-react";
+import { ArrowDownIcon, LoaderCircleIcon } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { ScrollFadeViewport } from "@/components/ui/scroll-fade-viewport.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

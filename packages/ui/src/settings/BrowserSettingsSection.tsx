@@ -1,6 +1,6 @@
 /* oxlint-disable eslint(max-lines) -- Browser Plugin、Chrome 数据导入与清理共享同一平台状态机，拆分会扩大 pending/失败回收边界。 */
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "@/components/icons/tabler.js";
 import type { ChromeBrowserDataImportResult } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import {
@@ -22,6 +22,7 @@ import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { invalidateDeferredDraftSessionForSkillChange } from "@/lib/mycodeDraftSkillInvalidation.js";
 import { logger } from "@/logger.js";
 import { startUserAction } from "@/lib/userActionTelemetry.js";
+import { SettingsCapabilityRow } from "@/settings/SettingsCapabilityRow.js";
 import { SettingsGroupCard, SettingsRow } from "@/settings/SettingsPageParts.js";
 import { usePluginManagementStore } from "@/store/pluginManagementStore.js";
 import { useSkillStore } from "@/store/skillStore.js";
@@ -59,11 +60,12 @@ function BrowserOperationButton({
   return (
     <Button
       type="button"
-      size="lg"
+      size="sm"
       variant={variant}
       disabled={disabled || pendingOperation !== null}
       onClick={onClick}
-      className="min-w-24"
+      className="w-auto gap-1.5 px-2 text-ui-caption"
+      data-browser-operation={operation}
     >
       {pending ? <LoaderCircle className="size-4 animate-spin" aria-hidden="true" /> : null}
       {children}
@@ -246,13 +248,15 @@ export function BrowserSettingsSection({
     <div className="space-y-5">
       <section className="space-y-3">
         <SettingsGroupCard>
-          <SettingsRow
+          <SettingsCapabilityRow
+            kind="browser"
             label={intl.formatMessage({ id: "settings.browser.control.title" })}
             description={intl.formatMessage({
               id: "settings.browser.control.description",
             })}
             control={
               <Switch
+                className="settings-capability-switch"
                 aria-label={intl.formatMessage({
                   id: "settings.browser.control.title",
                 })}
@@ -267,9 +271,20 @@ export function BrowserSettingsSection({
               ) : undefined
             }
           />
-          {/* 导入登录状态是“开启内置浏览器控制”之后的配套动作，与开关同卡片表达先后关系；
-              清除类破坏性操作仍留在“浏览器数据”分组。
-              Windows App-Bound 导入链路暂未开放，先隐藏入口但保留底层实现和清理能力。*/}
+        </SettingsGroupCard>
+      </section>
+
+      <section className="space-y-3">
+        <div className="text-ui-base font-medium text-foreground-subtle">
+          {intl.formatMessage({ id: "settings.browser.data.section" })}
+        </div>
+        {!nativeActionsAvailable ? (
+          <div className="rounded-lg border border-border bg-surface px-4 py-3 text-ui-base text-foreground-subtle">
+            {intl.formatMessage({ id: "settings.browser.desktopOnly" })}
+          </div>
+        ) : null}
+        <SettingsGroupCard>
+          {/* Windows 的登录导入限制保留；数据操作继续共用原 pending 状态。 */}
           {!isWindowsDesktop ? (
             <SettingsRow
               label={intl.formatMessage({ id: "settings.browser.import.title" })}
@@ -295,49 +310,7 @@ export function BrowserSettingsSection({
               }
             />
           ) : null}
-        </SettingsGroupCard>
-      </section>
 
-      {/* 证书策略只在桌面端有内置浏览器时可配；改动由 main 在启动时装到 Session，需重启生效。 */}
-      {isDesktop ? (
-        <section className="space-y-3">
-          <div className="text-ui-base font-medium text-foreground-subtle">
-            {intl.formatMessage({ id: "settings.browser.security.section" })}
-          </div>
-          <SettingsGroupCard>
-            <SettingsRow
-              label={intl.formatMessage({
-                id: "settings.embeddedBrowserAllowInsecureCertificates",
-              })}
-              description={intl.formatMessage({
-                id: "settings.embeddedBrowserAllowInsecureCertificatesDescription",
-              })}
-              control={
-                <Switch
-                  aria-label={intl.formatMessage({
-                    id: "settings.embeddedBrowserAllowInsecureCertificates",
-                  })}
-                  checked={embeddedBrowserAllowInsecureCertificates}
-                  onCheckedChange={(checked) => {
-                    void onEmbeddedBrowserAllowInsecureCertificatesChange(checked);
-                  }}
-                />
-              }
-            />
-          </SettingsGroupCard>
-        </section>
-      ) : null}
-
-      <section className="space-y-3">
-        <div className="text-ui-base font-medium text-foreground-subtle">
-          {intl.formatMessage({ id: "settings.browser.data.section" })}
-        </div>
-        {!nativeActionsAvailable ? (
-          <div className="rounded-lg border border-border bg-surface px-4 py-3 text-ui-base text-foreground-subtle">
-            {intl.formatMessage({ id: "settings.browser.desktopOnly" })}
-          </div>
-        ) : null}
-        <SettingsGroupCard>
           <SettingsRow
             label={intl.formatMessage({
               id: "settings.browser.clearCache.title",
@@ -379,6 +352,36 @@ export function BrowserSettingsSection({
           />
         </SettingsGroupCard>
       </section>
+
+      {/* 证书策略只在桌面端有内置浏览器时可配；改动由 main 在启动时装到 Session，需重启生效。 */}
+      {isDesktop ? (
+        <section className="space-y-3">
+          <div className="text-ui-base font-medium text-foreground-subtle">
+            {intl.formatMessage({ id: "settings.browser.security.section" })}
+          </div>
+          <SettingsGroupCard>
+            <SettingsRow
+              label={intl.formatMessage({
+                id: "settings.embeddedBrowserAllowInsecureCertificates",
+              })}
+              description={intl.formatMessage({
+                id: "settings.embeddedBrowserAllowInsecureCertificatesDescription",
+              })}
+              control={
+                <Switch
+                  aria-label={intl.formatMessage({
+                    id: "settings.embeddedBrowserAllowInsecureCertificates",
+                  })}
+                  checked={embeddedBrowserAllowInsecureCertificates}
+                  onCheckedChange={(checked) => {
+                    void onEmbeddedBrowserAllowInsecureCertificatesChange(checked);
+                  }}
+                />
+              }
+            />
+          </SettingsGroupCard>
+        </section>
+      ) : null}
 
       <AlertDialog open={confirmClearAll} onOpenChange={setConfirmClearAll}>
         <AlertDialogContent>

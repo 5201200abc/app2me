@@ -379,12 +379,6 @@ export async function startOffPeakMockGateway(
         requestJson,
         stage,
         ticketId,
-        ...(typeof req.headers["bigmodel-organization"] === "string"
-          ? { organization: req.headers["bigmodel-organization"] }
-          : {}),
-        ...(typeof req.headers["bigmodel-project"] === "string"
-          ? { project: req.headers["bigmodel-project"] }
-          : {}),
       });
       const scripted =
         config.scenario === "foreground-subagents"

@@ -46,7 +46,7 @@ From the repository root:
 
 ```sh
 # Prepare the host tools in packages/desktop/bundled-tools/<platform>-<arch>.
-pnpm --filter @mycode/desktop prepare:native-search
+pnpm --filter @app2me/desktop prepare:native-search
 
 # Prepare a specific target, optionally into a separate staging directory.
 node scripts/prepare-native-search-tools.mjs --platform linux --arch x64 --output-dir /tmp/mycode-native-search

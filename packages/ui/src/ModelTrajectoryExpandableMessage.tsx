@@ -1,5 +1,10 @@
 import type { MyCodeModelTrajectoryMessage } from "@mycode/services";
-import { ArrowRightIcon, ChevronRightIcon, CircleAlertIcon, CopyIcon } from "lucide-react";
+import {
+  ArrowRightIcon,
+  ChevronRightIcon,
+  CircleAlertIcon,
+  CopyIcon,
+} from "@/components/icons/tabler.js";
 import { useContext, useState } from "react";
 import { Badge } from "@/components/ui/badge.js";
 import { Button } from "@/components/ui/button.js";

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentPropsWithoutRef } from "react";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 
@@ -18,7 +18,7 @@ export function ChatLoading({ loading, size = "default", className, ...props }: 
     return null;
   }
 
-  const sizeClasses = size === "sm" ? "size-4 text-ui-base" : "size-6";
+  const sizeClasses = size === "sm" ? "size-3 text-ui-caption" : "size-6";
 
   return (
     <div
@@ -30,6 +30,7 @@ export function ChatLoading({ loading, size = "default", className, ...props }: 
     >
       <div className="flex size-4 items-center justify-center">
         <LoaderIcon
+          strokeWidth={1.5}
           aria-hidden="true"
           className={cn("animate-spin text-foreground-subtle", sizeClasses)}
         />

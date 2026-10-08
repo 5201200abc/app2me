@@ -152,6 +152,7 @@ export function InlineEditableProviderCard({
   nameEditable,
   headerVisible = true,
   headerActionsVisible,
+  compactHeader = false,
   settingsRevision,
 }: {
   provider: ProviderSettingsFormProvider;
@@ -179,6 +180,7 @@ export function InlineEditableProviderCard({
   nameEditable?: boolean;
   headerVisible?: boolean;
   headerActionsVisible?: boolean;
+  compactHeader?: boolean;
   settingsRevision?: number;
 }) {
   const { intl } = useMyCodeIntl();
@@ -746,7 +748,7 @@ export function InlineEditableProviderCard({
   }, [onDelete]);
 
   const headerProviderName = providerDisplayName;
-  const isAccountProvider = provider.config.access?.type === "zhipu-account";
+  const isAccountProvider = false;
   const isApiKeyProvider = isApiKeyAccess(provider.config.access);
   const effectiveHeaderVisible = headerVisible && statusSection === undefined;
 
@@ -754,6 +756,7 @@ export function InlineEditableProviderCard({
     <div className="space-y-3">
       {effectiveHeaderVisible ? (
         <ProviderCardHeader
+          compact={compactHeader}
           providerName={headerProviderName}
           logo={provider.config.logo}
           editingName={editingName}

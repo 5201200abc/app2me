@@ -5,7 +5,7 @@ import {
   Plus,
   RefreshCcw,
   SquareArrowRightEnter,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { Button } from "@/components/ui/button.js";
 import {
@@ -68,12 +68,12 @@ export function SettingsResourceHeaderActions({
   const hasOverflowActions = Boolean(onImport || onExport);
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div data-settings-resource-actions className="flex flex-wrap items-center gap-1.5">
       {hasOverflowActions ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button type="button" variant="outline" size="icon-md" aria-label={moreActionsLabel}>
-              <MoreHorizontal aria-hidden="true" />
+            <Button type="button" variant="outline" size="icon" aria-label={moreActionsLabel}>
+              <MoreHorizontal className="size-3" strokeWidth={1.5} aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -105,7 +105,7 @@ export function SettingsResourceHeaderActions({
           <Button
             type="button"
             variant="outline"
-            size="icon-md"
+            size="icon"
             aria-label={resolvedRefreshLabel}
             data-testid={refreshTestId}
             disabled={refreshDisabled || refreshing}
@@ -114,7 +114,7 @@ export function SettingsResourceHeaderActions({
             {refreshing ? (
               <Loader2 className="animate-spin" aria-hidden="true" />
             ) : (
-              <RefreshCcw aria-hidden="true" />
+              <RefreshCcw className="size-3" strokeWidth={1.5} aria-hidden="true" />
             )}
           </Button>
         </ControlHintTooltip>
@@ -124,14 +124,14 @@ export function SettingsResourceHeaderActions({
           type="button"
           variant="default"
           size="default"
-          className="rounded-lg"
+          className="gap-1 rounded-md px-2 text-ui-caption"
           data-settings-create-action={newActionId}
           aria-label={newLabel}
           data-testid={newTestId}
           disabled={newDisabled}
           onClick={onNew}
         >
-          <Plus data-icon="inline-start" aria-hidden="true" />
+          <Plus className="size-3" strokeWidth={1.5} data-icon="inline-start" aria-hidden="true" />
           {newLabel}
         </Button>
       ) : null}

@@ -1,4 +1,4 @@
-import type { SessionEvent } from "@mycode/contracts";
+import type { CheckpointCreatedPayload, SessionEvent } from "@mycode/contracts";
 
 import type { ConversationDelta, ConversationRow } from "@mycode/shared/mycode-protocol-v4";
 
@@ -6,6 +6,22 @@ import { type ConversationEditTarget } from "./product-projection-session-config
 
 import type { ProjectionEngine } from "./product-projection-engine.js";
 export const projectionRewind = {
+  onCheckpointCreated(this: ProjectionEngine, event: SessionEvent): ConversationDelta[] {
+    // 工具执行中就替换权威净统计；停止后或旧 turn 的迟到事件不能覆盖当前行。
+    if (!this.acceptsActiveModelEvent(event)) return [];
+    const payload = event.payload as CheckpointCreatedPayload;
+    if (payload.scope !== "workspace" && payload.scope !== "both") return [];
+    if (!payload.fileChanges?.files) return [];
+    const rowId = this.turnHeaderRowIdByTurnId.get(this.turnIdOf(event));
+    const header = rowId === undefined ? undefined : this.findRow(rowId);
+    if (header?.kind !== "turnHeader") return [];
+    return [
+      {
+        op: "row.upserted",
+        row: { ...header, fileChanges: { ...payload.fileChanges, state: "active" } },
+      },
+    ];
+  },
   /**
    * rewind/edit/retry 的 live 投影截断（editUserQuery/retryTurn 的
    * `row.removed(target 起)`）。RewindTriggered 带 targetMessageId → 反查 rowId →

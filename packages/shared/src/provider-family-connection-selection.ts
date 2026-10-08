@@ -15,12 +15,10 @@ export const providerFamilyConnectionSelectionSchema = z.discriminatedUnion("kin
     .strict(),
 ]);
 
-export const providerFamilyConnectionSelectionSettingsSchema = z
-  .object({
-    zai: providerFamilyConnectionSelectionSchema.optional(),
-    bigmodel: providerFamilyConnectionSelectionSchema.optional(),
-  })
-  .partial();
+export const providerFamilyConnectionSelectionSettingsSchema = z.record(
+  z.string(),
+  providerFamilyConnectionSelectionSchema,
+);
 
 /** 用户对一个 Provider Family 的连接选择意图；不包含账号身份或动态凭据。 */
 export type ProviderFamilyConnectionSelection = Readonly<

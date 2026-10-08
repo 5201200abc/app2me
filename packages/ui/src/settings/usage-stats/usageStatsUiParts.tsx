@@ -42,7 +42,6 @@ export function formatDay(locale: string, dateKey: string | null): string {
   }
   const date = new Date(`${dateKey}T00:00:00.000Z`);
   if (Number.isNaN(date.getTime())) {
-    // BigModel monitor 接口偶尔返回空字符串或非 yyyy-MM-dd 格式的日期,
     // 之前直接交给 Intl.DateTimeFormat 会抛 RangeError 把整个图表炸掉。
     return dateKey;
   }
@@ -89,9 +88,9 @@ export function resolveModelLabel(
 
 export function UsageEmptyState({ title, description }: { title: string; description: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-border px-4 py-10 text-center">
-      <div className="text-ui-base font-medium text-foreground">{title}</div>
-      <div className="mt-2 text-ui-base text-foreground-subtle">{description}</div>
+    <div className="rounded-lg border border-dashed border-border/60 px-3 py-5 text-center">
+      <div className="text-ui-caption font-medium text-foreground">{title}</div>
+      <div className="mt-1 text-ui-sm text-foreground-subtle">{description}</div>
     </div>
   );
 }

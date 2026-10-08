@@ -16,7 +16,6 @@ import { useTabStore } from "@/store/TabStoreProvider.js";
 import { isWorkspaceReadOnly, isWorkspaceTab } from "@/store/tabStore.js";
 import type { TaskChatMessage as TestChatMessage } from "@/lib/taskChatMessageTypes.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import { getPathLeaf } from "@/lib/path.js";
 import {
   addPluginStoreOpenListener,
@@ -45,7 +44,7 @@ import {
 } from "@/lib/settingsNavigation.js";
 import { runWorkspaceVisibleCommand } from "@/lib/workspaceVisibleCommand.js";
 import { MYCODE_PRODUCT_DOCS_URL } from "@/lib/productDocs.js";
-import appLogoUrl from "@/assets/mycode-mark.svg";
+import appLogoUrl from "@/assets/mycode-mark.png";
 import { resolveTheme } from "@/useTheme.js";
 import { WorkspaceShellLayout } from "@/app-shell/WorkspaceShellLayout.js";
 import { useAppChromeState } from "@/app-shell/useAppChromeState.js";
@@ -65,7 +64,6 @@ import { useOffPeakTaskNotifications } from "@/hooks/useOffPeakTaskNotifications
 import type { AppProps, WorkspaceMainView } from "@/app-shell/types.js";
 import type {
   ChatSearchResultHighlightRequest,
-  ChatViewSummaryPanelVariant,
   ConversationFindMatchState,
 } from "@/v4/legacyChatViewTypes.js";
 import { getActiveSidePaneTab } from "@/lib/workspaceSidePane.js";
@@ -76,6 +74,7 @@ import {
   getCloseActiveContextSidePaneTab,
 } from "@/lib/closeActiveContext.js";
 import { usePaneLayoutStore } from "@/v4/paneLayoutStore.js";
+import { useConversationSummarySelection } from "@/hooks/useConversationSummarySelection.js";
 import { useWorkbenchGroupStore } from "@/v4/workbenchGroupStore.js";
 import type { AssistantPreviewCardsAutoOpenRequest } from "@/lib/assistantPreviewCards.js";
 import { startMemoryDiagnosticsLogger } from "@/lib/memoryDiagnostics.js";
@@ -131,7 +130,6 @@ export function App({
   const isLinuxDesktop = Boolean(isDesktop && !isMacDesktop && !isWindowsDesktop);
   const supportsEmbeddedBrowser = explicitSupportsEmbeddedBrowser ?? Boolean(isDesktop);
   const { intl, locale, setLocale } = useMyCodeIntl();
-  const isOfficeMode = useIsOfficeMode();
   const platform = usePlatform();
   // 进程内存本地诊断日志：每窗口一个 60s 采样器，
   // 经门控后写桌面主日志；Web 端无日志桥时为 no-op。同一次读数还经 preload 桥把 heap 送 main 的
@@ -205,8 +203,14 @@ export function App({
     (state) => state.getWorkspaceState(workspaceAbsPath, workspaceIdentity).draftSessionId,
   );
   const sidePaneOwnerId = activeTaskId ?? draftSessionId ?? null;
-  const [summaryPanelVariantOverride, setSummaryPanelVariantOverride] =
-    useState<ChatViewSummaryPanelVariant | null>(null);
+  const summaryPanelScopeKey = JSON.stringify([
+    workspaceIdentity?.trim() || workspaceAbsPath,
+    sidePaneOwnerId,
+  ]);
+  const {
+    variantOverride: summaryPanelVariantOverride,
+    setVariantOverride: setSummaryPanelVariantOverride,
+  } = useConversationSummarySelection(summaryPanelScopeKey);
   const draftFocusVersion = workspaceShellMyCodeState.draftFocusVersion;
   const {
     isTerminalOpen,
@@ -235,6 +239,7 @@ export function App({
     handleSyncSubagentSessionTabs,
     handleOpenSelectionSideChat,
     handleOpenPlanDetail,
+    handleOpenSources,
     handleOpenWorkflowRun,
     handleOpenWorkflowRunDirectory,
     handleOpenWorkflowActorSession,
@@ -923,32 +928,36 @@ export function App({
   const canPrimaryNavigationBack = workspaceMainView === "plugin-store" || canTaskNavBack;
   const shellPanelIds = useMemo(() => ["sidebar", "content"], []);
 
-  useAppKeyboard({
-    openCommandCenter: handleOpenQuickPick,
-    // 打开设置页：与设置入口按钮共用 tabStore.openSettingsTab；默认 ⌘,/Ctrl+,（系统惯例）
-    openSettings: openSettingsTab,
-    findInTask: handleOpenTaskFind,
-    toggleSidebar: () => runVisibleWorkspaceCommand(handleToggleSidebar),
-    switchTheme: handleSwitchTheme,
-    toggleTerminal: () => runVisibleWorkspaceCommand(handleToggleTerminalIfWritable),
-    // ⌥⌘B 与 header 最右侧按钮共用同一条 toggle 入口，
-    // 避免快捷键和按钮行为漂移；空面板的展示统一由 Open tab 空态承接。
-    toggleSidePane: () => runVisibleWorkspaceCommand(handleToggleSidePane),
-    previousConversation: handleSelectPreviousConversation,
-    nextConversation: handleSelectNextConversation,
-    navigateBack: canPrimaryNavigationBack
-      ? () => runVisibleWorkspaceCommand(handlePrimaryNavigationBack)
-      : null,
-    navigateForward: canTaskNavForward
-      ? () => runVisibleWorkspaceCommand(handleTaskNavForward)
-      : null,
-  });
+  useAppKeyboard(
+    isWorkspaceVisible
+      ? {
+          openCommandCenter: handleOpenQuickPick,
+          // 打开设置页：与设置入口按钮共用 tabStore.openSettingsTab；默认 ⌘,/Ctrl+,（系统惯例）
+          openSettings: openSettingsTab,
+          findInTask: handleOpenTaskFind,
+          toggleSidebar: () => runVisibleWorkspaceCommand(handleToggleSidebar),
+          switchTheme: handleSwitchTheme,
+          toggleTerminal: () => runVisibleWorkspaceCommand(handleToggleTerminalIfWritable),
+          // ⌥⌘B 与 header 最右侧按钮共用同一条 toggle 入口，
+          // 避免快捷键和按钮行为漂移；空面板的展示统一由 Open tab 空态承接。
+          toggleSidePane: () => runVisibleWorkspaceCommand(handleToggleSidePane),
+          previousConversation: handleSelectPreviousConversation,
+          nextConversation: handleSelectNextConversation,
+          navigateBack: canPrimaryNavigationBack
+            ? () => runVisibleWorkspaceCommand(handlePrimaryNavigationBack)
+            : null,
+          navigateForward: canTaskNavForward
+            ? () => runVisibleWorkspaceCommand(handleTaskNavForward)
+            : null,
+        }
+      : {},
+  );
 
   const quickPickCommands = useMemo(
     () =>
       createQuickPickCommands({
-        supportsTerminal: !isOfficeMode,
-        supportsReview: !isOfficeMode,
+        supportsTerminal: true,
+        supportsReview: true,
         allowOpenWorkspace,
         isSidebarVisible,
         supportsEmbeddedBrowser,
@@ -983,7 +992,6 @@ export function App({
       }),
     [
       allowOpenWorkspace,
-      isOfficeMode,
       handleOpenProductDocs,
       handleOpenSettingsSection,
       handleSwitchTheme,
@@ -1194,6 +1202,7 @@ export function App({
         handleSyncSubagentSessionTabs={handleSyncSubagentSessionTabs}
         handleOpenSelectionSideChat={handleOpenSelectionSideChat}
         handleOpenPlanDetail={handleOpenPlanDetail}
+        handleOpenSources={handleOpenSources}
         handleOpenWorkflowRun={handleOpenWorkflowRun}
         handleOpenWorkflowRunDirectory={handleOpenWorkflowRunDirectory}
         handleOpenWorkflowActorSession={handleOpenWorkflowActorSession}

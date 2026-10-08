@@ -1,3 +1,4 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 /* oxlint-disable eslint(max-lines) -- Share 与 Desktop 共用的只读 Row/turn presentation 需要保持在同一安全边界。
  * 安全边界约束：本文件被匿名公开分享页（packages/web/src/share）直接引用，新增依赖必须考虑
  * 公开页 bundle 体积与无 Desktop 宿主（window.mycode / PlatformProvider / tab store）的运行环境；
@@ -16,7 +17,6 @@ import {
 } from "react";
 import {
   ChevronRightIcon,
-  FilePenLineIcon,
   FileTextIcon,
   FilesIcon,
   InfoIcon,
@@ -24,7 +24,7 @@ import {
   SearchIcon,
   SquareTerminalIcon,
   WrenchIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { getCompactToolCallStatusMessageId, type Locale } from "@mycode/shared";
 import type {
   ArtifactRow,
@@ -47,6 +47,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible.js";
 import { TooltipProvider } from "@/components/ui/tooltip.js";
+import { getExecuteCommandDisplayText } from "@/ToolCallBlocks/executeCommandDisplay.js";
 import { ToolLayout } from "@/ToolCallBlocks/ToolLayout.js";
 import { ConversationUserInputBody } from "@/v4/ConversationUserInputBody.js";
 import { ConversationUserInputContent } from "@/v4/ConversationUserInputContent.js";
@@ -281,7 +282,11 @@ const AssistantTextPresentation = memo(function AssistantTextPresentation({
 
 const ReasoningPresentation = memo(function ReasoningPresentation({ row }: { row: ReasoningRow }) {
   const durationSeconds =
-    row.durationMs === undefined ? undefined : Math.max(1, Math.ceil(row.durationMs / 1000));
+    row.durationMs === undefined
+      ? undefined
+      : row.durationMs > 0
+        ? Math.max(1, Math.floor(row.durationMs / 1000))
+        : undefined;
   return (
     <div data-conversation-share-row-kind="reasoning">
       <Reasoning
@@ -378,7 +383,7 @@ const ToolCallPresentation = memo(function ToolCallPresentation({
             }
           : identity.family === "file-write"
             ? {
-                icon: <FilePenLineIcon className="size-4 shrink-0" aria-hidden="true" />,
+                icon: <WriteIcon className="size-4 shrink-0" aria-hidden="true" />,
                 kindLabel: intl.formatMessage({ id: "chat.toolCall.kind.edit" }),
                 primaryText: statusLabel,
               }
@@ -406,6 +411,12 @@ const ToolCallPresentation = memo(function ToolCallPresentation({
       <ToolLayout
         toolId={row.toolCallId}
         icon={presentation.icon}
+        preserveIcon={identity.family === "shell"}
+        summaryText={
+          identity.family === "shell"
+            ? `${intl.formatMessage({ id: isRunning ? "chat.toolCall.execute.summary.running" : "chat.toolCall.execute.summary.ran" })} ${getExecuteCommandDisplayText(row.input) ?? row.toolName}`
+            : undefined
+        }
         kindLabel={presentation.kindLabel}
         primaryText={presentation.primaryText}
         isRunning={isRunning}

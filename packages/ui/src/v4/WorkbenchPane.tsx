@@ -265,7 +265,7 @@ export interface WorkbenchShellBinding {
   provider?: MyCodeProvider;
   onSessionCreated?: (sessionId: string) => void;
   onSessionDeleted?: () => void;
-  draftComposerHeader?: ReactNode;
+  draftComposerHeader?: ReactNode | ((modeControls: ReactNode) => ReactNode);
   onPrimaryDraftDropTargetControllerChange?: (
     controller: ConversationDropTargetController | null,
   ) => void;

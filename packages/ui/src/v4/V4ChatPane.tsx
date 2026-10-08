@@ -45,7 +45,7 @@ interface V4ChatPaneProps {
   /** deleteSession：删除当前会话后回到 draft。 */
   onSessionDeleted?: () => void;
   /** 草稿态 composer contextHeader（m5，壳层构造下发）。 */
-  draftComposerHeader?: ReactNode;
+  draftComposerHeader?: ReactNode | ((modeControls: ReactNode) => ReactNode);
   gitSummary?: GitRepositorySummary | null;
   gitDirtyFileCount?: number;
   gitWorktreeReviewSourceId?: GitChangeSourceId | null;

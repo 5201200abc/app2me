@@ -373,6 +373,8 @@ export interface MyCodeConfigOption {
   category?: string;
   type: "select" | "boolean";
   currentValue: string | boolean;
+  /** Host 声明的模型默认档位；不会替代用户的 currentValue。 */
+  defaultValue?: string;
   /** type === "select" 时的选项列表 */
   options?: MyCodeConfigSelectValue[];
 }

@@ -1,3 +1,4 @@
+import { stripDisplayEmoji } from "@/lib/compactConversationDisplay.js";
 // v4 ToolCallRow → 旧 ToolCallBlocks 输入形态（TaskChatToolCallTreeNode）适配。
 // 纯函数：ToolCallBlock 及其 renderers（execute/read/edit/...）吃的是旧 MyCode Agent 的
 // TaskChatToolCall 形态；v4 row 自包含，字段一一映射即可，不需要看别的行。
@@ -97,16 +98,16 @@ export function toolCallRowToLegacyNode(row: ToolCallRow): TaskChatToolCallTreeN
       kind: row.toolName,
       input: inputPreview.input,
       status: legacyStatus,
-      output: row.output?.text,
+      output: row.output?.text ? stripDisplayEmoji(row.output.text) : row.output?.text,
       // V4 ToolCallRow 没有 legacy taskNotification raw；background Agent
       // 的终态摘要只落在 output。Agent renderer 读取 content 展示活动结果，因此在
       // Agent/Task 行显式桥接，避免失败详情虽已投影却仍只显示一张空卡。
       ...((row.toolName === "Agent" || row.toolName === "Task") && row.output?.text
-        ? { content: row.output.text }
+        ? { content: stripDisplayEmoji(row.output.text) }
         : {}),
       // v4 row 是自包含投影，部分 provider 只把工具失败正文塞进 output，
       // 不补回 legacy error 会让 ToolOutput 看不到失败原因，只剩一张空的 failed 摘要。
-      error: errorText,
+      error: errorText ? stripDisplayEmoji(errorText) : undefined,
       raw: {
         error: row.error,
         rawOutput: row.output?.text,

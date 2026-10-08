@@ -22,7 +22,7 @@ export type SettingsSectionId =
   | "shortcuts";
 
 type SettingsUsageTabTarget = "app" | "codingPlan";
-type SettingsPluginTabTarget = "plugins" | "mcps" | "skills" | "commands";
+type SettingsPluginTabTarget = "plugins" | "mcps" | "skills" | "subagents" | "commands";
 type SettingsPluginNavigationOrigin = "plugin-store";
 
 const SETTINGS_SECTION_INTENT_KEY = "mycode-settings-section-intent",
@@ -39,10 +39,16 @@ const HIDDEN_SETTINGS_SECTIONS = new Set<SettingsSectionId>([
   "automations",
   // 旧插件市场已迁出设置页；保留 id 只用于迁移历史偏好和旧调用。
   "plugins",
+  // MCP 与技能统一在插件页管理；历史 id 仅用于导航迁移。
+  "mcp",
+  "skill",
+  // 记忆合并到常规末尾，子智能体合并到插件的标签中；历史 ID 继续兼容。
+  "memory",
+  "subagents",
   // 工作区搜索（.mycodeignore）设置入口先隐藏：规则文件仍生效并可手动编辑，
   // 编辑页代码保留，放开时从这里移除即可。
   "workspaceFileSearch",
-  "computerUse",
+  // 电脑控制由 settingsPageConfig 的 Desktop 能力裁决，不能全局隐藏授权与启用入口。
 ]);
 
 interface SettingsSectionIntentEventDetail {
@@ -89,7 +95,9 @@ export function resolveSettingsSection(
   section: SettingsSectionId,
   fallbackSection: SettingsSectionId = "general",
 ): SettingsSectionId {
-  if (section === "plugins") return "plugin";
+  if (section === "memory") return "general";
+  if (section === "plugins" || section === "mcp" || section === "skill" || section === "subagents")
+    return "plugin";
   return isSettingsSectionEnabled(section) ? section : fallbackSection;
 }
 
@@ -120,14 +128,31 @@ function readLastSettingsSectionPreference(
   try {
     const raw = storage.getItem(SETTINGS_LAST_SECTION_STORAGE_KEY);
     // 旧 section id 已并入 plugin；迁移持久化值，避免继续传播历史路由语义。
-    if (raw === "plugins") {
+    if (
+      raw === "plugins" ||
+      raw === "mcp" ||
+      raw === "skill" ||
+      raw === "skills" ||
+      raw === "subagents"
+    ) {
       storage.setItem(SETTINGS_LAST_SECTION_STORAGE_KEY, "plugin");
-      setPendingPluginTab("plugins");
+      // 显式跳转优先于历史偏好，避免旧 MCP 偏好覆盖此次技能标签意图。
+      if (!window.sessionStorage.getItem(SETTINGS_SECTION_INTENT_KEY)) {
+        setPendingPluginTab(
+          raw === "mcp"
+            ? "mcps"
+            : raw === "plugins"
+              ? "plugins"
+              : raw === "subagents"
+                ? "subagents"
+                : "skills",
+        );
+      }
       return "plugin";
     }
-    if (raw === "skills") {
-      storage.setItem(SETTINGS_LAST_SECTION_STORAGE_KEY, "skill");
-      return "skill";
+    if (raw === "memory") {
+      storage.setItem(SETTINGS_LAST_SECTION_STORAGE_KEY, "general");
+      return "general";
     }
     // 旧版“代码预览”已并入“外观”，保留用户上次停留位置的迁移语义。
     if (raw === "codePreview") {
@@ -197,16 +222,9 @@ export function setPendingSettingsPluginIntent(
     scopeKey?: string;
   } = {},
 ): void {
-  const section =
-    tab === "mcps"
-      ? "mcp"
-      : tab === "skills"
-        ? "skill"
-        : tab === "commands"
-          ? "commands"
-          : "plugin";
+  const section = tab === "commands" ? "commands" : "plugin";
   setPendingSettingsSectionIntent(section, {
-    pluginTab: tab === "plugins" ? tab : undefined,
+    pluginTab: tab === "commands" ? undefined : tab,
     pluginOrigin: options.origin,
     pluginScopeKey: options.scopeKey,
   });
@@ -226,10 +244,21 @@ export function setPendingSettingsSectionIntent(
     return;
   }
 
+  // 旧栏目只在导航边界归一化；同窗事件与冷启动存储携带同一组标签和作用域。
+  const pluginTab =
+    section === "mcp"
+      ? "mcps"
+      : section === "skill"
+        ? "skills"
+        : section === "subagents"
+          ? "subagents"
+          : options.pluginTab;
+  section = resolveSettingsSection(section);
+
   try {
     window.sessionStorage.setItem(SETTINGS_SECTION_INTENT_KEY, section);
-    if (options.pluginTab) {
-      window.sessionStorage.setItem(SETTINGS_PLUGIN_TAB_INTENT_KEY, options.pluginTab);
+    if (pluginTab) {
+      window.sessionStorage.setItem(SETTINGS_PLUGIN_TAB_INTENT_KEY, pluginTab);
     } else {
       window.sessionStorage.removeItem(SETTINGS_PLUGIN_TAB_INTENT_KEY);
     }
@@ -262,7 +291,7 @@ export function setPendingSettingsSectionIntent(
     new CustomEvent<SettingsSectionIntentEventDetail>(SETTINGS_SECTION_INTENT_EVENT, {
       detail: {
         section,
-        pluginTab: options.pluginTab,
+        pluginTab,
         pluginOrigin: options.pluginOrigin,
         pluginScopeKey: options.pluginScopeKey?.trim() || undefined,
         usageTab: options.usageTab,
@@ -302,9 +331,9 @@ function consumePendingSettingsSection(
       window.sessionStorage.removeItem(SETTINGS_SECTION_INTENT_KEY);
     }
 
-    if (raw === "skills") {
-      // 旧 Skills 使用复数 id；迁移到当前独立 skill 分区。
-      return "skill";
+    if (raw === "skills" || raw === "skill" || raw === "mcp" || raw === "subagents") {
+      setPendingPluginTab(raw === "mcp" ? "mcps" : raw === "subagents" ? "subagents" : "skills");
+      return "plugin";
     }
     if (raw && isSettingsSectionId(raw)) {
       return resolveSettingsSection(raw, fallbackSection);
@@ -330,7 +359,9 @@ export function consumePendingSettingsPluginTab(): SettingsPluginTabTarget | und
   try {
     const raw = window.sessionStorage.getItem(SETTINGS_PLUGIN_TAB_INTENT_KEY);
     window.sessionStorage.removeItem(SETTINGS_PLUGIN_TAB_INTENT_KEY);
-    return raw === "plugins" || raw === "mcps" || raw === "skills" ? raw : undefined;
+    return raw === "plugins" || raw === "mcps" || raw === "skills" || raw === "subagents"
+      ? raw
+      : undefined;
   } catch {
     return undefined;
   }
@@ -448,7 +479,14 @@ export function addPendingSettingsSectionListener(
       // 这里同步清掉 sessionStorage，避免用户随后切到别的分区并退出后，
       // 下次挂载又被陈旧 pending 意图覆盖“上次停留分区”。
       clearPendingSettingsSectionIntent();
-      listener(detail.section, detail);
+      const pluginTab =
+        detail.section === "mcp"
+          ? "mcps"
+          : detail.section === "skill"
+            ? "skills"
+            : detail.pluginTab;
+      const section = resolveSettingsSection(detail.section);
+      listener(section, { ...detail, section, pluginTab });
     }
   };
 

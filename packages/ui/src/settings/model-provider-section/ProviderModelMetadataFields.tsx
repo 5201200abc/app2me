@@ -1,4 +1,4 @@
-import { CheckIcon } from "lucide-react";
+import { CheckIcon } from "@/components/icons/tabler.js";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";

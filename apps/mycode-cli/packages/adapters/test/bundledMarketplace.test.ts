@@ -72,7 +72,7 @@ test("retired remote official catalog migrates to bundled plugins without a netw
             name: MARKETPLACE_ID,
             source: {
               source: "url",
-              url: "https://cdn-mycode.z.ai/mycode/official-plugin/marketplace.json",
+              url: "https://retired.example/official-plugin/marketplace.json",
             },
             addedAt: "2026-01-01T00:00:00.000Z",
             pluginCount: 1,

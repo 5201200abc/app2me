@@ -9,7 +9,7 @@
 import { Button } from "../ui/button.js";
 import { cn } from "../lib/utils.js";
 import RawAnsi from "ansi-to-react";
-import { CheckIcon, CopyIcon, TerminalIcon, Trash2Icon } from "lucide-react";
+import { CheckIcon, CopyIcon, TerminalIcon, Trash2Icon } from "@/components/icons/tabler.js";
 import type { ComponentProps, ComponentType, HTMLAttributes } from "react";
 import {
   createContext,

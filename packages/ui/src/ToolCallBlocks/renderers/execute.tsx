@@ -3,7 +3,8 @@ import {
   executionOutputPreviewSchema,
 } from "@mycode/shared/mycode-protocol-v4";
 import { ExecuteOutput } from "@/ToolCallBlocks/renderers/ExecuteOutput.js";
-import { SquareTerminalIcon } from "lucide-react";
+import { CodeBlockCopyButton } from "@/components/ai-elements/code-block.js";
+import { SquareTerminalIcon } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";
@@ -12,71 +13,12 @@ import type { ToolCallBlockRenderContext } from "../shared.js";
 
 const EXECUTE_TOOL_ICON = <SquareTerminalIcon className="size-4 shrink-0 text-foreground-subtle" />;
 
-function isPlainRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-export function getExecuteSecondaryText(input: unknown): string | undefined {
-  if (typeof input === "string") {
-    const trimmed = input.trim();
-    return trimmed.length > 0 ? trimmed : undefined;
-  }
-
-  if (Array.isArray(input) && input.every((item) => typeof item === "string")) {
-    const parts = input.map((item) => item.trim()).filter(Boolean);
-    if (parts.length === 0) {
-      return undefined;
-    }
-
-    const shellCommandIndex = parts.findIndex((part) => part === "-lc");
-    if (shellCommandIndex >= 0 && parts[shellCommandIndex + 1]) {
-      return parts[shellCommandIndex + 1];
-    }
-
-    return parts.join(" ");
-  }
-
-  if (typeof input !== "object" || input === null) {
-    return undefined;
-  }
-
-  const record = input as Record<string, unknown>;
-  const parsedCommand = record.parsed_cmd;
-  if (Array.isArray(parsedCommand)) {
-    for (const item of parsedCommand) {
-      if (typeof item === "string") {
-        const trimmed = item.trim();
-        if (trimmed.length > 0) {
-          return trimmed;
-        }
-        continue;
-      }
-
-      if (typeof item !== "object" || item === null) {
-        continue;
-      }
-
-      const parsedRecord = item as Record<string, unknown>;
-      if (typeof parsedRecord.cmd === "string" && parsedRecord.cmd.trim().length > 0) {
-        return parsedRecord.cmd.trim();
-      }
-    }
-  }
-
-  for (const key of ["command", "cmd", "script", "parsed_cmd"] as const) {
-    const candidate = record[key];
-    if (typeof candidate !== "string") {
-      continue;
-    }
-
-    const trimmed = candidate.trim();
-    if (trimmed.length > 0) {
-      return trimmed;
-    }
-  }
-
-  return undefined;
-}
+export { getExecuteSecondaryText, getExecuteCommandDisplayText } from "../executeCommandDisplay.js";
+import {
+  getExecuteSecondaryText,
+  getExecuteCommandDisplayText,
+  isPlainRecord,
+} from "../executeCommandDisplay.js";
 
 function readFirstStringField(
   record: Record<string, unknown>,
@@ -267,8 +209,9 @@ function extractExecuteResultText(output: unknown): string | null {
 
 export function ExecuteToolCallBlock(context: ToolCallBlockRenderContext) {
   const { intl } = useMyCodeIntl();
-  const { toolCallNode, isRunning, statusLabel, errorText, isOfficeMode = false } = context;
+  const { toolCallNode, isRunning, statusLabel, errorText } = context;
   const { toolCall } = toolCallNode;
+  const commandDisplayText = getExecuteCommandDisplayText(toolCall.input);
   const secondaryText = getExecuteSecondaryText(toolCall.input);
   const contentParts = getExecuteContentParts(toolCall.input);
   const outputText = extractExecuteResultText(toolCall.output);
@@ -296,33 +239,24 @@ export function ExecuteToolCallBlock(context: ToolCallBlockRenderContext) {
   );
   const renderContent = useCallback(
     () => (
-      <div className="space-y-3 mb-2 rounded-xl border border-border bg-panel px-4 py-3">
-        <div className="space-y-1">
-          <div className="flex items-start gap-2 font-sans text-ui-base text-foreground">
-            <span className="shrink-0 text-foreground-subtle">$</span>
-            <pre className="min-w-0 flex-1 block max-h-15 overflow-over truncate whitespace-pre-wrap break-words">
-              {contentParts.executionCommand}
-            </pre>
-          </div>
+      <ExecuteOutput
+        text={
+          outputPreview?.fullText ??
+          failureVisibleText ??
+          resultText ??
+          (!isRunning ? intl.formatMessage({ id: "chat.toolCall.execute.noOutput" }) : "")
+        }
+        running={isRunning}
+      >
+        <div data-command-title className="font-sans font-normal text-foreground-subtle">
+          {intl.formatMessage({ id: "settings.hooks.shell" })}
         </div>
-
-        {outputPreview || failureVisibleText || resultText ? (
-          <ExecuteOutput
-            text={outputPreview?.fullText ?? failureVisibleText ?? resultText ?? ""}
-            running={isRunning}
-          />
-        ) : (
-          !isRunning && (
-            <div className="space-y-1">
-              <p className="font-mono text-ui-base text-foreground-subtle">
-                {intl.formatMessage({
-                  id: "chat.toolCall.execute.noOutput",
-                })}
-              </p>
-            </div>
-          )
-        )}
-      </div>
+        <div data-command-line className="text-foreground">
+          <span className="shrink-0 text-foreground-subtle">$</span>
+          <pre>{contentParts.executionCommand}</pre>
+          <CodeBlockCopyButton data-command-copy text={contentParts.executionCommand ?? ""} />
+        </div>
+      </ExecuteOutput>
     ),
     [contentParts.executionCommand, failureVisibleText, intl, isRunning, resultText, outputPreview],
   );
@@ -332,39 +266,35 @@ export function ExecuteToolCallBlock(context: ToolCallBlockRenderContext) {
       <ToolLayout
         toolId={toolCall.toolId}
         icon={EXECUTE_TOOL_ICON}
+        preserveIcon
+        summaryText={`${intl.formatMessage({ id: isRunning ? "chat.toolCall.execute.summary.running" : "chat.toolCall.execute.summary.ran" })} ${commandDisplayText ?? toolCall.title ?? toolCall.kind ?? intl.formatMessage({ id: "chat.toolCall.execute.execute" })}`}
         showIcon={context.showIcon !== false}
-        canToggle={!isOfficeMode && (context.canToggle ?? true)}
-        forceOpen={!isOfficeMode && (context.forceOpen ?? false)}
+        canToggle={context.canToggle ?? true}
+        forceOpen={context.forceOpen ?? false}
         hideSecondaryTextWhenOpen
         kindLabel={
-          (isOfficeMode
-            ? intl.formatMessage({
-                id: isRunning
-                  ? "chat.toolCall.execute.running"
-                  : "chat.toolCall.execute.conciseCompleted",
-              })
-            : context.kindLabelOverride) ??
+          context.kindLabelOverride ??
           intl.formatMessage({
             id: isRunning ? "chat.toolCall.execute.running" : "chat.toolCall.kind.terminal",
           })
         }
         sourceLabel={context.sourceLabel}
         primaryText={
-          isOfficeMode || secondaryText
+          secondaryText
             ? null
             : (toolCall.title ??
               toolCall.kind ??
               intl.formatMessage({ id: "chat.toolCall.execute.execute" }))
         }
-        secondaryText={isOfficeMode ? undefined : secondaryTextNode}
+        secondaryText={secondaryTextNode}
         statusLabel={statusLabel}
-        statusTooltip={isOfficeMode ? undefined : failureVisibleText}
+        statusTooltip={failureVisibleText}
         showFailureStatus={toolCall.status === "failed"}
         isRunning={isRunning}
-        title={isOfficeMode ? undefined : toolCall.title}
+        title={toolCall.title}
         renderContent={renderContent}
       />
-      {!isOfficeMode ? (
+      {
         <ToolSnapshotFieldNotice
           refs={toolCall.snapshotRefs ?? []}
           onLoadFullToolCallFields={
@@ -373,7 +303,7 @@ export function ExecuteToolCallBlock(context: ToolCallBlockRenderContext) {
               : undefined
           }
         />
-      ) : null}
+      }
       {/* <pre className="text-[8px]">{JSON.stringify(toolCall, null, 2)}</pre> */}
     </>
   );

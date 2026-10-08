@@ -14,6 +14,7 @@ import type { ModelSelectionView } from "@mycode/services";
 import type { ConversationAttachmentReadParams, ConversationTransport } from "@/v4/transport.js";
 import type {
   OpenPlanDetailSideTabRequest,
+  OpenSourcesSideTabRequest,
   OpenWorkflowActorSessionSideTabRequest,
   OpenWorkflowArtifactSideTabRequest,
   OpenWorkflowRunSideTabRequest,
@@ -87,6 +88,7 @@ export interface ConversationRowRenderContext {
   onOpenFileLink?: (target: MessageFileLinkTarget) => void;
   onOpenSubagentSession?: (request: OpenSubagentSideTabRequest) => void;
   onOpenPlanDetail?: (request: OpenPlanDetailSideTabRequest) => void;
+  onOpenSources?: (request: OpenSourcesSideTabRequest) => void;
   onOpenWorkflowRun?: (request: OpenWorkflowRunSideTabRequest) => void;
   /**
    * 产物的全尺寸查看 tab 入口。

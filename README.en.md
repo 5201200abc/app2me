@@ -1,21 +1,13 @@
-# MyCode
+# app2me
 
 <div align="center">
-  <img src="public/logo/icons/1024x1024.png" alt="MyCode" width="128" height="128" />
+  <img src="public/logo/icons/1024x1024.png" alt="app2me" width="128" height="128" />
 </div>
-<p align="center">
-  <a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=47ag983c-8fcb-4d6d-814b-5395193a712c&amp;qr_code=true">Feishu community</a> ·
-  <a href="https://discord.gg/z9aBcQXZQ3">Discord</a>
-</p>
 <p align="center">
   <a href="README.md">简体中文</a> | English
 </p>
 
-MyCode is an AI coding workspace with desktop, browser, and terminal interfaces. This repository contains the clients, backend services, shared UI, and Agent CLI and runtime source code.
-
-## Updates
-
-- 2026-9-23: Updated to MyCode v3.14.3.
+app2me contains the MyCode coding workspace and MyChat chat mode. This repository includes the desktop and Web clients, backend services, shared UI, and MyCode Agent CLI/runtime.
 
 ## Setup
 
@@ -26,8 +18,6 @@ pnpm bootstrap
 ```
 
 `pnpm bootstrap` installs workspace dependencies, prepares local desktop runtime assets, and runs `build:bootstrap`.
-
-The Agent CLI and runtime source code lives in [apps/mycode-cli/](apps/mycode-cli/) as a regular directory included when you clone this repository. No separate checkout or Git submodule initialization is required.
 
 Additional setup and build commands:
 
@@ -60,6 +50,10 @@ Set `MYCODE_DATA_BASE_DIR` to use a separate development data directory. For exa
 MYCODE_DATA_BASE_DIR="$HOME/.mycode-dev-home" pnpm dev:desktop:test
 ```
 
+### Remote workspaces (SSH/WSL)
+
+Run `pnpm bootstrap:with-remote`, then `pnpm dev:desktop`. When connecting a remote project, choose “Download locally and upload.” Development assets come from `packages/desktop/mock-cdn` and local builds and are uploaded over SFTP.
+
 ### Web Development
 
 Use development mode when editing Web or backend source code:
@@ -71,7 +65,7 @@ pnpm dev:web
 MYCODE_SERVER_WORKSPACE=/path/to/project pnpm dev:web
 ```
 
-This starts both the Web development server (default: `http://localhost:5173`) and the backend (default: `http://localhost:3030`). Open the Web development server in your browser. `/ws` and general `/api` requests are proxied to the local backend; `/api/v1/oauth/token` is proxied separately to the configured product service.
+This starts both the Web development server (default: `http://localhost:5173`) and the backend (default: `http://localhost:3030`). Open the Web development server in your browser. `/ws` and general `/api` requests are proxied to the local backend.
 
 After changing Agent source code, run `pnpm --filter @mycode/cli... build` and restart the service. To validate the complete distribution, extract and run it as described under Packaging → MyCode CLI distribution below.
 
@@ -119,18 +113,16 @@ This entry runs the Agent CLI directly and does not handle the distribution's `-
 
 The root [.env.example](.env.example) provides sample service URLs and build configuration. Copy it to `.env` as needed and place local overrides in `.env.local`. Select the Desktop development environment with `dev:desktop:test` or `dev:desktop:prod`.
 
-| Setting                              | Purpose                                                                                 |
-| ------------------------------------ | --------------------------------------------------------------------------------------- |
-| `MYCODE_DATA_BASE_DIR`                | Base directory for application data, stored under its `.mycode/` subdirectory            |
+| Setting                               | Purpose                                                                                 |
+| ------------------------------------- | --------------------------------------------------------------------------------------- |
+| `MYCODE_DATA_BASE_DIR`                | Base directory for application data, stored under its `.mycode/` subdirectory           |
 | `MYCODE_SERVER_WORKSPACE`             | Workspace path for the Web backend                                                      |
 | `MYCODE_BUILTIN_PROVIDER_CONFIG_FILE` | Path to a local provider configuration file; uses the built-in configuration when unset |
 | `MYCODE_DIST_BASE_URL`                | Download base URL used by the CLI distribution installer                                |
 
-Runtime variables can be set explicitly in the environment of the startup command. See [config/README.md](config/README.md) for the default configuration shipped with the client.
+Runtime variables can be set explicitly in the environment of the startup command. See [mycode-builtin.json](config/provider/mycode-builtin.json) for the built-in model configuration shipped with the client.
 
 ## Packaging
-
-See [third-party/README.md](third-party/README.md) for notice generation, distribution checks, and where the notices are included in each distribution.
 
 ### Desktop
 
@@ -143,7 +135,13 @@ pnpm bundle:desktop -- --os win --arch x64
 pnpm bundle:desktop -- --help
 ```
 
-The default target is macOS arm64, and the default output directory is `packages/desktop/dist/`. `--os` accepts `mac`, `win`, or `linux`; `--arch` accepts `x64` or `arm64`. Packaging and signing require the tools and configuration for the target platform.
+The default target is the current OS and CPU architecture. Output is written to `releases/current/`. `bundle:desktop` and `release` use the same build entry point, producing `app2me-YYYY-MM-DD` artifacts. `pnpm release:publish` publishes to the fixed GitHub `latest` release. `--os` accepts `mac`, `win`, or `linux`; `--arch` accepts `x64` or `arm64`. Packaging and signing require the tools and configuration for the target platform.
+
+Install on macOS by opening the DMG and dragging app2me into Applications. If macOS blocks an unsigned local build on first launch, run:
+
+```bash
+sudo xattr -rd com.apple.quarantine /Applications/app2me.app
+```
 
 ### MyCode CLI distribution
 
@@ -172,8 +170,6 @@ The version defaults to the root `package.json` version. Output is written to `d
 
 Upload the entire directory to the configured download base URL. The installer downloads the runtime package from that URL, installs it to `~/.mycode/runtime` by default, and creates the `mycode` command in `~/.local/bin`. Override these directories with `MYCODE_DIST_HOME` and `MYCODE_DIST_BIN_DIR`, respectively.
 
-Existing Lite users should switch to the new build command, environment variables, and installer. Installation does not remove old Lite directories or migrate/delete session data.
-
 To test a packaged build locally, extract and run it directly without uploading or installing it:
 
 ```bash
@@ -198,14 +194,20 @@ Open `http://127.0.0.1:3030` to validate the complete flow, with one backend ser
 | `packages/desktop`                                   | Electron Main, Host, Renderer, and desktop packaging                                    |
 | `packages/web`                                       | Web client                                                                              |
 | `packages/server`                                    | HTTP / WebSocket services and remote connections                                        |
-| `packages/mycode-server-cli`                          | Standalone server startup and process management                                        |
+| `packages/mycode-server-cli`                         | Standalone server startup and process management                                        |
 | `packages/ui`                                        | Shared React components, hooks, and Zustand state                                       |
 | `packages/services`                                  | Business services and persistence                                                       |
 | `packages/shared`, `packages/rpc`, `packages/client` | Shared protocols and types, RPC framework, and Agent client SDK                         |
 | `packages/provider`, `packages/provider-node`        | Common provider capabilities and Node implementations                                   |
-| `apps/mycode-cli`                                     | Agent CLI, TUI, runtime, and tools                                                      |
+| [apps/mycode-cli](apps/mycode-cli/README.en.md)      | Agent CLI, TUI, runtime, and tools                                                      |
 | `scripts`, `config`, `third-party`                   | Build and maintenance scripts, built-in configuration, and third-party notice materials |
 
-## Project Notice
+## Automatic releases
 
-See [NOTICE.md](NOTICE.md) for feature and promotion scope, maintenance policy, execution and data risks, licensing, and third-party copyright information.
+After each push to `main` (including PR merges), [GitHub Actions](.github/workflows/release.yml) prepares an increasing shared internal version for each new source commit and builds x64 and arm64 installers for macOS, Windows, and Linux. All six targets must pass strict license and artifact checks before replacing the fixed GitHub `latest` release. Artifact names remain `app2me-YYYY-MM-DD`. Already prepared versions are reused; retrying a commit does not increment its version again, and superseded jobs cannot overwrite a newer version. Use the workflow’s commit-SHA input for a manual retry.
+
+The repository must allow Actions to commit version updates and write Releases. If branch protection prevents the bot from writing directly to `main`, configure suitable GitHub App permissions for this workflow. Installers are unsigned by default; signing requires separate platform credentials.
+
+## License
+
+[Apache-2.0](LICENSE) · [Project notice](NOTICE.md) · [Third-party notices](THIRD-PARTY-NOTICES.md)

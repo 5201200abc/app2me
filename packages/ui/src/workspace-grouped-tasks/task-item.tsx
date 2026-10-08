@@ -2,7 +2,7 @@ import { memo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import type { MyCodeTaskMeta } from "@mycode/shared";
-import { MessageCirclePlus } from "lucide-react";
+import { MessageCirclePlus } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { GroupedTaskRow } from "@/workspace-grouped-tasks/task-row.js";
@@ -29,7 +29,7 @@ export function EmptyGroupDropZone({
       type="button"
       data-grouped-empty-drop-zone-id={groupId}
       className={cn(
-        "flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border px-2 py-2 text-center text-ui-base text-foreground-subtle transition-[background-color,border-color,color] duration-150 ease-out motion-reduce:transition-none",
+        "flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border px-2 py-2 text-center text-ui-caption font-normal text-foreground-subtle transition-[background-color,border-color,color] duration-150 ease-out motion-reduce:transition-none",
         "hover:border-border-hover hover:bg-surface-hover hover:text-foreground",
         "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-input-border-focused",
       )}

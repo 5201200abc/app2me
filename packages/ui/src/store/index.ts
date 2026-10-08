@@ -22,7 +22,10 @@ import {
   type CodingPlanQuotaResetAutoPlayReservationAttempt,
   type CodingPlanQuotaResetAutoPlayedSlot,
 } from "@/store/codingPlanQuotaResetState.js";
-import { DEFAULT_CODE_PREVIEW_SETTINGS } from "@/lib/codePreviewSettings.js";
+import {
+  DEFAULT_CODE_PREVIEW_SETTINGS,
+  normalizeCodeFontSizePx,
+} from "@/lib/codePreviewSettings.js";
 import { readSafeLocalStorage, writeSafeLocalStorage } from "@/lib/browserEnvironment.js";
 import {
   applyUiFontSizePx,
@@ -38,13 +41,6 @@ import {
 } from "@/lib/taskNotificationPreferences.js";
 import type { Theme } from "../useTheme.js";
 import { applyTheme, normalizeThemePreference, resolveTheme } from "../useTheme.js";
-
-import {
-  INTERFACE_MODE_STORAGE_KEY,
-  normalizeInterfaceMode,
-  type InterfaceMode,
-} from "@/lib/interfaceMode.js";
-import { logger } from "@/logger.js";
 
 export type LoginEntryPurpose = "app-login";
 
@@ -83,7 +79,7 @@ function loadCodePreviewSettings(): CodePreviewSettings {
       ...parsed,
       fontSizePx:
         typeof parsed.fontSizePx === "number"
-          ? Math.min(20, Math.max(12, Math.round(parsed.fontSizePx)))
+          ? normalizeCodeFontSizePx(parsed.fontSizePx)
           : DEFAULT_CODE_PREVIEW_SETTINGS.fontSizePx,
     };
   } catch {
@@ -99,10 +95,11 @@ function loadPerformanceMode(): boolean {
 // State 定义
 // ============================================================================
 
+export type InterfaceMode = "mycode" | "mychat";
 export interface MyCodeState {
-  /** 展示详情偏好，不改变 Agent 权限或执行能力。 */
   interfaceMode: InterfaceMode;
   setInterfaceMode: (mode: InterfaceMode) => void;
+  /** 展示详情偏好，不改变 Agent 权限或执行能力。 */
 
   /** 当前主题 */
   theme: Theme;
@@ -208,9 +205,9 @@ export interface MyCodeState {
 // 需要广播的字段 —— 只有这些字段的变更会发送给其他窗口
 // ============================================================================
 
-const BROADCAST_FIELDS = new Set(["theme", "locale", "uiFontSizePx", "interfaceMode"]);
+const BROADCAST_FIELDS = new Set(["theme", "locale", "uiFontSizePx"]);
 
-type BroadcastField = "theme" | "locale" | "uiFontSizePx" | "interfaceMode";
+type BroadcastField = "theme" | "locale" | "uiFontSizePx";
 
 /** 广播频道名前缀 */
 const STATE_CHANNEL_PREFIX = "state:";
@@ -236,20 +233,23 @@ export function createMyCodeStore(
   let cleanupSystemThemeListener: (() => void) | null = null;
   let syncSystemThemeListener = (_theme: Theme) => {};
 
+  // 办公模式已移除；仅清理旧值，保留新模式偏好。
+  const savedMode = readSafeLocalStorage("mycode-interface-mode");
+  if (savedMode && savedMode !== "mycode" && savedMode !== "mychat") {
+    try {
+      window.localStorage.removeItem("mycode-interface-mode");
+    } catch {
+      /* 隐私模式下只使用默认值。 */
+    }
+  }
   const useStore = create<MyCodeState>()((set, get) => ({
-    interfaceMode: normalizeInterfaceMode(readSafeLocalStorage(INTERFACE_MODE_STORAGE_KEY)),
+    interfaceMode: readSafeLocalStorage("mycode-interface-mode") === "mychat" ? "mychat" : "mycode",
     setInterfaceMode: (mode) => {
-      const interfaceMode = normalizeInterfaceMode(mode);
-      if (get().interfaceMode !== interfaceMode) {
-        logger.debug("[InterfaceMode] 切换界面模式", {
-          interfaceMode,
-          source: applyingBroadcast ? "broadcast" : "local",
-        });
-      }
-      writeSafeLocalStorage(INTERFACE_MODE_STORAGE_KEY, interfaceMode);
-      set({ interfaceMode });
+      if (mode !== "mycode" && mode !== "mychat") return;
+      writeSafeLocalStorage("mycode-interface-mode", mode);
+      set({ interfaceMode: mode });
     },
-    // 默认主题统一收敛到 Zai dark，避免首次启动时 store 与其他主题入口表现不一致。
+
     // 仍然优先尊重 localStorage 中已保存的用户选择，不覆盖已有偏好。
     theme: normalizeThemePreference(
       (readSafeLocalStorage("mycode-theme") as Theme) || "mycode-dark",
@@ -277,7 +277,7 @@ export function createMyCodeStore(
           ...patch,
           fontSizePx:
             typeof patch.fontSizePx === "number"
-              ? Math.min(20, Math.max(12, Math.round(patch.fontSizePx)))
+              ? normalizeCodeFontSizePx(patch.fontSizePx)
               : state.codePreviewSettings.fontSizePx,
         };
         writeSafeLocalStorage(CODE_PREVIEW_SETTINGS_KEY, JSON.stringify(next));
@@ -472,11 +472,6 @@ export function createMyCodeStore(
         state.setTheme(msg.payload as Theme);
       } else if (field === "locale" && typeof msg.payload === "string") {
         state.setLocale(msg.payload);
-      } else if (
-        field === "interfaceMode" &&
-        (msg.payload === "office" || msg.payload === "coding")
-      ) {
-        state.setInterfaceMode(normalizeInterfaceMode(msg.payload));
       } else if (field === "uiFontSizePx" && typeof msg.payload === "number") {
         state.setUiFontSizePx(msg.payload);
       }

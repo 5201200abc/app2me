@@ -1,7 +1,7 @@
 import { modelSelectionSchema } from "./model-selection.js";
 import {
   migrateLegacyModelProviderId,
-  migrateLegacyOfficialGlmModelId,
+  migrateLegacyOfficialModelId,
 } from "./legacy-model-provider-identity.js";
 import { parseSubagentMarkdownSelection } from "./subagent-markdown-selection.js";
 import {
@@ -45,7 +45,7 @@ export function importSubagentStateSelections(input: Record<string, unknown>): R
           providerId,
           modelId: current
             ? selection.modelId
-            : migrateLegacyOfficialGlmModelId(selection.providerId, selection.modelId),
+            : migrateLegacyOfficialModelId(selection.providerId, selection.modelId),
         }
       : selection;
   }
@@ -70,7 +70,7 @@ export function importSubagentStateSelections(input: Record<string, unknown>): R
                 ? {
                     ...selection,
                     providerId,
-                    modelId: migrateLegacyOfficialGlmModelId(
+                    modelId: migrateLegacyOfficialModelId(
                       selection.providerId,
                       selection.modelId,
                     ),

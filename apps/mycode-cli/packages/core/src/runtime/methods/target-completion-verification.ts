@@ -33,10 +33,7 @@ export interface TargetCompletionVerificationResult {
 }
 
 const TARGET_VERIFIER_START_PLAN_BUSY_RETRY_DELAYS_MS = [1_000, 2_000] as const;
-const START_PLAN_TARGET_VERIFIER_RETRY_PROVIDER_IDS = new Set([
-  "account:bigmodel-start-plan",
-  "account:zai-start-plan",
-]);
+const START_PLAN_TARGET_VERIFIER_RETRY_PROVIDER_IDS = new Set<string>();
 
 export async function verifyActiveTargetCompletionForContinuation(
   this: AgentRuntimeInternal,

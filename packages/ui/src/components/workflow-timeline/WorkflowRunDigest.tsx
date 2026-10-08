@@ -4,7 +4,7 @@ import {
   RotateCcwIcon,
   SlidersHorizontalIcon,
   SquareIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { TID_CHAT_WORKFLOW_RUN_DIGEST, testId } from "@mycode/shared";
 import type { WorkflowRunState } from "@mycode/shared/mycode-protocol-v4";
 import { cn } from "@/components/lib/utils.js";

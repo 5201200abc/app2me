@@ -7,7 +7,7 @@ import {
   type ComponentType,
   type SVGProps,
 } from "react";
-import { CircleCheck, RotateCcw, TriangleAlert } from "lucide-react";
+import { CircleCheck, RotateCcw, TriangleAlert } from "@/components/icons/tabler.js";
 import {
   AUTOMATION_CREATE_LIMIT,
   TID_AUTOMATION_ACTION_DELETE,
@@ -79,7 +79,7 @@ import { AutomationScheduleBadge } from "@/settings/AutomationScheduleBadge.js";
 import {
   AutomationClockIcon,
   AutomationContinueIcon,
-  AutomationCreateDropdown,
+  AutomationCreateActions,
   AutomationEditActionIcon,
   AutomationKeepAwakeNotice,
   AutomationMoreHorizontalIcon,
@@ -1394,7 +1394,7 @@ export function AutomationsSection({
               </Button>
             </ControlHintTooltip>
             {tab !== "idle" ? (
-              <AutomationCreateDropdown
+              <AutomationCreateActions
                 onViaChat={handleCreateViaChat}
                 onManually={handleCreateManually}
               />
@@ -1495,7 +1495,7 @@ export function AutomationsSection({
                     </h2>
                     {/* 无 tab 行时创建入口落在本区标题右侧；有 tab 行时入口已在顶栏，避免重复。 */}
                     {visibleTabs.length === 0 ? (
-                      <AutomationCreateDropdown
+                      <AutomationCreateActions
                         onViaChat={handleCreateViaChat}
                         onManually={handleCreateManually}
                       />
@@ -1690,7 +1690,7 @@ export function AutomationsSection({
                       {intl.formatMessage({ id: "automations.empty.title" })}
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-3">
-                      <AutomationCreateDropdown
+                      <AutomationCreateActions
                         onViaChat={handleCreateViaChat}
                         onManually={handleCreateManually}
                       />

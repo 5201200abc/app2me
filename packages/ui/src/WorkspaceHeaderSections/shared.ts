@@ -53,6 +53,7 @@ export interface WorkspaceHeaderTitleSectionProps {
   simplifyForNarrowRemote?: boolean;
   selectedEditor: EditorInfo | null;
   compact?: boolean;
+  isSidebarVisible?: boolean;
 }
 
 export interface WorkspaceHeaderActionSectionProps {
@@ -69,10 +70,11 @@ export interface WorkspaceHeaderActionSectionProps {
   isSidePaneOpen: boolean;
   onToggleTerminal: () => void;
   onToggleSidePane: () => void;
+  isSummaryPanelExpanded?: boolean;
+  onToggleSummaryPanel?: () => void;
   toggleSidePaneShortcutLabel?: string;
   onSelectedEditorChange?: (editor: EditorInfo | null) => void;
   simplifyForNarrowRemote?: boolean;
-  hideHelpMenu?: boolean;
   showWindowControls?: boolean;
   useWindowsCaptionSpacing?: boolean;
 }

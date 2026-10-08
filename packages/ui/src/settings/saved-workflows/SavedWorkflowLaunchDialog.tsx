@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Info, Workflow } from "lucide-react";
+import { Info, Workflow } from "@/components/icons/tabler.js";
 import {
   TID_WORKFLOW_LAUNCH_ARG,
   TID_WORKFLOW_LAUNCH_DIALOG,

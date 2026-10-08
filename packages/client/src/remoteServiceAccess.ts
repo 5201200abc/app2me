@@ -1,5 +1,6 @@
 import { ProxyChannel, type IChannelClient } from "@mycode/rpc";
 import {
+  IMyChatService,
   IFileService,
   IMediaPreviewService,
   IGitService,
@@ -22,7 +23,7 @@ import {
   IProviderSettingsService,
   IProviderProvisioningTargetService,
   IUsageStatsService,
-  ICodingPlanSubscriptionService,
+  IRuntimeConfigService,
   IClientScenesService,
   IOffPeakTaskService,
   ISkillsService,
@@ -48,6 +49,7 @@ import {
  * 新增服务只需在此添加一个 getter。
  */
 export class RemoteServiceAccess implements IServiceAccessor {
+  readonly myChatService: IMyChatService;
   readonly fileService: IFileService;
   readonly mediaPreviewService: IMediaPreviewService;
   readonly gitService: IGitService;
@@ -74,7 +76,7 @@ export class RemoteServiceAccess implements IServiceAccessor {
   /** Host-only target proxy；不属于 IServiceAccessor，避免向 Renderer 暴露 Secret 写入接口。 */
   readonly providerProvisioningTargetService!: IProviderProvisioningTargetService;
   readonly usageStatsService: IUsageStatsService;
-  readonly codingPlanSubscriptionService: ICodingPlanSubscriptionService;
+  readonly runtimeConfigService: IRuntimeConfigService;
   readonly clientScenesService: IClientScenesService;
   readonly offPeakTaskService: IOffPeakTaskService;
   readonly skillsService: ISkillsService;
@@ -92,6 +94,9 @@ export class RemoteServiceAccess implements IServiceAccessor {
   readonly promptAttachmentTransferService: IPromptAttachmentTransferService;
 
   constructor(channelClient: IChannelClient) {
+    this.myChatService = ProxyChannel.toService<IMyChatService>(
+      channelClient.getChannel(IMyChatService.channelName),
+    );
     this.fileService = ProxyChannel.toService<IFileService>(
       channelClient.getChannel(IFileService.channelName),
     );
@@ -166,8 +171,8 @@ export class RemoteServiceAccess implements IServiceAccessor {
     this.usageStatsService = ProxyChannel.toService<IUsageStatsService>(
       channelClient.getChannel(IUsageStatsService.channelName),
     );
-    this.codingPlanSubscriptionService = ProxyChannel.toService<ICodingPlanSubscriptionService>(
-      channelClient.getChannel(ICodingPlanSubscriptionService.channelName),
+    this.runtimeConfigService = ProxyChannel.toService<IRuntimeConfigService>(
+      channelClient.getChannel(IRuntimeConfigService.channelName),
     );
     this.clientScenesService = ProxyChannel.toService<IClientScenesService>(
       channelClient.getChannel(IClientScenesService.channelName),

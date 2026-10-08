@@ -1,18 +1,6 @@
 import { useEffect, useState } from "react";
+import { resolveDesktopZoomFactorForLevel } from "@mycode/shared";
 import { usePlatform } from "@/hooks/usePlatform.js";
-
-const DESKTOP_ZOOM_FACTOR_STEP = 1.1;
-const DESKTOP_ZOOM_MIN_LEVEL = -3;
-const DESKTOP_ZOOM_MAX_LEVEL = 5;
-
-function resolveDesktopZoomFactor(zoomLevel: number): number {
-  if (!Number.isFinite(zoomLevel)) return 1;
-  const clampedLevel = Math.min(
-    DESKTOP_ZOOM_MAX_LEVEL,
-    Math.max(DESKTOP_ZOOM_MIN_LEVEL, Math.round(zoomLevel)),
-  );
-  return Math.pow(DESKTOP_ZOOM_FACTOR_STEP, clampedLevel);
-}
 
 /**
  * 读取当前窗口的 Electron 页面缩放；Web 装配返回 level 0，因此自然回退为 factor 1。
@@ -41,5 +29,5 @@ export function useDesktopZoomFactor(): number {
     };
   }, [platform]);
 
-  return resolveDesktopZoomFactor(zoomLevel);
+  return resolveDesktopZoomFactorForLevel(zoomLevel);
 }

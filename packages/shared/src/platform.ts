@@ -57,6 +57,20 @@ export interface BrowserViewOperationPayload {
   resetsResizeBaseline?: boolean;
 }
 
+export interface WebsiteBrowserInfo {
+  id: "chrome" | "safari";
+  name: string;
+}
+
+export interface DesktopToolEnvironment {
+  gitPath: string | null;
+  gitVersion: string | null;
+  nodePath: string;
+  nodeVersion: string;
+  bundleVersion: string;
+  bundledPaths: string[];
+}
+
 export type BrowserTabResidencyState =
   | "live-visible"
   | "live-background"
@@ -487,7 +501,6 @@ export const DesktopCommandIds = {
   CheckForUpdates: "checkForUpdates",
   RelaunchApp: "relaunchApp",
   OpenFeedback: "openFeedback",
-  OpenCommunity: "openCommunity",
   ExportLogs: "exportLogs",
   ToggleDevTools: "toggleDevTools",
   OpenResourceManager: "openResourceManager",
@@ -497,7 +510,6 @@ export const DesktopCommandIds = {
   SetMyCodeEndpointCustom: "setMyCodeEndpointCustom",
   ResetMyCodeEndpoint: "resetMyCodeEndpoint",
   ClearAllData: "clearAllData",
-  ClearCodingPlanWebviewStorage: "clearCodingPlanWebviewStorage",
   GetCuaOsSupport: "getCuaOsSupport",
 } as const;
 
@@ -538,6 +550,8 @@ export interface IPlatformService {
 
   /** 打开系统多文件选择框，返回选中的文件路径；取消时返回空数组 */
   selectFiles?(): Promise<string[]>;
+  selectFilesAndFolders?(): Promise<string[]>;
+  captureInteractiveScreenshot?(): Promise<{ name: string; dataUrl: string } | null>;
 
   /** 使用宿主原生另存为对话框写入文件；普通 Web 端不实现 */
   saveFile?(payload: SaveFileRequest): Promise<SaveFileResult>;
@@ -631,6 +645,14 @@ export interface IPlatformService {
   /** 打开外部 URL（用于 OAuth 跳转浏览器） */
   openExternal(url: string): void;
 
+  /** 只读桌面真实工具环境；Web / 远端不展示本机环境。 */
+  getDesktopToolEnvironment?(): Promise<DesktopToolEnvironment>;
+  getWebsiteBrowsers?(): Promise<WebsiteBrowserInfo[]>;
+  openWebsiteBrowser?(
+    browserId: WebsiteBrowserInfo["id"],
+    url: string,
+  ): Promise<{ success: boolean; error?: string }>;
+
   /** 按系统应用标识读取真实 App 图标；非 Desktop 平台可不实现。 */
   getApplicationIcon?(
     request: string | ApplicationIconRequest,
@@ -644,12 +666,6 @@ export interface IPlatformService {
 
   /** 订阅 main 进程打开我的工单面板事件（Desktop） */
   onOpenTicketsPanel?(handler: () => void): () => void;
-
-  /** 打开用户社群入口，由平台自行解析当前语言对应渠道 */
-  openCommunity(): Promise<void>;
-
-  /** 查询当前语言下是否存在可用的用户社群入口 */
-  canOpenCommunity(locale: Locale): Promise<boolean>;
 
   /** 在系统文件管理器中打开指定路径 */
   openInFileManager(path: string): Promise<{ success: boolean; error?: string }>;

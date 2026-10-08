@@ -1,122 +1,48 @@
-import { BIGMODEL_PROVIDER_ID, type OAuthProviderId, ZAI_PROVIDER_ID } from "./oauth.js";
-import { BUILTIN_MODEL_PROVIDER_IDS, type BuiltinModelProviderId } from "./model-provider-types.js";
-
-export type ModelProviderFamilyId = "zai" | "bigmodel";
+import type { OAuthProviderId } from "./oauth.js";
+export type ModelProviderFamilyId = string;
 export type ProviderFamilyDomain = ModelProviderFamilyId;
-
 export interface ModelProviderFamilySpec {
   id: ModelProviderFamilyId;
   label: string;
   rootDomain: string;
-  oauthProviderId: typeof ZAI_PROVIDER_ID | typeof BIGMODEL_PROVIDER_ID;
-  startPlanProviderId:
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan;
-  individualCodingPlanProviderId:
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan;
-  teamCodingPlanProviderId:
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan;
+  oauthProviderId: OAuthProviderId;
+  startPlanProviderId: string;
+  individualCodingPlanProviderId: string;
+  teamCodingPlanProviderId: string;
 }
-
-export const MODEL_PROVIDER_FAMILY_SPECS = [
-  {
-    id: "zai",
-    label: "Removed provider",
-    rootDomain: "retired-zai.invalid",
-    oauthProviderId: ZAI_PROVIDER_ID,
-    startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
-    individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-    teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
-  },
-  {
-    id: "bigmodel",
-    label: "Removed provider",
-    rootDomain: "retired-bigmodel.invalid",
-    oauthProviderId: BIGMODEL_PROVIDER_ID,
-    startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
-    individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
-    teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
-  },
-] as const satisfies readonly ModelProviderFamilySpec[];
-
-const MODEL_PROVIDER_FAMILY_SPEC_BY_ID = new Map<ModelProviderFamilyId, ModelProviderFamilySpec>(
-  MODEL_PROVIDER_FAMILY_SPECS.map((spec) => [spec.id, spec]),
-);
-
-const MODEL_PROVIDER_FAMILY_ID_BY_PROVIDER_ID = new Map<
-  BuiltinModelProviderId,
-  ModelProviderFamilyId
->(
-  MODEL_PROVIDER_FAMILY_SPECS.flatMap((spec) =>
-    [
-      spec.startPlanProviderId,
-      spec.individualCodingPlanProviderId,
-      spec.teamCodingPlanProviderId,
-    ].map((providerId) => [providerId, spec.id] as const),
-  ),
-);
-
+// 原账号目录已移除；不能通过历史 ID 或端点恢复预置提供商。
+export const MODEL_PROVIDER_FAMILY_SPECS: readonly ModelProviderFamilySpec[] = [];
 export function getModelProviderFamilySpec(
-  familyId: ModelProviderFamilyId,
+  _familyId: ModelProviderFamilyId,
 ): ModelProviderFamilySpec {
-  return MODEL_PROVIDER_FAMILY_SPEC_BY_ID.get(familyId)!;
+  throw new Error("Account model integration has been removed");
 }
-
 export function resolveModelProviderFamilyIdByProviderId(
-  providerId: string,
+  _providerId: string,
 ): ModelProviderFamilyId | null {
-  return MODEL_PROVIDER_FAMILY_ID_BY_PROVIDER_ID.get(providerId as BuiltinModelProviderId) ?? null;
-}
-
-export function resolveModelProviderFamilyIdByBaseURL(
-  baseURL: string | null | undefined,
-): ModelProviderFamilyId | null {
-  const trimmed = baseURL?.trim();
-  if (!trimmed) {
-    return null;
-  }
-  let hostname: string;
-  try {
-    hostname = new URL(trimmed).hostname.toLowerCase();
-  } catch {
-    return null;
-  }
-  for (const spec of MODEL_PROVIDER_FAMILY_SPECS) {
-    if (hostname === spec.rootDomain || hostname.endsWith(`.${spec.rootDomain}`)) {
-      return spec.id;
-    }
-  }
   return null;
 }
-
+export function resolveModelProviderFamilyIdByBaseURL(
+  _baseURL: string | null | undefined,
+): ModelProviderFamilyId | null {
+  return null;
+}
 export function resolveModelProviderFamilySpecByProviderId(
-  providerId: string,
+  _providerId: string,
 ): ModelProviderFamilySpec | null {
-  const familyId = resolveModelProviderFamilyIdByProviderId(providerId);
-  return familyId ? getModelProviderFamilySpec(familyId) : null;
+  return null;
 }
-
-export function resolveModelProviderFamilyLabelByProviderId(providerId: string): string | null {
-  return resolveModelProviderFamilySpecByProviderId(providerId)?.label ?? null;
+export function resolveModelProviderFamilyLabelByProviderId(_providerId: string): string | null {
+  return null;
 }
-
 export function normalizeProviderFamilyDomain(
-  value: string | null | undefined,
+  _value: string | null | undefined,
 ): ProviderFamilyDomain | null {
-  return value === "zai" || value === "bigmodel" ? value : null;
+  return null;
 }
-
 export function resolveProviderFamilyDomainFromOAuthProvider(
-  provider: OAuthProviderId | string | null | undefined,
+  _provider: OAuthProviderId | string | null | undefined,
 ): ProviderFamilyDomain | null {
-  if (provider === ZAI_PROVIDER_ID) {
-    return "zai";
-  }
-  if (provider === BIGMODEL_PROVIDER_ID) {
-    return "bigmodel";
-  }
   return null;
 }
 

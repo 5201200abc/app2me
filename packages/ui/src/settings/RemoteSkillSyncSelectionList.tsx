@@ -1,5 +1,5 @@
 import { useState, type MouseEvent } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "@/components/icons/tabler.js";
 import type { SkillSyncCandidate } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

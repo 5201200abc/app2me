@@ -1,5 +1,12 @@
-import { useCallback, useMemo } from "react";
-import { ChevronRightIcon, ExternalLinkIcon, SquareMousePointerIcon } from "lucide-react";
+import { useCallback, useMemo, useContext } from "react";
+import {
+  ChevronRightIcon,
+  ExternalLinkIcon,
+  Images,
+  SquareMousePointerIcon,
+  Waypoints,
+} from "@/components/icons/tabler.js";
+import { ToolOperationListContext } from "@/ToolCallBlocks/ToolPresentationContext.js";
 import { Button } from "@/components/ui/button.js";
 import {
   CodeBlock,
@@ -23,9 +30,7 @@ import { ToolLayout } from "@/ToolCallBlocks/ToolLayout.js";
 import { NodeReplImageGrid } from "@/ToolCallBlocks/renderers/nodeReplImageGrid.js";
 import type { ToolCallBlockRenderContext } from "@/ToolCallBlocks/shared.js";
 
-const NODE_REPL_TOOL_ICON = (
-  <SquareMousePointerIcon className="size-4 shrink-0 text-foreground-subtle" />
-);
+const NODE_REPL_TOOL_ICON = <SquareMousePointerIcon className="size-4 text-foreground-subtle" />;
 
 // Radix 会在浏览器工具及执行详情打开时立即测量高度；代码块默认的 200px 离屏占位
 // 会让动画先展开过头再回落。两层内容都只在对应区域展开时挂载，使用真实布局不会损失长会话性能。
@@ -37,9 +42,7 @@ const COMPACT_RESULT_MAX_LENGTH = 160;
 
 function looksLikeJson(value: string): boolean {
   const trimmed = value.trim();
-  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) {
-    return false;
-  }
+  if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) return false;
 
   try {
     JSON.parse(trimmed);
@@ -165,6 +168,7 @@ function FriendlyCodeBlock({
 
 export function NodeReplToolCallBlock(context: ToolCallBlockRenderContext) {
   const { intl } = useMyCodeIntl();
+  const operationList = useContext(ToolOperationListContext);
   const { toolCall } = context.toolCallNode;
   const model = useMemo(() => buildNodeReplDisplayModel(toolCall), [toolCall]);
   const formatMessage = useCallback((id: string) => intl.formatMessage({ id }), [intl]);
@@ -215,10 +219,14 @@ export function NodeReplToolCallBlock(context: ToolCallBlockRenderContext) {
   const canToggle = context.canToggle ?? hasDetails;
   const summaryText = useMemo(
     () => (
-      <span className="inline-flex min-w-0 items-center gap-2">
-        <span className="min-w-0 truncate font-medium text-foreground-subtle">{summary.title}</span>
+      <span className="inline-flex min-w-0 items-baseline gap-1.5">
+        <span data-process-title className="min-w-0 truncate font-normal text-foreground-subtle">
+          {summary.title}
+        </span>
         {summary.status ? (
-          <span className="shrink-0 text-foreground-subtlest">· {summary.status}</span>
+          <span data-process-stat className="shrink-0 text-foreground-subtlest">
+            · {summary.status}
+          </span>
         ) : null}
         {summary.detail ? (
           <code className="min-w-0 truncate font-mono text-foreground-subtlest">
@@ -371,14 +379,26 @@ export function NodeReplToolCallBlock(context: ToolCallBlockRenderContext) {
   );
 
   if (model.displaySource === "browser_turn_end") {
-    return <NodeReplImageGrid images={model.images} resultImageLabel={resultImageLabel} />;
+    return (
+      <ToolLayout
+        variant="image"
+        toolId={toolCall.toolId}
+        icon={<Images className="size-3.5" strokeWidth={1.5} />}
+        kindLabel={intl.formatMessage({ id: "chat.toolCall.viewedImage" })}
+        primaryText={null}
+        renderContent={() => (
+          <NodeReplImageGrid images={model.images} resultImageLabel={resultImageLabel} />
+        )}
+      />
+    );
   }
 
   return (
     <>
       <ToolLayout
         toolId={toolCall.toolId}
-        icon={leadingIcon}
+        icon={operationList ? <Waypoints className="size-3.5" /> : leadingIcon}
+        preserveIcon
         showIcon={context.showIcon !== false}
         canToggle={canToggle}
         forceOpen={context.forceOpen ?? false}

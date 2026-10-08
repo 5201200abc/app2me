@@ -210,7 +210,7 @@ function resolveActiveTaskConfigOptionsOnSwitch(
   const taskMeta = getTaskMeta(current, taskId);
   // 切到历史 task 时，工具栏模型和 context 用量来自不同状态桶。
   // 没有 task 级 settings 缓存时先用 task meta 预热模型，并进入 loading 等待运行态 settings 回填，
-  // 避免继续展示上一条任务的模型（例如 glm-0531[1m]）配上当前任务的 contextWindow。
+  // 避免继续展示上一条任务的模型（例如 自定义模型）配上当前任务的 contextWindow。
   const preloadedOptions = normalizeConfigOptions(
     resolveTaskRestorePreloadConfigOptions({
       taskMeta: {

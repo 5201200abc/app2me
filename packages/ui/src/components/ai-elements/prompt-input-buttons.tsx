@@ -11,7 +11,7 @@ import { Spinner } from "../ui/spinner.js";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip.js";
 import { cn } from "../lib/utils.js";
 import type { ChatStatus } from "ai";
-import { CornerDownLeftIcon, SquareIcon, XIcon } from "lucide-react";
+import { CornerDownLeftIcon, SquareIcon, XIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps, ReactNode } from "react";
 import { Children, useCallback } from "react";
 

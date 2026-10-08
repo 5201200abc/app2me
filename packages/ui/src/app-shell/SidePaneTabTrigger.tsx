@@ -19,7 +19,7 @@ import {
   WaypointsIcon,
   Workflow as WorkflowIcon,
   XIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import {
   ContextMenu,
@@ -264,13 +264,14 @@ function isDiffPreviewTab(tab: WorkspaceSidePaneTab): boolean {
 }
 
 export function SidePaneTabIcon({ tab }: { tab: WorkspaceSidePaneTab }) {
+  if (tab.type === "sources") return <ListTreeIcon className="size-3.5" strokeWidth={1.5} />;
   // plan-detail tab 由 switch-mode（ExitPlanMode）工具调用卡片打开，来源卡片
   // 用 NotepadTextIcon；tab 必须与来源一致，避免点击后图标跳变。不用 ListChecksIcon：
   // 那会与状态面板 Todo section 撞图标，语义上也偏向 todo 而非计划方案文档。
   if (tab.type === "plan-detail") {
     return <NotepadTextIcon className="size-3.5" />;
   }
-  // 同一条约定：来源卡片（CreateWorkflow）用 lucide Workflow，tab 必须与它一致。
+  // 同一条约定：来源卡片（CreateWorkflow）用 Tabler Workflow，tab 必须与它一致。
   if (tab.type === "workflow-run") {
     return <WorkflowIcon className="size-3.5" />;
   }
@@ -474,6 +475,7 @@ export function getSidePaneTabTitle(
   tab: WorkspaceSidePaneTab,
   formatMessage: (descriptor: { id: string }, values?: Record<string, string>) => string,
 ): string {
+  if (tab.type === "sources") return "Sources";
   if (tab.type === "plan-detail") {
     return formatMessage({ id: "planTool.panel.planTab" });
   }

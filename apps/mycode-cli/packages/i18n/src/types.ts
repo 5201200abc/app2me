@@ -49,32 +49,7 @@ export interface TuiCopy {
   loginSetup: {
     emptyMessage: string;
     help: string;
-    options: {
-      bigmodelApiKey: {
-        inputPrimary: string;
-        inputSecondary: string;
-        primary: string;
-        secondary: string;
-      };
-      bigmodelOauth: {
-        pendingPrimary: string;
-        pendingSecondary: string;
-        primary: string;
-        secondary: string;
-      };
-      zaiApiKey: {
-        inputPrimary: string;
-        inputSecondary: string;
-        primary: string;
-        secondary: string;
-      };
-      zaiOauth: {
-        pendingPrimary: string;
-        pendingSecondary: string;
-        primary: string;
-        secondary: string;
-      };
-    };
+    options: {};
     pending: {
       cancelStatus: string;
       help: string;

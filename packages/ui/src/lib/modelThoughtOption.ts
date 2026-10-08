@@ -21,7 +21,8 @@ export function resolveModelThoughtOption(params: {
     name: "Thought Level",
     category: "thought_level",
     type: "select",
-    // Reasoning 没有默认档位；空字符串表示模型已选但用户尚未选择 reasoning。
+    // 当前值不能从默认档位补齐；默认元数据仅用于用户主动恢复/开启思考。
+    ...(reasoning.defaultValue ? { defaultValue: reasoning.defaultValue } : {}),
     currentValue:
       params.currentValue && reasoning.values.includes(params.currentValue)
         ? params.currentValue

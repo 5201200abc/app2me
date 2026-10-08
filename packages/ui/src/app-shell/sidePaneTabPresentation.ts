@@ -22,6 +22,7 @@ export interface SidePaneTabPresentationLabels {
 }
 
 export function getSidePaneTabSearchHint(tab: WorkspaceSidePaneTab): string {
+  if (tab.type === "sources") return tab.parentSessionId + " Sources 来源";
   if (tab.type === "plan-detail") {
     return `${tab.parentSessionId} ${tab.toolCallId} plan ExitPlanMode`;
   }
@@ -100,6 +101,7 @@ export function getSidePaneTabTypeLabel(
   tab: WorkspaceSidePaneTab,
   labels: SidePaneTabPresentationLabels,
 ): string {
+  if (tab.type === "sources") return "Sources";
   if (tab.type === "plan-detail") return labels.planTitle;
   if (tab.type === "workflow-run") return labels.workflowRunTitle;
   if (tab.type === "workflow-directory") return labels.workflowDirectoryTitle;

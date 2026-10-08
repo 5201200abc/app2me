@@ -1,7 +1,7 @@
 import type { TuiPromptInput } from "@mycode/tui";
 import type { CommandCenterDeps } from "./types.js";
 
-const API_KEY_LOGIN_PATTERN = /(?:^|\s)(?:bigmodel|zai)-coding-plan-api-key(?:\s|$)/u;
+const API_KEY_LOGIN_PATTERN = /^\s*\/login(?:\s|$)/u;
 
 export async function recordSlashCommandInHistory(
   deps: CommandCenterDeps,

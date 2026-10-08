@@ -1,3 +1,4 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 /* eslint-disable max-lines -- 模型供应商卡片仍在迁移期集中维护多个紧耦合区块，后续拆分时再移除。 */
 import {
   useCallback,
@@ -22,7 +23,13 @@ import {
   TID_MODEL_PROVIDER_NAME_INPUT,
   testId,
 } from "@mycode/shared";
-import { InfoIcon, LockKeyholeIcon, Plus, Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import {
+  InfoIcon,
+  LockKeyholeIcon,
+  Plus,
+  Trash2,
+  MoreHorizontal,
+} from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";
 import {
@@ -77,6 +84,7 @@ export function ProviderCardHeader({
   onDelete,
   actionsVisible = true,
   providerToggle,
+  compact = false,
 }: {
   providerName: string;
   logo?: ProviderConfigObject["logo"];
@@ -93,6 +101,7 @@ export function ProviderCardHeader({
   onDelete?: () => void;
   actionsVisible?: boolean;
   providerToggle?: ReactNode;
+  compact?: boolean;
 }) {
   const { intl } = useMyCodeIntl();
   const renameRequestedRef = useRef(false);
@@ -101,7 +110,7 @@ export function ProviderCardHeader({
   return (
     <div className="flex items-center justify-between gap-3" data-testid="model-provider-header">
       <div className="flex min-w-0 items-center gap-2">
-        <ProviderLogo logo={logo} className="size-5" />
+        {!compact ? <ProviderLogo logo={logo} className="size-5" /> : null}
         {editingName ? (
           <Input
             {...TECHNICAL_INPUT_ATTRIBUTES}
@@ -109,7 +118,11 @@ export function ProviderCardHeader({
             data-testid={TID_MODEL_PROVIDER_NAME_INPUT}
             type="text"
             size="lg"
-            className="w-auto min-w-0 text-ui-lg font-semibold"
+            className={
+              compact
+                ? "w-auto min-w-0 text-ui-base font-medium"
+                : "w-auto min-w-0 text-ui-lg font-semibold"
+            }
             value={nameValue}
             onChange={(event) => onNameChange(event.target.value)}
             onCompositionEnd={onNameCompositionEnd}
@@ -119,7 +132,13 @@ export function ProviderCardHeader({
           />
         ) : (
           <>
-            <div className="min-w-0 truncate text-ui-lg font-semibold text-foreground">
+            <div
+              className={
+                compact
+                  ? "min-w-0 truncate text-ui-base font-medium text-foreground"
+                  : "min-w-0 truncate text-ui-lg font-semibold text-foreground"
+              }
+            >
               {providerName}
             </div>
           </>
@@ -158,7 +177,7 @@ export function ProviderCardHeader({
                     onStartEditName();
                   }}
                 >
-                  <Pencil className="size-3.5" />
+                  <WriteIcon className="size-3.5" />
                   {intl.formatMessage({ id: "settings.modelProvider.renameProvider" })}
                 </DropdownMenuItem>
               ) : null}

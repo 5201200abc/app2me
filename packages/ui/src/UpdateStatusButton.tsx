@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { UpdateStatusDialogController } from "@/UpdateStatusDialogController.js";
 import { UpdateReleaseNotesTooltip } from "@/UpdateReleaseNotesTooltip.js";
-import { ArrowDownToLine, LoaderCircle } from "lucide-react";
+import { ArrowDownToLine, LoaderCircle } from "@/components/icons/tabler.js";
 import { formatUpdateReleaseDate, getLocalizedUpdateReleaseNotes } from "@/updateReleaseNotes.js";
 import { resolveUpdateButtonResponsiveClasses } from "@/updateStatusButtonLayout.js";
 import { deriveUpdateStatusViewModel } from "@/updateStatusModel.js";

@@ -1,3 +1,4 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 import type { SVGProps } from "react";
 import {
   ChevronDown,
@@ -8,19 +9,18 @@ import {
   ExternalLink,
   Info,
   Moon,
-  Pencil,
   Play,
   Plus,
   RefreshCw,
   Square,
   Trash2,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 
 type AutomationSvgIconProps = SVGProps<SVGSVGElement>;
 
 /**
- * Automations 统一使用 Lucide 原生 24×24 viewBox 与 2px 描边。
+ * Automations 统一使用 Tabler 原生 24×24 viewBox 与 2px 描边。
  * 旧设计稿 glyph 先裁切到 14.6667px 再放大，会连同描边一起放粗。
  */
 const AUTOMATION_ICON_PROPS = {
@@ -69,7 +69,7 @@ export function AutomationPauseActionIcon(props: AutomationSvgIconProps) {
 }
 
 export function AutomationEditActionIcon(props: AutomationSvgIconProps) {
-  return <Pencil {...AUTOMATION_ICON_PROPS} {...props} />;
+  return <WriteIcon {...AUTOMATION_ICON_PROPS} {...props} />;
 }
 
 export function AutomationRunNowIcon(props: AutomationSvgIconProps) {

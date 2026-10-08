@@ -1,4 +1,4 @@
-import { FolderOpen, Loader2 } from "lucide-react";
+import { FolderOpen, Loader2 } from "@/components/icons/tabler.js";
 import { useCallback, useEffect, useState } from "react";
 import {
   isDataBaseDirForbiddenWindowsInstallDirError,

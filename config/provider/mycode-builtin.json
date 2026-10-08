@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 5,
+  "revision": 6,
   "config": {
     "providerConfigRules": {
       "templateRules": [
@@ -94,14 +94,48 @@
           "templateId": "deepseek",
           "modelId": "deepseek-flash",
           "config": {
-            "enabled": true
+            "enabled": true,
+            "properties": {
+              "displayName": "DeepSeek-V4.1-Flash",
+              "contextWindow": 1048576,
+              "inputFormat": {
+                "supportsImage": true
+              }
+            },
+            "optionSpecs": {
+              "maxOutputTokens": {
+                "max": 393216
+              },
+              "reasoningLevel": {
+                "values": ["disabled", "low", "high", "max"],
+                "defaultValue": "high",
+                "map": "{\"thinking\": {\"type\": reasoningLevel == \"disabled\" ? \"disabled\" : \"enabled\"}, \"reasoning_effort\": reasoningLevel == \"disabled\" ? \"none\" : reasoningLevel}"
+              }
+            }
           }
         },
         {
           "templateId": "deepseek",
           "modelId": "deepseek-v4-pro",
           "config": {
-            "enabled": true
+            "enabled": true,
+            "properties": {
+              "displayName": "DeepSeek-V4-Pro",
+              "contextWindow": 1048576,
+              "inputFormat": {
+                "supportsImage": false
+              }
+            },
+            "optionSpecs": {
+              "maxOutputTokens": {
+                "max": 393216
+              },
+              "reasoningLevel": {
+                "values": ["disabled", "low", "high", "max"],
+                "defaultValue": "high",
+                "map": "{\"thinking\": {\"type\": reasoningLevel == \"disabled\" ? \"disabled\" : \"enabled\"}, \"reasoning_effort\": reasoningLevel == \"disabled\" ? \"none\" : reasoningLevel}"
+              }
+            }
           }
         }
       ],

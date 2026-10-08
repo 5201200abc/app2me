@@ -54,13 +54,13 @@ export function LocalModelsPanel({
     }
   };
   return (
-    <section className="min-w-0 space-y-5" data-testid="local-models-panel">
+    <section className="min-w-0 space-y-3" data-testid="local-models-panel">
       <div>
-        <h2 className="text-ui-lg font-semibold">{t("title")}</h2>
+        <h2 className="text-ui-base font-medium">{t("title")}</h2>
         <p className="mt-1 text-ui-sm text-foreground-subtle">{t("description")}</p>
       </div>
       <form
-        className="space-y-3"
+        className="space-y-2.5"
         onSubmit={(event) => {
           event.preventDefault();
           void save();
@@ -97,9 +97,6 @@ export function LocalModelsPanel({
         )}
       </form>
       <div className="space-y-3">
-        <p className="break-all text-ui-sm text-foreground-subtle">
-          {t("directory")}: {scan?.modelsDir ?? "~/models"}
-        </p>
         {scan && !scan.directoryExists && (
           <p role="status" className="text-ui-sm">
             {t("missing")}
@@ -118,7 +115,7 @@ export function LocalModelsPanel({
         {scan?.models.map((model) => (
           <article
             key={model.id}
-            className="space-y-2 rounded-lg border border-border bg-surface p-4"
+            className="space-y-1 rounded-md border border-border/40 bg-surface/20 p-2.5"
             data-testid="local-model-item"
           >
             <h3 className="break-all text-ui-base font-medium">{model.name}</h3>
@@ -127,15 +124,8 @@ export function LocalModelsPanel({
               {(model.sizeBytes / 1024 ** 3).toFixed(2)} GiB
               {model.vision ? ` · ${t("vision")}` : ""}
             </p>
-            <p className="text-ui-sm">
-              {model.reasoningControl === "effort" ? t("efforts") : t("toggle")}
-            </p>
-            <p className="break-all text-ui-xs text-foreground-subtle">
-              {t("modelId")}: {model.id}
-            </p>
           </article>
         ))}
-        <p className="text-ui-sm text-foreground-subtle">{t("serverHint")}</p>
       </div>
     </section>
   );

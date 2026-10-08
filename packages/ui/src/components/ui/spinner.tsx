@@ -1,5 +1,5 @@
 import { cn } from "../lib/utils.js";
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon } from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {

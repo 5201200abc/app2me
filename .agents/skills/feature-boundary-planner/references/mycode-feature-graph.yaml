@@ -25,6 +25,31 @@ rules:
     - invariant-only
     - evidence-only
 nodes:
+  - id: capability.mychat-mode
+    kind: capability
+    label: MyChat mode
+    aliases: [MyChat, chat mode, 界面模式, MyChat]
+    codeSeeds:
+      - file: packages/ui/src/root/RootWorkspaceContent.tsx
+        symbol: RootWorkspaceContent
+      - file: packages/ui/src/WorkspaceSidebarFooter.tsx
+        symbol: WorkspaceSidebarFooter
+      - file: packages/ui/src/mychat/MyChatWorkspace.tsx
+        symbol: MyChatWorkspace
+    invariants:
+      - "MyCode store owns mode, theme and font; switching preserves both mounted conversation interfaces."
+  - id: service.mychat-runtime
+    kind: service
+    label: MyChat Host runtime
+    codeSeeds:
+      - file: packages/services/src/mychat/myChat.ts
+        symbol: IMyChatService
+      - file: packages/services/src/mychat/runtime/runtime.ts
+        symbol: createMyChatService
+      - file: packages/ui/src/hooks/useMyChatApi.ts
+        symbol: useMyChatApi
+    invariants:
+      - "Host owns chat admission, SQLite and streaming; UI accesses typed services through hooks."
   - id: capability.model-selection
     kind: capability
     label: Model selection
@@ -86,6 +111,10 @@ nodes:
   - id: state.renderer-model-selection-read
     kind: state-owner
     label: Renderer target-host model selection read lifecycle
+    invariants:
+      - Same-target model option refresh retains presentation only; business admission requires ready.
+      - Changing Host, model, or enabled target clears the previous presentation.
+      - Generation, request, and revision checks reject late reads.
     codeSeeds:
       - symbol: useModelSelectionServiceView
         file: packages/ui/src/hooks/useModelSelectionView.ts
@@ -356,6 +385,10 @@ nodes:
       - file: apps/mycode-cli/packages/core/src/runtime/methods/turn-model.ts
         symbol: applySubmissionExecutionState
 edges:
+  - from: capability.mychat-mode
+    to: service.mychat-runtime
+    type: uses-service
+    rank: must-inspect
   - from: capability.model-selection
     to: surface.conversation-model-control
     type: renders-in

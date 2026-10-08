@@ -3,14 +3,6 @@ import type { ModelSelection } from "@mycode/shared";
 
 // 冻结 0002 的发布前已裁决编码；不能调用将来可能修改的运行时 parser/身份表。
 // 保持与旧 decodeCustomModelValue / parseModelPickerValue 的转义和分隔优先级一致。
-const providerNames: Readonly<Record<string, string>> = {
-  "builtin:bigmodel": "bigmodel-api",
-  "builtin:zai": "zai-api",
-  "builtin:bigmodel-start-plan": "account:bigmodel-start-plan",
-  "builtin:zai-start-plan": "account:zai-start-plan",
-  "builtin:bigmodel-coding-plan": "account:bigmodel-individual-coding-plan",
-  "builtin:zai-coding-plan": "account:zai-individual-coding-plan",
-};
 function decodeComponent(value: string): string {
   try {
     return decodeURIComponent(value);
@@ -61,7 +53,7 @@ function decodeLegacySelection(row: LegacySelectionRow): ModelSelection | undefi
   provider = provider.trim();
   model = model.trim();
   if (!provider || !model) return undefined;
-  const providerId = provider.startsWith("builtin:") ? providerNames[provider] : provider;
+  const providerId = provider.startsWith("builtin:") || provider.startsWith("account:") ? undefined : provider;
   if (!providerId) return undefined;
   return { providerId, modelId: model, ...(reasoningLevel ? { options: { reasoningLevel } } : {}) };
 }

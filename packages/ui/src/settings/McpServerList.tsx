@@ -17,7 +17,7 @@ import {
 } from "@/settings/McpFailurePresentation.js";
 import { SettingsResourceList } from "@/settings/SettingsResourceGroup.js";
 import { runUserAction } from "@/lib/userActionTelemetry.js";
-import { CircleIcon, Cable, Loader2Icon, ExternalLink, Plus } from "lucide-react";
+import { CircleIcon, Loader2Icon, ExternalLink, Plus } from "@/components/icons/tabler.js";
 
 export function McpStatusDot({
   status,
@@ -104,23 +104,15 @@ function McpServerItem({
 
   return (
     <div
-      className={`grid cursor-default grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors ${canEdit ? "hover:bg-hover" : ""}`}
+      className={`grid cursor-default grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2 transition-colors ${canEdit ? "hover:bg-hover" : ""}`}
       {...settingsResourceRowInteraction(canEdit ? () => onEdit(server) : undefined)}
       data-mcp-status={server.status ?? ""}
       data-mcp-tool-count={server.toolCount}
       data-testid={testId(TID_MCP_SERVER_ROW, server.name)}
     >
-      <div
-        className="relative flex size-9 shrink-0 items-center justify-center rounded-xl bg-background text-foreground-subtle"
-        data-mcp-status-dot-placement="icon-corner"
-      >
-        <Cable className="size-4" aria-hidden="true" />
-        <span className="absolute -right-1 -bottom-1 flex size-4 items-center justify-center rounded-full bg-background">
-          <McpStatusDot status={server.status} reason={statusReason} />
-        </span>
-      </div>
       <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <McpStatusDot status={server.status} reason={statusReason} />
           <span className="truncate text-ui-base font-medium text-foreground">{server.name}</span>
           {!hideMetadata ? <ScopeBadge scope={server.scope} /> : null}
           {!hideMetadata && typeof server.toolCount === "number" && (
@@ -189,7 +181,7 @@ export function McpServerList({
   if (servers.length === 0) {
     return (
       <div className="overflow-hidden rounded-xl border border-dashed border-border">
-        <div className="flex flex-col items-center justify-center gap-3 px-4 py-10 text-center">
+        <div className="flex flex-col items-center justify-center gap-2 px-3 py-5 text-center">
           <div className="space-y-1">
             <div className="text-ui-base font-medium text-foreground">{emptyTitle}</div>
             <div className="text-ui-base text-foreground-subtle">{emptyDescription}</div>

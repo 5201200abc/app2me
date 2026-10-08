@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { verifyUnpackedDesktopSdkEntries } from "./app-asar-repack.mjs";
 
 /* eslint-disable max-lines */
 // 该脚本聚合了打包入口、重试策略、计时与产物校验逻辑，短期内拆文件会影响 CI 稳定性。
@@ -86,6 +87,8 @@ const artifactArchHintsByArch = {
 };
 const commandStdoutMaxBuffer = 64 * 1024 * 1024;
 const requiredRuntimeModules = [
+  // 实际安装包启动在 jszip/lib/utils.js 缺少 setimmediate；必须注入并校验其完整依赖闭包。
+  "jszip",
   "module-details-from-path",
   "pngjs",
   // Bugfix: telemetry 的 OTLP exporter 在启动阶段依赖 sdk-metrics；开发态 hoist 会掩盖
@@ -638,11 +641,13 @@ function resolveAppAsarPath(os, arch) {
   throw new Error(`不支持的目标操作系统: ${os}`);
 }
 
-function verifyPackagedRuntimeDependencies(os, arch) {
+async function verifyPackagedRuntimeDependencies(os, arch) {
   const appAsarPath = resolveAppAsarPath(os, arch);
   if (!existsSync(appAsarPath)) {
     throw new Error(`打包产物缺少 app.asar: ${appAsarPath}`);
   }
+
+  await verifyUnpackedDesktopSdkEntries(appAsarPath);
 
   // pnpm hoisted 依赖布局下，electron-builder 可能把运行时代码本体装进 app.asar，
   // 却漏掉它真正解析时仍要去根 node_modules 找的子依赖。
@@ -732,14 +737,15 @@ async function main() {
   }
 
   if (!skipBuild) {
-    run(pnpmCommand, ["build"], buildEnv);
+    // 上一步已准备全部本地/远程资源；再执行 build 会重复准备，且让 --skip-prepare 失效。
+    run(pnpmCommand, ["build:no-runtime-assets"], buildEnv);
   }
 
   await runTimedAsync("bundle:electron-builder", () =>
     runElectronBuilderWithRetry(buildArgs, buildEnv),
   );
 
-  runTimedSync("bundle:verify-runtime-dependencies", () =>
+  await runTimedAsync("bundle:verify-runtime-dependencies", () =>
     verifyPackagedRuntimeDependencies(os, arch),
   );
 

@@ -40,7 +40,14 @@ test("scanner excludes projectors and incomplete shards without collapsing quant
     assert.equal(result.models.length, 3);
     assert.equal(new Set(result.models.map((model) => model.id)).size, 3);
     assert.equal(result.models.filter((model) => model.vision).length, 2);
+    assert.deepEqual(
+      result.models
+        .filter((model) => model.reasoningControl === "effort")
+        .map((model) => model.contextWindow),
+      [262_144, 262_144],
+    );
     assert.equal(result.models.find((model) => model.id === "split")?.sizeBytes, 8);
+    assert.equal(result.models.find((model) => model.id === "split")?.contextWindow, undefined);
     assert.ok(result.warnings.some((warning) => warning.includes("broken")));
   } finally {
     await rm(root, { recursive: true, force: true });

@@ -1,8 +1,18 @@
+import {
+  WORKSPACE_SIDEBAR_DEFAULT_WIDTH_PX,
+  WORKSPACE_SIDEBAR_MIN_WIDTH_PX,
+  WORKSPACE_SIDEBAR_MAX_WIDTH_RATIO,
+  WORKSPACE_SIDEBAR_WIDTH_STORAGE_KEY,
+  clampWorkspaceSidebarWidth,
+  readStoredWorkspaceSidebarWidthPx,
+} from "@/app-shell/workspaceSidebarGeometry.js";
 /* eslint-disable max-lines -- workspace shell 当前集中编排 sidebar、chat、terminal 和 browser pane 的布局联动，先保持单文件收口，避免为满足行数限制打散关键布局状态。*/
+import { useShortcutCommandLabel } from "@/shortcuts/useShortcutBindings.js";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { PanelLeft } from "lucide-react";
+import { PanelLeft } from "@/components/icons/tabler.js";
 import type {
   CSSProperties,
+  ReactNode,
   KeyboardEvent as ReactKeyboardEvent,
   PointerEvent as ReactPointerEvent,
 } from "react";
@@ -34,8 +44,6 @@ import { requestV4ComposerDraftWorkspaceTransfer } from "@/v4/composer/composerD
 import { ChatEmptyWorkspacePreviewMenu } from "@/ChatEmptyState.js";
 import { DesktopTopOverlay } from "@/DesktopTopOverlay.js";
 import { DesktopWindowFrame } from "@/DesktopWindowFrame.js";
-import { WorkspacePluginPreview } from "@/WorkspacePluginPreview.js";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import { GitBranchSwitcher } from "@/GitBranchSwitcher.js";
 import { ScopedErrorBoundary } from "@/ErrorBoundary.js";
 
@@ -49,6 +57,7 @@ import { AutomationsMainBreadcrumbFrame } from "@/settings/AutomationsMainBreadc
 import { PluginStorePage } from "@/settings/PluginStorePage.js";
 import { TaskFindDialog } from "@/quickpick/TaskFindDialog.js";
 import { WorkspaceHeader } from "@/WorkspaceHeader.js";
+import { resolveConversationSummaryPanelVariant } from "@/v4/conversationSummaryPanelState.js";
 import { WorkspaceSidebar, type SidebarFileTreeOpenRequest } from "@/WorkspaceSidebar.js";
 import { AnimatedSidePanePanel } from "@/app-shell/AnimatedSidePanePanel.js";
 import {
@@ -94,13 +103,7 @@ import {
 } from "@/workspace-file-tree/model.js";
 import type { WorkspaceShellLayoutProps } from "@/app-shell/types.js";
 import { useTabStoreApi } from "@/store/TabStoreProvider.js";
-import { useMyCodeSessionStore } from "@/store/mycodeSessionStore.js";
-import type { ComposerMentionPrefill } from "@/store/mycodeSessionStoreTypes.js";
 
-const WORKSPACE_SIDEBAR_DEFAULT_WIDTH_PX = 264;
-const WORKSPACE_SIDEBAR_MIN_WIDTH_PX = 264;
-const WORKSPACE_SIDEBAR_MAX_WIDTH_RATIO = 0.5;
-const WORKSPACE_SIDEBAR_WIDTH_STORAGE_KEY = "mycode:workspace-shell:sidebar-width-px";
 const LEGACY_WORKSPACE_SHELL_LAYOUT_STORAGE_KEY =
   "react-resizable-panels:workspace-shell-layout:sidebar:content";
 const WORKSPACE_SIDEBAR_RESIZE_KEYBOARD_STEP_PX = 16;
@@ -128,35 +131,6 @@ type WorkspaceSidebarResizeSession = {
   startWidthPx: number;
   startX: number;
 };
-
-function clampWorkspaceSidebarWidth(widthPx: number, containerWidthPx?: number) {
-  const maxWidthPx =
-    containerWidthPx && containerWidthPx > 0
-      ? Math.max(
-          WORKSPACE_SIDEBAR_MIN_WIDTH_PX,
-          containerWidthPx * WORKSPACE_SIDEBAR_MAX_WIDTH_RATIO,
-        )
-      : Number.POSITIVE_INFINITY;
-
-  return Math.round(Math.max(WORKSPACE_SIDEBAR_MIN_WIDTH_PX, Math.min(widthPx, maxWidthPx)));
-}
-
-function readStoredWorkspaceSidebarWidthPx(): number | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  try {
-    const raw = window.localStorage.getItem(WORKSPACE_SIDEBAR_WIDTH_STORAGE_KEY);
-    if (!raw) {
-      return null;
-    }
-    const parsed = Number(raw);
-    return Number.isFinite(parsed) && parsed > 0 ? clampWorkspaceSidebarWidth(parsed) : null;
-  } catch {
-    return null;
-  }
-}
 
 function readLegacyWorkspaceSidebarWidthRatio(): number | null {
   if (typeof window === "undefined") {
@@ -316,6 +290,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   handleSyncSubagentSessionTabs,
   handleOpenSelectionSideChat,
   handleOpenPlanDetail,
+  handleOpenSources,
   handleOpenWorkflowRun,
   handleOpenWorkflowRunDirectory,
   handleOpenWorkflowActorSession,
@@ -335,9 +310,9 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   taskFindDialogProps,
 }: WorkspaceShellLayoutProps) {
   const { intl } = useMyCodeIntl();
-  const isOfficeMode = useIsOfficeMode();
   const baseServices = useBaseWorkspaceServices();
   const tabStoreApi = useTabStoreApi();
+  const commandCenterShortcutLabel = useShortcutCommandLabel("openCommandCenter");
   const isLinuxDesktop = Boolean(isDesktop && !isMacDesktop && !isWindowsDesktop);
   // Windows/Linux 也需要外层留白，避免独立面板贴住窗口边缘；桌面统一使用 4px 间距。
   const hasDesktopPanelInset = isMacDesktop || isWindowsDesktop || isLinuxDesktop;
@@ -446,10 +421,6 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   }, [handleToggleSidebar, handleToggleSidePane, isSidebarVisible, isSidePaneOpen, workspaceKey]);
 
   useEffect(() => {
-    if (workspaceMainView !== "chat") {
-      return;
-    }
-
     if (typeof window === "undefined") {
       return;
     }
@@ -459,20 +430,20 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
 
     const collapseSidebarIfStillNarrow = () => {
       const widthPx = readConversationWidthPx();
-      if (widthPx === null) {
-        return;
-      }
-
       const {
         handleToggleSidebar: collapseSidebar,
         isSidebarVisible: latestIsSidebarVisible,
         workspaceKey: latestWorkspaceKey,
       } = conversationAutoCollapseStateRef.current;
 
-      if (latestIsSidebarVisible && widthPx < CONVERSATION_AUTO_COLLAPSE_SIDEBAR_WIDTH_PX) {
+      if (
+        latestIsSidebarVisible &&
+        (window.innerWidth < 900 ||
+          (widthPx !== null && widthPx < CONVERSATION_AUTO_COLLAPSE_SIDEBAR_WIDTH_PX))
+      ) {
         logger.info("[WorkspaceShellLayout] conversation 过窄，自动收起左侧栏", {
-          widthPx: Math.round(widthPx),
-          thresholdPx: CONVERSATION_AUTO_COLLAPSE_SIDEBAR_WIDTH_PX,
+          widthPx: Math.round(window.innerWidth),
+          thresholdPx: 900,
           workspaceKey: latestWorkspaceKey,
         });
         collapseSidebar();
@@ -482,6 +453,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
     const runAutoCollapseForWindowResize = () => {
       const widthPx = readConversationWidthPx();
       if (widthPx === null) {
+        collapseSidebarIfStillNarrow();
         return;
       }
 
@@ -523,6 +495,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
     };
 
     window.addEventListener("resize", handleWindowResize);
+    collapseSidebarIfStillNarrow();
 
     return () => {
       if (conversationAutoCollapseResizeTimerRef.current !== null) {
@@ -1140,20 +1113,6 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
     workspaceAbsPath,
     workspaceIdentity,
   ]);
-  const handleSelectComposerPlugin = useCallback(
-    (mention: ComposerMentionPrefill) => {
-      useMyCodeSessionStore
-        .getState()
-        .requestComposerTextInsert(
-          workspaceAbsPath,
-          mention.markdown,
-          workspaceIdentity,
-          mention,
-          "prepend-if-missing",
-        );
-    },
-    [workspaceAbsPath, workspaceIdentity],
-  );
   // v4 pane 生命周期回调（稳定引用，供 memo 友好的 pane 宿主消费）：
   // createSession/fork 后接入既有选择路径；删除会话后回 draft。
   const handleV4SessionCreated = useCallback(
@@ -1164,12 +1123,14 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   );
   // 草稿态 composer contextHeader：workspace 切换菜单 +
   // Git 分支切换器，与旧 ChatView 空态 contextHeaderContent 同构。壳级能力
-  // （workspaceTabs / 远程连接回调）在此闭合，pane 只收 ReactNode。
+  // （workspaceTabs / 远程连接回调）在此闭合，render slot 只安排 Composer 的唯一权限节点。
   // onSelectWorkspace 语义与旧版一致：切到目标 workspace 的新草稿。
   const draftComposerHeader = useMemo(
-    () => (
+    () => (modeControls: ReactNode) => (
       <>
         <ChatEmptyWorkspacePreviewMenu
+          afterTrigger={modeControls}
+          remoteConnectionPlacement="inline"
           workspacePath={workspaceAbsPath}
           workspaceIdentity={workspaceIdentity}
           isWindowsDesktop={isWindowsDesktop}
@@ -1190,15 +1151,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
           onSelectRemoteProject={onSelectRemoteProject}
           onCancelRemoteProject={onCancelRemoteProject}
         />
-        {isOfficeMode ? (
-          <WorkspacePluginPreview
-            onOpen={handleOpenPluginStore}
-            onSelectPlugin={handleSelectComposerPlugin}
-            workspacePath={workspaceAbsPath}
-            workspaceIdentity={workspaceIdentity}
-            remoteSessionId={workspaceRemoteSessionId ?? undefined}
-          />
-        ) : !isOfficeMode && activeWorkspacePurpose === "project" ? (
+        {activeWorkspacePurpose === "project" ? (
           <GitBranchSwitcher
             workspacePath={workspaceAbsPath}
             gitSummary={gitState.summary}
@@ -1215,10 +1168,8 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
       </>
     ),
     [
-      isOfficeMode,
       workspaceRemoteSessionId,
       handleOpenPluginStore,
-      handleSelectComposerPlugin,
       allowOpenWorkspace,
       allowRemoteWorkspace,
       activeWorkspacePurpose,
@@ -1496,6 +1447,8 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
     workspaceMainView !== "automations" && workspaceMainView !== "plugin-store";
   const shouldRenderWorkspaceHeader =
     shouldRenderMainViewHeader && (activeTaskId !== null || isDesktop);
+  const summaryPanelExpanded =
+    resolveConversationSummaryPanelVariant(summaryPanelVariantOverride) === "panel";
   // ErrorBoundary resetKeys 的数组如果每次 render 都重新创建，
   // 即使 workspace/task 没变化也会在 React DevTools Components 轨道里持续表现为子树 props 变化。
   const workspaceOnlyResetKeys = useMemo(() => [workspaceKey], [workspaceKey]);
@@ -1754,6 +1707,12 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
                           onToggleTerminal={handleToggleTerminal}
                           onToggleBrowser={handleToggleBrowser}
                           onToggleSidePane={handleToggleSidePane}
+                          isSummaryPanelExpanded={summaryPanelExpanded}
+                          onToggleSummaryPanel={() =>
+                            onSummaryPanelVariantOverrideChange(
+                              summaryPanelExpanded ? "mini" : "panel",
+                            )
+                          }
                           toggleSidePaneShortcutLabel={toggleSidePaneShortcutLabel}
                           onReloadSession={handleReloadSession}
                           reloadSessionDisabled={workspaceSessionActionDisabled}
@@ -1897,6 +1856,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
                               onSyncSubagentSessionTabs={handleSyncSubagentSessionTabs}
                               onOpenSelectionSideChat={handleOpenSelectionSideChat}
                               onOpenPlanDetail={handleOpenPlanDetail}
+                              onOpenSources={handleOpenSources}
                               onOpenWorkflowRun={handleOpenWorkflowRun}
                               onOpenWorkflowArtifact={handleOpenWorkflowArtifact}
                               onOpenWorkflowRunDirectory={handleOpenWorkflowRunDirectory}
@@ -1984,6 +1944,8 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
             appLogoUrl={appLogoUrl}
             platform={platform}
             onToggleSidebar={handleToggleSidebar}
+            onOpenSearch={handleOpenCommandCenter}
+            searchShortcutLabel={commandCenterShortcutLabel}
             onCreateTask={handleCreateTaskInChat}
             onGoBack={primaryNavigationBack}
             onGoForward={handleTaskNavForward}

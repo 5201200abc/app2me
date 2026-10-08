@@ -1,8 +1,8 @@
-import { ChevronRightIcon, RotateCcwIcon } from "lucide-react";
+import { ChevronRightIcon } from "@/components/icons/tabler.js";
 import { useCallback, useMemo, useState } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { CodeBlock } from "@/components/ai-elements/code-block.js";
-import { Button } from "@/components/ui/button.js";
+import { WorkflowResumeButton } from "@/ToolCallBlocks/renderers/WorkflowResumeButton.js";
 import {
   Collapsible,
   CollapsibleContent,
@@ -60,13 +60,10 @@ import type { ToolCallBlockRenderContext } from "../shared.js";
 /** 没有 display 时交给草稿槽位的空诊断：模块级常量，免得每次渲染一个新数组打穿记忆。 */
 const NO_DIAGNOSTICS: readonly never[] = [];
 
-/** 折叠状态按 toolId 记忆（与 ToolLayout 的 toolLayoutOpenState 同一模式）；默认展开。 */
-const workflowCardOpenState = new Map<string, boolean>();
-
 /**
  * 聊天区的 CreateWorkflow / AmendWorkflow 工具卡。
  *
- * 编写中使用不可展开的 ToolLayout，行下常驻草稿阶段线（站随脚本流式写出）；待确认使用可展开脚本的 ToolLayout；编不过是编译反馈行
+ * 所有阶段使用默认折叠的 ToolLayout，草稿阶段线和完整运行卡仅在详情中展示；编不过是编译反馈行
  * （「工作流草稿 · 第 n 稿 · n 处待修正 · 未运行」）——不是失败，什么都没跑。
  * v4 已关联 run 的上方行由 WorkflowToolSummary 承载。本组件保留旧宿主的运行卡渲染。
  *
@@ -126,16 +123,9 @@ export function CreateWorkflowToolCallBlock(context: ToolCallBlockRenderContext)
     return undefined;
   }, [graph, run, scriptText, writing]);
 
-  const [isOpen, setIsOpen] = useState(() => workflowCardOpenState.get(toolCall.toolId) ?? true);
   const forceOpen = context.forceOpen ?? false;
   const canToggle = context.canToggle ?? true;
-  const expanded = forceOpen || !canToggle || isOpen;
-  const handleToggle = useCallback(() => {
-    setIsOpen((previous) => {
-      workflowCardOpenState.set(toolCall.toolId, !previous);
-      return !previous;
-    });
-  }, [toolCall.toolId]);
+  const expanded = forceOpen;
   const [scriptOpen, setScriptOpen] = useState(false);
 
   const onOpenWorkflowRun = context.onOpenWorkflowRun;
@@ -237,7 +227,7 @@ export function CreateWorkflowToolCallBlock(context: ToolCallBlockRenderContext)
           toolId={toolCall.toolId}
           icon={WORKFLOW_CARD_ICON}
           showIcon={context.showIcon !== false}
-          canToggle={!summaryOnly && canToggle}
+          canToggle={canToggle}
           forceOpen={!summaryOnly && forceOpen}
           kindLabel={
             context.kindLabelOverride ??
@@ -264,9 +254,13 @@ export function CreateWorkflowToolCallBlock(context: ToolCallBlockRenderContext)
           // 待确认仍处于启动流程中，与编写态共用扫光，避免看起来已经结束。
           isRunning={showFailureStatus ? context.isRunning : prelaunch}
           title={toolCall.title}
-          renderContent={summaryOnly ? undefined : renderDiagnosticsContent}
+          renderContent={() => (
+            <>
+              {renderDiagnosticsContent()}
+              {draftTimelineBlock}
+            </>
+          )}
         />
-        {draftTimelineBlock}
         {snapshotNotice}
       </>
     );
@@ -295,23 +289,27 @@ export function CreateWorkflowToolCallBlock(context: ToolCallBlockRenderContext)
   const terminal = run !== undefined && (run.status === "errored" || run.status === "stopped");
   const resume =
     workflowRun?.resumable === true && onResumeWorkflowRun !== undefined ? (
-      <Button
-        className="ml-auto"
-        data-testid="workflow-card-resume"
-        onClick={handleResume}
-        size="sm"
-        type="button"
-        variant="outline"
-      >
-        <RotateCcwIcon className="size-3.5" />
-        {intl.formatMessage({ id: "chat.toolCall.workflow.run.resume" })}
-      </Button>
+      <WorkflowResumeButton onResume={handleResume} />
     ) : undefined;
   const savedSourceLabel = intl.formatMessage({ id: "chat.permission.workflow.saved.badge" });
   const savedScopeProjectLabel = intl.formatMessage({
     id: "chat.permission.workflow.saved.scope.project",
   });
   const showScriptFold = workflowRun === undefined && !writing && scriptText !== undefined;
+
+  if (!forceOpen)
+    return (
+      <ToolLayout
+        toolId={toolCall.toolId}
+        icon={WORKFLOW_CARD_ICON}
+        kindLabel={kindText}
+        primaryText={workflowName ?? toolCall.title ?? ""}
+        isRunning={live}
+        renderContent={() => (
+          <CreateWorkflowToolCallBlock {...context} forceOpen canToggle={false} />
+        )}
+      />
+    );
 
   return (
     <>
@@ -336,7 +334,6 @@ export function CreateWorkflowToolCallBlock(context: ToolCallBlockRenderContext)
           name={name}
           status={status}
           {...(onOpenWorkflowRun === undefined ? {} : { onOpenDetails: handleOpenRunDetails })}
-          {...(forceOpen || !canToggle ? {} : { onToggle: handleToggle })}
         />
 
         {expanded ? (

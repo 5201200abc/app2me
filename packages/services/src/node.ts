@@ -1,3 +1,5 @@
+import { IMyChatService } from "./mychat/myChat.js";
+import { createMyChatService } from "./mychat/runtime/runtime.js";
 /* eslint-disable max-lines -- host process 服务注册和启动装配需要集中维护，拆散后会更难追踪依赖注入顺序 */
 // Node.js service implementations — NOT safe to import in browser code
 import { randomBytes } from "node:crypto";
@@ -10,7 +12,11 @@ import {
   PERSONAL_PROVIDER_CONFIG_FILE_NAME,
 } from "@mycode/provider-node";
 import { getAppConfigDir as resolveAppConfigDir } from "./paths.js";
-import { buildLocalMediaPreviewUrl, type ProviderProvisioningTrigger } from "@mycode/shared";
+import {
+  buildLocalMediaPreviewUrl,
+  MYCODE_SESSION_MCP_RESOLUTION_ENV_KEY,
+  type ProviderProvisioningTrigger,
+} from "@mycode/shared";
 
 export {
   materializeMyCodeBuiltinProviderConfig,
@@ -176,7 +182,7 @@ export {
 } from "./storage/adapters/rootsResolver.js";
 export { createFsVolumeProbe } from "./storage/adapters/volumeProbe.js";
 export { runStorageScan } from "./storage/adapters/inProcessScanRunner.js";
-export { createCodingPlanSubscriptionService } from "./coding-plan-subscription/codingPlanSubscriptionService.js";
+export { createRuntimeConfigService } from "./runtime-config/runtimeConfigService.js";
 export { createClientScenesService } from "./client-scenes/clientScenesService.js";
 export { createSkillsService } from "./skills/skillsService.js";
 export { createSkillSyncService } from "./skill-sync/skillSyncService.js";
@@ -277,7 +283,7 @@ import { IBotsService } from "./bots/bots.js";
 import { IFileWatcherService } from "./fileWatcher/fileWatcher.js";
 import { IOAuthService } from "./oauth/oauth.js";
 import { IUsageStatsService } from "./usage-stats/usageStats.js";
-import { ICodingPlanSubscriptionService } from "./coding-plan-subscription/codingPlanSubscription.js";
+import { IRuntimeConfigService } from "./runtime-config/runtimeConfig.js";
 import { IClientScenesService } from "./client-scenes/clientScenes.js";
 import { ISkillsService } from "./skills/skills.js";
 import { ISkillSyncService } from "./skill-sync/skillSync.js";
@@ -340,7 +346,7 @@ import { IProviderProvisioningTargetService } from "./model-provider/providerPro
 import { buildOffPeakModelSelectionView } from "./model-provider/offPeakModelSelectionView.js";
 import type { IAccountRequestAuthService } from "./model-provider/accountRequestAuthService.js";
 import { createUsageStatsService } from "./usage-stats/usageStatsService.js";
-import { createCodingPlanSubscriptionService } from "./coding-plan-subscription/codingPlanSubscriptionService.js";
+import { createRuntimeConfigService } from "./runtime-config/runtimeConfigService.js";
 import { createClientScenesService } from "./client-scenes/clientScenesService.js";
 import { createSkillsService } from "./skills/skillsService.js";
 import { createSkillSyncService } from "./skill-sync/skillSyncService.js";
@@ -1770,7 +1776,7 @@ export function createLocalServices(options: {
       }
     },
   };
-  const codingPlanSubscriptionService = createCodingPlanSubscriptionService({
+  const runtimeConfigService = createRuntimeConfigService({
     resolveOffPeakModelSelectionView: async () => {
       await providerRuntime.start();
       return buildOffPeakModelSelectionView(providerRuntime.registryService.getView());
@@ -1781,7 +1787,7 @@ export function createLocalServices(options: {
     authorizeLocalMediaPreviewPath: options?.authorizeLocalMediaPreviewPath,
     // 动态工作流由各 Host 的本地配置裁决，远程 Host 也要向自己的 Agent 传递结果。
     resolveDynamicWorkflowClientConfig: () =>
-      codingPlanSubscriptionService.getDynamicWorkflowClientConfig(),
+      runtimeConfigService.getDynamicWorkflowClientConfig(),
     commandResolver: options?.mycodeAgentCommandResolver,
     presentationSurface: resolveMyCodeAgentPresentationSurface({
       runtimeSurface: options?.agentRuntimeContext?.runtimeSurface,
@@ -1796,6 +1802,8 @@ export function createLocalServices(options: {
     spawnFallbackCwd: options?.mycodeAgentSpawnFallbackCwd,
     // browser-use：host→main 执行桥透传给 agent service 的 onRequest browserExecute 路由。
     browserControlExecutor: options?.browserControlExecutor,
+    // 原生 Desktop resolver 同时接入 V4 公共 runtime 初始化；旧会话 adapter 不再是唯一入口。
+    cuaProductMcpServerResolver: options?.cuaProductMcpServerResolver,
     cuaOperationStateReporter: shouldEnableCuaOperationStateReporter({
       serviceAuthorityMode: options?.serviceAuthorityMode,
       hasReporter: Boolean(options?.cuaOperationStateReporter),
@@ -1887,6 +1895,8 @@ export function createLocalServices(options: {
       // 先拿到尚不存在的 provider_config.json 并发布短暂空 Registry。
       await providerConfigRuntime.start();
       return {
+        // 只向装配了原生 resolver 的 Host 广告反向请求能力；独立 CLI/旧宿主不受影响。
+        [MYCODE_SESSION_MCP_RESOLUTION_ENV_KEY]: options?.cuaProductMcpServerResolver ? "1" : "0",
         ...buildAgentRuntimeEnv({
           httpProxy: agentNetwork.httpProxy,
           noProxy: agentNetwork.noProxy,
@@ -2021,6 +2031,7 @@ export function createLocalServices(options: {
   // TaskIndexRepo 使用独立 SQLite 连接；服务释放时统一关闭。
   const sqliteReposToClose: Array<{ close(): void }> = [];
   const services = new ServiceCollection()
+    .register(IMyChatService, createMyChatService(join(resolveAppConfigDir(), "mychat")))
     .register(IFileService, fileService)
     .register(IMediaPreviewService, mediaPreviewService)
     .register(IGitService, gitService)
@@ -2059,7 +2070,7 @@ export function createLocalServices(options: {
         mycodeAgentService,
       }),
     )
-    .register(ICodingPlanSubscriptionService, codingPlanSubscriptionService)
+    .register(IRuntimeConfigService, runtimeConfigService)
     .register(IClientScenesService, createClientScenesService())
     .register(ISkillsService, skillsService)
     .register(ISkillSyncService, createSkillSyncService())
@@ -2144,6 +2155,7 @@ export function disposeServiceResources(services: ServiceCollection): void {
   // terminal/task wrapper 这类会拉起子进程的服务只能等宿主进程自己结束，时序上可能留下短暂残留。
   // 这里集中调用各服务的本地 disposeAll 钩子，把“退出 app = 回收所有托管资源”落成机械动作。
   const disposableServices = [
+    services.getOptional(IMyChatService),
     services.getOptional(ITerminalService),
     services.getOptional(IMyCodeTaskService),
     services.getOptional(IMyCodeAgentService),
@@ -2178,6 +2190,7 @@ export async function disposeServiceResourcesAndWait(services: ServiceCollection
   // app 关闭时 host 需要等 agent 进程树完成 graceful + force 清理。
   // 旧的同步 dispose 会在 host 退出时丢掉强杀 timer，导致 mycode-cli/app-server 变成孤儿进程。
   const disposableServices = [
+    services.getOptional(IMyChatService),
     services.getOptional(ITerminalService),
     services.getOptional(IMyCodeTaskService),
     services.getOptional(IMyCodeAgentService),
@@ -2221,3 +2234,6 @@ export {
   type DiscoveredLocalModel,
   type LocalModelScanResult,
 } from "./local-models/localModelScanner.js";
+
+// 平台只读环境面复用 Agent bundle 的既有解析所有者。
+export { findMyCodeAgentRuntimeNodeBundle } from "./runtime-tools/providerRuntimeResolver.js";

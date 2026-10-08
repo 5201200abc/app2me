@@ -1,0 +1,18 @@
+[data-inventory-change] {
+  /* 变更行不能被通用来源行覆盖为 30px、次级色和圆角；其布局由自身拥有。 */
+  --text-success: color-mix(in srgb, var(--color-success) 80%, var(--color-foreground));
+  --text-danger: color-mix(in srgb, var(--color-destructive) 80%, var(--color-foreground));
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  font-family: var(--font-sans);
+}
+[data-inventory-change] [data-inventory-added] {
+  color: var(--text-success);
+}
+[data-inventory-change] [data-inventory-removed] {
+  color: var(--text-danger);
+}
+
+[data-inventory-change] > span:last-child {
+  padding-inline-end: 0.25rem;
+}

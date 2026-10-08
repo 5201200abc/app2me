@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/colla
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs.js";
 import { cn } from "../lib/utils.js";
 import type { ToolUIPart } from "ai";
-import { ChevronDownIcon, Code } from "lucide-react";
+import { ChevronDownIcon, Code } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 
 import { getStatusBadge } from "./tool.js";

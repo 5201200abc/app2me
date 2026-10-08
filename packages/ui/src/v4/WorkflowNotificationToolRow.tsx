@@ -1,4 +1,4 @@
-import { Hourglass, MessageCircleQuestion, Workflow } from "lucide-react";
+import { Hourglass, MessageCircleQuestion, Workflow } from "@/components/icons/tabler.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { WorkflowNotificationMeta } from "@mycode/shared/mycode-protocol-v4";
 import { CodeBlock, CodeBlockHeader } from "@/components/ai-elements/code-block.js";

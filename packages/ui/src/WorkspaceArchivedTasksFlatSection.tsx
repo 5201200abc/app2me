@@ -1,5 +1,12 @@
 import { useMemo, useState } from "react";
-import { ArchiveX, Cloud, CloudDownload, Folder, Smartphone, Trash2 } from "lucide-react";
+import {
+  ArchiveX,
+  Cloud,
+  CloudDownload,
+  Folder,
+  Smartphone,
+  Trash2,
+} from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
@@ -113,7 +120,7 @@ export function WorkspaceArchivedTasksFlatSection({
         loading ? (
           <TaskListLoadingHint />
         ) : (
-          <div className="px-3 py-2 text-ui-base text-foreground-subtle">
+          <div className="px-3 py-2 text-ui-caption font-normal text-foreground-subtle">
             {intl.formatMessage({ id: "taskList.noArchivedTasks" })}
           </div>
         )
@@ -337,7 +344,7 @@ export function WorkspaceArchivedTasksFlatSection({
       {canToggleExpanded ? (
         <div className="cursor-pointer pl-8.5 pb-4">
           <span
-            className="text-ui-base text-foreground-subtlest hover:text-foreground-subtle"
+            className="text-ui-caption font-normal text-foreground-subtlest hover:text-foreground-subtle"
             onClick={() => {
               setShowAllTasks((current) => !current);
             }}

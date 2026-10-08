@@ -1,4 +1,4 @@
-import { ChevronLeft, FolderOpen, Loader2 } from "lucide-react";
+import { ChevronLeft, FolderOpen, Loader2 } from "@/components/icons/tabler.js";
 import {
   type StorageCategoryId,
   type StorageRootUsage,

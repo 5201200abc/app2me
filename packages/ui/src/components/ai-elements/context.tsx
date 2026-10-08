@@ -11,7 +11,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card.
 import { Progress } from "../ui/progress.js";
 import { cn } from "../lib/utils.js";
 import type { LanguageModelUsage } from "ai";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/components/icons/tabler.js";
 import type { ComponentProps, ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
 import { getUsage } from "tokenlens";

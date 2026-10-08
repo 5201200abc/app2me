@@ -1,7 +1,12 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { TID_WORKFLOW_ARTIFACT_PANE } from "@mycode/shared";
 import type { WorkflowRunArtifactSummary } from "@mycode/shared/mycode-protocol-v4";
-import { ChevronLeftIcon, ChevronRightIcon, CopyIcon, FolderOpenIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CopyIcon,
+  FolderOpenIcon,
+} from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import {

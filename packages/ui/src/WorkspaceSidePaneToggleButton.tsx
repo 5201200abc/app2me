@@ -1,5 +1,5 @@
 import { TID_SIDE_PANE_TOGGLE } from "@mycode/shared";
-import { PanelRightClose, PanelRightOpen } from "lucide-react";
+import { PanelRight } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
@@ -18,7 +18,6 @@ export function WorkspaceSidePaneToggleButton({
   useWindowsCaptionSpacing?: boolean;
 }) {
   const { intl } = useMyCodeIntl();
-  const SidePaneToggleIcon = isSidePaneOpen ? PanelRightClose : PanelRightOpen;
 
   return (
     <ControlHintTooltip
@@ -41,7 +40,7 @@ export function WorkspaceSidePaneToggleButton({
         })}
         onClick={onToggleSidePane}
       >
-        <SidePaneToggleIcon className="size-4" />
+        <PanelRight className="size-3.5" strokeWidth={1.5} />
       </Button>
     </ControlHintTooltip>
   );

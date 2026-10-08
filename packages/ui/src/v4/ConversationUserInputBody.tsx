@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
@@ -133,9 +133,9 @@ export function ConversationUserInputBody({
             className="rounded-full bg-background shadow-sm backdrop-blur-sm transition-colors"
           >
             {expanded ? (
-              <ChevronUpIcon aria-hidden="true" className="size-4" />
+              <ChevronUpIcon aria-hidden="true" className="size-3.5" />
             ) : (
-              <ChevronDownIcon aria-hidden="true" className="size-4" />
+              <ChevronDownIcon aria-hidden="true" className="size-3.5" />
             )}
           </Button>
         </div>

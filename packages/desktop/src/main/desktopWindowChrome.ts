@@ -388,13 +388,22 @@ export function createBrowserWindow(options: {
 }): BrowserWindow {
   const initialDesktopZoomLevel = clampDesktopZoomLevel(options.initialDesktopZoomLevel ?? 0);
   const initialDesktopZoomFactor = resolveDesktopZoomFactorForLevel(initialDesktopZoomLevel);
-  const initialWindowSize = resolveDesktopWindowSize(
-    options.initialWindowSize,
-    screen.getPrimaryDisplay().workAreaSize,
-  );
+  const saved = options.initialWindowSize;
+  const display =
+    saved?.x !== undefined && saved.y !== undefined
+      ? screen.getDisplayMatching({
+          x: saved.x,
+          y: saved.y,
+          width: saved.width,
+          height: saved.height,
+        })
+      : screen.getPrimaryDisplay();
+  const initialWindowSize = resolveDesktopWindowSize(saved, display.workArea);
   const win = new BrowserWindow({
     width: initialWindowSize.width,
     height: initialWindowSize.height,
+    x: initialWindowSize.x,
+    y: initialWindowSize.y,
     minWidth: MIN_DESKTOP_WINDOW_WIDTH,
     // 1280x720 桌面环境的可用高度通常低于 768，过高的最小高度会导致用户无法继续缩小窗口。
     minHeight: MIN_DESKTOP_WINDOW_HEIGHT,

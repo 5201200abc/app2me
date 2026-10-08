@@ -475,13 +475,8 @@ export function CuaToolCallBlock(context: ToolCallBlockRenderContext) {
   return (
     <ToolLayout
       toolId={toolCall.toolId}
-      icon={
-        context.cuaAppIconClassName === "size-5" ? (
-          <span className="shrink-0 size-4 flex items-center justify-center">{summary.icon}</span>
-        ) : (
-          summary.icon
-        )
-      }
+      icon={CUA_FALLBACK_ICON}
+      preserveIcon
       showIcon={context.showIcon !== false}
       canToggle={!isActive && (context.canToggle ?? true)}
       forceOpen={

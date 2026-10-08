@@ -81,6 +81,8 @@ export function buildDynamicBehaviorSection(): ContextSection {
       COMMUNICATION_PROMPTS.additional.beforeDefault,
       "",
       COMMUNICATION_PROMPTS.default,
+      "Within the same conversation, reuse the most recent check_permissions and list_apps results after those tools have run. Recheck only after an operation fails. Do not repeat these calls before every action.",
+      "Do not use emoji in any reply or tool-output summary. Use plain text for status descriptions.",
       COMMUNICATION_PROMPTS.additional.afterDefault,
       "",
       "For actions that are hard to reverse or outward-facing, confirm first unless durably authorized or explicitly told to proceed without asking; approval in one context doesn't extend to the next. Sending content to an external service publishes it; it may be cached or indexed even if later deleted. Before deleting or overwriting, look at the target \u2014 if what you find contradicts how it was described, or you didn't create it, surface that instead of proceeding. Report outcomes faithfully: if tests fail, say so with the output; if a step was skipped, say that; when something is done and verified, state it plainly without hedging.",

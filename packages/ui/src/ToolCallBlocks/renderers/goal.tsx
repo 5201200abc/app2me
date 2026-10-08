@@ -1,4 +1,4 @@
-import { GoalIcon } from "lucide-react";
+import { GoalIcon } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";
@@ -188,6 +188,7 @@ export function GoalToolCallBlock(context: ToolCallBlockRenderContext) {
       <ToolLayout
         toolId={toolCall.toolId}
         icon={GOAL_TOOL_ICON}
+        preserveIcon
         showIcon={context.showIcon !== false}
         canToggle={context.canToggle ?? true}
         forceOpen={context.forceOpen ?? false}

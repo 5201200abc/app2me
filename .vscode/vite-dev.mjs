@@ -33,7 +33,7 @@ async function waitForServer() {
 
 child = spawn(
   process.platform === "win32" ? "pnpm.cmd" : "pnpm",
-  ["--filter", "@mycode/desktop", "exec", "vite", "dev"],
+  ["--filter", "@app2me/desktop", "exec", "vite", "dev"],
   {
     cwd: workspaceRoot,
     stdio: "inherit",

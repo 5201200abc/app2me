@@ -5,8 +5,8 @@ export function TaskListLoadingHint() {
   const { intl } = useMyCodeIntl();
 
   return (
-    <div className="flex items-center gap-2 px-2.5 py-1 text-ui-base text-foreground-subtlest">
-      <Spinner className="size-4 text-foreground-subtlest" />
+    <div className="flex items-center gap-2 px-2.5 py-1 text-ui-caption font-normal text-foreground-subtlest">
+      <Spinner className="size-3.5 text-foreground-subtlest" />
       <span>{intl.formatMessage({ id: "taskList.loading" })}</span>
     </div>
   );

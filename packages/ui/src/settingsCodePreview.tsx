@@ -1,8 +1,6 @@
 import type { Theme } from "@/useTheme.js";
-import { useState } from "react";
 import { resolveTheme } from "@/useTheme.js";
 import { Card, CardContent } from "@/components/ui/card.js";
-import { Input } from "@/components/ui/input.js";
 import { Button } from "@/components/ui/button.js";
 import { Switch } from "@/components/ui/switch.js";
 import {
@@ -23,7 +21,8 @@ import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type { CodePreviewSettings } from "@/store/index.js";
 import { THEME_MODES } from "@/settings/settingsPageConfig.js";
 import { MAX_UI_FONT_SIZE_PX, MIN_UI_FONT_SIZE_PX } from "@/lib/uiFontSize.js";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { MIN_CODE_FONT_SIZE_PX, MAX_CODE_FONT_SIZE_PX } from "@/lib/codePreviewSettings.js";
+import { ChevronDown, ChevronUp } from "@/components/icons/tabler.js";
 
 function FontSizeInput({
   value,
@@ -31,89 +30,44 @@ function FontSizeInput({
   max,
   ariaLabel,
   onChange,
-  stepper = false,
 }: {
   value: number;
   min: number;
   max: number;
   ariaLabel: string;
   onChange: (value: number) => void;
-  stepper?: boolean;
 }) {
-  const [draft, setDraft] = useState(String(value));
-
-  if (stepper) {
-    return (
-      <div
-        role="group"
-        aria-label={ariaLabel}
-        className="flex h-9 w-24 items-center rounded-lg border border-input-border bg-input"
-      >
-        <output className="min-w-0 flex-1 text-center text-ui-base tabular-nums">
-          {value} <span className="text-foreground-subtle">px</span>
-        </output>
-        <div className="flex h-full flex-col border-l border-input-border">
-          <Button
-            type="button"
-            variant="ghost"
-            disabled={value >= max}
-            aria-label={`${ariaLabel} +1 px`}
-            className="h-4 flex-1 rounded-none px-1.5"
-            onClick={() => onChange(Math.min(max, value + 1))}
-          >
-            <ChevronUp className="size-3" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            disabled={value <= min}
-            aria-label={`${ariaLabel} -1 px`}
-            className="h-4 flex-1 rounded-none px-1.5"
-            onClick={() => onChange(Math.max(min, value - 1))}
-          >
-            <ChevronDown className="size-3" />
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const commit = () => {
-    const parsed = draft.trim() === "" ? Number.NaN : Number(draft);
-    const nextValue = Number.isFinite(parsed)
-      ? Math.min(max, Math.max(min, Math.round(parsed)))
-      : value;
-    setDraft(String(nextValue));
-    if (nextValue !== value) {
-      onChange(nextValue);
-    }
-  };
-
   return (
-    <div className="relative w-28">
-      <Input
-        type="number"
-        inputMode="numeric"
-        min={min}
-        max={max}
-        step={1}
-        value={draft}
-        aria-label={ariaLabel}
-        onChange={(event) => setDraft(event.currentTarget.value)}
-        onBlur={commit}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.currentTarget.blur();
-          } else if (event.key === "Escape") {
-            event.preventDefault();
-            setDraft(String(value));
-          }
-        }}
-        className="pr-8 text-right tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-      />
-      <span className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-ui-lg text-foreground-subtle">
-        px
-      </span>
+    <div
+      role="group"
+      aria-label={ariaLabel}
+      className="appearance-font-stepper inline-flex h-6.5 w-auto items-center overflow-hidden rounded-md border border-input-border/60 bg-input"
+    >
+      <output className="inline-flex min-w-7 items-center justify-center px-1.5 text-ui-caption tracking-normal proportional-nums">
+        <span data-font-size-value="">{value}</span>
+      </output>
+      <div className="flex h-full flex-col border-l border-input-border">
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={value >= max}
+          aria-label={`${ariaLabel} +1 px`}
+          className="w-4.5 min-h-0 flex-1 rounded-none p-0"
+          onClick={() => onChange(Math.min(max, value + 1))}
+        >
+          <ChevronUp className="size-3" strokeWidth={1.5} />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          disabled={value <= min}
+          aria-label={`${ariaLabel} -1 px`}
+          className="w-4.5 min-h-0 flex-1 rounded-none p-0"
+          onClick={() => onChange(Math.max(min, value - 1))}
+        >
+          <ChevronDown className="size-3" strokeWidth={1.5} />
+        </Button>
+      </div>
     </div>
   );
 }
@@ -139,16 +93,6 @@ export function AppearanceSectionContent({
   return (
     <>
       <div className="min-w-0 space-y-3">
-        <div>
-          <h3 className="text-ui-lg font-semibold text-foreground">
-            {intl.formatMessage({ id: "settings.appearance.interfaceTitle" })}
-          </h3>
-          <p className="mt-1 text-ui-base leading-6 text-foreground-subtle">
-            {intl.formatMessage({
-              id: "settings.appearance.interfaceDescription",
-            })}
-          </p>
-        </div>
         <Card className="border border-border bg-card py-0 shadow-none">
           <CardContent className="space-y-0 px-0">
             <SettingsRow
@@ -158,18 +102,15 @@ export function AppearanceSectionContent({
               })}
               control={
                 <Select value={theme} onValueChange={(value) => setTheme(value as Theme)}>
-                  <SelectTrigger size="lg" className="w-[260px] min-w-0 justify-between">
+                  <SelectTrigger size="sm" className="w-auto min-w-0 gap-2 px-2">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {THEME_MODES.map(({ mode, icon: Icon }) => (
+                    {THEME_MODES.map(({ mode }) => (
                       <SelectItem key={mode} value={mode}>
-                        <div className="flex items-center gap-2">
-                          <Icon className="size-4" />
-                          {intl.formatMessage({
-                            id: `settings.themeMode.${mode}`,
-                          })}
-                        </div>
+                        {intl.formatMessage({
+                          id: `settings.themeMode.${mode}`,
+                        })}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -189,7 +130,6 @@ export function AppearanceSectionContent({
                   value={uiFontSizePx}
                   onChange={setUiFontSizePx}
                   ariaLabel={intl.formatMessage({ id: "settings.uiFontSize" })}
-                  stepper
                 />
               }
             />
@@ -209,7 +149,7 @@ export function AppearanceSectionContent({
               })}
             </p>
           </div>
-          <Card className="border border-border bg-card py-0 shadow-none [&_[data-slot=select-trigger]]:w-full">
+          <Card className="border border-border bg-card py-0 shadow-none">
             <CardContent className="space-y-0 px-0">
               <SettingsRow
                 label={intl.formatMessage({ id: "settings.lightTheme" })}
@@ -271,8 +211,8 @@ export function AppearanceSectionContent({
                 control={
                   <FontSizeInput
                     key={codePreviewSettings.fontSizePx}
-                    min={12}
-                    max={20}
+                    min={MIN_CODE_FONT_SIZE_PX}
+                    max={MAX_CODE_FONT_SIZE_PX}
                     value={codePreviewSettings.fontSizePx}
                     onChange={(fontSizePx) => setCodePreviewSettings({ fontSizePx })}
                     ariaLabel={intl.formatMessage({ id: "settings.fontSize" })}
@@ -288,14 +228,10 @@ export function AppearanceSectionContent({
             <h3 className="text-ui-base font-semibold text-foreground">
               {intl.formatMessage({ id: "settings.previewSectionTitle" })}
             </h3>
-            <p className="mt-1 text-ui-base leading-6 text-foreground-subtle">
-              {intl.formatMessage({ id: "settings.previewDescription" })}
-            </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <ThemePreviewCard
               mode="light"
-              title={intl.formatMessage({ id: "settings.previewLight" })}
               themeName={getThemeOptionLabel(codePreviewSettings.lightTheme)}
               theme={getCodePreviewTheme("light", codePreviewSettings)}
               isActive={activePreviewMode === "light"}
@@ -305,7 +241,6 @@ export function AppearanceSectionContent({
             />
             <ThemePreviewCard
               mode="dark"
-              title={intl.formatMessage({ id: "settings.previewDark" })}
               themeName={getThemeOptionLabel(codePreviewSettings.darkTheme)}
               theme={getCodePreviewTheme("dark", codePreviewSettings)}
               isActive={activePreviewMode === "dark"}

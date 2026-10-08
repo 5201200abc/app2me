@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu.js";
 import { cn } from "../lib/utils.js";
-import { ImageIcon, Monitor, PlusIcon } from "lucide-react";
+import { ImageIcon, Monitor, PlusIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 import { useCallback } from "react";
 import { usePromptInputAttachments } from "./prompt-input.js";

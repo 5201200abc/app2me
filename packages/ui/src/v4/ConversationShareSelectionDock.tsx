@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { AlertCircle, AlertTriangle, Info, LoaderCircle } from "lucide-react";
+import { AlertCircle, AlertTriangle, Info, LoaderCircle } from "@/components/icons/tabler.js";
 import type {
   ConversationShareFailureIssue,
   ConversationSharePreflightResult,

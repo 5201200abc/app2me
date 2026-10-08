@@ -5,7 +5,7 @@
  * Manages MCP server configuration in the settings page.
  * Supports the unified MyCode Agent MCP source backed by settings directories.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   convertToMyCodeAgentMcpServer,
   TID_MCP_OPEN_AUTHORIZATION_BUTTON,
@@ -14,7 +14,6 @@ import {
 } from "@mycode/shared";
 import type {
   RemoteTarget,
-  MyCodeAvailablePluginSummary,
   MyCodeAgentMcpServer,
   MyCodeMcpListMode,
   MyCodeMcpServer,
@@ -38,12 +37,8 @@ import {
 } from "@/settings/mcpSettingsShared.js";
 import { SettingsBreadcrumbReporter } from "@/settings/SettingsHeaderBreadcrumb.js";
 import { SettingsResourceHeaderActions } from "@/settings/SettingsResourceHeaderActions.js";
-import { PluginStoreAvatar } from "@/settings/PluginStoreAvatar.js";
-import {
-  PluginInstallEmptyState,
-  PluginLoadingState,
-  PluginSearchEmptyState,
-} from "@/settings/PluginInstallEmptyState.js";
+import { SettingsResourcePageHeader } from "@/settings/SettingsResourcePageHeader.js";
+import { PluginLoadingState, PluginSearchEmptyState } from "@/settings/PluginInstallEmptyState.js";
 import {
   buildPluginMcpServerItems,
   filterLocalMcpServers,
@@ -68,10 +63,13 @@ import { useBaseWorkspaceServices, useWorkspaceServices } from "@/hooks/useWorks
 import { useTabStore } from "@/store/TabStoreProvider.js";
 import type { WorkspaceTabState } from "@/store/tabStore.js";
 import { getPluginWorkspaceKey } from "@/settings/PluginScopeMenu.js";
-import { ExternalLink, Import, Plus, UploadCloud } from "lucide-react";
+import { ExternalLink, UploadCloud } from "@/components/icons/tabler.js";
 import { SettingsSegmentedTabs } from "@/settings/SettingsSegmentedTabs.js";
 import { formatRemoteSkillSyncTarget } from "@/settings/RemoteSkillSyncDialog.js";
-import { selectPluginsForScope } from "@/settings/pluginCapabilityProjection.js";
+import {
+  selectBuiltInPlugins,
+  selectPluginsForScope,
+} from "@/settings/pluginCapabilityProjection.js";
 
 const DEFAULT_MCP_SOURCE: ServerScope = "mycodeagentmcp";
 const MCP_OAUTH_AUTHORIZATION_STATUS_REFRESH_MS = 1_000;
@@ -414,11 +412,9 @@ function buildPendingMcpOAuthAuthorizationRefreshKey(
 
 function PluginMcpServerList({
   items,
-  pluginListingById,
   onOpenAuthorization,
 }: {
   items: PluginMcpServerItem[];
-  pluginListingById: ReadonlyMap<string, MyCodeAvailablePluginSummary["listing"]>;
   onOpenAuthorization?: (item: PluginMcpServerItem) => void;
 }) {
   const { intl } = useMyCodeIntl();
@@ -455,7 +451,12 @@ function PluginMcpServerList({
       }
       return item.hostProvided
         ? intl.formatMessage(
-            { id: "settings.mcp.host.activeDescription" },
+            {
+              id:
+                item.name === "cua_driver"
+                  ? "settings.mcp.host.driverDescription"
+                  : "settings.mcp.host.activeDescription",
+            },
             { pluginName: item.pluginName },
           )
         : intl.formatMessage({ id: "settings.mcp.plugin.activeDescription" });
@@ -478,30 +479,23 @@ function PluginMcpServerList({
         const statusDescription = resolveStatusDescription(item);
         return (
           <div
-            className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-hover"
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2 transition-colors hover:bg-hover"
             data-mcp-status={item.status ?? ""}
             data-mcp-tool-count={item.toolCount}
             data-testid={testId(TID_PLUGIN_MCP_SERVER_ROW, item.runtimeServerName)}
           >
-            <div className="relative size-9 shrink-0" data-mcp-status-dot-placement="icon-corner">
-              <PluginStoreAvatar
-                item={{
-                  name: item.pluginName,
-                  listing: pluginListingById.get(item.pluginId),
-                }}
-                className="size-9 bg-background"
-              />
-              <span className="absolute -right-1 -bottom-1 flex size-4 items-center justify-center rounded-full bg-background">
+            <div className="min-w-0">
+              <div className="flex min-w-0 items-center gap-1.5">
                 <McpStatusDot
                   status={item.status}
                   attention={Boolean(item.authorization?.authorizationUrl)}
                   disabled={!item.pluginEnabled}
                   reason={statusDescription}
                 />
-              </span>
-            </div>
-            <div className="min-w-0">
-              <div className="truncate text-ui-base font-medium text-foreground">{item.name}</div>
+                <span className="truncate text-ui-base font-medium text-foreground">
+                  {item.name}
+                </span>
+              </div>
               {item.status === "error" ? (
                 <McpFailurePresentation error={item.error} failureKind={item.failureKind} />
               ) : (
@@ -543,6 +537,7 @@ interface McpSettingsSectionProps {
   parentScopeKey: string;
   workspaceTabs: WorkspaceTabState[];
   searchQuery: string;
+  filters?: ReactNode;
   onVisibleCountChange?: (count: number) => void;
   onEditorOpenChange?: (open: boolean) => void;
   onFormScopeKeyChange?: (scopeKey: string | null) => void;
@@ -560,6 +555,7 @@ export function McpSettingsSection({
   parentScopeKey,
   workspaceTabs,
   searchQuery,
+  filters,
   onVisibleCountChange,
   onEditorOpenChange,
   onFormScopeKeyChange,
@@ -1183,9 +1179,21 @@ export function McpSettingsSection({
     [availablePlugins],
   );
   const filteredMcpCount = filteredServers.length + pluginMcpServers.length;
+  // 浏览器和计算机运行时保留在统一 Servers 组；来源事实与授权回调仍由原列表维护。
+  const builtInMcpPluginIds = useMemo(
+    () => new Set(selectBuiltInPlugins(plugins, installedPlugins).map((plugin) => plugin.id)),
+    [plugins, installedPlugins],
+  );
+  const serverGroupItems = useMemo(
+    () => pluginMcpServers.filter((item) => builtInMcpPluginIds.has(item.pluginId)),
+    [pluginMcpServers, builtInMcpPluginIds],
+  );
   const pluginMcpGroups = useMemo(
-    () => groupPluginMcpServersByPlugin(pluginMcpServers),
-    [pluginMcpServers],
+    () =>
+      groupPluginMcpServersByPlugin(
+        pluginMcpServers.filter((item) => !builtInMcpPluginIds.has(item.pluginId)),
+      ),
+    [pluginMcpServers, builtInMcpPluginIds],
   );
   const mcpProjectionReady =
     !activeWorkspacePath ||
@@ -1207,7 +1215,7 @@ export function McpSettingsSection({
         .map(({ server }) => server),
     [filteredServers],
   );
-  const hideInstalledGroup = Boolean(query.trim()) && installedServers.length === 0;
+  const hideInstalledGroup = installedServers.length === 0 && serverGroupItems.length === 0;
   useEffect(() => {
     onVisibleCountChange?.(filteredMcpCount);
   }, [filteredMcpCount, onVisibleCountChange]);
@@ -1418,6 +1426,21 @@ export function McpSettingsSection({
 
   return (
     <div className="space-y-4">
+      <SettingsResourcePageHeader
+        title={intl.formatMessage({ id: "settings.plugins.title" })}
+        description={intl.formatMessage({ id: "settings.plugins.description" })}
+        filters={filters}
+        actions={
+          <SettingsResourceHeaderActions
+            onRefresh={() => void handleManualRefresh()}
+            refreshing={refreshingStatusList}
+            onImport={() => setImportDialogOpen(true)}
+            onNew={handleCreate}
+            importActionId="settings.mcp.import.open"
+            newActionId="settings.mcp.create.open"
+          />
+        }
+      />
       {connectedRemoteSyncTarget ? (
         <div className="flex justify-end">
           <ControlHintTooltip title={intl.formatMessage({ id: "settings.mcp.remoteSync.open" })}>
@@ -1460,26 +1483,11 @@ export function McpSettingsSection({
       >
         <section
           className={hideInstalledGroup ? "hidden" : "space-y-4"}
-          data-mcp-plugin-group="installed"
+          data-mcp-plugin-group="servers"
         >
-          <div data-mcp-plugin-installed-actions="true">
-            <SettingsResourceGroupHeader
-              actions={
-                <SettingsResourceHeaderActions
-                  onRefresh={() => void handleManualRefresh()}
-                  refreshing={refreshingStatusList}
-                  onImport={() => setImportDialogOpen(true)}
-                  onNew={handleCreate}
-                  importActionId="settings.mcp.import.open"
-                  newActionId="settings.mcp.create.open"
-                />
-              }
-              count={installedServers.length}
-              title={intl.formatMessage({
-                id: "settings.plugin.mcp.installed",
-              })}
-            />
-          </div>
+          <SettingsResourceGroupHeader
+            title={intl.formatMessage({ id: "settings.plugin.mcp.servers" })}
+          />
           {installedServers.length > 0 ? (
             <McpServerList
               hideMetadata
@@ -1493,40 +1501,11 @@ export function McpSettingsSection({
                 id: "settings.mcp.emptyDescription",
               })}
             />
-          ) : scopedServers.length === 0 && !query.trim() ? (
-            <PluginInstallEmptyState
-              title={intl.formatMessage({
-                id: "settings.plugin.mcp.emptyInstalledTitle",
-              })}
-              description={intl.formatMessage({
-                id: "settings.plugin.mcp.emptyInstalledDescription",
-              })}
-              actions={
-                <>
-                  <Button
-                    type="button"
-                    variant="default"
-                    size="lg"
-                    onClick={() => {
-                      handleCreate();
-                    }}
-                  >
-                    <Plus data-icon="inline-start" aria-hidden="true" />
-                    {intl.formatMessage({
-                      id: "settings.plugin.mcp.newServer",
-                    })}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="lg"
-                    onClick={() => setImportDialogOpen(true)}
-                  >
-                    <Import data-icon="inline-start" aria-hidden="true" />
-                    {intl.formatMessage({ id: "settings.mcp.import.action" })}
-                  </Button>
-                </>
-              }
+          ) : null}
+          {serverGroupItems.length > 0 ? (
+            <PluginMcpServerList
+              items={serverGroupItems}
+              onOpenAuthorization={handleOpenPluginAuthorization}
             />
           ) : null}
         </section>
@@ -1537,7 +1516,6 @@ export function McpSettingsSection({
             data-mcp-plugin-group={group.pluginId}
           >
             <SettingsResourceGroupHeader
-              count={group.items.length}
               title={resolvePluginDisplayName(
                 {
                   name: group.pluginName,
@@ -1548,7 +1526,6 @@ export function McpSettingsSection({
             />
             <PluginMcpServerList
               items={group.items}
-              pluginListingById={pluginListingById}
               onOpenAuthorization={handleOpenPluginAuthorization}
             />
           </section>

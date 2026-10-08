@@ -26,6 +26,7 @@ import {
   isTurnCancellationError,
   findParallelGroupIndex,
   recordTurnFileChange,
+  buildTurnFileChangeSummary,
 } from "../helpers/index.js";
 import type {
   PermissionDecisionResult,
@@ -199,6 +200,22 @@ export async function emitFileMutationCheckpoint(
     );
     throwIfTurnAborted(options.abortSignal);
 
+    // 原来等模型整轮结束才发布统计；检查点持久化成功后即时发布净变更。
+    // 复制可变条目，避免事件提交失败污染唯一的本轮统计。
+    const nextChanges = new Map(
+      Array.from(this.currentTurnFileChanges, ([path, entry]) => [
+        path,
+        { ...entry, toolNames: new Set(entry.toolNames) },
+      ]),
+    );
+    recordTurnFileChange(nextChanges, {
+      afterContent: candidate.content,
+      beforeContent: candidate.originalFile,
+      path: candidate.filePath,
+      structuredPatch: candidate.structuredPatch,
+      toolName: options.result.toolName,
+    });
+    const summary = buildTurnFileChangeSummary(nextChanges)!;
     const event = this.createEvent(
       SessionEventType.CheckpointCreated,
       {
@@ -210,18 +227,17 @@ export async function emitFileMutationCheckpoint(
         snapshotRef: artifact.uri,
         diffRef: artifact.uri,
         fileCount: 1,
+        fileChanges: {
+          files: summary.files,
+          additions: summary.additions,
+          deletions: summary.deletions,
+        },
       },
       options.traceContext,
     );
     await this.appendEvent(event, options.traceContext);
     options.events.push(event);
-    recordTurnFileChange(this.currentTurnFileChanges, {
-      afterContent: candidate.content,
-      beforeContent: candidate.originalFile,
-      path: candidate.filePath,
-      structuredPatch: candidate.structuredPatch,
-      toolName: options.result.toolName,
-    });
+    this.currentTurnFileChanges = nextChanges;
 
     this.logger?.debug("Workspace checkpoint created", {
       ...traceContextToLogContext(options.traceContext),

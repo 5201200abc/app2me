@@ -111,6 +111,7 @@ import { createProtocolOffPeakPort } from "./offpeak-port.js";
 import { createProtocolBrowserControlBroker } from "./browser-control-broker.js";
 import { mapComputerUseOperationEvent } from "./computer-use-operation-event.js";
 import { protocolMcpServersToRuntimeMcpConfig } from "./protocol-mcp-config.js";
+import { resolveProtocolSessionMcpServers } from "./session-mcp-resolution.js";
 import { projectIdFromDirectory } from "../app/paths.js";
 import {
   collectSubagentChildSessionIds,
@@ -3313,7 +3314,13 @@ async function createRecord(
       ? (params.parentSessionId as SessionId)
       : undefined;
   const taskType = params.taskType ?? "interactive";
-  const runtimeMcp = protocolMcpServersToRuntimeMcpConfig(params.mcpServers);
+  const sessionMcpServers = await resolveProtocolSessionMcpServers(
+    context,
+    workspace,
+    params.mcpServers,
+    context.deps.env,
+  );
+  const runtimeMcp = protocolMcpServersToRuntimeMcpConfig(sessionMcpServers);
   context.logger?.info("MyCode Protocol createRecord MCP config", {
     event: "mycode_protocol.create_record.mcp_config",
     rootTraceId: traceContext.traceId,

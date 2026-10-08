@@ -91,7 +91,6 @@ const webSearchHandler: ToolHandler<WebSearchInput, WebSearchOutput> = async (in
       },
     ],
     tools: [createProviderNativeWebSearchContract(input)],
-    // BigModel 的 Anthropic 兼容端点会拒绝 named forced web_search tool_choice（1210）。
     // 这里保持自动选择，依靠单工具请求和 prompt 触发 provider-native 搜索。
     options: {
       ...auxiliaryModelOptions(model),
@@ -100,7 +99,6 @@ const webSearchHandler: ToolHandler<WebSearchInput, WebSearchOutput> = async (in
     abortSignal: context.abortSignal,
   };
 
-  // BigModel Anthropic 兼容端点的非流式 JSON 会把 provider 内部
   // web_search 结果返回为 assistant-side 裸 tool_result，AI SDK 会在 schema
   // 校验阶段抛 Invalid JSON response。走流式可复用现有 SSE compat。
   const result = await collectWebSearchStreamResult({

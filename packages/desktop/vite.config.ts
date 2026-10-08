@@ -43,7 +43,7 @@ export const desktopRendererDependencyAliases = {
   // 通过 Node 解析真实安装根目录，既保留单 React runtime，又兼容不同 node-linker。
   react: resolveInstalledPackageRoot("react"),
   "react-dom": resolveInstalledPackageRoot("react-dom"),
-  "lucide-react": resolveInstalledPackageRoot("lucide-react"),
+  "@tabler/icons-react": resolveInstalledPackageRoot("@tabler/icons-react"),
 } as const;
 
 function resolveMyCodeEnv(value: string | undefined): "test" | "production" {
@@ -184,9 +184,21 @@ export default defineConfig(({ mode }) => {
         // 这里把 d3-path 固定到根部 3.x 入口，确保桌面端依赖优化和运行时解析一致。
         "d3-path": resolve(__dirname, "../../node_modules/d3-path/src/index.js"),
       },
-      dedupe: ["react", "react-dom", "lucide-react"],
+      dedupe: ["react", "react-dom", "@tabler/icons-react"],
     },
     server: { port: 5174, strictPort: true },
+    optimizeDeps: {
+      // 图表懒加载后才发现 Recharts 会重建 React 预构建入口；旧页面与新图表
+      // 持有不同 URL 的 React dispatcher，导致 useSyncExternalStore 读到 null。
+      // 启动时一起预构建 React 和图表依赖，保留懒加载，固定同一依赖图。
+      include: [
+        "react",
+        "react-dom/client",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "recharts",
+      ],
+    },
     define: {
       __MYCODE_ENDPOINT_ENV__: JSON.stringify(pickProductEndpointEnv(env)),
       __MYCODE_VERSION__: JSON.stringify(buildMetadata.appVersion),

@@ -36,7 +36,7 @@ export const DEFAULT_PLUGIN_MARKETPLACES: DefaultPluginMarketplace[] = [
     id: MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID,
     source: "bundled",
     name: MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID,
-    description: "Official MyCode plugins marketplace: built-in and community plugins for MyCode.",
+    description: "Built-in plugins distributed with app2me.",
     pluginCount: 0,
   },
 ];

@@ -1,5 +1,5 @@
 import type { MyCodeModelTrajectoryMessage } from "@mycode/services";
-import { Maximize2Icon, Minimize2Icon } from "lucide-react";
+import { Maximize2Icon, Minimize2Icon } from "@/components/icons/tabler.js";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge.js";
 import { Button } from "@/components/ui/button.js";

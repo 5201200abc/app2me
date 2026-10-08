@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CircleHelp, Loader2 } from "lucide-react";
+import { CircleHelp, Loader2 } from "@/components/icons/tabler.js";
 import { MYCODE_AGENT_PROVIDER, type MyCodeConfigOption } from "@mycode/shared";
 import { ThoughtLevelCycleControl } from "@/chat-input-toolbar/ThoughtLevelCycleControl.js";
 import type { useMyCodeIntl } from "@/i18n/IntlProvider.js";
@@ -79,6 +79,7 @@ export function SubagentReasoningField({
       }}
       triggerRef={triggerRef}
       restoreFocusSelector={null}
+      contentClassName="agent-settings-typography"
       labelVisibilityClassName={labelVisibilityClassName}
       triggerClassName="h-8 rounded-lg border border-input-border bg-input px-2 py-1.5 text-foreground hover:border-input-border-hover hover:bg-input"
       onValueChange={onValueCommit}

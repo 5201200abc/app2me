@@ -1,0 +1,248 @@
+/* 工具栏沿用输入框壳的内边距，避免叠加 padding 和负 margin 造成左右不等距。 */
+[data-prompt-editor-shell][data-prompt-editor-shell]:has(> .composer-bottom-bar) {
+  --composer-toolbar-padding: calc(var(--ui-space) * 3);
+  padding-inline: var(--composer-toolbar-padding);
+  padding-bottom: var(--composer-toolbar-padding);
+}
+.composer-bottom-bar {
+  --bar-fs: var(--text-ui-caption);
+  --bar-fs-sub: var(--bar-fs);
+  --bar-icon: calc(var(--ui-space) * 3.5);
+  --bar-icon-sm: calc(var(--ui-space) * 2.5);
+  --bar-model-chevron: calc(var(--ui-space) * 2.5);
+  --bar-h: calc(var(--ui-space) * 7);
+  --bar-gap: calc(var(--ui-space) * 0.5);
+  --bar-inner-gap: var(--ui-space);
+  --bar-radius: 6px;
+  --bar-orange: var(--conversation-link, var(--color-brand));
+  container: composer-bar / inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--bar-h);
+  padding: 0;
+  width: 100%;
+  gap: var(--bar-gap);
+  min-width: 0;
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-leading-actions] {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-leading-content] {
+  flex: 1 1 0;
+  min-width: 0;
+  gap: var(--bar-gap);
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-leading-content] > span,
+.composer-bottom-bar.composer-bottom-bar [data-testid="composer-model-controls"] {
+  min-width: 0;
+  flex-shrink: 1;
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-trailing-actions] {
+  margin: 0;
+  flex: none;
+  align-items: center;
+  gap: calc(var(--ui-space) * 1.5);
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-submit-controls] {
+  align-items: center;
+  gap: calc(var(--ui-space) * 3);
+}
+.composer-bottom-bar.composer-bottom-bar button {
+  height: var(--bar-h);
+  min-height: var(--bar-h);
+  border: 0;
+  border-radius: var(--bar-radius);
+  padding: 0 calc(var(--ui-space) * 1.5);
+  gap: var(--bar-inner-gap);
+  font-size: var(--bar-fs);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-foreground);
+  background: transparent;
+  transition:
+    background-color 120ms,
+    color 120ms,
+    opacity 120ms,
+    box-shadow 120ms;
+}
+.composer-bottom-bar.composer-bottom-bar button:not(:disabled):hover {
+  background: color-mix(in srgb, currentColor 6%, transparent);
+}
+.composer-bottom-bar.composer-bottom-bar button:focus-visible {
+  /* 全局 focus reset 使用 important；底栏需显式恢复用户要求的键盘焦点环。 */
+  outline: 2px solid var(--color-primary) !important;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.composer-bottom-bar.composer-bottom-bar button:disabled {
+  opacity: 0.4;
+  background: transparent;
+}
+.composer-bottom-bar.composer-bottom-bar svg,
+.composer-bottom-bar.composer-bottom-bar [data-model-logo] {
+  width: var(--bar-icon);
+  height: var(--bar-icon);
+  flex: none;
+  color: currentColor;
+  stroke-width: 1.5;
+}
+.composer-bottom-bar.composer-bottom-bar
+  svg
+  :is(path, rect, circle, line, polyline, polygon, ellipse) {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1.5;
+}
+.composer-bottom-bar.composer-bottom-bar [data-bar-chevron] {
+  display: block;
+  width: var(--bar-icon-sm);
+  height: var(--bar-icon-sm);
+  color: var(--color-foreground-subtle);
+  margin: 0;
+}
+.composer-bottom-bar.composer-bottom-bar .composer-model-tail [data-bar-chevron] {
+  width: var(--bar-model-chevron);
+  height: var(--bar-model-chevron);
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-add] {
+  width: var(--bar-h);
+  padding: 0;
+  flex: none;
+  color: var(--color-foreground-subtle);
+}
+.composer-bottom-bar.composer-bottom-bar .composer-model-trigger {
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  padding: 0 calc(var(--ui-space) * 1.5);
+  gap: var(--bar-inner-gap);
+}
+.composer-bottom-bar.composer-bottom-bar .composer-model-text {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: var(--bar-inner-gap);
+  flex: 0 1 auto;
+}
+.composer-bottom-bar.composer-bottom-bar .composer-model-name {
+  display: block;
+  min-width: 0;
+  max-width: 220px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-foreground);
+  font-size: var(--bar-fs);
+  font-weight: 400;
+}
+.composer-bottom-bar.composer-bottom-bar .composer-model-name span {
+  height: auto;
+  max-width: 100%;
+  line-height: 1;
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-thought-summary] {
+  display: flex;
+  align-items: baseline;
+  gap: var(--bar-inner-gap);
+  font-size: var(--bar-fs-sub);
+  line-height: 1;
+  font-weight: 400;
+  color: var(--color-foreground-subtle);
+  flex: none;
+}
+/* 其他档位的隐藏文本原本撑宽标签，导致 High 与箭头的可见间距大于 gap。 */
+.composer-bottom-bar.composer-bottom-bar [data-composer-thought-summary] > [aria-hidden="true"] {
+  display: none;
+}
+.composer-bottom-bar.composer-bottom-bar .composer-model-tail {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex-wrap: nowrap;
+  gap: var(--bar-inner-gap);
+}
+.composer-bottom-bar.composer-bottom-bar .composer-permission-trigger {
+  min-width: 0;
+  width: auto;
+  padding: 0 calc(var(--ui-space) * 1.5);
+  color: var(--bar-orange);
+  flex-shrink: 1;
+}
+.composer-bottom-bar.composer-bottom-bar .composer-permission-trigger [data-bar-chevron] {
+  color: inherit;
+}
+.composer-bottom-bar.composer-bottom-bar .composer-permission-trigger:not(:disabled):hover {
+  background: color-mix(in srgb, var(--bar-orange) 10%, transparent);
+}
+.composer-bottom-bar.composer-bottom-bar .composer-permission-label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
+}
+.composer-bottom-bar.composer-bottom-bar [data-testid="chat-context-usage-trigger"] {
+  width: var(--bar-h);
+  padding: 0;
+  flex: none;
+  color: var(--color-foreground-subtle);
+}
+.composer-bottom-bar.composer-bottom-bar [data-testid="v4-composer-send"],
+.composer-bottom-bar.composer-bottom-bar [data-testid="v4-stop"] {
+  width: var(--bar-h);
+  height: var(--bar-h);
+  min-height: var(--bar-h);
+  padding: 0;
+  flex: none;
+  border-radius: 50%;
+  color: var(--color-conversation-send-foreground);
+  background: var(--conversation-send, var(--color-brand));
+}
+.composer-bottom-bar.composer-bottom-bar [data-testid="v4-composer-send"]:disabled {
+  background: var(--color-conversation-send-disabled);
+}
+@container composer-bar (width < 480px) {
+  .composer-bottom-bar.composer-bottom-bar [data-composer-leading-content] > span:first-of-type {
+    /* 模型外层不能吸收剩余空间，否则权限按钮与模型之间会出现额外留白。 */
+    flex: 0 1 auto;
+  }
+  .composer-bottom-bar.composer-bottom-bar .composer-permission-label {
+    max-width: 5em;
+  }
+}
+
+/* 通用按钮悬停曾覆盖发送强调色，导致有内容时仍变成透明背景。 */
+.theme-mycode-dark
+  .composer-bottom-bar.composer-bottom-bar
+  [data-testid="v4-composer-send"]:not(:disabled):hover {
+  background: color-mix(
+    in srgb,
+    var(--conversation-send, var(--color-brand)) 90%,
+    var(--color-foreground) 10%
+  );
+}
+
+/* 模型与权限仍用原菜单触发器，仅收掉箭头；分隔点只随真实档位展示。 */
+.composer-bottom-bar.composer-bottom-bar
+  :is(.composer-model-trigger, .composer-permission-trigger)
+  [data-bar-chevron] {
+  display: none;
+}
+.composer-bottom-bar.composer-bottom-bar [data-composer-thought-summary]::before {
+  content: "·";
+}
+.composer-bottom-bar.composer-bottom-bar .composer-model-trigger [data-model-logo] {
+  width: var(--text-ui-lg);
+  height: var(--text-ui-lg);
+}
+
+/* 用量的 Radix 锚点 span 曾被通用模型收缩规则压窄，按钮溢出 span 后与右侧权限重叠。 */
+.composer-bottom-bar.composer-bottom-bar
+  [data-composer-leading-content]
+  > span:has([data-testid="chat-context-usage-trigger"]) {
+  flex: none;
+}

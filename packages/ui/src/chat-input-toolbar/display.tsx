@@ -38,9 +38,12 @@ import {
   NotepadText,
   ShieldAlertIcon,
   ShieldCheckIcon,
-  type LucideIcon,
-} from "lucide-react";
-import { MYCODE_MODE_OPTION_DESCRIPTION_IDS, MYCODE_MODE_OPTION_LABEL_IDS } from "./display-help.js";
+  type UiIcon,
+} from "@/components/icons/tabler.js";
+import {
+  MYCODE_MODE_OPTION_DESCRIPTION_IDS,
+  MYCODE_MODE_OPTION_LABEL_IDS,
+} from "./display-help.js";
 import { RollingToolbarLabel } from "@/chat-input-toolbar/RollingToolbarLabel.js";
 
 export {
@@ -203,7 +206,7 @@ function isHighPermissionModeValue(value: unknown): boolean {
   return value === "yolo";
 }
 
-export function resolveModeOptionIcon(value: unknown): LucideIcon {
+export function resolveModeOptionIcon(value: unknown): UiIcon {
   if (isHighPermissionModeValue(value)) {
     return ShieldAlertIcon;
   }
@@ -249,7 +252,7 @@ export function ConfigSelect({
   indicatorClassName?: string;
   triggerVariant?: ConfigSelectTriggerVariant;
   triggerSize?: ConfigSelectTriggerSize;
-  leadingIcon?: LucideIcon;
+  leadingIcon?: UiIcon;
   labelVisibilityClassName?: string;
   provider?: MyCodeProvider;
   restoreFocusSelector?: string | null;

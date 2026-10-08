@@ -1,3 +1,4 @@
+import { captureInteractiveScreenshot } from "./myChatScreenshot.js";
 /* eslint-disable max-lines -- 桌面平台 IPC 集中装配，拆散会让权限边界更难审计；行数随平台能力增长。 */
 import { BrowserWindow, dialog, ipcMain, nativeTheme } from "electron";
 import { readMyCodeStdioTapDevState } from "@mycode/services/node";
@@ -21,6 +22,8 @@ import {
   type UpdateStatePayload,
   type WindowControlsOverlayReadyPayload,
 } from "@mycode/shared";
+import { getDesktopToolEnvironment } from "./toolEnvironment.js";
+import { getWebsiteBrowsers, openWebsiteBrowser } from "./websiteBrowsers.js";
 import { getInstalledEditors } from "./editors.js";
 import { getApplicationIcon } from "./applicationIcons.js";
 import { exportLogs } from "./exportLogs.js";
@@ -119,6 +122,36 @@ export function registerPlatformIpcHandlers(options: {
     return result.filePaths[0];
   });
 
+  ipcMain.handle(PlatformChannels.CaptureInteractiveScreenshot, () =>
+    captureInteractiveScreenshot(),
+  );
+  ipcMain.handle(PlatformChannels.SelectFilesAndFolders, async (event) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    // Electron 在 Windows/Linux 不能同时选择文件与目录，先明确类型再打开原生选择器。
+    let directoriesOnly = false;
+    if (process.platform !== "darwin") {
+      const prompt: Electron.MessageBoxOptions = {
+        message: "选择附件类型",
+        buttons: ["文件", "文件夹", "取消"],
+        cancelId: 2,
+      };
+      const choice = window
+        ? await dialog.showMessageBox(window, prompt)
+        : await dialog.showMessageBox(prompt);
+      if (choice.response === 2) return [];
+      directoriesOnly = choice.response === 1;
+    }
+    const options: Electron.OpenDialogOptions = {
+      properties:
+        process.platform === "darwin"
+          ? ["openFile", "openDirectory", "multiSelections"]
+          : [directoriesOnly ? "openDirectory" : "openFile", "multiSelections"],
+    };
+    const result = window
+      ? await dialog.showOpenDialog(window, options)
+      : await dialog.showOpenDialog(options);
+    return result.canceled ? [] : result.filePaths;
+  });
   ipcMain.handle(PlatformChannels.SelectFiles, async () => {
     const result = await dialog.showOpenDialog({
       properties: ["openFile", "multiSelections"],
@@ -320,8 +353,6 @@ export function registerPlatformIpcHandlers(options: {
     currentApplicationLocale: options.currentApplicationLocale,
   });
 
-  ipcMain.handle(PlatformChannels.CanOpenCommunity, async () => false);
-
   ipcMain.handle(
     PlatformChannels.AcknowledgePostUpdateReleaseNotes,
     async (_event, version: string) => {
@@ -364,6 +395,14 @@ export function registerPlatformIpcHandlers(options: {
     return resolveDesktopWindowChromeState(senderWindow?.isMaximized() ?? false);
   });
   ipcMain.handle(PlatformChannels.GetInstalledEditors, () => getInstalledEditors());
+  ipcMain.handle(PlatformChannels.GetWebsiteBrowsers, () => getWebsiteBrowsers());
+  ipcMain.handle(PlatformChannels.GetDesktopToolEnvironment, () => getDesktopToolEnvironment());
+  ipcMain.handle(PlatformChannels.OpenWebsiteBrowser, (_event, payload: unknown) => {
+    if (!payload || typeof payload !== "object")
+      return { success: false, error: "Invalid request" };
+    const request = payload as { browserId?: unknown; url?: unknown };
+    return openWebsiteBrowser(request.browserId, request.url);
+  });
   ipcMain.handle(
     PlatformChannels.GetApplicationIcon,
     (_event, request: string | ApplicationIconRequest) => getApplicationIcon(request),

@@ -1,8 +1,8 @@
 import { readSafeLocalStorage } from "@/lib/browserEnvironment.js";
 
-const DEFAULT_UI_FONT_SIZE_PX = 13;
+const DEFAULT_UI_FONT_SIZE_PX = 16;
 export const MIN_UI_FONT_SIZE_PX = 11;
-export const MAX_UI_FONT_SIZE_PX = 13;
+export const MAX_UI_FONT_SIZE_PX = 16;
 export const UI_FONT_SIZE_STORAGE_KEY = "mycode-ui-font-size-px";
 
 export function normalizeUiFontSizePx(value: unknown): number {
@@ -22,8 +22,8 @@ export function applyUiFontSizePx(fontSizePx: number): void {
   if (!rootStyle?.setProperty) {
     return;
   }
-  // 只更新 UI 字号 Token 的基准变量，避免根 font-size 连带缩放图标、间距和圆角。
-  rootStyle.setProperty("--ui-font-size", `${normalizeUiFontSizePx(fontSizePx)}px`);
+  // 根字号保持不变；UI token 使用 rem，相关控件仅通过共享密度 token 同步缩放。
+  rootStyle.setProperty("--ui-font-size", `${normalizeUiFontSizePx(fontSizePx) / 16}rem`);
 }
 
 export function subscribeToUiFontSizeStorageChanges(): () => void {

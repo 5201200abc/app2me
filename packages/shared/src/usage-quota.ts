@@ -51,11 +51,11 @@ export const MCP_USAGE_QUOTA_LIMIT_TYPE = "MCP_USAGE_LIMIT" as const;
 /** MCP 额度所属的 Coding Plan 连接，供 UI 判断能否显示在当前 provider tab 下。 */
 export type UsageMcpQuotaScope =
   | {
-      providerFamily: "zai" | "bigmodel";
+      providerFamily: string;
       targetType: "PERSONAL";
     }
   | {
-      providerFamily: "zai" | "bigmodel";
+      providerFamily: string;
       targetType: "TEAM";
       organizationId: string;
       projectId: string;

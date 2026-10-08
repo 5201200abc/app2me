@@ -1,10 +1,9 @@
 /** English translations */
 const enUS: Record<string, string> = {
-  "chat.toolbar.strength.choose": "Choose strength",
+  "chat.toolbar.strength.choose": "Effort Level",
   "chat.toolbar.strength.reset": "Reset to default strength",
-  "chat.toolbar.strength.modelMenu": "Choose model",
 
-  "settings.localModels.title": "Local models",
+  "settings.localModels.title": "HuggingFace",
   "settings.localModels.description":
     "Connect llama.cpp and discover GGUF models in this host’s ~/models directory.",
   "settings.localModels.address": "llama API URL",
@@ -14,86 +13,14 @@ const enUS: Record<string, string> = {
   "settings.localModels.saved": "Connection saved",
   "settings.localModels.saving": "Saving…",
   "settings.localModels.save": "Save connection",
-  "settings.localModels.directory": "Model directory",
   "settings.localModels.missing":
     "Model directory not found. Place GGUF files in ~/models and refresh.",
   "settings.localModels.empty": "No complete GGUF models found.",
   "settings.localModels.vision": "Vision projector found",
-  "settings.localModels.efforts": "Thinking: low / medium / xhigh (default) · no thinking",
-  "settings.localModels.toggle": "Thinking: thinking / no thinking",
-  "settings.localModels.modelId": "Request model ID",
-  "settings.localModels.serverHint":
-    "Discovery does not load a model into llama. The server must use the model IDs shown here. Choose a model and thinking mode in the chat composer.",
-  "settings.localModels.catalog": "Local models and DeepSeek",
   "settings.localModels.refresh": "Refresh models",
 
-  "startPlan.recommendation.subagentDescription":
-    "Your Start Plan has quota available for {model}. Switch this subagent’s model to the Start Plan?",
-  "startPlan.recommendation.preferenceSaveFailed":
-    "Could not save “Don’t ask again”. Continuing with your choice for this operation.",
-  "startPlan.recommendation.title": "Start Plan quota available",
-  "startPlan.recommendation.description":
-    "Your Start Plan still has quota for {model}. Would you like to use it?",
-  "startPlan.recommendation.switch": "Switch plan",
-  "startPlan.recommendation.decline": "Not now",
-  "startPlan.recommendation.dismiss": "Don’t show again",
-  "occupationOnboarding.stepMode": "UI mode",
-  "occupationOnboarding.modeTitle": "Choose your UI mode",
-  "occupationOnboarding.modeDescription": "How would you like MyCode to show its work?",
-  "occupationOnboarding.coding": "Coding mode",
-  "occupationOnboarding.codingDescription":
-    "I want to see code, command output, and change details throughout the development process.",
-  "occupationOnboarding.officeMode": "Office mode",
-  "occupationOnboarding.officeModeDescription":
-    "I focus on task progress and results, without needing code, command output, or other technical details.",
-  "chat.officeSuggestions.setting": "Proactive task suggestions",
-  "chat.officeSuggestions.settingDescription": "Available only in Office mode.",
   "chat.plugins.browseMarketplace": "Browse plugins",
   "chat.plugins.loadError": "Could not load plugins. Reopen the menu to try again.",
-  "chat.officeSuggestions.saveError": "Could not save suggestions settings. Please try again.",
-  "chat.officeSuggestions.refresh": "Show more",
-  "chat.officeSuggestions.closeTitle": "Turn off task suggestions?",
-  "chat.officeSuggestions.closeDescription": "You can turn them on again in Settings.",
-  "chat.officeSuggestions.closeError": "Could not turn off suggestions. Please try again.",
-  "occupationOnboarding.suggestionsHeading": "Suggested tasks",
-  "occupationOnboarding.infrastructure": "QA / Operations / Security",
-  "occupationOnboarding.product": "Product / Project / Solutions",
-  "occupationOnboarding.design": "UI / UX / Visual Design",
-  "occupationOnboarding.creator": "Media / Content Creation",
-  "occupationOnboarding.operations": "Operations / Commerce / Customer Service",
-  "occupationOnboarding.marketing": "Marketing / Brand / PR",
-  "occupationOnboarding.finance": "Finance / Accounting / Consulting",
-  "occupationOnboarding.independent": "Entrepreneurship / Freelancing / OPC",
-  "occupationOnboarding.accounting": "Accounting / Audit / Tax",
-  "occupationOnboarding.legal": "Legal / Administration / HR",
-  "occupationOnboarding.skip": "Skip",
-  "occupationOnboarding.start": "Get started",
-  "occupationOnboarding.continue": "Next",
-  "occupationOnboarding.saving": "Saving…",
-  "occupationOnboarding.back": "Back",
-  "occupationOnboarding.error": "Failed to save. Please try again.",
-  "occupationOnboarding.stepRole": "Your work",
-  "occupationOnboarding.stepPreferences": "Preferences",
-  "occupationOnboarding.heroTitle": "Simple, Fast, Vibe‑Ready!",
-  "occupationOnboarding.heroDescription":
-    "Tackle complex goals with multiple agents.\nStay in control, wherever you are.",
-  "occupationOnboarding.title": "What do you do?",
-  "occupationOnboarding.description": "Choose the closest match to your everyday work.",
-  "occupationOnboarding.office": "Office professional",
-  "occupationOnboarding.developer": "Software / Data / AI",
-  "occupationOnboarding.student": "Students / Teaching / Research",
-  "occupationOnboarding.other": "Other professions",
-  "occupationOnboarding.preferences": "Personalize your work assistant",
-  "occupationOnboarding.preferencesDescription": "Choose which features to enable.",
-  "occupationOnboarding.migration": "Migrate conversations",
-  "occupationOnboarding.migrationDescription": "Migrate conversation history from Claude Code",
-  "occupationOnboarding.memory": "Enable Workspace Memory",
-  "occupationOnboarding.memoryDescription":
-    "Let MyCode remember your preferences and work context.",
-  "occupationOnboarding.suggestions": "Enable proactive task suggestions",
-  "occupationOnboarding.suggestionsDescription":
-    "Show suggestions in new conversations. Click to fill the composer.",
-  "occupationOnboarding.close": "Exit onboarding",
   "startup.global.silent": "Starting MyCode",
   "startup.global.upgrading": "Upgrading local data",
   "startup.global.initializing": "Initializing local data",
@@ -162,8 +89,6 @@ const enUS: Record<string, string> = {
   "bashOutput.error.read_failed": "Could not read the output file",
   "bashOutput.error.query_failed": "Could not connect to the task runtime",
 
-  "purchase.entry.loading": "Loading plans…",
-  "purchase.entry.retry": "Could not load plans. Retry",
   "bots.runtime.deliveryFailed": "Bot reply delivery failed",
   "bots.runtime.deliveryFailedDescription":
     "The message could not be delivered. Share the details below for troubleshooting. This notice clears after the next successful send.",
@@ -174,7 +99,6 @@ const enUS: Record<string, string> = {
   "chat.selections.file": "{name} · Selection",
   "chat.selections.mixedCount": "{count} selections",
   "chat.previewCards.openExternalFailed": "Could not open this file in the browser",
-  "settings.modelProvider.connectionMode.switchToStartPlan": "Switch to Start Plan",
   "chat.composer.contextSearchHint": "Type to search plugins, files, and chats",
   "chat.composer.contextShortcut": "Add context",
   "chat.composer.capabilityShortcut": "Choose capabilities",
@@ -190,12 +114,7 @@ const enUS: Record<string, string> = {
   "offPeak.chatCreated.open": "Go to idle-time tasks",
   "settings.computerUse.disabledToast":
     "Computer Use is disabled. Existing conversations require a MyCode restart to take effect.",
-  "settings.modelProvider.connectionUnavailableNotice": "The current plan is unavailable.",
   "settings.modelProvider.switchConnection": "Switch to “{connection}”",
-  "settings.modelProvider.connectionSuggestionStale":
-    "Plan availability has changed. Please select a connection in model settings.",
-  "settings.modelProvider.connectionSwitchFailed":
-    "Could not switch plans. The original connection is unchanged. Please retry.",
   "settings.modelProvider.connectionUnavailable":
     "The selected connection is unavailable. Please choose another connection.",
   "settings.modelProvider.navigationUnavailable":
@@ -529,7 +448,6 @@ const enUS: Record<string, string> = {
   "quickPick.command.toggleDiffPanel": "Switch to diff panel",
   "quickPick.command.feedback": "Feedback",
   "quickPick.command.myTickets": "My feedback",
-  "quickPick.command.community": "Community",
   "quickPick.command.productDocs": "Product docs",
   "quickPick.command.login": "Connect",
   "quickPick.command.logout": "Disconnect",
@@ -897,10 +815,9 @@ const enUS: Record<string, string> = {
   "login.oauth.noProviders":
     "No account providers are available right now. Please try again later.",
   "login.oauth.button": "Continue with {provider}",
-  "login.oauth.button.zai": "Connect to Z.ai",
-  "login.oauth.button.bigmodel": "Connect to BigModel",
-  "login.oauth.regionTag.zai": "Global",
-  "login.oauth.regionTag.bigmodel": "CN",
+
+  "bots.region.global": "Global",
+  "bots.region.china": "CN",
   "login.oauth.waiting": "Waiting for {provider} authentication...",
   "login.oauth.loginFailure": "Login failed, please try again",
   "login.oauth.cancel": "Cancel",
@@ -913,8 +830,7 @@ const enUS: Record<string, string> = {
   "login.apiKey.title": "API Key",
   "login.apiKey.placeholder": "Enter API key",
   "login.apiKey.providerLabel": "API key provider",
-  "login.apiKey.provider.zai": "Z.ai",
-  "login.apiKey.provider.bigmodel": "BigModel",
+
   "login.apiKey.getApiKey": "Get API Key",
   "login.apiKey.cancel": "Cancel",
   "login.apiKey.continue": "Continue",
@@ -1198,7 +1114,6 @@ const enUS: Record<string, string> = {
   "git.action.unstage": "Unstage",
   "git.action.discard": "Discard",
   "git.action.commit": "Commit",
-  "git.action.showTree": "Show file tree",
   "git.action.hideTree": "Hide file tree",
   "git.changeContext.revealInFileManager": "Open in file manager",
   "git.changeContext.revealInFileTree": "Reveal in file tree",
@@ -1524,7 +1439,6 @@ const enUS: Record<string, string> = {
   "workspaceHeader.help.issueReport": "Report an issue",
   "workspaceHeader.help.productRequest": "Request a feature",
   "workspaceHeader.help.productRequestDraft": "I would like to suggest: ",
-  "workspaceHeader.help.community": "User community",
   "workspaceHeader.help.docs": "Product docs",
   "titleBar.menu.file": "File",
   "titleBar.menu.view": "View",
@@ -1542,7 +1456,6 @@ const enUS: Record<string, string> = {
   "titleBar.menu.help.about": "About MyCode",
   "titleBar.menu.help.checkForUpdates": "Check for updates",
   "titleBar.menu.help.feedback": "Feedback",
-  "sidebar.menu.community": "Community",
   "titleBar.menu.help.exportLogs": "Export logs",
   "titleBar.menu.help.toggleDevTools": "Toggle developer tools",
   "titleBar.menu.help.resourceManager": "Resource manager",
@@ -1642,7 +1555,7 @@ const enUS: Record<string, string> = {
   "workspaceSidebar.archivedTasks": "Archived",
   "workspaceSidebar.taskViewOptions": "Filter and sort",
   "workspaceSidebar.organize": "View",
-  "workspaceSidebar.organizeGrouped": "Group",
+  "workspaceSidebar.organizeGrouped": "All",
   "workspaceSidebar.organizeByProject": "Project",
   "workspaceSidebar.conversationsSection": "Recents",
   "workspaceSidebar.projectsSection": "Projects",
@@ -1898,6 +1811,7 @@ const enUS: Record<string, string> = {
   "taskList.pinFailed": "Could not update pinned state",
   "taskList.markAsUnread": "Mark as unread",
   "taskList.openInSplitPane": "Open in split view",
+  "chat.toolCall.viewedImage": "Viewed an image",
   "chat.toolCall.agent.openInSidePane": "Open in side pane",
   "v4Pane.splitRight": "Split right",
   "v4Pane.renamePlaceholder": "Rename session…",
@@ -1940,7 +1854,6 @@ const enUS: Record<string, string> = {
   "taskGroup.color": "Group color",
   "taskGroup.changeColor": "Change color",
   "taskGroup.moveToGroup": "Move to group",
-  "taskGroup.moveToTop": "Move to top",
   "taskGroup.removeFromGroup": "Remove from group",
   "taskGroup.color.gray": "Gray",
   "taskGroup.color.red": "Red",
@@ -1977,6 +1890,7 @@ const enUS: Record<string, string> = {
   "chat.changeSummary.expand": "Expand changed files",
   "chat.changeSummary.collapse": "Collapse changed files",
   "chat.changeSummary.diffUnavailable": "This diff preview is currently unavailable.",
+  "chat.changeSummary.viewChanges": "View changes",
   "chat.changeSummary.review": "Review",
   "chat.changeSummary.openInEditor": "Open in editor",
   "chat.changeSummary.rewind": "Undo",
@@ -2053,25 +1967,16 @@ const enUS: Record<string, string> = {
   "settings.subtitle":
     "Switch major settings on the left and edit the details in the panel on the right.",
   "settings.navLabel": "Sections",
-  "settings.sidebar.group.basics": "Basics",
-  "settings.sidebar.group.agentCapabilities": "Agent capabilities",
-  "settings.sidebar.group.dataAndStats": "Data and statistics",
+  "settings.sidebar.group.basics": "Basic",
+  "settings.sidebar.group.agentCapabilities": "Integrations",
+  "settings.sidebar.group.coding": "Coding",
+  "settings.sidebar.group.tools": "Tools",
+  "settings.sidebar.group.dataAndStats": "Cost",
   "settings.nav.generalDescription": "Language and current window experience",
   "settings.nav.appearanceDescription": "Theme, UI font size, and code presentation",
   "settings.themeCardTitle": "Theme",
   "settings.themeCardDescription": "Use light, dark, or follow the system setting",
-  "chat.empty.greeting.office": "What's on your plate today? Leave it to me.",
-  "settings.interfaceMode": "Interface mode",
-  "settings.interfaceMode.office": "Office mode",
-  "settings.interfaceMode.coding": "Coding mode",
-  "settings.interfaceMode.description":
-    "Office mode focuses on summaries and results. Coding mode shows commands, output, and code changes.",
   "chat.toolCall.execute.conciseCompleted": "Ran a command",
-  "chat.contextOptimization.started": "Optimizing conversation",
-  "chat.contextOptimization.skipped": "No conversation optimization needed",
-  "chat.contextOptimization.interrupted": "Conversation optimization stopped",
-  "chat.contextOptimization.failed": "Conversation optimization failed",
-  "chat.contextOptimization.completed": "Conversation optimized",
   "settings.themeMode": "App theme",
   "settings.themeModeDescription": "Choose light, dark, or follow the system theme.",
   "settings.themeMode.light": "Light",
@@ -2126,7 +2031,6 @@ const enUS: Record<string, string> = {
   "settings.shortcuts.command.toggleTerminal": "Toggle Terminal",
   "settings.shortcuts.command.previousConversation": "Previous Task",
   "settings.shortcuts.command.nextConversation": "Next Task",
-  "settings.shortcuts.command.toggleInterfaceMode": "Toggle coding/office mode",
   "settings.shortcuts.command.navigateBack": "Navigate Back",
   "settings.shortcuts.command.navigateForward": "Navigate Forward",
   "settings.shortcuts.command.openModelMenu": "Open Model Menu",
@@ -2138,18 +2042,20 @@ const enUS: Record<string, string> = {
   "settings.shortcuts.command.zoomIn": "Zoom In",
   "settings.shortcuts.command.zoomOut": "Zoom Out",
   "settings.shortcuts.command.resetZoom": "Reset Zoom",
-  "settings.appearance.interfaceTitle": "Interface Setting",
-  "settings.appearance.interfaceDescription": "Choose the app theme and interface text size.",
   "settings.appearance.codeTitle": "Code settings",
   "settings.appearance.codeDescription":
     "Choose code themes, font size, and display options independently from the interface font size.",
   "settings.uiFontSize": "UI font size",
   "settings.uiFontSizeDescription":
-    "Adjust interface text without changing icons or layout dimensions.",
+    "Adjust interface text with matching control sizes and spacing.",
   "settings.systemTitle": "General",
   "settings.systemDescription": "These preferences affect the current window experience.",
   "settings.locale": "Language",
   "settings.localeDescription": "Choose the display language used by the application UI.",
+  "settings.defaultFileOpenLocation": "Default file opener",
+  "settings.defaultFileOpenLocationEmpty": "No applications available",
+  "settings.defaultFileOpenLocationDescription":
+    "Default application for opening files and folders.",
   "settings.terminalProfile": "Inherit system terminal profile",
   "settings.terminalProfileDescription":
     "When launching the built-in terminal, inherit login shell environment, proxy, Kubernetes variables, and local terminal font when possible.",
@@ -2165,9 +2071,9 @@ const enUS: Record<string, string> = {
   "settings.nativeSearchEnhancementsDescription":
     "Use enhanced Find and Grep in new sessions and sessions restored after an app restart. Active sessions keep their current setting; Find remains unchanged on Windows.",
   "settings.memory": "Memory",
-  "settings.memory.workspaceMemory": "Workspace Memory",
+  "settings.memory.workspaceMemory": "Memory",
   "settings.memoryDescription":
-    "Save and reuse long-term context in workspaces. Applies to new sessions and may increase model requests and token costs.",
+    "Save and reuse long-term context. Applies to new sessions and may increase model requests and token costs.",
   "settings.memory.viewer.disabled": "Enable Workspace Memory to view saved memories.",
   "settings.memory.viewer.localOnly":
     "Memory details are available only in the local desktop app. Open Memory settings there to view them.",
@@ -2310,7 +2216,10 @@ const enUS: Record<string, string> = {
   "sidebar.settings.systemDefault": "System default",
   "sidebar.settings.locale.en-US": "English",
   "sidebar.settings.locale.zh-CN": "中文简体",
-  "sidebar.settings.interfaceZoom": "Interface zoom",
+  "sidebar.settings.languageSettings": "Language settings",
+  "sidebar.settings.themeAppearance": "Theme appearance",
+  "sidebar.settings.layoutMode": "Layout mode",
+  "sidebar.settings.interfaceZoom": "Zoom level",
   "sidebar.settings.theme.light": "Light theme",
   "sidebar.settings.theme.mycode-light": "Light theme",
   "sidebar.settings.theme.mycode-dark": "Dark theme",
@@ -2434,10 +2343,10 @@ const enUS: Record<string, string> = {
     "Unclassified files and stale copies left after changing the data directory.",
   "resourceManager.storage.confirmDescription.backups":
     "These copies allow recovery if an upgrade or migration goes wrong; deleting them cannot be undone.",
-  "settings.browser.title": "Browser Use",
-  "settings.browser.control.title": "Enable built-in browser control",
+  "settings.browser.title": "Browser",
+  "settings.browser.control.title": "Browser",
   "settings.browser.control.description":
-    "Enable the official Browser Use plugin so new sessions can access and control web pages in the built-in browser.",
+    "Let AI control the built-in browser. Applies to new sessions only.",
   "settings.browser.control.enabledToast": "Built-in browser control enabled",
   "settings.browser.control.disabledToast": "Built-in browser control disabled",
   "settings.browser.security.section": "Security",
@@ -2448,10 +2357,10 @@ const enUS: Record<string, string> = {
     "Certificate setting saved. Restart the app to take effect.",
   "settings.browser.data.section": "Browser data",
   "settings.browser.desktopOnly": "Browser data can only be managed in the MyCode desktop app.",
-  "settings.browser.import.title": "Import Chrome sign-in state",
+  "settings.browser.import.title": "Chrome sign-in state",
   "settings.browser.import.description":
     "Bring your Chrome sign-in state into the built-in browser once, so the AI can open sites you are already signed in to and work more smoothly.",
-  "settings.browser.import.action": "Import browser data",
+  "settings.browser.import.action": "Import",
   "settings.browser.import.notFound":
     "No importable Chrome profile was found. Open Chrome and make sure the profile contains browsing data.",
   "settings.browser.import.ambiguous":
@@ -2492,12 +2401,12 @@ const enUS: Record<string, string> = {
     "Imported {entries} LocalStorage entries from {origins} sites, but Windows App-Bound cookies were not imported.",
   "settings.browser.import.partialLocalStorage":
     "Imported {cookies} cookies, but some LocalStorage data was not imported. Closing Chrome before retrying may improve the result.",
-  "settings.browser.clearCache.title": "Clear built-in browser cache",
+  "settings.browser.clearCache.title": "Clear cache",
   "settings.browser.clearCache.description":
     "Clear HTTP cache, Cache Storage, and service workers while keeping cookies and local site data.",
   "settings.browser.clearCache.action": "Clear cache",
   "settings.browser.clearCache.success": "Built-in browser cache cleared",
-  "settings.browser.clearAll.title": "Clear all browser data",
+  "settings.browser.clearAll.title": "Clear all data",
   "settings.browser.clearAll.description":
     "Delete cookies, site data, and cache from the built-in browser. This cannot be undone.",
   "settings.browser.clearAll.action": "Clear all",
@@ -2520,15 +2429,11 @@ const enUS: Record<string, string> = {
   "settings.fontSize": "Code font size",
   "settings.fontSizeDescription":
     "Adjust the default font size for code blocks, file previews, and diff views.",
-  "settings.previewSectionTitle": "Code preview",
-  "settings.previewLight": "Light preview",
-  "settings.previewDark": "Dark preview",
-  "settings.previewDescription":
-    "Preview the light and dark code themes together. The theme used by the current interface is marked as active.",
+  "settings.previewSectionTitle": "Current theme",
   "settings.previewBadge.active": "Active",
   "settings.previewBadge.light": "Light",
   "settings.previewBadge.dark": "Dark",
-  "settings.modelProviderTitle": "Model settings",
+  "settings.modelProviderTitle": "Models",
   "settings.mcpTitle": "MCP Servers",
   "settings.mcp.description": "Manage MCP server configurations used by MyCode Agent.",
   "settings.mcp.create.open": "Add MCP server",
@@ -2608,6 +2513,8 @@ const enUS: Record<string, string> = {
   "settings.mcp.host.active": "Host built-in",
   "settings.mcp.host.activeDescription":
     "MyCode provides this MCP server for the {pluginName} plugin. Its runtime identity is managed by the host.",
+  "settings.mcp.host.driverDescription":
+    "MyCode provides this driver for the {pluginName} plugin. Its runtime identity is managed by MyCode.",
   "settings.mcp.plugin.disabled": "Plugin disabled",
   "settings.mcp.plugin.disabledDescription":
     "This MCP server is built into a plugin. Enable the plugin to load it.",
@@ -2648,7 +2555,7 @@ const enUS: Record<string, string> = {
   "settings.mcp.failure.not_authenticated":
     "You are not signed in. Sign in to MyCode to use this MCP server.",
   "settings.mcp.failure.coding_plan_required":
-    "This account has no Coding Plan. Purchase or configure a Coding Plan to use this MCP server.",
+    "This MCP server requires an account service that is unavailable in this build.",
   "settings.mcp.failure.server_not_found":
     "The MCP server was not found. Check the plugin or server configuration.",
   "settings.mcp.failure.server_unavailable":
@@ -2724,11 +2631,11 @@ const enUS: Record<string, string> = {
   "settings.mcpServers.import.resultEmpty": "No MCP server results were returned.",
   "settings.mcpServers.import.finish": "Done",
   "settings.scope.label": "Scope",
-  "settings.scope.user": "User",
+  "settings.scope.user": "Local computer",
   "settings.scope.workspace": "Workspace",
   "settings.scope.default": "Default",
   "settings.plugins.scope.inheritedUser": "Inherits User default",
-  "settings.plugins.scope.userDefault": "User default",
+  "settings.plugins.scope.userDefault": "Local computer default",
   "settings.plugins.scope.workspaceOverride": "Workspace override",
   "settings.plugins.scope.restoreUserDefault": "Restore User default",
   "settings.plugins.scope.restored": "Restored {plugin} to User default",
@@ -2778,7 +2685,7 @@ const enUS: Record<string, string> = {
   "settings.modelProvider.catalogProviderEmpty": "No providers found",
   "settings.modelProvider.addProviderAction": "Add provider",
   "settings.modelProvider.templatePickerTitle": "Add provider",
-  "settings.modelProvider.templateGroup.zhipu": "Zhipu",
+
   "settings.modelProvider.templateGroup.other": "Other",
   "settings.modelProvider.templatePickerBack": "Back to provider details",
   "settings.modelProvider.addProviderModelReminder":
@@ -2803,559 +2710,18 @@ const enUS: Record<string, string> = {
   "settings.modelProvider.apiKeyDisabledHint": "Set an API key to enable this provider.",
   "settings.modelProvider.getApiKey": "Get API key",
   "settings.modelProvider.viewUsage": "View usage",
-  "settings.modelProvider.useSubscription": "Use subscription",
   "settings.modelProvider.or": "or",
   "settings.modelProvider.connectionMode": "Connection mode",
   "settings.modelProvider.connectionMode.oauth": "OAuth",
-  "settings.modelProvider.connectionMode.codingPlan": "Individual Plan",
-  "settings.modelProvider.connectionMode.startPlan": "Start Plan",
-  "settings.modelProvider.connectionMode.startPlanCount": "Start Plan × {count}",
-  "settings.modelProvider.connectionMode.switchToStartPlanPrefix": "Switch to",
-  "settings.modelProvider.connectionMode.teamPlan": "Team Plan",
   "settings.modelProvider.connectionMode.apiKeyBadge": "API",
   "settings.modelProvider.connectionMode.usageBasedApi": "Usage-based API",
-  "settings.modelProvider.connectionMode.codingPlanBadge": "Individual",
-  "settings.modelProvider.connectionMode.startPlanBadge": "Free",
-  "settings.modelProvider.connectionMode.teamPlanBadge": "Team",
   "settings.modelProvider.connectionMode.loadFailed": "Connection settings failed",
-  "settings.modelProvider.connectionMode.noAvailablePlan": "No available plan",
   "settings.modelProvider.accountProviderConfigMissing":
     "The account provider configuration is unavailable. Refresh and try again.",
-  "settings.modelProvider.startPlan.login": "Log in",
-  "settings.modelProvider.startPlan.status.loginRequired": "Log in to view and use your Start Plan",
-  "settings.modelProvider.startPlan.status.expired": "Start Plan expired",
-  "settings.modelProvider.startPlan.status.noPlan": "No available Start Plan",
-  "settings.modelProvider.startPlan.status.loginExpired":
-    "Your login has expired. Please log in again.",
-  "settings.modelProvider.startPlan.title": "{provider} - Coding Plan",
-  "settings.modelProvider.startPlan.meta.today": "Today",
-  "settings.modelProvider.startPlan.meta.tomorrow": "Tomorrow",
-  "settings.modelProvider.startPlan.quotaSectionTitle": "Trial plan",
-  "settings.modelProvider.startPlan.eligibleNewUser": "New User",
-  "settings.modelProvider.startPlan.preview.unit.tokens": "tokens",
-  "settings.modelProvider.startPlan.preview.period.daily": "{unit} per day",
-  "settings.modelProvider.startPlan.preview.entitlementSummary.daily": "Daily quota · {details}",
-  "settings.modelProvider.startPlan.preview.entitlementSummary.generic": "Quota · {details}",
-  "settings.modelProvider.startPlan.preview.entitlementGroup.single": "{model} {quota}",
-  "settings.modelProvider.startPlan.preview.entitlementGroup.each": "{models} {quota} each",
-  "settings.modelProvider.startPlan.balance.title": "Today's balance",
-  "settings.modelProvider.startPlan.balance.remaining": "{value} tokens remaining",
-  "settings.modelProvider.startPlan.balance.used": "{value} used",
-  "settings.modelProvider.startPlan.highlight.trial.label": "Trial period",
-  "settings.modelProvider.startPlan.highlight.trial.value": "5 calendar days",
-  "settings.modelProvider.startPlan.highlight.trial.description":
-    "Timing starts after signing in to MyCode 3.x.",
-  "settings.modelProvider.startPlan.highlight.quota.label": "Daily quota",
-  "settings.modelProvider.startPlan.highlight.quota.value": "3M tokens daily",
-  "settings.modelProvider.startPlan.highlight.quota.description":
-    "Platform GLM flagship models share a 3M token daily trial quota.",
-  "settings.modelProvider.startPlan.highlight.metering.label": "Metering",
-  "settings.modelProvider.startPlan.highlight.metering.value": "After platform model use",
-  "settings.modelProvider.startPlan.highlight.metering.description":
-    "Metered only after using platform GLM flagship models.",
-  "settings.modelProvider.startPlan.compatibility":
-    "Supports BYOK and BYOA. Base URL, API format, and API Key are maintained by MyCode automatically.",
-  "settings.modelProvider.codingPlan.title": "{provider} - Coding Plan",
-  "settings.modelProvider.codingPlan.webview.title": "Upgrade Plan",
-  "settings.modelProvider.codingPlan.webview.authInjectFailed":
-    "Couldn't sign you into the plan page. Please retry.",
-  "settings.modelProvider.codingPlan.webview.retry": "Retry",
-  "settings.modelProvider.codingPlan.webview.loadFailed": "The plan page failed to load.",
-  "settings.modelProvider.codingPlan.webview.openWebsite": "Buy on the official website",
-  "settings.modelProvider.codingPlan.status.loginRequired": "Not signed in",
-  "settings.modelProvider.codingPlan.status.disconnected": "Not connected",
-  "settings.modelProvider.codingPlan.status.checking": "Checking",
-  "settings.modelProvider.codingPlan.status.notPurchased":
-    "Not subscribed, enabled after subscription",
-  "settings.modelProvider.codingPlan.status.purchased": "Subscribed",
-  "settings.modelProvider.codingPlan.status.unavailable": "Fetch failed",
-  "settings.modelProvider.codingPlan.status.teamExpired":
-    "Team plan expired. Contact your team administrator.",
-  "settings.modelProvider.codingPlan.status.teamUnavailable":
-    "Team plan not assigned. Contact your team admin.",
-  "settings.modelProvider.codingPlan.status.unsupported": "Not supported yet",
-  "settings.modelProvider.codingPlan.bigmodel.unregisteredHint":
-    "This BigModel account is not registered yet. Register first.",
-  "settings.modelProvider.codingPlan.bigmodel.registerAction": "Register",
-  "settings.modelProvider.codingPlan.description.disconnected":
-    "Connect to view Coding Plan entitlements.",
-  "settings.modelProvider.codingPlan.description.checking":
-    "Checking Coding Plan entitlement with the current provider API key.",
-  "settings.modelProvider.codingPlan.description.notPurchased":
-    "No active Coding Plan was found for the current API key or account.",
-  "settings.modelProvider.codingPlan.description.purchased":
-    "Coding Plan is active and can be used by this provider.",
-  "settings.modelProvider.codingPlan.description.credentialFailed":
-    "Failed to retrieve your plan. Please sign in again and retry.",
-  "settings.modelProvider.codingPlan.description.unavailable":
-    "Could not verify Coding Plan entitlement. Connect again and retry.",
-  "settings.modelProvider.codingPlan.description.unsupported":
-    "This provider does not support Coding Plan status checks yet.",
-  "settings.modelProvider.codingPlan.login": "Sign in to {provider}",
-  "settings.modelProvider.codingPlan.connect": "Connect to {provider}",
-  "settings.modelProvider.codingPlan.purchaseLoginRequiredShort": "Sign in to purchase",
-  "settings.modelProvider.codingPlan.purchaseConnectRequiredShort": "Connect to purchase",
-  "settings.modelProvider.codingPlan.disconnect": "Unlink",
-  "settings.modelProvider.codingPlan.subscribe": "Subscribe",
-  "settings.modelProvider.codingPlan.upgrade": "Upgrade",
-  "settings.modelProvider.codingPlan.renew": "Renew",
-  "settings.modelProvider.codingPlan.currentPlan": "Current",
-  "settings.modelProvider.codingPlan.purchased": "Purchased",
-  "settings.modelProvider.codingPlan.startPlan.expiredBadge": "Expired",
-  "settings.modelProvider.codingPlan.startPlan.expiredAction": "Ended",
-  "settings.modelProvider.codingPlan.cancelUpgrade": "Back",
-  "settings.modelProvider.codingPlan.purchase.title": "Upgrade Coding Plan",
-  "settings.modelProvider.codingPlan.purchase.pricingTitle": "Pricing",
-  "settings.modelProvider.codingPlan.purchase.pricingDescription":
-    "Find the perfect plan for you and kick-start your AI coding journey.",
-  "settings.modelProvider.codingPlan.purchase.moreInfo": "More Info",
-  "settings.modelProvider.codingPlan.purchase.billingCycleTitle": "Choose billing cycle",
-  "settings.modelProvider.codingPlan.purchase.paymentConfirmTitle": "Confirm payment",
-  "settings.modelProvider.codingPlan.purchase.paymentTitle": "Payment",
-  "settings.modelProvider.codingPlan.purchase.personal": "Individuals",
-  "settings.modelProvider.codingPlan.purchase.team": "Teams",
-  "settings.modelProvider.codingPlan.purchase.individualsSectionTitle": "For Individuals",
-  "settings.modelProvider.codingPlan.purchase.teamsSectionTitle": "For Teams",
-  "settings.modelProvider.codingPlan.purchaseBanner.startPlanTitle": "Start Plan",
-  "settings.modelProvider.codingPlan.purchaseBanner.startPlanDescription":
-    "Try platform GLM flagship model quota for free.",
-  "settings.modelProvider.codingPlan.purchaseBanner.personalTitle": "For Individuals",
-  "settings.modelProvider.codingPlan.purchaseBanner.personalDescription":
-    "For individual developers with dedicated Coding Plan quota.",
-  "settings.modelProvider.codingPlan.purchaseBanner.temporarilySoldOut": "Temporarily sold out",
-  "settings.modelProvider.codingPlan.purchaseBanner.teamTitle": "For Teams",
-  "settings.modelProvider.codingPlan.purchaseBanner.teamDescription":
-    "For team collaboration with seats and centralized billing.",
-  "settings.modelProvider.codingPlan.purchaseBanner.teamStandardDescription":
-    "For small teams that need shared quota and seat management.",
-  "settings.modelProvider.codingPlan.purchaseBanner.teamAdvancedDescription":
-    "For high-throughput engineering teams that need more quota and flexible seats.",
-  "settings.modelProvider.codingPlan.purchase.choosePlan": "Choose a plan",
-  "settings.modelProvider.codingPlan.purchase.choosePlanDescription":
-    "Compare plan capacity first. Billing cycle and final payment are confirmed next.",
-  "settings.modelProvider.codingPlan.purchase.selectPlan": "Select",
-  "settings.modelProvider.codingPlan.purchase.select": "Select",
-  "settings.modelProvider.codingPlan.purchase.selected": "Selected",
-  "settings.modelProvider.codingPlan.purchase.fromPrice": "{price}+",
-  "settings.modelProvider.codingPlan.purchase.fromPriceSuffix": "",
-  "settings.modelProvider.codingPlan.purchase.previewLoading": "Calculating payment amount",
-  "settings.modelProvider.codingPlan.purchase.previewLoadingDescription":
-    "Please wait. Confirmation and payment use the same payment details.",
-  "settings.modelProvider.codingPlan.purchase.previewUnavailableDescription":
-    "Payment amount is unavailable. Go back and choose the billing cycle again.",
-  "settings.modelProvider.codingPlan.purchase.teamTitle": "Team plans",
-  "settings.modelProvider.codingPlan.purchase.teamDescription":
-    "Seats, shared quota, and centralized billing are coming later.",
-  "settings.modelProvider.codingPlan.purchase.teamCardDescription":
-    "Shared quota, seat management, and centralized billing.",
-  "settings.modelProvider.codingPlan.purchase.comingSoon": "Coming soon",
-  "settings.modelProvider.codingPlan.purchase.chooseBillingCycle":
-    "Choose billing cycle for {plan}",
-  "settings.modelProvider.codingPlan.purchase.billingCycleDescription":
-    "Prices and discounts are refreshed before payment. Final amount is confirmed in the payment step.",
-  "settings.modelProvider.codingPlan.purchase.continueToPayment": "Continue to payment",
-  "settings.modelProvider.codingPlan.purchase.summaryPlan": "Plan",
-  "settings.modelProvider.codingPlan.purchase.summaryBillingCycle": "Billing cycle",
-  "settings.modelProvider.codingPlan.purchase.summaryDueToday": "Due today",
-  "settings.modelProvider.codingPlan.purchase.summaryStatus": "Status",
-  "settings.modelProvider.codingPlan.purchase.servicePeriod": "Service period",
-  "settings.modelProvider.codingPlan.purchase.durationValue": "{duration} {unit}",
-  "settings.modelProvider.codingPlan.purchase.autoRenewPeriod": "Auto-renews every {period}",
-  "settings.modelProvider.codingPlan.purchase.renewalPolicyTitle": "Renewal policy",
-  "settings.modelProvider.codingPlan.purchase.renewalPolicyCharge":
-    "Your subscription renews automatically at {price}{unit} unless cancelled.",
-  "settings.modelProvider.codingPlan.purchase.renewalPolicyPreview":
-    "Final discounts, credits, and payment amount are confirmed in the next payment preview.",
-  "settings.modelProvider.codingPlan.purchase.renewalPolicyCancel":
-    "You can turn off auto-renewal from plan management before the next renewal.",
-  "settings.modelProvider.codingPlan.purchase.termsAccepted":
-    "I understand and agree to the renewal policy and subscription terms.",
-  "settings.modelProvider.codingPlan.purchase.paymentPreparing": "Preparing payment",
-  "settings.modelProvider.codingPlan.purchase.securityChecking":
-    "Waiting for security verification",
-  "settings.modelProvider.codingPlan.purchase.paymentPolling": "Waiting for payment confirmation",
-  "settings.modelProvider.codingPlan.purchase.paymentStarted":
-    "Complete payment on this payment page",
-  "settings.modelProvider.codingPlan.purchase.paymentStartedDescription":
-    "Keep this panel open while the payment channel finishes. You can go back to the payment confirmation page before payment succeeds.",
-  "settings.modelProvider.codingPlan.purchase.paymentInProgress": "Payment in progress",
-  "settings.modelProvider.codingPlan.purchase.successTitle": "Payment successful",
-  "settings.modelProvider.codingPlan.purchase.successDescription":
-    "Your Coding Plan payment was successful. The provider status will refresh after you close this panel.",
-  "settings.modelProvider.codingPlan.purchase.successRefreshingDescription":
-    "Your payment was successful. We are refreshing plan status; you can close this panel and the provider page will continue refreshing.",
-  "settings.modelProvider.codingPlan.purchase.statusSyncing": "Syncing",
-  "settings.modelProvider.codingPlan.purchase.statusActive": "Active",
-  "settings.modelProvider.codingPlan.purchase.refreshNow": "Refresh now",
-  "settings.modelProvider.codingPlan.purchase.done": "Done",
-  "settings.modelProvider.codingPlan.purchase.teamMemberNoticeTitle":
-    "Assign members to your team plan",
-  "settings.modelProvider.codingPlan.purchase.teamMemberNoticeDescription":
-    "Add yourself or other members on the BigModel team plan management page. Once assigned, the team quota will be available in MyCode.",
-  "settings.modelProvider.codingPlan.purchase.manageTeamPlan": "Manage team plan",
-  "settings.modelProvider.codingPlan.manage": "Manage",
-  "settings.modelProvider.planCard.codingPlan": "Coding Plan",
-  "settings.modelProvider.planCard.startPlan": "Start Plan",
   "settings.modelProvider.planCard.usage.fiveHour": "5h usage",
   "settings.modelProvider.planCard.usage.week": "1w usage",
   "settings.modelProvider.planCard.usage.totalTokens": "Total tokens",
-  "settings.modelProvider.codingPlan.recheck": "Recheck",
-  "settings.modelProvider.codingPlan.checkingPlans": "Checking...",
-  "settings.modelProvider.codingPlan.switchAccount": "Switch account",
-  "settings.modelProvider.codingPlan.useApiKeyProvider": "Use API key",
-  "settings.modelProvider.codingPlan.nextResetAt": "Quota resets {date}",
-  "settings.modelProvider.codingPlan.renewsAt": "Renews {date}",
-  "settings.modelProvider.codingPlan.expiresAt": "Expires {date}",
-  "settings.modelProvider.startPlan.pendingUntil": "Pending {date}",
-  "settings.modelProvider.startPlan.refreshEntitlement": "Refresh access",
-  "settings.modelProvider.startPlan.expiresAt": "Expires {date}",
-  "settings.modelProvider.codingPlan.openApiKeyProvider": "Open BigModel - API key",
-  "settings.modelProvider.codingPlan.plansTitle": "Coding Plan",
-  "settings.modelProvider.codingPlan.audience.personal": "Individuals",
-  "settings.modelProvider.codingPlan.audience.enterprise": "Enterprise",
-  "settings.modelProvider.codingPlan.period.monthly": "Monthly",
-  "settings.modelProvider.codingPlan.period.quarterly": "Quarterly",
-  "settings.modelProvider.codingPlan.period.yearly": "Yearly",
-  "settings.modelProvider.codingPlan.unit.usd.month": "/mo",
-  "settings.modelProvider.codingPlan.unit.usd.quarter": "/quarter",
-  "settings.modelProvider.codingPlan.unit.usd.year": "/year",
-  "settings.modelProvider.codingPlan.unit.cny.month": "/month",
-  "settings.modelProvider.codingPlan.unit.cny.quarter": "/quarter",
-  "settings.modelProvider.codingPlan.unit.cny.year": "/year",
-  "settings.modelProvider.codingPlan.monthlyEquivalent": "Equivalent to {price}/month",
-  "settings.modelProvider.codingPlan.monthlyFlexibleBilling": "Flexible monthly billing",
-  "settings.modelProvider.codingPlan.providerFormDescription":
-    "These settings are maintained by Coding Plan. Use the API Key entry for manual keys.",
-  "settings.modelProvider.codingPlan.retry": "Retry",
-  "settings.modelProvider.codingPlan.viewPrices": "View prices",
-  "settings.modelProvider.codingPlan.productsLoading": "Loading Coding Plan",
-  "settings.modelProvider.codingPlan.productsLoadingDescription":
-    "Fetching the latest plans and prices from {provider}.",
-  "settings.modelProvider.codingPlan.purchase.authStateError":
-    "Failed to read your sign-in status. Please retry.",
-  "settings.modelProvider.codingPlan.purchase.authStateRetry": "Retry sign-in status",
-  "settings.modelProvider.codingPlan.productsError": "Could not load plans",
-  "settings.modelProvider.codingPlan.productsReconnectTitle": "Connect to view plans",
-  "settings.modelProvider.codingPlan.reconnectToViewPlans": "Reconnect",
-  "settings.modelProvider.codingPlan.productsLoginRequired":
-    "Reconnect your {provider} account to refresh prices and available Coding Plan products.",
-  "settings.modelProvider.codingPlan.purchaseLoginRequired":
-    "Reconnect your account and try again.",
-  "settings.modelProvider.codingPlan.productsEmpty": "No plans available",
-  "settings.modelProvider.codingPlan.productsEmptyDescription":
-    "{provider} did not return any purchasable Coding Plan products for this account.",
-  "settings.modelProvider.codingPlan.dynamicUnsupportedTitle": "Dynamic plans are not available",
-  "settings.modelProvider.codingPlan.dynamicUnsupportedDescription":
-    "In-app subscription is only connected for Z.ai / BigModel Coding Plan right now.",
-  "settings.modelProvider.codingPlan.priceUnavailable": "Price unavailable",
-  "settings.modelProvider.codingPlan.systemBusy": "The system is busy. Please try again later.",
-  "settings.modelProvider.codingPlan.subscriptionBusy": "Subscription busy",
-  "settings.modelProvider.codingPlan.subscriptionBusyButton": "System busy",
-  "settings.modelProvider.codingPlan.pendingOrder":
-    "There is an unfinished order. Complete or cancel it before starting another purchase.",
-  "settings.modelProvider.codingPlan.paymentTimeout":
-    "Payment is still pending. Recheck your Coding Plan status after the payment page finishes.",
-  "settings.modelProvider.codingPlan.zaiOverseasPaymentRequired":
-    "Z.ai overseas plans must be paid through PayPal or the official Z.ai payment page, not the Alipay signing flow.",
-  "settings.modelProvider.codingPlan.paypalSetupRequired":
-    "Authorize PayPal before continuing the payment.",
-  "settings.modelProvider.codingPlan.paypalApproveUrlMissing":
-    "PayPal did not return an approval link. Try again later.",
-  "settings.modelProvider.codingPlan.paypalUnsupported":
-    "PayPal is not supported for this account or region.",
-  "settings.modelProvider.codingPlan.paypalCancelled":
-    "PayPal authorization was cancelled. Choose PayPal again to retry.",
-  "settings.modelProvider.codingPlan.paypalSubscribeFailed":
-    "PayPal subscription could not be created. Confirm that PayPal authorization finished, then try again or pay by card.",
-  "settings.modelProvider.codingPlan.securityVerificationRequired":
-    "Complete the security verification before continuing the purchase.",
-  "settings.modelProvider.codingPlan.securityVerificationCancelled":
-    "Security verification was cancelled.",
-  "settings.modelProvider.codingPlan.securityVerificationFailed":
-    "Security verification failed. Try again in a moment.",
-  "settings.modelProvider.codingPlan.start.loginEnable": "Connect to enable",
-  "settings.modelProvider.codingPlan.start.loginTrial": "Connect Z.ai",
-  "settings.modelProvider.codingPlan.start.enabled": "Enabled",
-  "settings.modelProvider.codingPlan.start.freeBadge": "Free",
-  "settings.modelProvider.codingPlan.start.freeEquityTitle": "Start free plan",
-  "settings.modelProvider.codingPlan.start.freeEquityDetails":
-    "Basic coding capability is available after sign-in.",
-  "settings.modelProvider.codingPlan.paymentDialog.title": "{product} auto-renewal plan",
-  "settings.modelProvider.codingPlan.paymentDialog.close": "Close payment dialog",
-  "settings.modelProvider.codingPlan.paymentDialog.originalAmount": "Plan price",
-  "settings.modelProvider.codingPlan.paymentDialog.discountActivity": "Discount",
-  "settings.modelProvider.codingPlan.paymentDialog.currentPlanCredit":
-    "Current plan remaining value",
-  "settings.modelProvider.codingPlan.paymentDialog.payAmount": "Amount due",
-  "settings.modelProvider.codingPlan.paymentDialog.deductions": "Deductions",
-  "settings.modelProvider.codingPlan.paymentDialog.alipayScan": "Scan with Alipay to pay",
-  "settings.modelProvider.codingPlan.paymentDialog.polling": "Waiting for payment confirmation",
-  "settings.modelProvider.codingPlan.paymentDialog.qrAlt": "Payment QR code",
-  "settings.modelProvider.codingPlan.paymentDialog.qrLoading": "Generating QR code",
-  "settings.modelProvider.codingPlan.paymentDialog.qrError":
-    "Could not generate the QR code. Try again.",
-  "settings.modelProvider.codingPlan.paymentDialog.qrExpired": "QR code expired",
-  "settings.modelProvider.codingPlan.paymentDialog.refreshQr": "Refresh QR code",
-  "settings.modelProvider.codingPlan.paymentDialog.tipAutoRenew":
-    "The subscription will auto-renew at {price}/month.",
-  "settings.modelProvider.codingPlan.paymentDialog.tipDeduction":
-    "Deduction priority: credits first, then balance, then Alipay.",
-  "settings.modelProvider.codingPlan.paymentDialog.tipPeriodic":
-    "The plan renews monthly until you cancel it according to the service terms.",
-  "settings.modelProvider.codingPlan.paymentDialog.tipCancel":
-    "You can turn off auto-renewal at least 3 days before the renewal date from your plan overview.",
-  "settings.modelProvider.codingPlan.paymentDialog.tipCancelPrefix":
-    "You can turn off auto-renewal at least 3 days before the renewal date from your ",
-  "settings.modelProvider.codingPlan.paymentDialog.planOverviewLink": "plan overview",
-  "settings.modelProvider.codingPlan.paymentDialog.tipCancelSuffix": ".",
-  "settings.modelProvider.codingPlan.paymentDialog.ruleTitle": "Account usage policy",
-  "settings.modelProvider.codingPlan.paymentDialog.ruleDescription":
-    "Use the subscribed account only within officially permitted product scopes. Do not lend, transfer, or provide it to third parties, and do not use it for improper or rule-breaking behavior. If violations are found, the platform may restrict or ban the account without refund.",
-  "settings.modelProvider.codingPlan.paymentDialog.agreement":
-    "Payment means you agree to the service and subscription auto-renewal terms. Virtual products are not refundable after payment.",
-  "settings.modelProvider.codingPlan.enterprise.purchaseMethod": "Service method",
-  "settings.modelProvider.codingPlan.enterprise.purchaseMethodTooltipTitle":
-    "Service method details",
-  "settings.modelProvider.codingPlan.enterprise.purchaseMethodTooltipDescription":
-    "1. Monthly one-time purchase only supports 1, 3, 6, or 12 months. 12 months gets 10% off.\n2. Continuous subscription: auto-renewal deducts in this order: gift balance > balance > Alipay.",
-  "settings.modelProvider.codingPlan.enterprise.tier.lite": "Lite",
-  "settings.modelProvider.codingPlan.enterprise.tier.pro": "Pro",
-  "settings.modelProvider.codingPlan.enterprise.tier.max": "Max",
-  "settings.modelProvider.codingPlan.enterprise.configTitle": "Team plan configuration",
-  "settings.modelProvider.codingPlan.enterprise.packageType": "Plan type",
-  "settings.modelProvider.codingPlan.enterprise.packageSeats": "Plan seats",
-  "settings.modelProvider.codingPlan.enterprise.autoRenewAuthorization":
-    "You authorize us to enable auto-renewal for you",
-  "settings.modelProvider.codingPlan.enterprise.seatMonthlyPrice": "{price} / seat / month",
-  "settings.modelProvider.codingPlan.enterprise.refresh": "Refresh",
-  "settings.modelProvider.codingPlan.enterprise.singleSeatPrice": "single-seat price",
-  "settings.modelProvider.codingPlan.enterprise.singleSeatFrom": "Single-seat pricing",
-  "settings.modelProvider.codingPlan.enterprise.unitPrice": "Single-seat price",
-  "settings.modelProvider.codingPlan.enterprise.seats": "Seats",
-  "settings.modelProvider.codingPlan.enterprise.seatInputUnit": "seats",
-  "settings.modelProvider.codingPlan.enterprise.seatsUnit": "seats",
-  "settings.modelProvider.codingPlan.enterprise.duration": "Duration",
-  "settings.modelProvider.codingPlan.enterprise.durationUnit.month": "mo",
-  "settings.modelProvider.codingPlan.enterprise.durationUnit.quarter": "qtr",
-  "settings.modelProvider.codingPlan.enterprise.durationUnit.year": "yr",
-  "settings.modelProvider.codingPlan.enterprise.durationInputUnit.month": "months",
-  "settings.modelProvider.codingPlan.enterprise.durationInputUnit.year": "years",
-  "settings.modelProvider.codingPlan.enterprise.durationDiscountOption": "10% off",
-  "settings.modelProvider.codingPlan.enterprise.calculating": "Calculating",
-  "settings.modelProvider.codingPlan.enterprise.productsLoadingDescription":
-    "Loading team plan pricing from BigModel.",
-  "settings.modelProvider.codingPlan.enterprise.productsEmptyDescription":
-    "No team plan products are currently available.",
-  "settings.modelProvider.codingPlan.enterprise.productsError": "Could not load team plans",
-  "settings.modelProvider.codingPlan.enterprise.choosePurchaseMethod": "Service method",
-  "settings.modelProvider.codingPlan.enterprise.purchaseMethodDescription":
-    "You authorize us to enable auto-renewal for you. Select service method, seats, and one-time purchase duration before confirming payment.",
-  "settings.modelProvider.codingPlan.enterprise.continuousDescription":
-    "Auto-renews for the selected billing period.",
-  "settings.modelProvider.codingPlan.enterprise.oneTimeDescription":
-    "One-time purchase for the selected duration.",
-  "settings.modelProvider.codingPlan.enterprise.unit.monthly": "/ seat / month",
-  "settings.modelProvider.codingPlan.enterprise.unit.quarterly": "/ seat / quarter",
-  "settings.modelProvider.codingPlan.enterprise.unit.yearly": "/ seat / year",
-  "settings.modelProvider.codingPlan.enterprise.benefitSeats": "Seat-based team access",
-  "settings.modelProvider.codingPlan.enterprise.benefitBilling": "Centralized billing and payment",
-  "settings.modelProvider.codingPlan.enterprise.benefitQuota": "Team coding quota",
-  "settings.modelProvider.codingPlan.enterprise.balanceTitle": "Balance deduction",
-  "settings.modelProvider.codingPlan.enterprise.useGiftBalance": "Use gift balance",
-  "settings.modelProvider.codingPlan.enterprise.useCashBalance": "Use balance",
-  "settings.modelProvider.codingPlan.enterprise.currentGiftBalance":
-    "Current gift balance {amount}",
-  "settings.modelProvider.codingPlan.enterprise.currentCashBalance":
-    "Current account balance {amount}",
-  "settings.modelProvider.codingPlan.enterprise.recharge": "Top up",
-  "settings.modelProvider.codingPlan.enterprise.giftBalance": "Gift balance",
-  "settings.modelProvider.codingPlan.enterprise.cashBalance": "Cash balance",
-  "settings.modelProvider.codingPlan.enterprise.balanceAvailable": "Available {amount}",
-  "settings.modelProvider.codingPlan.enterprise.giftBalanceDeduction": "Gift balance deduction",
-  "settings.modelProvider.codingPlan.enterprise.cashBalanceDeduction": "Cash balance deduction",
-  "settings.modelProvider.codingPlan.enterprise.calculateDescription":
-    "Payment amount will update after the order estimate is ready.",
-  "settings.modelProvider.codingPlan.enterprise.paymentNotesTitle": "Payment notes",
-  "settings.modelProvider.codingPlan.enterprise.paymentNotesDescription":
-    "Balance and gift deductions are estimated by BigModel. Continuous subscriptions must keep at least the required third-party payment amount.",
-  "settings.modelProvider.codingPlan.enterprise.amountDetails": "Amount details",
-  "settings.modelProvider.codingPlan.enterprise.seatQuantity": "Seats",
-  "settings.modelProvider.codingPlan.enterprise.seatCountValue": "{count} seats",
-  "settings.modelProvider.codingPlan.enterprise.orderOriginalAmount": "Original order amount",
-  "settings.modelProvider.codingPlan.enterprise.orderDiscount": "{discount} discount",
-  "settings.modelProvider.codingPlan.enterprise.teamAgreementPrefix": "I agree to the ",
-  "settings.modelProvider.codingPlan.enterprise.teamAgreementLink": "Team plan purchase agreement",
-  "settings.modelProvider.codingPlan.enterprise.cancel": "Cancel",
-  "settings.modelProvider.codingPlan.enterprise.confirmPay": "Confirm and pay",
-  "settings.modelProvider.codingPlan.enterprise.confirmTitle": "Buy {product} enterprise plan",
-  "settings.modelProvider.codingPlan.enterprise.paymentDialog.title":
-    "{product} enterprise plan payment",
-  "settings.modelProvider.codingPlan.enterprise.paymentDialog.tipTotal":
-    "The QR amount is the calculated total for seats and purchase duration.",
-  "settings.modelProvider.codingPlan.enterprise.paymentDialog.tipDeduction":
-    "Balance and gift deductions follow the confirmed estimate on the payment confirmation page.",
-  "settings.modelProvider.codingPlan.enterprise.paymentDialog.tipComplete":
-    "After payment succeeds, enterprise pricing and Coding Plan entitlement will refresh automatically.",
-  "settings.modelProvider.codingPlan.enterprise.pendingOrderTitle": "You have an unpaid order",
-  "settings.modelProvider.codingPlan.enterprise.pendingOrderDescription":
-    "Continue with it? You can cancel this order and choose a new plan, or continue paying for the original order.",
-  "settings.modelProvider.codingPlan.enterprise.pendingOrderCancel": "Cancel order",
-  "settings.modelProvider.codingPlan.enterprise.pendingOrderContinue": "Continue payment",
-  "settings.modelProvider.codingPlan.enterprise.pendingOrderProductMissing":
-    "The plan for this unpaid order was not found. Refresh plans and try again.",
-  "settings.modelProvider.codingPlan.overseasPayment.title": "{product} overseas payment",
-  "settings.modelProvider.codingPlan.overseasPayment.description":
-    "Amount due: {price}. Choose PayPal or continue on the official Z.ai payment page.",
-  "settings.modelProvider.codingPlan.overseasPayment.paypal": "PayPal",
-  "settings.modelProvider.codingPlan.overseasPayment.paypalDescription":
-    "Open PayPal authorization, then return here to continue.",
-  "settings.modelProvider.codingPlan.overseasPayment.paypalAuthorize": "Continue to PayPal",
-  "settings.modelProvider.codingPlan.overseasPayment.paypalContinue":
-    "I authorized PayPal, continue payment",
-  "settings.modelProvider.codingPlan.overseasPayment.selectPaymentMethod": "Payment method",
-  "settings.modelProvider.codingPlan.overseasPayment.cardPayment": "Credit card / debit card",
-  "settings.modelProvider.codingPlan.overseasPayment.savedCards": "Saved cards",
-  "settings.modelProvider.codingPlan.overseasPayment.refreshCards": "Refresh cards",
-  "settings.modelProvider.codingPlan.overseasPayment.deleteCard": "Delete card",
-  "settings.modelProvider.codingPlan.overseasPayment.cardsLoading": "Loading saved cards...",
-  "settings.modelProvider.codingPlan.overseasPayment.noSavedCards": "No saved cards yet.",
-  "settings.modelProvider.codingPlan.overseasPayment.addCard": "Add card",
-  "settings.modelProvider.codingPlan.overseasPayment.changeCard": "Change card",
-  "settings.modelProvider.codingPlan.overseasPayment.cardExpires": "Expires {month}/{year}",
-  "settings.modelProvider.codingPlan.overseasPayment.cardInformation": "Card information",
-  "settings.modelProvider.codingPlan.overseasPayment.nameOnCard": "Name on card",
-  "settings.modelProvider.codingPlan.overseasPayment.billingAddress": "Billing address",
-  "settings.modelProvider.codingPlan.overseasPayment.country": "Country",
-  "settings.modelProvider.codingPlan.overseasPayment.countryRequired":
-    "Select a billing country or region.",
-  "settings.modelProvider.codingPlan.overseasPayment.addressLine1": "Address line 1",
-  "settings.modelProvider.codingPlan.overseasPayment.city": "City",
-  "settings.modelProvider.codingPlan.overseasPayment.postalCode": "Postal code",
-  "settings.modelProvider.codingPlan.overseasPayment.payWithCard": "Pay with card",
-  "settings.modelProvider.codingPlan.overseasPayment.saveCard": "Save card",
-  "settings.modelProvider.codingPlan.overseasPayment.confirm": "Confirm",
-  "settings.modelProvider.codingPlan.overseasPayment.amount.originalAmount": "Original price",
-  "settings.modelProvider.codingPlan.overseasPayment.amount.discountActivity": "Discount",
-  "settings.modelProvider.codingPlan.overseasPayment.amount.currentPlanCredit":
-    "Current plan credit",
-  "settings.modelProvider.codingPlan.overseasPayment.amount.payAmount": "Amount due",
-  "settings.modelProvider.codingPlan.overseasPayment.amount.deductions": "Deductions",
-  "settings.modelProvider.codingPlan.overseasPayment.addCardBeforeConfirm":
-    "Add a card before confirming.",
-  "settings.modelProvider.codingPlan.overseasPayment.stripeNotReady":
-    "Stripe is still loading. Try again in a moment.",
-  "settings.modelProvider.codingPlan.overseasPayment.cardElementMissing":
-    "Card input is not ready. Refresh and try again.",
-  "settings.modelProvider.codingPlan.overseasPayment.stripe3dsFailed":
-    "Stripe 3DS verification failed.",
-  "settings.modelProvider.codingPlan.overseasPayment.stripePaymentMethodFailed":
-    "Stripe payment method failed.",
-  "settings.modelProvider.codingPlan.overseasPayment.stripePublishableKeyMissing":
-    "Stripe card entry is not configured in this build.",
-  "settings.modelProvider.codingPlan.overseasPayment.close": "Maybe later",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalPolicyTitle": "Renewal Policy",
-  "settings.modelProvider.codingPlan.overseasPayment.accountPolicyTitle": "Account Usage Policy",
-  "settings.modelProvider.codingPlan.overseasPayment.period.month": "month",
-  "settings.modelProvider.codingPlan.overseasPayment.period.quarter": "quarter",
-  "settings.modelProvider.codingPlan.overseasPayment.period.year": "year",
-  "settings.modelProvider.codingPlan.overseasPayment.recurringPeriod.month": "Monthly",
-  "settings.modelProvider.codingPlan.overseasPayment.recurringPeriod.quarter": "Quarterly",
-  "settings.modelProvider.codingPlan.overseasPayment.recurringPeriod.year": "Yearly",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalCharge":
-    "{price} will be charged automatically per {period}.",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalChargeFallback":
-    "Future renewals will follow your selected subscription cycle. The actual renewal amount is subject to your renewal invoice.",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalDeduction":
-    "Payments will be deducted first from bonus credits, then from your account balance, and finally via credit card.",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalMinimum":
-    "Please note that a small minimum applies when charging your credit card. If the remaining amount is less, we will round up the deduction to meet this minimum.",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalRecurring":
-    "{period} charges will continue on a recurring basis until you cancel in accordance with our Terms of Service.",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalCancelPrefix":
-    "You may disable auto-renewal at least 1 day before the renewal date in your ",
-  "settings.modelProvider.codingPlan.overseasPayment.subscriptionSettingLink":
-    "subscription setting",
-  "settings.modelProvider.codingPlan.overseasPayment.renewalCancelSuffix": ".",
-  "settings.modelProvider.codingPlan.overseasPayment.accountPolicyPrefix":
-    "The GLM Coding Plan is strictly limited to use by the subscriber within ",
-  "settings.modelProvider.codingPlan.overseasPayment.supportedProductsLink":
-    "officially supported products",
-  "settings.modelProvider.codingPlan.overseasPayment.accountPolicyAfterSupportedProducts":
-    ". Any sharing, resale, transfer, or third-party access is strictly prohibited. Any improper, unauthorized, or policy-violating use may result in immediate account restriction or suspension with no refunds. Please comply with our ",
-  "settings.modelProvider.codingPlan.overseasPayment.termsLink": "Terms",
-  "settings.modelProvider.codingPlan.overseasPayment.accountPolicyBetween": " and ",
-  "settings.modelProvider.codingPlan.overseasPayment.policyLink": "Policy",
-  "settings.modelProvider.codingPlan.overseasPayment.accountPolicySuffix": ".",
-  "settings.modelProvider.codingPlan.overseasPayment.authorizationPrefix":
-    "You agree that Z.ai will charge your card the above amount now and on a recurring basis according to your subscription plan until you cancel in accordance with our ",
-  "settings.modelProvider.codingPlan.overseasPayment.authorizationTermsLink": "terms",
-  "settings.modelProvider.codingPlan.overseasPayment.authorizationSuffix": ".",
-  "settings.modelProvider.codingPlan.paymentDialog.agreementPrefix":
-    "Payment means you agree to the ",
-  "settings.modelProvider.codingPlan.paymentDialog.serviceAgreementLink": "Service agreement",
-  "settings.modelProvider.codingPlan.paymentDialog.agreementBetween": " and the ",
-  "settings.modelProvider.codingPlan.paymentDialog.subscriptionAgreementLink":
-    "Subscription and auto-renewal agreement",
-  "settings.modelProvider.codingPlan.paymentDialog.agreementSuffix":
-    ". Virtual products are not refundable after payment.",
-  "settings.modelProvider.codingPlan.product.soldOut": "Sold out",
-  "settings.modelProvider.codingPlan.product.forbidden": "Unavailable for this account",
-  "settings.modelProvider.codingPlan.product.unavailable": "Unavailable",
-  "settings.modelProvider.codingPlan.product.subscribeNow": "Subscribe now",
-  "settings.modelProvider.codingPlan.product.unavailableTooltipPrefix":
-    "This plan is unavailable for purchase. ",
-  "settings.modelProvider.codingPlan.product.unavailableTooltipLink": "view details",
-  "settings.modelProvider.codingPlan.product.included": "Included",
-  "settings.modelProvider.codingPlan.product.firstPromo": "First-time subscription discount",
-  "settings.modelProvider.codingPlan.product.delay": "Effective {time}",
-  "settings.modelProvider.codingPlan.zai.plan.lite.name": "Lite",
-  "settings.modelProvider.codingPlan.zai.plan.lite.summary": "3x higher Claude Pro usage limits",
-  "settings.modelProvider.codingPlan.zai.plan.pro.name": "Pro",
-  "settings.modelProvider.codingPlan.zai.plan.pro.summary":
-    "Everything in Lite, plus 5x Lite usage",
-  "settings.modelProvider.codingPlan.zai.plan.max.name": "Max",
-  "settings.modelProvider.codingPlan.zai.plan.max.summary":
-    "Everything in Pro, plus 20x Lite usage",
-  "settings.modelProvider.codingPlan.bigmodel.plan.lite.name": "Lite",
-  "settings.modelProvider.codingPlan.bigmodel.plan.lite.summary": "3x Claude Pro usage quota",
-  "settings.modelProvider.codingPlan.bigmodel.plan.pro.name": "Pro",
-  "settings.modelProvider.codingPlan.bigmodel.plan.pro.summary":
-    "5x Lite usage quota + all Lite benefits",
-  "settings.modelProvider.codingPlan.bigmodel.plan.max.name": "Max",
-  "settings.modelProvider.codingPlan.bigmodel.plan.max.summary":
-    "20x Lite usage quota + all Pro benefits",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.lite.detail0": "Base usage allowance",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.lite.detail1":
-    "Light iteration for small repos",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.lite.detail2":
-    "Latest models rolled out over time",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.lite.detail3": "20+ coding tools",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.pro.detail0": "5x Lite usage allowance",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.pro.detail1":
-    "Daily development for mid-sized repos",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.pro.detail2":
-    "Priority access to latest models",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.pro.detail3": "Curated MCP tools",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.max.detail0":
-    "20x Lite usage allowance",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.max.detail1":
-    "Deep work on mid-to-large repos",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.max.detail2":
-    "First access to latest models",
-  "settings.modelProvider.codingPlan.bigmodel.purchase.plan.max.detail3":
-    "Peak-time resource priority",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.lite.detail0": "Base usage included",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.lite.detail1": "Small repo iteration",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.lite.detail2": "Latest models over time",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.lite.detail3": "20+ coding tools",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.pro.detail0": "5x Lite usage",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.pro.detail1": "Mid-sized repo development",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.pro.detail2": "Priority model access",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.pro.detail3": "Curated MCP tools",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.max.detail0": "20x Lite usage",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.max.detail1": "Mid-to-large repo work",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.max.detail2": "First model access",
-  "settings.modelProvider.codingPlan.zai.purchase.plan.max.detail3": "Peak-time priority",
+
   "settings.modelProvider.enabledStatus": "Enabled",
   "settings.modelProvider.enableModel": "Enable",
   "settings.modelProvider.disabledStatus": "Disabled",
@@ -3364,7 +2730,6 @@ const enUS: Record<string, string> = {
   "settings.modelProvider.enableProvider": "Enable provider",
   "settings.modelProvider.disableProvider": "Disable provider",
   "settings.modelProvider.renameProvider": "Rename",
-  "settings.modelProvider.enableCurrentPlan": "Enable current plan",
   "settings.modelProvider.enableAction": "Enable",
   "settings.modelProvider.disableAction": "Disable",
   "settings.modelProvider.restoreDefaultAction": "Restore default",
@@ -3445,7 +2810,6 @@ const enUS: Record<string, string> = {
   "settings.usage.sectionTitle": "Usage stats",
   "settings.usage.sectionDescription": "Built from local app session history.",
   "settings.usage.tab.appUsage": "App usage",
-  "settings.usage.tab.codingPlan": "Individual Plan",
   "settings.usage.sectionDescriptionRemote":
     "Synced from the selected provider monitor API for real token and tool usage.",
   "settings.usage.remoteTokenHint": "From the selected provider model-usage API",
@@ -3457,163 +2821,13 @@ const enUS: Record<string, string> = {
   "settings.usage.toolChartDescription":
     "From the selected provider tool-usage API: Network Search / Web Reader / Zread call counts.",
   "settings.usage.sourceProvider": "Source: {provider}",
-  "settings.usage.billingBanner.title": "{provider} Coding Plan",
-  "settings.usage.billingBanner.description":
-    "Connect your {provider} account to query Coding Plan entitlement, then keep coding in MyCode after purchase or setup.",
-  "settings.usage.billingBanner.compactDescription":
-    "Connect your {provider} account to sync usage.",
-  "settings.usage.billingBanner.buy": "Buy Coding Plan",
-  "settings.usage.billingBanner.apiKeys": "API keys",
-  "settings.usage.billingBanner.usageDetails": "Usage details",
-  "settings.usage.entitlementTitle": "Coding Plan entitlement",
-  "settings.usage.entitlementDescription":
-    "Sync exact plan level, 5-hour prompt pool, weekly quota, and monthly tool quota from the connected Coding Plan account.",
-  "settings.usage.entitlementError":
-    "Unable to load Coding Plan entitlement. Try again later or check the provider configuration.",
-  "usage.error.entitlement.credential":
-    "No Coding Plan entitlement was found. Reconnect the Coding Plan account or confirm that the account has an active plan.",
-  "usage.error.entitlement.generic":
-    "Unable to load Coding Plan entitlement. Try again later or check the provider configuration.",
-  "settings.usage.entitlementRemaining": "Tool usage",
-  "settings.usage.entitlementRealtime": "Synced from the provider quota api",
-  "settings.usage.entitlementHidden": "Provider marked this balance as hidden",
-  "settings.usage.entitlementPlan": "Active plan",
-  "settings.usage.entitlementPlanLevel": "Plan level",
-  "settings.usage.entitlementNoPlan": "No active Coding Plan",
-  "settings.usage.entitlementExpires": "Expires {date}",
-  "settings.usage.entitlementResetTime": "Next reset",
-  "settings.usage.entitlementTokenUsage": "5-hour prompt pool used {percent}",
   "settings.usage.quotaTitle": "Quota remaining",
-  "codingPlan.quotaReset.openDialog": "Get {count} reset quotas",
-  "codingPlan.quotaReset.countdown.daysHours": "{days}d {hours}h",
-  "codingPlan.quotaReset.countdown.daysOnly": "{days}d",
-  "codingPlan.quotaReset.countdown.hoursMinutes": "{hours}h {minutes}m",
-  "codingPlan.quotaReset.countdown.hoursOnly": "{hours}h",
-  "codingPlan.quotaReset.countdown.minutesSeconds": "{minutes}m {seconds}s",
-  "codingPlan.quotaReset.dialog.title": "Resettable quota",
-  "codingPlan.quotaReset.dialog.remaining": "Remaining quota",
-  "codingPlan.quotaReset.dialog.resettable": "Available resets",
-  "codingPlan.quotaReset.dialog.fiveHour": "5-hour quota reset",
-  "codingPlan.quotaReset.dialog.week": "Weekly quota reset",
-  "codingPlan.quotaReset.dialog.expiresIn": "Expires in {time}",
-  "codingPlan.quotaReset.dialog.expiresInSoonest": "Soonest expires in {time}",
-  "codingPlan.quotaReset.dialog.itemCount": "×{count}",
-  "codingPlan.quotaReset.opportunity": "{count} reset available",
-  "codingPlan.quotaReset.expiresIn": "Expires in {time}",
-  "codingPlan.quotaReset.contextReminder.available": "{count} reset available",
-  "codingPlan.quotaReset.contextReminder.expiresIn": "Reset expires in",
-  "codingPlan.quotaReset.contextReminder.dismiss": "Dismiss reminder",
-  "codingPlan.quotaReset.reset": "Reset",
-  "codingPlan.quotaReset.resetAria": "Reset 5-hour quota",
-  "codingPlan.quotaReset.resetAriaWeek": "Reset weekly quota",
-  "codingPlan.quotaReset.success": "Reset successful",
-  "codingPlan.quotaReset.failed": "Reset failed. Please try again.",
-  "codingPlan.quotaReset.processing": "Resetting 5-hour quota…",
-  "codingPlan.quotaReset.processingWeek": "Resetting weekly quota…",
-  "codingPlan.quotaReset.done": "5-hour quota reset",
-  "codingPlan.quotaReset.doneWeek": "Weekly quota reset",
-  "codingPlan.quotaReset.completed": "Reset",
-  "codingPlan.quotaReset.completedAt": "Reset at {time}",
   "settings.usage.trendsTitle": "Usage trends",
-  "settings.usage.entitlementFiveHourUsage": "5-hour remaining",
-  "settings.usage.entitlementWeeklyUsage": "Weekly remaining",
-  "settings.usage.entitlementMonthlyMcpUsage": "Tool calls",
-  "settings.usage.entitlementServerMcpUsage": "MyCode MCP",
-  "settings.usage.entitlementResetAt": "Resets {time}",
-  "settings.usage.entitlementUsageDetails": "Tool usage detail",
-  "settings.usage.entitlementPromptCap": "5-hour prompt pool",
-  "settings.usage.entitlementPromptCapValue": "{value} prompts",
-  "settings.usage.entitlementToolCap": "Monthly MCP/tool quota",
-  "settings.usage.entitlementToolCapValue": "{value}/month",
-  "settings.usage.entitlementConcurrency": "Concurrency priority",
-  "settings.usage.entitlementConcurrencyValue": "{value}",
-  "settings.usage.entitlementPolicyHint":
-    "Quota values follow the current usage guide and may change with platform policy.",
-  "settings.usage.entitlementLoginRequired": "Login required",
-  "settings.usage.entitlementNotConfigured":
-    "No connected Z.ai or BigModel Coding Plan account is available for quota lookup. Connect a Coding Plan account first.",
-  "settings.usage.entitlementStatusActive": "Active",
-  "settings.usage.entitlementStatusError": "Error",
-  "settings.usage.entitlementStatusLoading": "Loading",
-  "settings.usage.entitlementStatusLoginRequired": "Login required",
-  "settings.usage.entitlementStatusNoPlan": "Not subscribed",
-  "settings.usage.entitlementStatusNotConfigured": "Not configured",
   "sidebar.usage.summaryTitle": "Last 30 days",
-  "sidebar.usage.plan.title": "Usage remaining",
-  "sidebar.usage.plan.upgrade": "Upgrade",
-  "sidebar.usage.plan.renew": "Renew",
-  "sidebar.usage.plan.codingPlanTitle": "Coding Plan",
-  "sidebar.usage.plan.audienceIndividual": "Individual",
-  "sidebar.usage.plan.audienceTeam": "Team",
-  "sidebar.usage.plan.open": "More",
-  "sidebar.usage.plan.loading": "Syncing...",
-  "sidebar.usage.plan.unavailable": "No available entitlement data yet.",
-  "sidebar.usage.plan.loginRequired": "Login to view plan usage.",
-  "sidebar.usage.plan.notConfigured": "No connected Coding Plan account found.",
-  "sidebar.usage.plan.noPlanShort": "No plan",
-  "sidebar.usage.plan.remainingShort": "{value} left",
-  "sidebar.usage.plan.planTypeValue": "Plan: {plan}",
-  "sidebar.usage.plan.tokensLimit": "Token quota",
-  "sidebar.usage.plan.timeLimit": "Time quota",
-  "sidebar.usage.plan.otherLimit": "Quota",
-  "sidebar.usage.plan.percentUsed": "{percent}% used",
-  "sidebar.usage.plan.remainingValue": "Remaining",
-  "sidebar.usage.plan.total": "Total",
-  "sidebar.usage.plan.resetAt": "Resets {time}",
-  "sidebar.usage.plan.modelUsage": "Model usage",
-  "sidebar.usage.plan.openStats": "Usage stats",
-  "sidebar.usage.plan.refresh": "Refresh quota",
-  "sidebar.usage.plan.refreshing": "Updating quota",
-  "sidebar.usage.plan.updateFailed": "Possible network issue",
-  "sidebar.usage.plan.updated": "Quota updated",
-  "sidebar.usage.plan.noLimits": "Quota details unavailable.",
-  "sidebar.usage.plan.remaining": "Tool quota remaining",
-  "sidebar.usage.plan.realtime": "Synced from quota api",
-  "sidebar.usage.plan.hidden": "Provider marked this balance as hidden",
-  "sidebar.usage.plan.currentPlan": "Plan level",
-  "sidebar.usage.plan.noPlan": "No active Coding Plan",
-  "sidebar.usage.plan.expires": "Resets",
-  "sidebar.usage.plan.fiveHour": "5 hours",
-  "sidebar.usage.plan.weekly": "Weekly",
-  "sidebar.usage.plan.toolCalls": "Tool calls",
-  "sidebar.usage.plan.mcp": "MyCode MCP",
-  "sidebar.usage.plan.mycodeMcp": "MyCode MCP",
-  "sidebar.usage.plan.mycodeMcpDescription":
-    "Daily aggregate quota for MyCode built-in plugin MCPs",
-  "chat.planUsage.title": "Plan usage",
-  "chat.planUsage.titleWithPlan": "{plan} Plan usage",
-  "chat.planUsage.providerFallback": "Current provider",
-  "chat.planUsage.open": "Details",
-  "chat.planUsage.noPlan":
-    "No active Coding Plan was found for this account. Confirm that the connected account is subscribed.",
-  "chat.planUsage.contextWindow": "Current context window",
-  "chat.planUsage.contextDetail": "{used} / {total}",
-  "chat.planUsage.promptPool": "5-hour prompt pool",
-  "chat.planUsage.promptReset": "Resets {time}",
-  "chat.planUsage.weeklyQuota": "Weekly quota",
-  "chat.planUsage.weeklyReset": "Resets {time}",
-  "chat.planUsage.toolQuota": "Monthly MCP / tool usage",
-  "chat.planUsage.toolRemaining": "{remaining} / {total} remaining · resets {time}",
-  "chat.planUsage.toolUsed": "{used} / {total} used · resets {time}",
-  "chat.planUsage.noQuotaLimits":
-    "No Coding Plan quota was found. Confirm that the connected account has an active Coding Plan.",
-  "usage.error.chatPlan.credential":
-    "Unable to read plan quota. Reconnect the Coding Plan account or confirm that the account has an active plan.",
-  "usage.error.chatPlan.generic":
-    "Unable to read plan quota. Try again later or check the provider configuration.",
   "settings.usage.range.all": "All time",
   "settings.usage.range.7d": "Last 7 days",
   "settings.usage.range.30d": "Last 30 days",
   "settings.usage.appUsageRangeTitle": "Time range",
-  "settings.usage.codingPlanRange.today": "Today",
-  "settings.usage.codingPlanRange.7d": "7 days",
-  "settings.usage.codingPlanRange.30d": "30 days",
-  "settings.usage.codingPlanRange.custom": "Custom",
-  "settings.usage.codingPlanMetric.credits": "Credits",
-  "settings.usage.codingPlanMetric.usage": "Usage",
-  "settings.usage.codingPlanSubject.model": "Models",
-  "settings.usage.codingPlanSubject.tool": "Tools",
-  "settings.usage.codingPlanLegendTotal": "Total",
   "settings.usage.healthTitle": "System health",
   "settings.usage.healthRange.7d": "Last 7 days",
   "settings.usage.healthProMaxDecode": "Max&Pro peak average decode speed",
@@ -3622,14 +2836,10 @@ const enUS: Record<string, string> = {
   "settings.usage.loadingTitle": "Computing usage",
   "settings.usage.appUsageLoadingDescription":
     "Reading local app session history, so it can take a moment.",
-  "settings.usage.codingPlanLoadingDescription":
-    "Reading the selected provider monitor API, so it can take a moment.",
   "settings.usage.lastRefreshTime": "Last refreshed: {time}",
   "settings.usage.error":
     "Unable to load usage stats. Try again later or check the network and provider configuration.",
   "settings.usage.checkApiKey": "Check account",
-  "usage.error.stats.credential":
-    "Unable to load usage stats. Reconnect the Coding Plan account or confirm that the account has an active plan.",
   "usage.error.stats.generic":
     "Unable to load usage stats. Try again later or check the network and provider configuration.",
   "settings.usage.emptyTitle": "No usage data yet",
@@ -3681,12 +2891,6 @@ const enUS: Record<string, string> = {
   "settings.usage.toolUsageTitle": "Tool usage",
   "settings.usage.tokenTotal": "Total token usage",
   "settings.usage.timesUnit": " times",
-  "settings.usage.codingPlanNotConfiguredTitle": "Coding Plan is not connected",
-  "settings.usage.codingPlanNotConfiguredDescription":
-    "Connect a Z.ai or BigModel Coding Plan provider in Model Settings to view plan quota, model usage, and tool usage.",
-  "settings.usage.codingPlanCurrentConnectionTitle": "Current connection is not using Coding Plan",
-  "settings.usage.codingPlanCurrentConnectionDescription":
-    "Switch the workspace model connection to an Individual Plan or Team Plan to view its quota and usage here.",
   "settings.usage.modelChartDescription":
     "{model} currently has the highest share at about {share}.",
   "settings.usage.modelChart.other": "Other models",
@@ -3702,8 +2906,7 @@ const enUS: Record<string, string> = {
   "settings.usage.dayLabel.mon": "Mon",
   "settings.usage.dayLabel.wed": "Wed",
   "settings.usage.dayLabel.fri": "Fri",
-  "settings.modelProvider.presetDescription":
-    "Built-in Z.ai and BigModel providers with OAuth-assisted configuration.",
+
   "settings.modelProvider.presetEmpty": "Not synced yet. Complete OAuth login first.",
   "settings.modelProvider.customTitle": "Custom providers",
   "settings.modelProvider.refresh": "Refresh",
@@ -3885,6 +3088,10 @@ const enUS: Record<string, string> = {
   "settings.subagents.workspaceScopeUnsupported":
     "Workspace-level creation or editing is unsupported",
   "settings.subagents.searchPlaceholder": "Search subagents...",
+  "settings.subagents.workerDescription":
+    "General-purpose agent for researching complex questions, searching code, and executing multi-step tasks, with access to all tools.",
+  "settings.subagents.searcherDescription":
+    "Read-only search agent for broad searches in multiple directions. It can inspect but cannot modify, with access to 7 tools.",
   "settings.subagents.empty": "No subagents found",
   "settings.subagents.addNew": "New subagent",
   "settings.subagents.addDescription":
@@ -3956,8 +3163,8 @@ const enUS: Record<string, string> = {
   "settings.subagents.form.validation.thoughtLevelUnavailable":
     "Select a reasoning effort supported by this model",
   "settings.subagents.reasoningUnavailable": "Reasoning effort unavailable",
-  "settings.subagents.model.inherit": "Inherit",
-  "settings.subagents.model.defaultMain": "Inherit default",
+  "settings.subagents.model.inherit": "Default",
+  "settings.subagents.model.defaultMain": "Default",
   "settings.subagents.model.select": "Select model",
   "settings.subagents.model.main": "Main",
   "settings.subagents.model.lite": "Lite",
@@ -3974,8 +3181,7 @@ const enUS: Record<string, string> = {
   "settings.pluginManaged.badge": "Plugin",
   "settings.pluginManaged.modifyInPlugin": "Registered by a plugin. Edit it in the plugin.",
   "settings.plugins.title": "Plugins",
-  "settings.plugin.scope.user": "User",
-  "settings.plugin.scope.workspaces": "Workspaces",
+  "settings.plugin.scope.user": "Local computer",
   "settings.plugin.tab.plugins": "Plugins",
   "settings.plugin.tab.mcps": "MCP",
   "settings.plugin.tab.skills": "Skills",
@@ -3984,6 +3190,7 @@ const enUS: Record<string, string> = {
   "settings.plugin.plugins.installed": "Installed",
   "settings.plugin.plugins.builtIn": "Built-in",
   "settings.plugin.mcp.installed": "Installed",
+  "settings.plugin.mcp.servers": "Servers",
   "settings.plugin.mcp.plugins": "Plugins",
   "settings.plugin.mcp.pluginsDescription": "MCPs provided by installed plugins",
   "settings.plugin.mcp.needsAttention": "Needs Attention",
@@ -4043,8 +3250,6 @@ const enUS: Record<string, string> = {
   "settings.plugins.store.viewMoreFew": "See {names}",
   "settings.plugins.store.showLess": "Show less",
   "settings.plugins.store.install": "Install",
-  "settings.plugins.store.paidPlanBadge": "Coding Plan",
-  "settings.plugins.store.requiresPaidPlan": "This plugin works better with a Coding Plan",
   "settings.plugins.store.tryNow": "Try now",
   "settings.plugins.store.sourceMissing":
     "Marketplace source is missing. This plugin remains usable, but updates are unavailable.",
@@ -4368,9 +3573,6 @@ const enUS: Record<string, string> = {
   "settings.hooks.group.compatibility": "Available to import",
   "settings.hooks.group.plugins": "Plugin hooks",
   "settings.hooks.group.installed": "Installed",
-  "settings.hooks.group.legacy": "Legacy",
-  "settings.hooks.import": "Import",
-  "settings.hooks.imported": "Hook imported",
   "settings.hooks.event": "Event",
   "settings.hooks.type": "Runner",
   "settings.hooks.type.process": "Process",
@@ -4644,7 +3846,7 @@ const enUS: Record<string, string> = {
   "chat.message.time.yesterday": "Yesterday {time}",
   "chat.message.retry": "Retry",
   "chat.history.workingFor": "Working for {duration}",
-  "chat.history.workedFor": "Worked for {duration}",
+  "chat.history.workedFor": "Workerd for {duration}",
   "chat.history.worked": "Worked",
   "chat.history.stopped": "Stopped",
   "chat.history.duration.day": "d",
@@ -4693,12 +3895,12 @@ const enUS: Record<string, string> = {
   "chat.modelChangeNotice.changed": "Switched from {fromModel} to {toModel}",
   "chat.preparing": "Preparing...",
   "chat.remoteGenerating": "Another device is sending a message...",
-  "chat.reasoning.thinking": "Thinking",
-  "chat.reasoning.thought": "Thought",
+  "chat.reasoning.thinking": "Reasoning…",
+  "chat.reasoning.thought": "Reasoning",
   "chat.reasoning.durationFewSeconds": "a few seconds",
-  "chat.reasoning.durationSeconds": "{seconds} seconds",
+  "chat.reasoning.durationSeconds": "{seconds}s",
   "chat.contextUsage": "Context usage {used} of {total}",
-  "chat.contextUsage.title": "Context windows",
+  "chat.contextUsage.title": "Context window",
   "chat.contextUsageDescription":
     "Prompt text, tool calls, and responses all share this context window.",
   "chat.contextUsage.cacheHitRate": "Average cache hit rate",
@@ -4765,6 +3967,7 @@ const enUS: Record<string, string> = {
   "chat.goalVerification.cancelled": "Goal verification interrupted",
   "chat.goalVerification.openSummary": "Expand summary",
   "chat.goalBanner.label": "Goal",
+  "chat.goalBanner.removeLabel": "Remove Goal mode",
   "chat.apiRetryStatus": "Reconnecting... {attempt}/{maxRetries}",
   "chat.target.title": "Goal",
   "chat.target.status.active": "Active",
@@ -4775,6 +3978,18 @@ const enUS: Record<string, string> = {
   "chat.target.resume": "Resume goal",
   "chat.target.clear": "Clear goal",
   "chat.summaryPanel.title": "Status",
+  "chat.summaryPanel.togglePinnedSummary": "Toggle pinned summary",
+  "chat.toolCall.applicationListSummary": "List apps · {total} ({running} running)",
+  "chat.inventory.noOutputs": "No outputs yet",
+  "chat.inventory.noSources": "No sources yet",
+  "chat.inventory.changes": "{count} files changed",
+  "chat.inventory.reverted": "{count} file changes reverted",
+  "chat.inventory.loadFailed": "Could not load history. Try again.",
+  "chat.inventory.loading": "Loading…",
+  "chat.inventory.viewAll": "View all",
+  "chat.inventory.showLess": "Show less",
+  "chat.inventory.locate": "Locate in conversation",
+  "chat.summaryPanel.empty": "No pinned summary yet",
   "chat.summaryPanel.duration.hours": "h",
   "chat.summaryPanel.duration.minutes": "m",
   "chat.summaryPanel.duration.seconds": "s",
@@ -4801,6 +4016,7 @@ const enUS: Record<string, string> = {
   "chat.summaryPanel.todoSessionGroup": "Session",
   "chat.statusPanel.environment": "Git tools",
   "chat.statusPanel.changes": "Changes",
+  "chat.inventory.changesLabel": "Changes",
   "chat.statusPanel.branch": "Branch",
   "chat.statusPanel.commitPush": "Commit / Push",
   "chat.statusPanel.clean": "Clean",
@@ -4881,7 +4097,7 @@ const enUS: Record<string, string> = {
   "chat.toolbar.thoughtLevel.value.low": "Low",
   "chat.toolbar.thoughtLevel.value.medium": "Medium",
   "chat.toolbar.thoughtLevel.value.high": "High",
-  "chat.toolbar.thoughtLevel.value.xhigh": "Extra high",
+  "chat.toolbar.thoughtLevel.value.xhigh": "Extra High",
   "chat.toolbar.thoughtLevel.value.max": "Max",
   "chat.toolbar.thoughtLevel.value.ultra": "Ultra",
   "chat.longRunning.expand": "Expand long-running panel",
@@ -4930,6 +4146,7 @@ const enUS: Record<string, string> = {
   "chat.toolCall.edit.deleted": "Deleted",
   "chat.toolCall.edit.editing": "Editing",
   "chat.toolCall.edit.edited": "Edited",
+  "chat.toolCall.edit.created": "Created",
   "chat.toolCall.edit.multipleFiles": "{count} files",
   "chat.toolCall.snapshot.notice":
     "{fields} tool field(s) were truncated. Showing preview {previewBytes} / {fullBytes}.",
@@ -4946,6 +4163,8 @@ const enUS: Record<string, string> = {
   "chat.toolCall.changesGroup.tool.one": "{count} tool",
   "chat.toolCall.changesGroup.tool.other": "{count} tools",
   "chat.toolCall.execute.terminal": "Terminal",
+  "chat.toolCall.execute.summary.ran": "Ran",
+  "chat.toolCall.execute.summary.running": "Running",
   "chat.toolCall.execute.noOutput": "No output.",
   "chat.toolCall.executeGroup.command.one": "{count} command",
   "chat.toolCall.executeGroup.command.other": "{count} commands",
@@ -5782,30 +5001,8 @@ const enUS: Record<string, string> = {
   "chat.error.sendFailed": "Failed to send. Try again later.",
   "chat.error.modelSettings": "Model settings",
   "chat.error.setModels": "Set",
-
-  // Start Plan per-bucket quota reminders
-  "chat.quota.startPlan.bucketDailyLow":
-    "{model} has {percent} of its daily quota remaining ({remaining} tokens).",
-  "chat.quota.startPlan.bucketActivityLow":
-    "{model} has {percent} of its promotional quota remaining ({remaining} tokens).",
-  "chat.quota.startPlan.modelVeryLow":
-    "{model} has {percent} of its plan quota remaining ({remaining} tokens).",
-  "chat.quota.startPlan.modelExhausted":
-    "All available quota for {model} has been used up. Switch models or upgrade your plan.",
-  "chat.quota.startPlan.dailyExhausted":
-    "Your Start Plan quota has been used up. Upgrade your plan or wait for the quota to reset.",
-  "chat.quota.startPlan.concurrentLimit":
-    "The system is busy. Please switch models, upgrade your account, or try again later.",
-  "chat.quota.startPlan.concurrentLimit.retryExhausted":
-    "The system is busy, and automatic retries have reached the maximum count. Please try again later or upgrade your account.",
-  "chat.quota.startPlan.concurrentLimit.switchModel":
-    "The current model request concurrency limit has been reached. Switch models to continue your current task.",
   "chat.quota.mcp.quotaExhausted":
     'MyCode MCP "{server}" has used up today\'s quota. It resets tomorrow.',
-  "chat.quota.mcp.codingPlanRequired":
-    'No MyCode MCP "{server}" quota. Sign in or get a Coding Plan to use it.',
-  "chat.quota.providerLimited":
-    "The current account quota or plan limit has been reached. Upgrade or adjust the plan to continue.",
   "chat.quota.action.upgrade": "Upgrade",
   "chat.quota.action.renew": "Renew",
   "chat.quota.action.switchModel": "Switch model",
@@ -5962,8 +5159,7 @@ const enUS: Record<string, string> = {
     "Current video attachments are too large. Remove or compress videos and try again.",
   "mycode.error.MYCODE_RUNTIME_MODEL_UNAVAILABLE":
     "The current model is no longer available. Select an available model from the current model list to continue.",
-  "mycode.error.MYCODE_BIGMODEL_TEAM_PLAN_MEMBER_REQUIRED":
-    "The current model is unavailable. Check whether the current account has been added to the project member list.",
+
   "mycode.error.providerBusiness.1006": "Your login session has expired. Please sign in again.",
   "mycode.error.providerBusiness.1005":
     "Today's free plan quota has been used up. Upgrade to continue now, or wait for the quota to reset.",
@@ -6009,7 +5205,7 @@ const enUS: Record<string, string> = {
   "resourceManager.systemUsage": "System",
   "resourceManager.category.base": "Base services",
   "resourceManager.category.builtinPlugin": "Built-in plugins",
-  "resourceManager.category.communityPlugin": "Community plugins",
+  "resourceManager.category.communityPlugin": "Third-party plugins",
   "resourceManager.empty": "No processes",
   "resourceManager.sampling": "Sampling metrics",
   "resourceManager.column.process": "Process",
@@ -6371,7 +5567,7 @@ const enUS: Record<string, string> = {
   "taskList.workflowRun.moreStations": "+{count}",
   "taskList.workflowRun.liveCount": "{count} workflows running",
   "taskGroup.cronGroupName": "Scheduled tasks",
-  "workspace.openScheduledSettings": "Automations",
+  "workspace.openScheduledSettings": "Scheduled",
   "settings.automations.title": "Automations",
   "automations.breadcrumbLabel": "Automation path",
   "settings.automations.betaBadge": "Beta",
@@ -6393,10 +5589,6 @@ const enUS: Record<string, string> = {
   "offPeak.notify.failed.title": "Idle-time task failed",
   "offPeak.notify.failed.body": '"{title}" stopped with an error.',
   "offPeak.sidebar.groupTitle": "Idle-time tasks",
-  "offPeak.newTask.bannerText":
-    'New feature for subscribers: Create "Idle-time task" , We will complete your assigned task for free during periods of surplus computing power.',
-  "offPeak.newTask.bannerTipText":
-    "This feature does not consume your subscription plan quota and is available exclusively to subscribers.",
   "offPeak.newTask.carousel.goToSlide": "Go to idle-time task template {index}",
   "offPeak.newTask.template.customize.title": "Customize",
   "offPeak.newTask.template.customize.description":
@@ -6412,8 +5604,7 @@ const enUS: Record<string, string> = {
   "offPeak.sectionTitle": "Idle-time tasks",
   "offPeak.createButton": "Create idle-time task",
   "offPeak.templates.sectionTitle": "Idle-time task template",
-  "offPeak.list.empty":
-    "No idle-time tasks yet. Create one to run it during off-peak hours at no extra cost.",
+  "offPeak.list.empty": "No off-peak tasks. The cloud service is unavailable.",
   "offPeak.badge.pausedPosition": "#{position} Paused",
   "offPeak.action.pauseHint":
     "Tasks paused beyond the queue wait time will be placed back in the queue",
@@ -6496,8 +5687,6 @@ const enUS: Record<string, string> = {
   "offPeak.create.remaining.hours": "{hours} hr",
   "offPeak.create.remaining.minutes": "{minutes} min",
   "offPeak.create.remaining.lessThanMinute": "less than 1 min",
-  "offPeak.create.codingPlanToast":
-    "Idle-time tasks are available for Coding Plan subscribers only.",
   "automations.moreIdeas": "Scheduled task template",
   "automations.templates.unavailable": "No templates available",
   "automations.runNow": "Run now",
@@ -6818,10 +6007,10 @@ const enUS: Record<string, string> = {
   "cuaPermission.ready": "Permissions ready",
   "cuaPermission.ready.sessionValidationHint":
     "MyCode will verify the Computer Use tools against the exact session when your first session starts.",
-  "settings.computerUse.title": "Computer Use",
-  "settings.computerUse.toggleLabel": "Enable Computer Use",
+  "settings.computerUse.title": "Control",
+  "settings.computerUse.toggleLabel": "Computer Use",
   "settings.computerUse.toggleDescription":
-    "Turning this on enables Computer Use — its MCP server and skills.",
+    "Let AI control your computer. Complete system permissions when first enabled.",
   "settings.computerUse.composerEntry.label": "Show Computer Use button in the composer",
   "settings.computerUse.composerEntry.description": "When off, the composer button is hidden.",
   "settings.computerUse.composerEntry.requiresEnabled":

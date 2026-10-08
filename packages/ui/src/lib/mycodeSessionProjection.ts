@@ -128,6 +128,12 @@ export function mycodeSessionSettingsToConfigOptions(
       name: "Thought Level",
       category: "thought_level",
       type: "select",
+      ...(settings.thoughtLevel.defaultLevel &&
+      settings.thoughtLevel.available.some(
+        (level) => level.value === settings.thoughtLevel.defaultLevel,
+      )
+        ? { defaultValue: settings.thoughtLevel.defaultLevel }
+        : {}),
       currentValue: resolveSettingsThoughtLevelCurrentValue(settings.thoughtLevel) ?? "",
       options: settings.thoughtLevel.available.map((level) => ({
         value: level.value,
@@ -171,7 +177,9 @@ function resolveSettingsThoughtLevelCurrentValue(
   return currentThoughtLevel ?? defaultThoughtLevel ?? thoughtLevel.available[0]?.value;
 }
 
-export function mycodeSessionSnapshotToTaskMeta(snapshot: MyCodeSessionStateSnapshot): MyCodeTaskMeta {
+export function mycodeSessionSnapshotToTaskMeta(
+  snapshot: MyCodeSessionStateSnapshot,
+): MyCodeTaskMeta {
   return {
     taskId: snapshot.session.sessionId,
     traceId: generateTraceId(snapshot.session.sessionId),

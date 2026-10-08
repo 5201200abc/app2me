@@ -1,7 +1,7 @@
 import {
   decodeCustomModelValue,
   migrateLegacyModelProviderId,
-  migrateLegacyOfficialGlmModelId,
+  migrateLegacyOfficialModelId,
   modelSelectionSchema,
   MYCODE_AGENT_PROVIDER,
   type ModelSelection,
@@ -25,7 +25,7 @@ function migrateSelection(options: Record<string, unknown>): ModelSelection | un
       ? {
           ...selection,
           providerId,
-          modelId: migrateLegacyOfficialGlmModelId(selection.providerId, selection.modelId),
+          modelId: migrateLegacyOfficialModelId(selection.providerId, selection.modelId),
         }
       : undefined;
   }
@@ -44,7 +44,7 @@ function migrateSelection(options: Record<string, unknown>): ModelSelection | un
     typeof options.thoughtLevel === "string" ? options.thoughtLevel.trim() : "";
   return {
     providerId,
-    modelId: migrateLegacyOfficialGlmModelId(oldProviderId, modelId),
+    modelId: migrateLegacyOfficialModelId(oldProviderId, modelId),
     ...(reasoningLevel ? { options: { reasoningLevel } } : {}),
   };
 }

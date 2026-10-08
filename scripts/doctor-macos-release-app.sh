@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-APP_PATH="${1:-${MYCODE_MACOS_RELEASE_APP_PATH:-/Applications/MyCode.app}}"
+APP_PATH="${1:-${MYCODE_MACOS_RELEASE_APP_PATH:-/Applications/app2me.app}}"
 # 安装包身份与后端环境分轴：MYCODE_PREVIEW_IDENTITY=1 让生产后端的构建仍是 MyCode Preview。
 # 只认 "1"，与 CI workflow / release 门的精确比较同一套语义（其它拼写一律视为未开启）。
 is_preview_identity_requested() {
@@ -15,8 +15,8 @@ APP_EXECUTABLE_NAME="${MYCODE_APP_EXECUTABLE_NAME:-$APP_DISPLAY_NAME}"
 if [ "${APP_PATH:-}" = "--help" ] || [ "${APP_PATH:-}" = "-h" ]; then
   cat <<'USAGE'
 Usage:
-  bash scripts/doctor-macos-release-app.sh /Applications/MyCode.app
-  MYCODE_MACOS_RELEASE_APP_PATH=/Applications/MyCode.app pnpm run doctor:macos-release
+  bash scripts/doctor-macos-release-app.sh /Applications/app2me.app
+  MYCODE_MACOS_RELEASE_APP_PATH=/Applications/app2me.app pnpm run doctor:macos-release
 
 Always validates the installed macOS release app with:
   codesign --verify --deep --strict <app>

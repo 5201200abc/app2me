@@ -1,82 +1,98 @@
-## 核心原则
+## Core Principles
 
-- 新增或修改行为前，先更新对应 spec；目录不存在时按需创建。先明确产品规则、状态所有者、接口和验收场景，再实现代码。
-- 以当前检出的源码、`package.json` 和架构策略为准。说明中只保留当前仓库提供的功能、命令和文件；删除功能时同步清理指令和技能中的引用。
-- 定位问题时，未明确要求修改代码就先调查原因。结合源码、日志和运行时证据，区分已确认原因与待验证假设。
-- 保留与任务无关的本地改动，不自行恢复已移除的模块或内部依赖。
+- Before adding or changing existing behavior, update the relevant spec. Create its directory when needed; do not assume a fixed versioned design directory exists. Define product rules, state ownership, interfaces, and acceptance scenarios before implementation. Bug fixes that restore behavior already specified are exempt.
+- Treat the checked-out source, `package.json`, and architecture policy as authoritative. Document only capabilities, commands, and files available in this repository. When removing features, also remove their references from instructions and skills.
+- When investigating an issue, investigate the cause first unless code changes were explicitly requested. Combine source, logs, and runtime evidence, distinguishing confirmed causes from hypotheses that still need verification.
+- Preserve unrelated local changes. Do not restore removed modules or internal dependencies on your own.
 
-## 命令与仓库结构
+## Commands and Repository Structure
 
-开工前运行 `node scripts/check-workspace-freshness.mjs` 检查基线。Node 版本以 `mise.toml` 为准。
+Use the Node version specified in `mise.toml`. Run these commands from the repository root:
 
-以下命令从仓库根目录执行：
+| Purpose                         | Command                                               |
+| ------------------------------- | ----------------------------------------------------- |
+| Type checking                   | `pnpm typecheck`                                      |
+| Lint                            | `pnpm lint` / `pnpm lint:fix`                         |
+| Formatting check                | `pnpm fmt:check`                                      |
+| Desktop development             | `pnpm dev:desktop`                                    |
+| Web development                 | `pnpm dev:web`                                        |
+| Pre-push checks                 | `pnpm verify:pre-push` (lint and architecture checks) |
+| Architecture check              | `pnpm architecture:check --changed`                   |
+| Module reading context          | `pnpm architecture:context <module-id>`               |
+| Unused dependencies and exports | `pnpm knip`                                           |
+| Export reference lookup         | `pnpm dep:refs --list-exports <file>`                 |
 
-| 用途             | 命令                                      |
-| ---------------- | ----------------------------------------- |
-| 类型检查         | `pnpm typecheck`                          |
-| Lint             | `pnpm lint` / `pnpm lint:fix`             |
-| 格式检查         | `pnpm fmt:check`                          |
-| 桌面开发         | `pnpm dev:desktop`                        |
-| Web 开发         | `pnpm dev:web`                            |
-| 提交前检查       | `pnpm verify:pre-push`（Lint 与架构检查） |
-| 架构检查         | `pnpm architecture:check --changed`       |
-| 模块阅读包       | `pnpm architecture:context <module-id>`   |
-| 未使用依赖与导出 | `pnpm knip`                               |
-| 导出引用查询     | `pnpm dep:refs --list-exports <file>`     |
+Use the target package's current `package.json` and actual test files to identify test entry points. Do not assume a shared unit-test or E2E command exists.
 
-测试入口以目标包当前的 `package.json` 和实际测试文件为准，不假定存在统一的单测或 E2E 命令。
+- `packages/desktop`: Electron main, host, and renderer.
+- `packages/web`, `packages/server`: Web client and server.
+- `packages/ui`: shared React components, hooks, and Zustand stores.
+- `packages/services`: business services; `packages/rpc`: RPC framework.
+- `packages/shared`: shared protocols and types; `packages/client`: Agent client SDK.
+- `apps/mycode-cli`: Agent CLI and runtime.
+- `CONTEXT.md`: plugin marketplace terminology; read before changing related UI.
+- `DESIGN.md`: UI design guidelines; read before changing UI.
 
-- `packages/desktop`：Electron main、host、renderer。
-- `packages/web`、`packages/server`：Web 客户端与服务端。
-- `packages/ui`：共享 React 组件、hooks 与 Zustand store。
-- `packages/services`：业务服务；`packages/rpc`：RPC 框架。
-- `packages/shared`：共享协议与类型；`packages/client`：Agent 客户端 SDK。
-- `apps/mycode-cli`：Agent CLI 与运行时。
-- `CONTEXT.md`：插件商店领域词汇；修改相关 UI 前阅读。
-- `DESIGN.md`：UI 设计规范；修改 UI 前阅读。
+## Implementation and Verification
 
-## 实现与验证
+Verify in this order:
 
-- 代码改动使用 `.agents/skills/architecture-governance/SKILL.md`，先运行架构检查，再读取目标模块的受控上下文。
-- 避免重复状态和多条写入路径。明确唯一所有者、接口、依赖方向、事件顺序与幂等边界，不能用超时掩盖同步问题。
-- 有行为改动时先补充对应测试；交互改动需要 E2E 场景。检查测试与实现是否一致，并实际执行可用的验证。未执行或环境受限时如实说明。
-- 修复 bug 时用中文注释说明原因和修复依据。发现设计缺陷时先与用户对齐，不不断增加兜底分支。
-- 涉及状态、时序、远端或异步同步的方案，用图展示所有者及事件顺序。
-- 必须执行 `pnpm typecheck` 和 `pnpm lint`，报告真实结果，不将已有失败写成通过。
-- 使用异步文件和网络 IO；跨包导入使用公开入口，遵守现有路径别名。
-- 禁止 UI 直接调用 Repo、Service 引用 Runtime 具体实现、跨域导入实现细节及循环依赖。
+1. Before starting, run `node scripts/check-workspace-freshness.mjs` to check the baseline.
+2. Before changing code, follow `.agents/skills/architecture-governance/SKILL.md`, run `pnpm architecture:check --changed`, and read the target module's controlled context.
+3. Before finishing, run `pnpm typecheck` and `pnpm lint`.
+4. Before committing, run `pnpm verify:pre-push`.
 
-## UI 与平台边界
+- Report actual results. Do not describe existing failures as passing checks.
+- Avoid duplicate state and multiple write paths. Define a single owner, interfaces, dependency direction, event ordering, and idempotency boundaries. Do not hide synchronization problems behind timeouts.
+- Add corresponding tests before behavior changes; interaction changes require E2E scenarios. Check that tests match the implementation and run the available verification. Report checks that were not run or were limited by the environment.
+- When fixing bugs, explain the cause and evidence in Chinese comments. Discuss design defects with the user before proceeding; do not keep adding fallback branches.
+- Use diagrams to show owners and event ordering for designs involving state, timing, remote execution, or asynchronous synchronization.
+- Use asynchronous file and network I/O. Use public entry points for cross-package imports and respect existing path aliases.
+- UI must not call repositories directly; services must not reference concrete runtime implementations. Avoid cross-domain implementation imports and circular dependencies.
 
-- 遵守 `DESIGN.md`，复用已有组件，兼顾桌面与手机 Web 的布局、交互、主题和国际化。
-- 组件通过 `packages/ui/src/hooks/` 访问服务；平台操作通过 `IPlatformService`（`packages/shared/src/platform.ts`），不直接调用 `window.mycode`。
-- 通过依赖注入处理 Desktop、Web、本地和远程环境的差异，并兼顾 Windows、macOS 和 Linux。
-- Zustand 状态位于 `packages/ui/src/store/`。广播同步的主题、语言等字段需要防止回环；UI 局部状态不应被误当作服务端事实。
-- hooks 中含 JSX 的文件使用 `.tsx`。
+## UI and Platform Boundaries
 
-## 进程、协议与远程控制
+- Follow `DESIGN.md`, reuse existing components, and cover desktop and mobile Web layouts, interactions, themes, and internationalization.
+- Components access services through `packages/ui/src/hooks/`. Route platform operations through `IPlatformService` (`packages/shared/src/platform.ts`), rather than calling `window.mycode` directly.
+- Use dependency injection for differences between Desktop, Web, local, and remote environments, covering Windows, macOS, and Linux.
+- Zustand state lives in `packages/ui/src/store/`. Prevent feedback loops for broadcast-synchronized fields such as theme and language. Do not treat UI-local state as server-side facts.
+- Use `.tsx` for hook files containing JSX.
 
-- Desktop app 通过 stdio 与 Agent 通信。协议改动同步更新 `packages/shared/src/mycode-protocol/index.ts`，提供严格类型与运行时校验。
-- Main 负责窗口、原生操作、进程调度和消息转发，不承载 task/session 业务状态。
-- 每个窗口使用一个 window-scoped Local Host；本地 workspace 共享该 Host。远程 workspace 由窗口内的连接注册表管理，不另建 Desktop Remote Host。
-- 手机远控连接桌面已有 Host attachment，复用会话运行时；不为手机另起 Agent、Local Host 或远程会话。
-- Desktop 的 `desktop-continuous` 实时链路与手机的 `web-remote-replayable` 恢复链路必须明确区分。修改 stream、snapshot、queue 或重连时，同时验证两种语义。
-- 外部 relay 与 Main 只做鉴权、配对、心跳、转发及 attachment 调度，不保存任务队列、快照等业务状态。
-- 已接受的 busy/running 输入由 CLI/runtime `CommandInbox` 串行 admission；Renderer 只保留未提交草稿与 pending optimistic overlay，Host owner/lease 负责路由。
-- 保留 owner/lease、跨 Host 路由和 stale run 防护，不能仅根据单一路径删除边界判断。
+## Processes, Protocols, and Remote Control
+
+- The Desktop app communicates with the Agent over stdio. Update `packages/shared/src/mycode-protocol/index.ts` alongside protocol changes, with strict types and runtime validation.
+- Main owns windows, native operations, process scheduling, and message forwarding, not task/session business state.
+- Each window uses one window-scoped Local Host, shared by local workspaces. A connection registry within the window manages remote workspaces; do not create a separate Desktop Remote Host.
+- Mobile remote control connects to an existing desktop Host attachment and reuses its session runtime. Do not start separate Agents, Local Hosts, or remote sessions for mobile.
+- Distinguish Desktop's `desktop-continuous` live stream from mobile's `web-remote-replayable` recovery stream. Verify both semantics when changing streams, snapshots, queues, or reconnection.
+- External relays and Main handle only authentication, pairing, heartbeats, forwarding, and attachment scheduling. They do not store business state such as task queues or snapshots.
+- The CLI/runtime `CommandInbox` serializes admission of accepted busy/running input. Renderer retains only unsubmitted drafts and pending optimistic overlays; Host owner/lease handles routing.
+- Preserve owner/lease checks, cross-Host routing, and stale-run protection. Do not remove boundary checks based on a single execution path.
 
 ## Workspace Identity
 
-- `workspaceIdentity` 用于身份隔离，`workspacePath` 用于文件操作、命令 cwd、Git 和路径展示。
-- 身份 key 统一为 `workspaceIdentity?.trim() || workspacePath`，适用于去重、绑定、缓存、队列、持久化和请求关联。
-- 远程链路贯穿传递 `workspaceIdentity` 与 `remoteSessionId`，不得仅按路径匹配。
-- 新接口保留本地路径 fallback；远程 identity 复用现有构造和解析工具，不在业务代码中手写格式。
+- `workspaceIdentity` provides identity isolation; `workspacePath` is used for file operations, command cwd, Git, and path display.
+- Use `workspaceIdentity?.trim() || workspacePath` as the identity key for deduplication, binding, caches, queues, persistence, and request correlation.
+- Propagate `workspaceIdentity` and `remoteSessionId` throughout remote flows. Do not match solely by path.
+- New interfaces retain a local-path fallback. Reuse existing builders and parsers for remote identity; do not handcraft its format in business code.
 
-## 日志
+## Logging
 
-- UI 使用 `packages/ui/src/logger.ts`，不直接使用 `console.log` 或 `window.mycode?.log`。
-- Agent/session/runtime 相关服务日志使用 `createServiceLogger(scope)`（`packages/services/src/logger/serviceLogger.ts`）。
-- `debug` 用于协议原始数据、流式 chunk 和逐条工具更新等高频诊断，生产环境不落盘。
-- `info` 用于进程和会话生命周期、权限结果、一次性初始化等生产可用事件。
-- `warn` 用于可恢复异常；`error` 用于崩溃、握手失败、鉴权丢失等不可恢复错误。
-- 不在日志、示例或提交中写入凭据、真实用户数据和内部服务地址。
+- UI uses `packages/ui/src/logger.ts`, not direct `console.log` or `window.mycode?.log` calls.
+- Agent/session/runtime service logs use `createServiceLogger(scope)` (`packages/services/src/logger/serviceLogger.ts`).
+- Use `debug` for frequent diagnostics such as raw protocol data, streaming chunks, and individual tool updates. These are not written to disk in production.
+- Use `info` for production events such as process and session lifecycles, permission results, and one-time initialization.
+- Use `warn` for recoverable exceptions and `error` for unrecoverable failures such as crashes, handshake failures, or lost authentication.
+
+## Open-Source Content and Sensitive Information
+
+- Repository licensing and attribution are documented in the root [LICENSE](LICENSE), [NOTICE.md](NOTICE.md), and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). Before introducing third-party code, documents, prompts, or assets, verify their source, license, and permitted use. Preserve copyright, attribution, and modification notices as required by applicable licenses. Do not remove applicable attribution during open-source cleanup.
+- Documents, examples, test data, logs, and commit messages must not contain real credentials, private user data, internal service addresses, personal working directories, or material not authorized for public disclosure. Use fictional data and placeholders in examples.
+- Before publishing, check the actual delivery scope. If Git history is included, check it too. Deleting or replacing current files does not clean historical records.
+
+## Commit Guidelines
+
+- Create a separate commit for each feature-level change, small enough for independent review.
+- Do not mix unrelated features, refactors, dependency updates, and formatting changes in one commit.
+- Commit all files for a single feature together.
+- If a task requires multiple feature-level changes, split them into independent commits in review order.

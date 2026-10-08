@@ -9,7 +9,7 @@ import {
   testId,
 } from "@mycode/shared";
 import { cn } from "@/components/lib/utils.js";
-import { Info, LoaderIcon } from "lucide-react";
+import { Info, LoaderIcon } from "@/components/icons/tabler.js";
 import {
   EMPTY_SCROLL_MASK_STATE,
   getVerticalScrollMaskStyle,
@@ -42,6 +42,7 @@ export interface MentionPanelSection {
 interface MentionPanelProps {
   title: string;
   description: string;
+  compact?: boolean;
   footer?: ReactNode;
   listMaxHeight?: string;
   trigger: string;
@@ -136,6 +137,7 @@ export function MentionPanel({
   description,
   footer,
   listMaxHeight,
+  compact = false,
   sections,
   emptyText,
   selectedIndex,
@@ -154,9 +156,13 @@ export function MentionPanel({
     getScrollElement: () => scrollContainerRef.current,
     estimateSize: (index) =>
       virtualRows[index]?.kind === "option"
-        ? OPTION_ROW_HEIGHT
+        ? compact
+          ? 28
+          : OPTION_ROW_HEIGHT
         : virtualRows[index]?.kind === "section_header"
-          ? SECTION_HEADER_ROW_HEIGHT
+          ? compact
+            ? 24
+            : SECTION_HEADER_ROW_HEIGHT
           : STATUS_ROW_HEIGHT,
     overscan: 8,
   });
@@ -290,10 +296,11 @@ export function MentionPanel({
                   {row.kind === "status" ? (
                     <StatusRow row={row} />
                   ) : row.kind === "section_header" ? (
-                    <SectionHeaderRow row={row} />
+                    <SectionHeaderRow row={row} compact={compact} />
                   ) : (
                     <OptionRow
                       row={row}
+                      compact={compact}
                       isSelected={row.flatOptionIndex === selectedIndex}
                       isHovered={row.flatOptionIndex === hoveredOptionIndex}
                       onSelect={onSelect}
@@ -321,10 +328,16 @@ export function MentionPanel({
   );
 }
 
-function SectionHeaderRow({ row }: { row: Extract<VirtualRow, { kind: "section_header" }> }) {
+function SectionHeaderRow({
+  row,
+  compact,
+}: {
+  row: Extract<VirtualRow, { kind: "section_header" }>;
+  compact: boolean;
+}) {
   return (
     <div
-      className={SECTION_HEADER_CLASS_NAME}
+      className={cn(SECTION_HEADER_CLASS_NAME, compact && "h-6 px-2")}
       data-testid={testId(TID_PROMPT_SUGGESTION_SECTION, row.sectionId)}
       data-section-id={row.sectionId}
     >
@@ -375,12 +388,14 @@ function StatusRow({ row }: { row: Extract<VirtualRow, { kind: "status" }> }) {
 
 function OptionRow({
   row,
+  compact,
   isSelected,
   isHovered,
   onSelect,
   onHover,
 }: {
   row: Extract<VirtualRow, { kind: "option" }>;
+  compact: boolean;
   isSelected: boolean;
   isHovered: boolean;
   onSelect: (index: number) => void;
@@ -390,7 +405,7 @@ function OptionRow({
   const isDisabled = option.disabled === true;
 
   return (
-    <div className="py-px w-full">
+    <div className={cn("w-full", !compact && "py-px")}>
       <button
         type="button"
         role="option"
@@ -405,6 +420,7 @@ function OptionRow({
         data-disabled={isDisabled ? "true" : "false"}
         className={cn(
           "flex h-8 w-full items-center gap-3 rounded-xl px-3 text-left transition-colors",
+          compact && "h-7 gap-2 rounded-md px-2",
           isDisabled
             ? "cursor-not-allowed opacity-50"
             : isSelected

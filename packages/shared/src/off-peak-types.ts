@@ -38,30 +38,12 @@ export function isOffPeakTerminalStatus(
 export const OFF_PEAK_TICKET_EXPIRED_MARKER = "off-peak-ticket-expired";
 
 /** Off-Peak Provider 与当前账号 Family 同身份；任务保存精确选择，不跨 Family 静默迁移。 */
-export const OFF_PEAK_PROVIDER_IDS = {
-  zai: "account:zai-offpeak-idle-plan",
-  bigmodel: "account:bigmodel-offpeak-idle-plan",
-} as const;
-
-export function resolveOffPeakProviderId(
-  family: "zai" | "bigmodel",
-): (typeof OFF_PEAK_PROVIDER_IDS)[typeof family] {
-  return OFF_PEAK_PROVIDER_IDS[family];
+export const OFF_PEAK_PROVIDER_IDS = {} as const;
+export function resolveOffPeakProviderId(_family: string): string {
+  return "mock:idle-task";
 }
+export type OffPeakCodingPlanKind = "mock";
 
-/** 当前 selected connection 可供 Off-Peak 使用的真实 Coding Plan 形态。 */
-// zai/bigmodel Team Plan 对称化，新增 zai-team kind。
-export type OffPeakCodingPlanKind =
-  | "zai-personal"
-  | "bigmodel-personal"
-  | "bigmodel-team"
-  | "zai-team";
-
-/**
- * 脱敏的 Coding Plan 支持边界。renderer 只消费该结果，不读取 JWT/API Key。
- * `connection_unavailable` 同时覆盖 provider 缺失、disabled、过期和 Team runtime key 失效；
- * 这些情况都不能回退到其它缓存连接。
- */
 export type OffPeakCodingPlanUnsupportedReason =
   | "provider_family_unselected"
   | "provider_family_api_key_mode"
@@ -76,7 +58,7 @@ export type OffPeakCodingPlanSupport =
   | {
       supported: true;
       kind: OffPeakCodingPlanKind;
-      providerFamily: "zai" | "bigmodel";
+      providerFamily: string;
       providerId: string;
     }
   | {

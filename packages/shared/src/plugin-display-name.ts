@@ -1,4 +1,35 @@
 import type { MyCodePluginStoreListing } from "./mycode-protocol/index.js";
+import {
+  MYCODE_NODE_REPL_HOST_PLUGIN_ID,
+  MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID,
+} from "./plugin-marketplaces.js";
+
+/** 官方目录种子和界面共用，避免已有目录缓存继续显示旧说明。 */
+export const OFFICIAL_PLUGIN_DESCRIPTIONS_ZH_CN = {
+  nodeReplHost:
+    "MyCode 官方功能共用的 Node 运行环境（node_repl，运行 JavaScript 的交互环境）。不是给用户直接用的，不带技能，也不出现在插件市场。",
+  browserUse: "让 AI 操作 MyCode 内置浏览器，检查网页并验证交互是否正常。",
+  computerUse: "让 AI 驱动鼠标、键盘和界面元素，自动操作桌面应用，代你完成实际任务。",
+} as const;
+
+const OFFICIAL_PLUGIN_DESCRIPTIONS: ReadonlyMap<string, string> = new Map([
+  [MYCODE_NODE_REPL_HOST_PLUGIN_ID, OFFICIAL_PLUGIN_DESCRIPTIONS_ZH_CN.nodeReplHost],
+  [
+    `browser-use@${MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID}`,
+    OFFICIAL_PLUGIN_DESCRIPTIONS_ZH_CN.browserUse,
+  ],
+  [
+    `computer-use@${MYCODE_OFFICIAL_PLUGIN_MARKETPLACE_ID}`,
+    OFFICIAL_PLUGIN_DESCRIPTIONS_ZH_CN.computerUse,
+  ],
+]);
+
+export function resolveOfficialPluginDescription(
+  pluginId: string,
+  locale: string,
+): string | undefined {
+  return locale.split("-")[0] === "zh" ? OFFICIAL_PLUGIN_DESCRIPTIONS.get(pluginId) : undefined;
+}
 
 const CANONICAL_PLUGIN_NAME_ACRONYMS: Readonly<Record<string, string>> = {
   aws: "AWS",

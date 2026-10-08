@@ -19,7 +19,8 @@ export function createAppAsarPackArgs({ sourceDir, destinationPath, targetPlatfo
     "--unpack",
     ASAR_UNPACK_NATIVE_GLOB,
     "--unpack-dir",
-    `node_modules/node-pty/prebuilds/${targetPlatformKey}`,
+    // 二次重打包曾丢失 electron-builder 的 SDK 解包规则，Main 的物理路径 import 因此失败。
+    `{node_modules/node-pty/prebuilds/${targetPlatformKey},node_modules/@trycua,node_modules/@ubjs}`,
   ];
 }
 
@@ -63,5 +64,12 @@ export async function replaceAppAsarFromStaging({
       rm(candidateAsarPath, { force: true, recursive: true }),
       rm(candidateUnpackedPath, { force: true, recursive: true }),
     ]);
+  }
+}
+
+export async function verifyUnpackedDesktopSdkEntries(appAsarPath) {
+  // SDK 的 Electron/embedded 入口按物理路径 import；只验证 asar 列表会漏掉重打包回收问题。
+  for (const entry of ["electron", "embedded"]) {
+    await access(`${appAsarPath}.unpacked/node_modules/@trycua/cua-driver/dist/${entry}.js`);
   }
 }

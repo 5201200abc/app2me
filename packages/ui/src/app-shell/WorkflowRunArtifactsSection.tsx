@@ -1,5 +1,5 @@
 import { memo, useMemo, useState } from "react";
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon } from "@/components/icons/tabler.js";
 import {
   TID_WORKFLOW_ARTIFACTS_SECTION,
   TID_WORKFLOW_ARTIFACTS_TOGGLE,

@@ -375,7 +375,7 @@ function normalizeMcpServerConfigInput(value: unknown): unknown {
     server.headers === undefined &&
     server.http_headers !== undefined
   ) {
-    // 兼容历史 BigModel MCP 配置：旧字段名是 http_headers，agent runtime 只消费 headers。
+
     server.headers = server.http_headers;
   }
   delete server.http_headers;

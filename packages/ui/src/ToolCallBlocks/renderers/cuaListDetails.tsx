@@ -1,4 +1,4 @@
-import { AppWindow } from "lucide-react";
+import { AppWindow } from "@/components/icons/tabler.js";
 import { useEffect, useState } from "react";
 import { useOptionalPlatform } from "@/hooks/usePlatform.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

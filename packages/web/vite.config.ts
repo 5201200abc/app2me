@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [pdfJsCMapsPlugin(), react(), tailwindcss(), thirdPartyNoticesVitePlugin()],
     resolve: {
+      dedupe: ["react", "react-dom"],
       alias: {
         // 修复 UI 组件库中的 @ 别名解析失败。
         // 问题原因：packages/ui 的源码直接被 web 应用交给 Vite 打包，但 web 自己没声明 @ -> packages/ui/src，
@@ -54,7 +55,16 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       // 修复：在依赖预构建阶段显式加入 react 相关入口，避免 rolldown 解析 `react/jsx-runtime`
       // / `react/jsx-dev-runtime` 时返回无后缀路径导致的加载失败（UNLOADABLE_DEPENDENCY）。
-      include: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
+      // 与桌面端一致，Recharts 和 React 启动时属于同一预构建图，
+      // 避免懒加载图表引起二次优化后使用不同 React dispatcher。
+      include: [
+        "react",
+        "react-dom",
+        "react-dom/client",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "recharts",
+      ],
     },
     worker: {
       rollupOptions: {

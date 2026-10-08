@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { MyCodeAboutLogo } from "@/components/ui/MyCodeAboutLogo.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

@@ -103,6 +103,7 @@ export function mycodeSessionSettingsToMyCodeConfigOptions(
       name: "Thought Level",
       category: THOUGHT_LEVEL_CONFIG_CATEGORY,
       type: "select",
+      ...(defaultThoughtLevel ? { defaultValue: defaultThoughtLevel } : {}),
       currentValue:
         settings.thoughtLevel.current ??
         defaultThoughtLevel ??

@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus } from "@/components/icons/tabler.js";
 import {
   TID_WORKFLOWS_CREATE_VIA_CHAT,
   TID_WORKFLOWS_LIST,

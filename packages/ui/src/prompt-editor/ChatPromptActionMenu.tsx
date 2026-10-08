@@ -1,15 +1,13 @@
-import { ContextMentionOptionContent } from "@/mentions/components/ContextMentionOptionContent.js";
-import { useFileMentionProvider } from "@/mentions/providers/fileMentionProvider.js";
-import { useSessionsMentionProvider } from "@/mentions/providers/sessionsMentionProvider.js";
-import {
-  MENTION_FILES_ONLY_DEFAULT_PREVIEW_LIMIT,
-  buildVisibleMentionGroups,
-} from "@/mentions/mentionSearch.js";
-import { getSessionMentionWorkspaceScope } from "@/mentions/mentionPanelRouting.js";
-import { useChatViewActiveTaskProvider } from "@/v4/activeTaskProvider.js";
 import { useMemo, useRef, useState, type MutableRefObject } from "react";
 import type { EditorState } from "lexical";
-import { GoalIcon, Info, PaperclipIcon, PlusIcon, Workflow } from "lucide-react";
+import {
+  CheckIcon,
+  GoalIcon,
+  LightbulbIcon,
+  PaperclipIcon,
+  PlusIcon,
+  Workflow,
+} from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { Button } from "@/components/ui/button.js";
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from "@/components/ui/popover.js";
@@ -35,6 +33,7 @@ type QuickCommand = keyof typeof QUICK_COMMANDS;
 export function ChatPromptActionMenu({
   actionMenuTitle,
   attachmentAction,
+  planAction,
   disabled,
   disabledReason,
   inputApiRef,
@@ -53,6 +52,7 @@ export function ChatPromptActionMenu({
     menuItemTestId?: string;
   };
   disabled?: boolean;
+  planAction?: { enabled: boolean; onSelect: () => void };
   disabledReason?: string;
   inputApiRef: MutableRefObject<LexicalChatInputHandle | null>;
   workspacePath: string;
@@ -86,40 +86,13 @@ export function ChatPromptActionMenu({
     intl.formatMessage({ id: "chat.mention.plugins.empty" }),
     intl.formatMessage({ id: "chat.mention.plugins.title" }),
   );
-  const provider = useChatViewActiveTaskProvider(sessionId, workspacePath, workspaceIdentity);
   const slashCommands = useSlashCommands(workspacePath, workspaceIdentity);
-  const files = useFileMentionProvider(
-    workspacePath,
-    workspaceIdentity,
-    "",
-    open && !disabled && showPlugins,
-    intl.formatMessage({ id: "chat.mention.files.empty" }),
-    intl.formatMessage({ id: "chat.mention.files.title" }),
-    MENTION_FILES_ONLY_DEFAULT_PREVIEW_LIMIT,
-  );
-  const sessions = useSessionsMentionProvider(
-    provider,
-    workspacePath,
-    workspaceIdentity,
-    "",
-    open && !disabled && showPlugins,
-    getSessionMentionWorkspaceScope("@"),
-    intl.formatMessage({ id: "chat.mention.sessions.empty" }),
-    intl.formatMessage({ id: "chat.mention.sessions.title" }),
-  );
-  const contextGroups = buildVisibleMentionGroups(
-    [
-      { id: "files", ...files },
-      { id: "sessions", ...sessions },
-    ].map((group) => ({
-      ...group,
-      errorText: group.error?.message ?? null,
-    })),
-  );
-  const mentionItems = [...plugins.items, ...contextGroups.flatMap((group) => group.items)];
+  const mentionItems = plugins.items;
   const attachmentCount = attachmentAction ? 1 : 0;
+  const planCount = planAction ? 1 : 0;
   const options = [
     ...(attachmentAction ? [{ disabled: false }] : []),
+    ...(planAction ? [{ disabled: false }] : []),
     ...quickCommands.map(() => ({ disabled: false })),
     ...mentionItems,
   ];
@@ -139,11 +112,32 @@ export function ChatPromptActionMenu({
                   <>
                     <PaperclipIcon className="size-4 shrink-0" />
                     <span
-                      className="truncate text-ui-base font-medium"
+                      className="truncate text-ui-caption font-medium"
                       data-testid={attachmentAction.menuItemTestId}
                     >
                       {attachmentAction.label}
                     </span>
+                  </>
+                ),
+              },
+            ]
+          : []),
+        ...(planAction
+          ? [
+              {
+                id: "add-plan",
+                label: intl.formatMessage({ id: "mode.label.glm.plan" }),
+                description: "",
+                content: (
+                  <>
+                    <LightbulbIcon className="size-4 shrink-0" />
+                    <span
+                      className="min-w-0 flex-1 truncate text-ui-caption font-medium"
+                      data-testid="composer-add-plan"
+                    >
+                      {intl.formatMessage({ id: "mode.label.glm.plan" })}
+                    </span>
+                    {planAction.enabled ? <CheckIcon className="size-3.5 shrink-0" /> : null}
                   </>
                 ),
               },
@@ -159,7 +153,9 @@ export function ChatPromptActionMenu({
             content: (
               <>
                 <Icon className="size-4 shrink-0" />
-                <span className="truncate text-ui-base font-medium">{label}</span>
+                <span className="truncate text-ui-caption font-medium" data-testid={id}>
+                  {label}
+                </span>
               </>
             ),
           };
@@ -179,18 +175,6 @@ export function ChatPromptActionMenu({
         content: <PluginMentionOptionContent item={item} />,
       })),
     },
-    ...contextGroups.map((group) => ({
-      id: group.id,
-      title: group.title,
-      emptyText: group.emptyText,
-      loading: group.loading,
-      loadingText: intl.formatMessage({ id: "chat.mention.category.loading" }),
-      errorText: group.errorText,
-      options: group.items.map((item) => ({
-        ...item,
-        content: <ContextMentionOptionContent item={item} workspacePath={workspacePath} />,
-      })),
-    })),
   ].filter((section) => section.id !== "add" || section.options.length > 0);
 
   const selectOption = (index: number) => {
@@ -200,7 +184,12 @@ export function ChatPromptActionMenu({
       attachmentAction.onSelect();
       return;
     }
-    const command = quickCommands[index - attachmentCount];
+    if (planAction && index === attachmentCount) {
+      restoreEditorFocusRef.current = true;
+      planAction.onSelect();
+      return;
+    }
+    const command = quickCommands[index - attachmentCount - planCount];
     const item = command
       ? buildSlashApplyMentionPayload({
           id: `slash:${command}`,
@@ -209,7 +198,7 @@ export function ChatPromptActionMenu({
           label: `/${command}`,
           description: "",
         })
-      : mentionItems[index - attachmentCount - quickCommands.length];
+      : mentionItems[index - attachmentCount - planCount - quickCommands.length];
     if (!item) return;
     restoreEditorFocusRef.current = true;
     inputApiRef.current?.insertMention(item, selectionStateRef.current);
@@ -221,7 +210,7 @@ export function ChatPromptActionMenu({
       onOpenChange={(nextOpen) => {
         if (nextOpen) {
           // 打开瞬间快照，菜单打开期间候选不平移，键盘选择不会错位。
-          // /goal 仍是消息开头命令且是会话级目标：仅新会话空草稿提供，避免在消息中间插入后被忽略。
+          // 目标属于当前会话，已有/分叉/辅助线程也能设置；仅要求空草稿，避免插入正文中间。
           // /workflow 同样只在消息开头展开，但不绑定会话状态：任意会话空草稿都提供；
           // 命令目录以 CLI catalog 为权威，catalog 缺 workflow（插件被禁用）时不提供，
           // 否则会把 CLI 不会展开的裸文本发给模型。
@@ -229,7 +218,7 @@ export function ChatPromptActionMenu({
           const offered = (command: QuickCommand, available: boolean) =>
             emptyDraft && available && !excludedSlashCommandNames?.includes(command);
           setQuickCommands([
-            ...(offered("goal", sessionId === null) ? (["goal"] as const) : []),
+            ...(offered("goal", true) ? (["goal"] as const) : []),
             ...(offered(
               "workflow",
               slashCommands.some((entry) => normalizeSlashCommandValue(entry.name) === "workflow"),
@@ -249,7 +238,8 @@ export function ChatPromptActionMenu({
             type="button"
             variant="ghost"
             size="icon-md"
-            className="gap-1 rounded-lg text-ui-base"
+            data-composer-add
+            className="size-7 gap-1 rounded-lg text-ui-caption"
             onMouseDown={(event) => event.preventDefault()}
             aria-label={actionMenuTitle}
             data-testid={attachmentAction?.testId}
@@ -268,8 +258,8 @@ export function ChatPromptActionMenu({
         align="start"
         side="top"
         sideOffset={0}
-        // Radix 将虚拟锚点尺寸也写入 trigger-width；使用不存在的 anchor-width 会让虚拟列表塌缩。
-        className="w-(--radix-popover-trigger-width) max-w-[calc(100vw-1rem)] gap-0 overflow-visible border-0 bg-transparent p-0 shadow-none"
+        // 添加菜单独立收窄；保留确定宽度供虚拟列表测量，并限制手机视口。
+        className="composer-action-menu w-68 max-w-[calc(100vw-1rem)] gap-0 overflow-visible border-0 bg-transparent p-0 shadow-none"
         tabIndex={-1}
         onOpenAutoFocus={(event) => {
           event.preventDefault();
@@ -302,31 +292,10 @@ export function ChatPromptActionMenu({
         }}
       >
         <MentionPanel
+          compact
           title={actionMenuTitle}
           description=""
-          listMaxHeight="min(24rem, max(8rem, calc(var(--radix-popover-content-available-height, 32rem) - 6rem)))"
-          footer={
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-ui-sm text-foreground-subtle">
-              {(
-                [
-                  ["@", "chat.composer.contextShortcut"],
-                  ["/", "chat.composer.capabilityShortcut"],
-                  ["$", "chat.composer.skillShortcut"],
-                ] as const
-              ).map(([trigger, id]) => (
-                <div key={trigger} className="flex shrink-0 items-center gap-1.5">
-                  <code className="flex size-5 shrink-0 items-center justify-center rounded bg-tooltip-tag font-mono text-foreground">
-                    {trigger}
-                  </code>
-                  <span>{intl.formatMessage({ id })}</span>
-                </div>
-              ))}
-              <div className="flex items-center gap-1.5">
-                <Info className="size-4 shrink-0" />
-                <span>{intl.formatMessage({ id: "chat.composer.contextSearchHint" })}</span>
-              </div>
-            </div>
-          }
+          listMaxHeight="min(18rem, max(8rem, calc(var(--radix-popover-content-available-height, 32rem) - 1rem)))"
           trigger="+"
           sections={sections}
           emptyText=""

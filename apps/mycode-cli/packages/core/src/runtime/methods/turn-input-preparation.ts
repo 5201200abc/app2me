@@ -11,7 +11,7 @@ import {
 
 import type { AgentRuntimeInternal } from "../internal.js";
 
-import { maybeStartSessionTitleGeneration } from "./session-title.js";
+import { prepareInitialSessionTitle } from "./session-title.js";
 
 import {
   injectReferencedSessionContextReminderIntoMessageHistory,
@@ -129,16 +129,9 @@ export async function prepareTurnInput(
         ...(options?.epilogueStart === undefined ? {} : { epilogueStart: options.epilogueStart }),
       },
     );
-    // 标题生成以前等主 turn 成功后才启动，用户 stop/cancel 首轮请求时
-    // generated title 永远没有机会发起。首条 query 持久化后即可异步生成，避免被主链路取消拖死。
-    const titleGenerationStarted = maybeStartSessionTitleGeneration.call(
-      this,
-      displayInput,
-      userMessageId,
-      turnTraceContext,
-      {
-        deferIfProviderRuntimeHeadersRefresh: true,
-      },
+    // 首轮意图标题先持久化并发布，再进入主模型；避免会话列表在任务开始后仍显示整段提问。
+    const titleGenerationStarted = await prepareInitialSessionTitle.call(
+      this, displayInput, userMessageId, turnTraceContext,
     );
     shouldRetryTitleGenerationAfterTurn = !titleGenerationStarted;
   }

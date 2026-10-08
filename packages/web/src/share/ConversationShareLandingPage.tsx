@@ -8,7 +8,7 @@ import {
   type CSSProperties,
   type MouseEvent,
 } from "react";
-import { ArrowUpRightIcon, MoonIcon, SunIcon } from "lucide-react";
+import { ArrowUpRightIcon, MoonIcon, SunIcon } from "@mycode/ui/icons";
 import type { ConversationSharePreview } from "@mycode/shared";
 import { ConversationShareReadonlyTimeline } from "@mycode/ui/conversation-share-readonly";
 import { applyTheme, resolveTheme, type Theme } from "@mycode/ui/useTheme";
@@ -556,16 +556,16 @@ export function ConversationShareLandingStatus({
     state.kind === "loading"
       ? { title: copy.loading, description: copy.loadingDescription }
       : state.error === "expired"
-          ? { title: copy.expiredTitle, description: copy.expiredDescription }
-          : state.error === "not_found"
-            ? { title: copy.notFoundTitle, description: copy.notFoundDescription }
-            : state.error === "unsupported_schema_version"
-              ? { title: copy.outdatedTitle, description: copy.outdatedDescription }
-              : state.error === "invalid_contract"
-                ? { title: copy.invalidTitle, description: copy.invalidDescription }
-                : state.error === "authentication_required"
-                  ? { title: copy.unavailableTitle, description: copy.unavailableDescription }
-                  : { title: copy.networkTitle, description: copy.networkDescription };
+        ? { title: copy.expiredTitle, description: copy.expiredDescription }
+        : state.error === "not_found"
+          ? { title: copy.notFoundTitle, description: copy.notFoundDescription }
+          : state.error === "unsupported_schema_version"
+            ? { title: copy.outdatedTitle, description: copy.outdatedDescription }
+            : state.error === "invalid_contract"
+              ? { title: copy.invalidTitle, description: copy.invalidDescription }
+              : state.error === "authentication_required"
+                ? { title: copy.unavailableTitle, description: copy.unavailableDescription }
+                : { title: copy.networkTitle, description: copy.networkDescription };
   const isNotFound = state.kind === "error" && state.error === "not_found";
   /**
    * 只在「重发同一个请求有可能得到不同结果」时给重试。
@@ -685,10 +685,6 @@ export function ConversationShareLandingLoader({
       />
     );
   return (
-    <ConversationShareLandingStatus
-      state={state}
-      locale={locale}
-      onRetry={() => void load()}
-    />
+    <ConversationShareLandingStatus state={state} locale={locale} onRetry={() => void load()} />
   );
 }

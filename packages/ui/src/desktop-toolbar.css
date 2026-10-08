@@ -1,0 +1,6 @@
+/* 顶部浮层和主 Header 分别绘制图标；共用尺寸、线宽可消除收起侧栏后的视觉错位。 */
+[data-desktop-toolbar-action] svg {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  stroke-width: 1.5;
+}

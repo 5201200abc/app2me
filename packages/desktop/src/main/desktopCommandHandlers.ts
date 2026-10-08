@@ -107,7 +107,7 @@ async function clearAllDataAndRelaunch(options: {
   app.exit(0);
 }
 
-export async function clearCodingPlanWebviewStorage(options: {
+export async function clearLegacyPurchaseStorage(options: {
   logger: {
     info: (...args: unknown[]) => void;
     warn: (...args: unknown[]) => void;
@@ -268,8 +268,7 @@ export async function executeDesktopCommand(options: {
       await options.onRelaunchApp();
       return;
     case DesktopCommandIds.OpenFeedback:
-    case DesktopCommandIds.OpenCommunity:
-      // 旧官方反馈与社群命令保留协议 ID，但不再触发远端配置或外链。
+      // 反馈上传服务已退役，命令不触发外部请求。
       return;
     case DesktopCommandIds.ExportLogs:
       await exportLogs();
@@ -290,17 +289,13 @@ export async function executeDesktopCommand(options: {
     case DesktopCommandIds.SetMyCodeEndpointTest:
     case DesktopCommandIds.SetMyCodeEndpointCustom:
     case DesktopCommandIds.ResetMyCodeEndpoint:
-      // 旧产品端点命令保持协议兼容，但不能再指回 z.ai。
       return;
     case DesktopCommandIds.ClearAllData:
-      await clearCodingPlanWebviewStorage({ logger: options.logger });
+      await clearLegacyPurchaseStorage({ logger: options.logger });
       await clearAllDataAndRelaunch({
         credentialsDir: options.credentialsDir,
         logger: options.logger,
       });
-      return;
-    case DesktopCommandIds.ClearCodingPlanWebviewStorage:
-      await clearCodingPlanWebviewStorage({ logger: options.logger });
       return;
     case DesktopCommandIds.GetCuaOsSupport:
       return resolveCuaOsSupport();

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertCircleIcon } from "lucide-react";
+import { AlertCircleIcon } from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { DialogTitle } from "@/components/ui/dialog.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

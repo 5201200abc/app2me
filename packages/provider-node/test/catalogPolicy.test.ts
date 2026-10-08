@@ -47,7 +47,7 @@ test("bundled catalogue exposes only DeepSeek creation and local models", async 
   assert.deepEqual(release.config.providers.keys(), ["local-llama-models"]);
   raw.config.providerConfigRules.templateRules.push({
     ...raw.config.providerConfigRules.templateRules[0],
-    templateId: "zai",
+    templateId: "retired-template",
   });
   assert.throws(() => decodeMyCodeBuiltinRelease(raw), /退出|retired/i);
 });

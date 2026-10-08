@@ -115,6 +115,8 @@ export const projectionDispatch = {
         return this.onTargetVerification(event);
       case SessionEventType.SessionForked:
         return this.onSessionForked(event);
+      case SessionEventType.CheckpointCreated:
+        return this.onCheckpointCreated(event);
       case SessionEventType.RewindTriggered:
         return this.onRewindTriggered(event);
       case SessionEventType.BackgroundTaskStarted:

@@ -11,6 +11,7 @@
 // - 声明生成：third-party-npm.mjs 按生产依赖的精确版本收集真实许可文件。
 // - prod 判定按锁文件生产图中的精确版本。
 // - 商用/半开放检查作用于全量实装包（prod+dev）
+import { classifyLicense } from "./license-policy.mjs";
 import { generateThirdPartyNotices } from "./generate-third-party-notices.mjs";
 import { readVerifiedNotices } from "./third-party-notices.mjs";
 import { readFile } from "node:fs/promises";
@@ -56,34 +57,7 @@ for (const [key, { pkg }] of scanned) {
     isProd: required.has(key),
   });
 }
-// ---------- 分类 ----------
-const GREEN =
-  /^(MIT|MIT-0|ISC|BSD-2-Clause|BSD-3-Clause|BSD-4-Clause|0BSD|Unlicense|Apache-2\.0|Zlib|WTFPL|Artistic-2\.0|BlueOak-1\.0\.0|CC0-1\.0|CC-BY-4\.0|CC-BY-3\.0|BSD|Python-2\.0)$/i;
-function classify(raw) {
-  const s = raw.replace(/[()]/g, " ").trim();
-  if (s === "(missing)" || s === "missing" || s === "") return "missing";
-  if (/^UNLICENSED|SEE LICEN[CS]E IN|UNKNOWN|N\/A$/i.test(s)) return "unresolved";
-  const or = s
-    .split(/\s+OR\s+/i)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  if (or.length > 1 && or.some((x) => GREEN.test(x))) return "green";
-  const and = s
-    .split(/\s+AND\s+/i)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  if (and.length > 1 && and.every((x) => GREEN.test(x))) return "green";
-  const t = or[0] || and[0] || s;
-  if (/\bAGPL/i.test(t)) return "red-agpl";
-  if (/\bLGPL/i.test(t)) return "yellow-lgpl";
-  if (/\bGPL/i.test(t)) return "red-gpl";
-  if (/^(MPL|EPL|CDDL)/i.test(t)) return "yellow-weak";
-  if (/^(BUSL|BSL|Elastic|SSPL|PolyForm|FSL|CAL-1)/i.test(t)) return "red-semiopen";
-  if (/^CC-BY-NC/i.test(t)) return "red-nc";
-  if (/^CC-BY-(ND|SA)/i.test(t)) return "yellow-cc";
-  return GREEN.test(t) ? "green" : "review";
-}
-for (const r of installed.values()) r.bucket = classify(r.license);
+for (const r of installed.values()) r.bucket = classifyLicense(r.license);
 
 // ---------- 构建工具许可标识复核（不是二进制发行义务豁免） ----------
 const WEAK_ALLOW = [[/^lightningcss/, "当前仅构建依赖；进入生产图时需重新核对 MPL 源码提供义务"]];
@@ -100,24 +74,38 @@ if (command === "check") {
     if (r.bucket.startsWith("yellow") && weakAllowReason(r)) continue;
     bad.push(r);
   }
+  const failures = [];
   if (bad.length) {
     console.error(`✗ license 检查失败：${bad.length} 个包超出 allowlist：`);
     for (const r of bad.sort((a, b) => a.name.localeCompare(b.name)))
       console.error(`  [${r.bucket}] ${r.name}@${r.version} → ${r.license}`);
-    console.error("\n处置：替换依赖，或在 scripts/licenses.mjs 的 WEAK_ALLOW 登记人工复核结论。");
-    process.exit(1);
+    console.error("\n处置：补齐对应版本的许可、源码提供及复核材料；不可仅放宽白名单。");
+    failures.push(`${bad.length} package license reviews`);
   }
-  await readVerifiedNotices(ROOT, { requireComplete: process.argv.includes("--strict") });
+  try {
+    await readVerifiedNotices(ROOT);
+  } catch (error) {
+    console.error(error.message);
+    failures.push("notice freshness");
+  }
   const reviewRequired =
     JSON.parse(await readFile(path.join(ROOT, "third-party/inventory.json"), "utf8"))
       .reviewRequired ?? [];
   if (reviewRequired.length)
     console.warn(
-      `待补齐/核验材料 ${reviewRequired.length} 项；发布前运行 node scripts/licenses.mjs check --strict，不得将基础检查通过视为合规完成。`,
+      `待补齐/核验材料 ${reviewRequired.length} 项；详情见 third-party/inventory.json。`,
     );
+  if (process.argv.includes("--strict") && reviewRequired.length) {
+    for (const item of reviewRequired) console.error(`  ${item.id}: ${item.reason}`);
+    failures.push(`${reviewRequired.length} incomplete source/notice records`);
+  }
+  if (failures.length) {
+    console.error(`Release blocked: ${failures.join("; ")}`);
+    process.exit(1);
+  }
   const n = installed.size;
   console.log(
-    `✓ 许可标识与声明新鲜度检查通过：${n} 个实装包（构建依赖复核 ${[...installed.values()].filter((r) => r.bucket.startsWith("yellow")).length} 项）；材料限制见 third-party/README.md`,
+    `✓ 许可标识与声明新鲜度检查通过：${n} 个实装包；材料详情见 third-party/inventory.json。`,
   );
 } else {
   console.error("用法: node scripts/licenses.mjs [notices|check]");

@@ -5,7 +5,7 @@
 // 子代理模型（composer 的模型菜单 + 思考档）与「同时运行上限」步进器。props 全是烹熟的值。
 
 import { useMemo, useRef, useState } from "react";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { MinusIcon, PlusIcon } from "@/components/icons/tabler.js";
 import { MYCODE_AGENT_PROVIDER, type MyCodeConfigOption } from "@mycode/shared";
 import { ThoughtLevelCycleControl } from "@/chat-input-toolbar/ThoughtLevelCycleControl.js";
 import { cn } from "@/components/lib/utils.js";

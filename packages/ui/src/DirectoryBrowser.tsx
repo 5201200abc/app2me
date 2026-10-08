@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import type { IServiceAccessor } from "@mycode/services";
 import type { FileEntry } from "@mycode/shared";
-import { FolderIcon, FolderSymlinkIcon } from "lucide-react";
+import { FolderIcon, FolderSymlinkIcon } from "@/components/icons/tabler.js";
 import { Button } from "./components/ui/button.js";
 import { Input } from "./components/ui/input.js";
 import { useMyCodeIntl } from "./i18n/IntlProvider.js";

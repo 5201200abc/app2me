@@ -1,5 +1,5 @@
 /* oxlint-disable eslint(max-lines) */
-import { ArrowLeft, type LucideIcon } from "lucide-react";
+import { ArrowLeft, type UiIcon } from "@/components/icons/tabler.js";
 import {
   useCallback,
   useEffect,
@@ -42,7 +42,6 @@ import {
 } from "@/lib/settingsNavigation.js";
 import { ModelProviderSection } from "@/settings/ModelProviderSection.js";
 import { AppUsagePanel } from "@/settings/usage-stats/AppUsagePanel.js";
-import { SubagentsSection } from "@/settings/SubagentsSection.js";
 import { AutomationsSection } from "@/settings/AutomationsSection.js";
 import { PluginsSection } from "@/settings/PluginsSection.js";
 import { HooksSection } from "@/settings/HooksSection.js";
@@ -65,7 +64,6 @@ import type { Theme } from "@/useTheme.js";
 import { WindowsTopLeftLogo } from "@/WindowsTopLeftLogo.js";
 
 import { DesktopWindowControls } from "@/DesktopWindowControls.js";
-import { WorkspaceHelpMenuButton } from "@/WorkspaceHelpMenuButton.js";
 import { WorkspaceSidebarFooter } from "@/WorkspaceSidebarFooter.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { cn } from "@/components/lib/utils.js";
@@ -78,7 +76,6 @@ import { resolveModelProviderConnectivityWorkspacePath } from "@/lib/modelProvid
 import {
   createSettingsPageConfig,
   GeneralSectionContent,
-  GeneralSectionHeader,
   resolveSettingsSectionForPlatform,
 } from "./settingsPageHelpers.js";
 import { AppearanceSectionContent } from "./settingsCodePreview.js";
@@ -120,7 +117,7 @@ function SettingsSidebarButton({
   className,
   ...buttonProps
 }: {
-  icon: LucideIcon;
+  icon: UiIcon;
   label: string;
   active?: boolean;
   children?: ReactNode;
@@ -133,7 +130,7 @@ function SettingsSidebarButton({
         type={buttonProps.type ?? "button"}
         aria-label={label}
         className={cn(
-          "flex h-8 w-full items-center gap-2 rounded-xl px-2.5 text-left transition-colors",
+          "flex h-8 w-full items-center gap-2 rounded-lg px-2.5 text-left transition-colors",
           "max-lg:mx-auto max-lg:size-10 max-lg:justify-center max-lg:px-0",
           active
             ? "bg-surface-hover text-foreground"
@@ -145,7 +142,7 @@ function SettingsSidebarButton({
           <Icon className="size-4 text-foreground" />
         </span>
         <span className="min-w-0 flex-1 max-lg:sr-only">
-          {children ?? <span className="truncate text-ui-base text-foreground">{label}</span>}
+          {children ?? <span className="truncate text-ui-caption text-foreground">{label}</span>}
         </span>
       </button>
     </ControlHintTooltip>
@@ -212,8 +209,6 @@ export function SettingsPage({
   const [settingsBreadcrumbItems, setSettingsBreadcrumbItems] = useState<
     readonly SettingsBreadcrumbItem[]
   >([]);
-  const interfaceMode = useMyCodeStore((state) => state.interfaceMode);
-  const setInterfaceMode = useMyCodeStore((state) => state.setInterfaceMode);
   const theme = useMyCodeStore((state) => state.theme);
   const setTheme = useMyCodeStore((state) => state.setTheme);
   const codePreviewSettings = useMyCodeStore((state) => state.codePreviewSettings);
@@ -331,7 +326,6 @@ export function SettingsPage({
   const [receivePreviewUpdates, setReceivePreviewUpdates] = useState(false);
   const [autoDownloadAndInstallUpdates, setAutoDownloadAndInstallUpdates] = useState(false);
   const [messageStreamShowReasoning, setMessageStreamShowReasoning] = useState(true);
-  const [messageStreamShowTodos, setMessageStreamShowTodos] = useState(false);
   const [toolGroupingExploreEnabled, setToolGroupingExploreEnabled] = useState(true);
   const [toolGroupingTerminalEnabled, setToolGroupingTerminalEnabled] = useState(true);
   const [toolGroupingChangesEnabled, setToolGroupingChangesEnabled] = useState(false);
@@ -388,7 +382,6 @@ export function SettingsPage({
         setReceivePreviewUpdates(settings.receivePreviewUpdates ?? false);
         setAutoDownloadAndInstallUpdates(settings.autoDownloadAndInstallUpdates ?? false);
         setMessageStreamShowReasoning(settings.messageStreamShowReasoning ?? true);
-        setMessageStreamShowTodos(settings.messageStreamShowTodos ?? false);
         setToolGroupingExploreEnabled(settings.toolGroupingExploreEnabled ?? true);
         setToolGroupingTerminalEnabled(settings.toolGroupingTerminalEnabled ?? true);
         setToolGroupingChangesEnabled(settings.toolGroupingChangesEnabled ?? false);
@@ -421,7 +414,6 @@ export function SettingsPage({
       return;
     }
     setMessageStreamShowReasoning(sharedSettings.messageStreamShowReasoning ?? true);
-    setMessageStreamShowTodos(sharedSettings.messageStreamShowTodos ?? false);
     setToolGroupingExploreEnabled(sharedSettings.toolGroupingExploreEnabled ?? true);
     setToolGroupingTerminalEnabled(sharedSettings.toolGroupingTerminalEnabled ?? true);
     setToolGroupingChangesEnabled(sharedSettings.toolGroupingChangesEnabled ?? false);
@@ -785,22 +777,6 @@ export function SettingsPage({
     },
     [updateSharedSettings],
   );
-  const handleMessageStreamShowTodosChange = useCallback(
-    async (enabled: boolean) => {
-      await runSettingsActionAsync({
-        featureId: "settings.conversation",
-        action: "toggle_show_todos",
-        trigger: "switch",
-        operation: () => updateSharedSettings({ messageStreamShowTodos: enabled }),
-        completed: {
-          resultSource: "shared_settings",
-          stateAfter: enabled ? "enabled" : "disabled",
-        },
-      });
-      setMessageStreamShowTodos(enabled);
-    },
-    [updateSharedSettings],
-  );
   const handleToolGroupingExploreEnabledChange = useCallback(
     async (enabled: boolean) => {
       await runSettingsActionAsync({
@@ -953,9 +929,7 @@ export function SettingsPage({
       ? settingsBreadcrumbItems
       : [];
   const hasVisibleSettingsBreadcrumb = visibleSettingsBreadcrumbItems.length >= 2;
-  const showActiveSectionTitle =
-    !hasVisibleSettingsBreadcrumb ||
-    (activeSection === "plugin" && pluginNavigationOrigin === "plugin-store");
+  const showActiveSectionTitle = activeSection !== "plugin" && !hasVisibleSettingsBreadcrumb;
 
   return (
     <>
@@ -970,16 +944,12 @@ export function SettingsPage({
           data-active-section={activeSection}
           // 隐式 auto 行会按 Memory viewer 的内容高度撑出窗口，随后被 DesktopWindowFrame 裁切且没有滚动条。
           // 固定为单个 minmax(0, 1fr) 行，让普通设置页和内部滚动 viewer 都以窗口剩余高度为边界。
-          className="relative grid h-screen min-h-full w-full grid-cols-[68px_minmax(0,1fr)] grid-rows-[minmax(0,1fr)] lg:grid-cols-[268px_minmax(0,1fr)]"
+          className="relative grid h-screen min-h-full w-full grid-cols-[68px_minmax(0,1fr)] grid-rows-[minmax(0,1fr)] lg:grid-cols-[232px_minmax(0,1fr)]"
         >
           {isWindowsDesktop ? <WindowsTopLeftLogo /> : null}
 
           {usesInlineWindowControls ? (
             <div className="absolute right-1 top-1 z-30 mt-px mr-px flex h-12 items-center gap-0.5 px-2 pointer-events-auto [app-region:no-drag]">
-              {/* Windows/Linux 设置页仍保留旧 caption 下箭头，与主界面和 macOS 的帮助入口不一致。
-                  统一复用问号帮助按钮，并让它在普通 flex 流中紧邻自绘窗控。
-                  Settings 的独立标题层还需计入 4px 外层留白和 1px 边框，才能与 Workspace 控制组对齐。 */}
-              <WorkspaceHelpMenuButton isDesktop={Boolean(isDesktop)} />
               <DesktopWindowControls />
             </div>
           ) : null}
@@ -1095,7 +1065,9 @@ export function SettingsPage({
                                 });
                               }}
                             >
-                              <span className="truncate text-ui-base text-foreground">{label}</span>
+                              <span className="truncate text-ui-caption text-foreground">
+                                {label}
+                              </span>
                             </SettingsSidebarButton>
                           );
                         })}
@@ -1142,22 +1114,6 @@ export function SettingsPage({
                 isWindowsDesktop ? "rounded-[5px]" : "rounded-xl",
               )}
             >
-              {!usesInlineWindowControls ? (
-                <div
-                  className={cn(
-                    // Settings 使用和 new task 一致的问号定位：在内容面板内定位，外层让出自绘窗口按钮区，内层保持 top-2.5/right-2.5。
-                    "absolute top-0 z-50 h-10 w-10 pointer-events-auto [app-region:no-drag]",
-                    "right-0",
-                  )}
-                >
-                  <div className="absolute right-2.5 top-2.5 pointer-events-auto [app-region:no-drag]">
-                    <WorkspaceHelpMenuButton
-                      className="relative z-50 [app-region:no-drag]"
-                      isDesktop={Boolean(isDesktop)}
-                    />
-                  </div>
-                </div>
-              ) : null}
               <SettingsBreadcrumbProvider
                 onItemsChange={setSettingsBreadcrumbItems}
                 sectionLabel={settingsBreadcrumbSectionLabel}
@@ -1185,20 +1141,23 @@ export function SettingsPage({
                       />
                     </div>
                   </div>
-                  <main className="min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+                  <main
+                    data-settings-group={activeSectionMeta.groupId}
+                    className="settings-compact min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]"
+                  >
                     <div
                       className={cn(
                         SETTINGS_FRAME_CONTENT_CLASSNAME,
-                        "flex flex-col gap-8",
+                        "flex flex-col gap-5",
                         isMacDesktop && "pt-0",
                         // isWindowsDesktop && "pt-12",
                       )}
                     >
-                      <div>
+                      <div className={activeSection === "plugin" ? "hidden" : undefined}>
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div className="flex min-w-0 flex-wrap items-center gap-3">
                             {showActiveSectionTitle ? (
-                              <h2 className="text-2xl font-semibold tracking-tight text-foreground lg:text-3xl">
+                              <h2 className="text-ui-xl font-semibold tracking-tight text-foreground">
                                 {activeSectionLabel}
                               </h2>
                             ) : null}
@@ -1211,131 +1170,138 @@ export function SettingsPage({
                             ) : null}
                           </div>
                         </div>
-                        {activeSection === "general" ? (
-                          <GeneralSectionHeader localePreference={localePreference} />
-                        ) : null}
                       </div>
-                      <div className="space-y-8">
+                      <div className="space-y-5">
                         {activeSection === "general" ? (
-                          <GeneralSectionContent
-                            localePreference={localePreference}
-                            interfaceMode={interfaceMode}
-                            setInterfaceMode={setInterfaceMode}
-                            isDesktop={isDesktop}
-                            isWindowsDesktop={isWindowsDesktop}
-                            platform={platform}
-                            notificationEnabled={notificationEnabled}
-                            notificationSoundEnabled={notificationSoundEnabled}
-                            closeToTrayOnWindows={closeToTrayOnWindows}
-                            keepAwakeWhileRunning={sharedSettings?.keepAwakeWhileRunning ?? false}
-                            desktopChromiumHardwareAccelerationEnabled={
-                              desktopChromiumHardwareAccelerationEnabled
-                            }
-                            receivePreviewUpdates={receivePreviewUpdates}
-                            autoDownloadAndInstallUpdates={autoDownloadAndInstallUpdates}
-                            dataBaseDir={dataBaseDir}
-                            terminalInheritSystemProfile={terminalInheritSystemProfile}
-                            terminalFontFamily={terminalFontFamily}
-                            integratedTerminalShell={integratedTerminalShell}
-                            integratedTerminalShellOptions={integratedTerminalShellOptions}
-                            nativeSearchEnhancementsEnabled={nativeSearchEnhancementsEnabled}
-                            httpProxy={httpProxy}
-                            httpProxyNoProxy={httpProxyNoProxy}
-                            httpProxyCaCertPath={httpProxyCaCertPath}
-                            defaultHomeDir={defaultHomeDir}
-                            showIntegratedTerminalShell={hostPlatform === "win32"}
-                            setLocalePreference={handleFooterLocaleChange}
-                            setNotificationEnabled={(enabled) =>
-                              runUserAction({
-                                input: {
-                                  featureId: "settings.notification",
-                                  action: "toggle_notification",
-                                  trigger: "switch",
-                                },
-                                operation: () => setNotificationEnabled(enabled),
-                                completed: {
-                                  resultSource: "local_commit",
-                                  stateAfter: enabled ? "enabled" : "disabled",
-                                },
-                                failureStage: "local_commit",
-                              })
-                            }
-                            setNotificationSoundEnabled={(enabled) =>
-                              runUserAction({
-                                input: {
-                                  featureId: "settings.notification",
-                                  action: "toggle_notification_sound",
-                                  trigger: "switch",
-                                },
-                                operation: () => setNotificationSoundEnabled(enabled),
-                                completed: {
-                                  resultSource: "local_commit",
-                                  stateAfter: enabled ? "enabled" : "disabled",
-                                },
-                                failureStage: "local_commit",
-                              })
-                            }
-                            taskAutoArchiveEnabled={taskAutoArchiveEnabled}
-                            taskAutoArchiveOlderThanDays={taskAutoArchiveOlderThanDays}
-                            messageStreamShowReasoning={messageStreamShowReasoning}
-                            messageStreamShowTodos={messageStreamShowTodos}
-                            toolGroupingExploreEnabled={toolGroupingExploreEnabled}
-                            toolGroupingTerminalEnabled={toolGroupingTerminalEnabled}
-                            toolGroupingChangesEnabled={toolGroupingChangesEnabled}
-                            mycodeInteractionBehavior={mycodeInteractionBehavior}
-                            askUserQuestionAutoResolutionEnabled={
-                              askUserQuestionAutoResolutionEnabled
-                            }
-                            modelIoFullRetentionEnabled={modelIoFullRetentionEnabled}
-                            onDataBaseDirChange={handleDataBaseDirChange}
-                            onSelectDataBaseDir={selectDirectory}
-                            onTerminalInheritSystemProfileChange={
-                              handleTerminalInheritSystemProfileChange
-                            }
-                            onTerminalFontFamilyChange={handleTerminalFontFamilyChange}
-                            onIntegratedTerminalShellChange={handleIntegratedTerminalShellChange}
-                            onNativeSearchEnhancementsEnabledChange={
-                              handleNativeSearchEnhancementsEnabledChange
-                            }
-                            onModelIoFullRetentionEnabledChange={
-                              handleModelIoFullRetentionEnabledChange
-                            }
-                            onHttpProxyChange={handleHttpProxyChange}
-                            onHttpProxyNoProxyChange={handleHttpProxyNoProxyChange}
-                            onHttpProxyCaCertPathChange={handleHttpProxyCaCertPathChange}
-                            onTaskAutoArchiveEnabledChange={handleTaskAutoArchiveEnabledChange}
-                            onTaskAutoArchiveOlderThanDaysChange={
-                              handleTaskAutoArchiveOlderThanDaysChange
-                            }
-                            onCloseToTrayOnWindowsChange={handleCloseToTrayOnWindowsChange}
-                            onKeepAwakeWhileRunningChange={handleKeepAwakeWhileRunningChange}
-                            onDesktopChromiumHardwareAccelerationChange={
-                              handleDesktopChromiumHardwareAccelerationChange
-                            }
-                            onReceivePreviewUpdatesChange={handleReceivePreviewUpdatesChange}
-                            onAutoDownloadAndInstallUpdatesChange={
-                              handleAutoDownloadAndInstallUpdatesChange
-                            }
-                            onMessageStreamShowReasoningChange={
-                              handleMessageStreamShowReasoningChange
-                            }
-                            onMessageStreamShowTodosChange={handleMessageStreamShowTodosChange}
-                            onToolGroupingExploreEnabledChange={
-                              handleToolGroupingExploreEnabledChange
-                            }
-                            onToolGroupingTerminalEnabledChange={
-                              handleToolGroupingTerminalEnabledChange
-                            }
-                            onToolGroupingChangesEnabledChange={
-                              handleToolGroupingChangesEnabledChange
-                            }
-                            onMyCodeInteractionBehaviorChange={
-                              handleMyCodeInteractionBehaviorChange
-                            }
-                            onAskUserQuestionAutoResolutionEnabledChange={
-                              handleAskUserQuestionAutoResolutionEnabledChange
-                            }
-                          />
+                          <>
+                            <GeneralSectionContent
+                              localePreference={localePreference}
+                              isDesktop={isDesktop}
+                              isWindowsDesktop={isWindowsDesktop}
+                              platform={platform}
+                              notificationEnabled={notificationEnabled}
+                              notificationSoundEnabled={notificationSoundEnabled}
+                              closeToTrayOnWindows={closeToTrayOnWindows}
+                              keepAwakeWhileRunning={sharedSettings?.keepAwakeWhileRunning ?? false}
+                              desktopChromiumHardwareAccelerationEnabled={
+                                desktopChromiumHardwareAccelerationEnabled
+                              }
+                              receivePreviewUpdates={receivePreviewUpdates}
+                              autoDownloadAndInstallUpdates={autoDownloadAndInstallUpdates}
+                              dataBaseDir={dataBaseDir}
+                              terminalInheritSystemProfile={terminalInheritSystemProfile}
+                              terminalFontFamily={terminalFontFamily}
+                              integratedTerminalShell={integratedTerminalShell}
+                              integratedTerminalShellOptions={integratedTerminalShellOptions}
+                              nativeSearchEnhancementsEnabled={nativeSearchEnhancementsEnabled}
+                              httpProxy={httpProxy}
+                              httpProxyNoProxy={httpProxyNoProxy}
+                              httpProxyCaCertPath={httpProxyCaCertPath}
+                              defaultHomeDir={defaultHomeDir}
+                              showIntegratedTerminalShell={hostPlatform === "win32"}
+                              setLocalePreference={handleFooterLocaleChange}
+                              setNotificationEnabled={(enabled) =>
+                                runUserAction({
+                                  input: {
+                                    featureId: "settings.notification",
+                                    action: "toggle_notification",
+                                    trigger: "switch",
+                                  },
+                                  operation: () => setNotificationEnabled(enabled),
+                                  completed: {
+                                    resultSource: "local_commit",
+                                    stateAfter: enabled ? "enabled" : "disabled",
+                                  },
+                                  failureStage: "local_commit",
+                                })
+                              }
+                              setNotificationSoundEnabled={(enabled) =>
+                                runUserAction({
+                                  input: {
+                                    featureId: "settings.notification",
+                                    action: "toggle_notification_sound",
+                                    trigger: "switch",
+                                  },
+                                  operation: () => setNotificationSoundEnabled(enabled),
+                                  completed: {
+                                    resultSource: "local_commit",
+                                    stateAfter: enabled ? "enabled" : "disabled",
+                                  },
+                                  failureStage: "local_commit",
+                                })
+                              }
+                              taskAutoArchiveEnabled={taskAutoArchiveEnabled}
+                              taskAutoArchiveOlderThanDays={taskAutoArchiveOlderThanDays}
+                              messageStreamShowReasoning={messageStreamShowReasoning}
+                              toolGroupingExploreEnabled={toolGroupingExploreEnabled}
+                              toolGroupingTerminalEnabled={toolGroupingTerminalEnabled}
+                              toolGroupingChangesEnabled={toolGroupingChangesEnabled}
+                              mycodeInteractionBehavior={mycodeInteractionBehavior}
+                              askUserQuestionAutoResolutionEnabled={
+                                askUserQuestionAutoResolutionEnabled
+                              }
+                              modelIoFullRetentionEnabled={modelIoFullRetentionEnabled}
+                              onDataBaseDirChange={handleDataBaseDirChange}
+                              onSelectDataBaseDir={selectDirectory}
+                              onTerminalInheritSystemProfileChange={
+                                handleTerminalInheritSystemProfileChange
+                              }
+                              onTerminalFontFamilyChange={handleTerminalFontFamilyChange}
+                              onIntegratedTerminalShellChange={handleIntegratedTerminalShellChange}
+                              onNativeSearchEnhancementsEnabledChange={
+                                handleNativeSearchEnhancementsEnabledChange
+                              }
+                              onModelIoFullRetentionEnabledChange={
+                                handleModelIoFullRetentionEnabledChange
+                              }
+                              onHttpProxyChange={handleHttpProxyChange}
+                              onHttpProxyNoProxyChange={handleHttpProxyNoProxyChange}
+                              onHttpProxyCaCertPathChange={handleHttpProxyCaCertPathChange}
+                              onTaskAutoArchiveEnabledChange={handleTaskAutoArchiveEnabledChange}
+                              onTaskAutoArchiveOlderThanDaysChange={
+                                handleTaskAutoArchiveOlderThanDaysChange
+                              }
+                              onCloseToTrayOnWindowsChange={handleCloseToTrayOnWindowsChange}
+                              onKeepAwakeWhileRunningChange={handleKeepAwakeWhileRunningChange}
+                              onDesktopChromiumHardwareAccelerationChange={
+                                handleDesktopChromiumHardwareAccelerationChange
+                              }
+                              onReceivePreviewUpdatesChange={handleReceivePreviewUpdatesChange}
+                              onAutoDownloadAndInstallUpdatesChange={
+                                handleAutoDownloadAndInstallUpdatesChange
+                              }
+                              onMessageStreamShowReasoningChange={
+                                handleMessageStreamShowReasoningChange
+                              }
+                              onToolGroupingExploreEnabledChange={
+                                handleToolGroupingExploreEnabledChange
+                              }
+                              onToolGroupingTerminalEnabledChange={
+                                handleToolGroupingTerminalEnabledChange
+                              }
+                              onToolGroupingChangesEnabledChange={
+                                handleToolGroupingChangesEnabledChange
+                              }
+                              onMyCodeInteractionBehaviorChange={
+                                handleMyCodeInteractionBehaviorChange
+                              }
+                              onAskUserQuestionAutoResolutionEnabledChange={
+                                handleAskUserQuestionAutoResolutionEnabledChange
+                              }
+                            />
+                            <div data-general-settings-memory="true">
+                              <ServiceProvider services={localHostServices}>
+                                {/* 记忆迁入常规后仍由本机 Host 提供目录，避免远端工作区污染来源。 */}
+                                <MemorySettingsSection
+                                  memoryEnabled={memoryEnabled}
+                                  memoryService={localHostServices.memoryService}
+                                  onMemoryEnabledChange={handleMemoryEnabledChange}
+                                  projectMemoryViewerAvailable={Boolean(isDesktop)}
+                                  workspaceDisplayNames={memoryWorkspaceDisplayNames}
+                                />
+                              </ServiceProvider>
+                            </div>
+                          </>
                         ) : activeSection === "appearance" ? (
                           <AppearanceSectionContent
                             codePreviewSettings={codePreviewSettings}
@@ -1376,17 +1342,6 @@ export function SettingsPage({
                               }
                             />
                           </ServiceProvider>
-                        ) : activeSection === "memory" ? (
-                          <ServiceProvider services={localHostServices}>
-                            {/* Memory catalog 始终使用本地 Host，避免远程 workspace 误读本机数据。 */}
-                            <MemorySettingsSection
-                              memoryEnabled={memoryEnabled}
-                              memoryService={localHostServices.memoryService}
-                              onMemoryEnabledChange={handleMemoryEnabledChange}
-                              projectMemoryViewerAvailable={Boolean(isDesktop)}
-                              workspaceDisplayNames={memoryWorkspaceDisplayNames}
-                            />
-                          </ServiceProvider>
                         ) : activeSection === "plugin" ? (
                           <PluginsSection
                             key={`plugin:${settingsSectionNavigationVersion}`}
@@ -1398,32 +1353,7 @@ export function SettingsPage({
                             workspacePath={activeWorkspacePath}
                             workspaceIdentity={activeWorkspaceIdentity}
                             showMarketplaceBreadcrumb={pluginNavigationOrigin === "plugin-store"}
-                            onCreateTask={onCreateTask}
-                            onOpenPluginStore={(_returnScopeKey, intent) => {
-                              // 添加市场与浏览插件都先离开设置层，再显示商店。
-                              requestPluginStoreOpen({ returnScopeKey: "user", intent });
-                              onBack?.();
-                            }}
-                          />
-                        ) : activeSection === "mcp" ? (
-                          <PluginsSection
-                            key={`mcp:${settingsSectionNavigationVersion}`}
-                            mode="mcp"
-                            workspacePath={activeWorkspacePath}
-                            workspaceIdentity={activeWorkspaceIdentity}
-                            onCreateTask={onCreateTask}
-                            onOpenPluginStore={(_returnScopeKey, intent) => {
-                              // 添加市场与浏览插件都先离开设置层，再显示商店。
-                              requestPluginStoreOpen({ returnScopeKey: "user", intent });
-                              onBack?.();
-                            }}
-                          />
-                        ) : activeSection === "skill" ? (
-                          <PluginsSection
-                            key={`skill:${settingsSectionNavigationVersion}`}
-                            mode="skill"
-                            workspacePath={activeWorkspacePath}
-                            workspaceIdentity={activeWorkspaceIdentity}
+                            onManageModels={handleOpenModelProviderSettings}
                             onCreateTask={onCreateTask}
                             onOpenPluginStore={(_returnScopeKey, intent) => {
                               // 添加市场与浏览插件都先离开设置层，再显示商店。
@@ -1439,12 +1369,6 @@ export function SettingsPage({
                           />
                         ) : activeSection === "usage" ? (
                           <AppUsagePanel />
-                        ) : activeSection === "subagents" ? (
-                          <SubagentsSection
-                            onManageModels={handleOpenModelProviderSettings}
-                            workspacePath={activeWorkspacePath}
-                            workspaceIdentity={activeWorkspaceIdentity}
-                          />
                         ) : activeSection === "automations" ? (
                           <AutomationsSection
                             workspacePath={activeWorkspacePath}

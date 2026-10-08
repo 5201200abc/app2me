@@ -1,12 +1,14 @@
 import type { ChatViewSummaryPanelVariant } from "@/v4/legacyChatViewTypes.js";
 
 const CONVERSATION_DRAFT_CONTENT_WIDTH_CLASS_NAME = "max-w-2xl";
+// 正文、工具、资源与输入框共用 760px 居中阅读列。
+// 列宽包含两侧内边距，正文不再单独限宽，避免下方资源和输入框越过右边界。
 const CONVERSATION_CONTENT_WITH_STATUS_PANEL_WIDTH_CLASS_NAME =
-  "w-full @min-[640px]/conversation:w-[calc(100%_-_17rem)] @min-[640px]/conversation:max-w-6xl @min-[864px]/conversation:w-[calc(100%_-_22rem)]";
+  "w-full max-w-[760px] @min-[640px]/conversation:w-[calc(100%_-_var(--conversation-panel-width,280px)_-_40px)]";
 const CONVERSATION_CONTENT_WITHOUT_STATUS_PANEL_WIDTH_CLASS_NAME =
-  "w-full @min-[864px]/conversation:w-[calc(100%_-_6rem)] @min-[864px]/conversation:max-w-4xl @min-[1280px]/conversation:w-[calc(100%_-_24rem)] @min-[1280px]/conversation:max-w-6xl";
+  "w-full max-w-[760px] @min-[864px]/conversation:w-[calc(100%_-_4rem)]";
 const CONVERSATION_STATUS_PANEL_INLINE_OFFSET_CLASS_NAME =
-  "@min-[640px]/conversation:-translate-x-28";
+  "@min-[640px]/conversation:-translate-x-[calc(var(--conversation-panel-width,280px)_*_0.5_+_10px)]";
 const CONVERSATION_STATUS_PANEL_AUTO_OFFSET_CLASS_NAME =
   "@min-[1280px]/conversation:-translate-x-36";
 
@@ -46,3 +48,7 @@ export function getConversationStatusPanelOffsetClassName(
   if (layout === "auto") return CONVERSATION_STATUS_PANEL_AUTO_OFFSET_CLASS_NAME;
   return undefined;
 }
+
+// 草稿欢迎区与同一个输入 dock 共用的响应式居中容器。
+export const CONVERSATION_CENTERED_EMPTY_LAYOUT_CLASS_NAME =
+  "flex min-h-full flex-col items-center px-4 before:block before:min-h-[52px] before:w-full before:shrink before:basis-[29dvh] before:content-[''] after:block after:min-h-4 after:w-full after:flex-1 after:content-['']";

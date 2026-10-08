@@ -20,7 +20,7 @@ export function writeBundledOfficialMarketplacePartitionSync(input: {
     manifest: input.manifest,
     version: 1,
   } satisfies BundledMarketplacePartition);
-  // 旧 z.ai 目录的缓存不能继续混入官方插件列表；缓存插件本体留给已安装记录管理。
+
   rmSync(partitionPath(input.storageRoot, RETIRED_CDN_PARTITION_FILE), { force: true });
   return rebuildOfficialMarketplaceSync(input.storageRoot);
 }

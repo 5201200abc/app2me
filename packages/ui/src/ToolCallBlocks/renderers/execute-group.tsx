@@ -1,4 +1,4 @@
-import { SquareTerminalIcon } from "lucide-react";
+import { WriteIcon } from "@/components/ui/write-icon.js";
 import { useCallback, useMemo } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { ToolCallBlock } from "@/ToolCallBlocks.js";
@@ -6,9 +6,7 @@ import { ToolLayout } from "@/ToolCallBlocks/ToolLayout.js";
 import type { ToolCallBlockRenderContext } from "@/ToolCallBlocks/shared.js";
 import { getExecuteSecondaryText } from "@/ToolCallBlocks/renderers/execute.js";
 
-const EXECUTE_GROUP_ICON = (
-  <SquareTerminalIcon className="size-4 shrink-0 text-foreground-subtle" />
-);
+const EXECUTE_GROUP_ICON = <WriteIcon className="size-4 shrink-0 text-foreground-subtle" />;
 
 // V4 row 进入共享 renderer 前会把 inputStreaming/pendingApproval 统一适配为 pending。
 const ACTIVE_STATUSES = new Set(["pending", "in_progress"]);
@@ -45,14 +43,15 @@ function formatCompletedSummary(
 
 export function ExecuteGroupToolCallBlock(context: ToolCallBlockRenderContext) {
   const { intl } = useMyCodeIntl();
-  const { toolCallNode, isRunning, statusLabel, isOfficeMode = false } = context;
+  const { toolCallNode, isRunning, statusLabel } = context;
   const { toolCall, childToolCalls } = toolCallNode;
   const latestActiveChild = childToolCalls.findLast((child) =>
     ACTIVE_STATUSES.has(child.toolCall.status),
   );
   const latestChild = latestActiveChild ?? childToolCalls.at(-1);
-  const latestCommand =
-    !isOfficeMode && latestChild ? getExecuteSecondaryText(latestChild.toolCall.input) : undefined;
+  const latestCommand = latestChild
+    ? getExecuteSecondaryText(latestChild.toolCall.input)
+    : undefined;
   const runningActionLabel = latestCommand
     ? intl.formatMessage({ id: "chat.toolCall.execute.running" })
     : undefined;
@@ -110,8 +109,8 @@ export function ExecuteGroupToolCallBlock(context: ToolCallBlockRenderContext) {
     <ToolLayout
       toolId={toolCall.toolId}
       icon={EXECUTE_GROUP_ICON}
-      canToggle={!isOfficeMode && (context.canToggle ?? true)}
-      forceOpen={!isOfficeMode && (context.forceOpen ?? false)}
+      canToggle={context.canToggle ?? true}
+      forceOpen={context.forceOpen ?? false}
       kindLabel={intl.formatMessage({ id: "chat.toolCall.executeGroup.label" })}
       expandedKindLabel={intl.formatMessage({
         id: "chat.toolCall.executeGroup.label",
@@ -132,7 +131,7 @@ export function ExecuteGroupToolCallBlock(context: ToolCallBlockRenderContext) {
       }
       statusLabel={statusLabel}
       isRunning={isRunning}
-      title={isOfficeMode ? undefined : isRunning && latestCommand ? latestCommand : toolCall.title}
+      title={isRunning && latestCommand ? latestCommand : toolCall.title}
       expandedTitle={toolCall.title}
       renderContent={renderContent}
     />

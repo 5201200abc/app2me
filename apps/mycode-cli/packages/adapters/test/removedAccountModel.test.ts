@@ -4,7 +4,7 @@ import { AiSdkModelAdapter, type CreateAiSdkModelOptions } from "../src/model/ru
 
 test("历史账号与 Coding Plan API Key 模型不能进入执行适配器", () => {
   const adapter = new AiSdkModelAdapter({});
-  for (const type of ["zhipu-account", "zhipu-coding-plan-api-key"] as const) {
+  for (const type of ["legacy-account", "legacy-coding-plan-api-key"] as const) {
     assert.throws(
       () =>
         adapter.createModel({
@@ -15,7 +15,7 @@ test("历史账号与 Coding Plan API Key 模型不能进入执行适配器", ()
           } as CreateAiSdkModelOptions["providerConfig"],
           modelConfig: {} as CreateAiSdkModelOptions["modelConfig"],
         }),
-      /account models have been removed/,
+      /Unsupported model access type/,
     );
   }
 });

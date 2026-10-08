@@ -4,7 +4,7 @@ import {
   FileTextIcon,
   Loader2Icon,
   RefreshCwIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type { OnboardingAgentsFileMigrationState } from "@/onboarding/useOnboardingAgentsFileMigration.js";

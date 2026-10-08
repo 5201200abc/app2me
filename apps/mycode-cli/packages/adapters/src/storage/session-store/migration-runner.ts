@@ -303,7 +303,11 @@ function ensureMigrationChecksum(
   current: string,
   dbPath: string,
 ): void {
-  if (applied === current) return;
+  if (
+    applied === current ||
+    SQLITE_MIGRATIONS.find((migration) => migration.id === id)?.retiredChecksum === applied
+  )
+    return;
   throw new SqliteSessionMigrationError(
     `SQLite migration checksum mismatch for ${id}. Historical migrations are immutable; add a new migration instead.`,
     {

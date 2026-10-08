@@ -8,7 +8,7 @@ import {
   OFF_PEAK_DEFAULT_GROUP_ID,
   type MyCodeTaskMeta,
 } from "@mycode/shared";
-import { ChevronDownIcon, ChevronRightIcon, MessageCirclePlus } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, MessageCirclePlus } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import {
@@ -338,7 +338,10 @@ export function GroupItem({
           });
           return;
         }
-        event.currentTarget.blur();
+        // 显式确认不能走 blur：菜单收尾的焦点保护会吞掉这次提交，随后 Escape 又会取消名称。
+        event.preventDefault();
+        event.stopPropagation();
+        commitRename();
         return;
       }
       if (event.key === "Escape") {
@@ -348,7 +351,7 @@ export function GroupItem({
         cancelRename();
       }
     },
-    [cancelRename, node.group.id],
+    [cancelRename, commitRename, node.group.id],
   );
 
   const handleRenameBlur = useCallback(() => {
@@ -496,9 +499,11 @@ export function GroupItem({
     >
       <ContextMenu onOpenChange={handleContextMenuOpenChange}>
         <ContextMenuTrigger asChild>
+          {/* 命名时仅禁用拖拽；Dnd 的 aria-disabled 会继承给标题输入框，错误阻止编辑。 */}
           <div
             ref={setGroupHeaderNodeRef}
             {...groupDraggable.attributes}
+            aria-disabled={undefined}
             {...groupDraggable.listeners}
             data-grouped-group-header-id={node.group.id}
             role="button"

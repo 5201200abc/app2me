@@ -83,6 +83,9 @@ import {
   PlatformChannels,
   formatMyCodeRendererProcessName,
   shouldEnableE2ETestBridge,
+  clampDesktopZoomLevel,
+  resolveDesktopZoomLevelFromFactor,
+  resolveDesktopZoomFactorForLevel,
 } from "@mycode/shared";
 import { createOAuthCallbackHandler } from "./oauthCallbackBridge.js";
 
@@ -109,29 +112,8 @@ const pendingShareImports: { shareCode: string }[] = [];
 const MACOS_WINDOW_CONTROLS_BASE_LEFT_PADDING_PX = 96;
 const WINDOWS_WINDOW_CONTROLS_BASE_RIGHT_PADDING_PX = 136;
 const WINDOWS_TITLE_BAR_HEIGHT_PX = 48;
-const DESKTOP_ZOOM_FACTOR_STEP = 1.1;
-const DESKTOP_ZOOM_MIN_LEVEL = -3;
-const DESKTOP_ZOOM_MAX_LEVEL = 5;
 let latestWindowControlsOverlayMetrics: WindowControlsOverlayMetrics | null = null;
 let latestDesktopZoomLevel = 0;
-
-function clampDesktopZoomLevel(level: number) {
-  return Math.min(DESKTOP_ZOOM_MAX_LEVEL, Math.max(DESKTOP_ZOOM_MIN_LEVEL, level));
-}
-
-function resolveDesktopZoomLevelFromFactor(zoomFactor: number) {
-  if (!Number.isFinite(zoomFactor) || zoomFactor <= 0) {
-    return 0;
-  }
-
-  return clampDesktopZoomLevel(
-    Math.round(Math.log(zoomFactor) / Math.log(DESKTOP_ZOOM_FACTOR_STEP)),
-  );
-}
-
-function resolveDesktopZoomFactorForLevel(level: number) {
-  return Math.pow(DESKTOP_ZOOM_FACTOR_STEP, clampDesktopZoomLevel(level));
-}
 
 function readCurrentWindowControlsOverlayReadyPayload(): WindowControlsOverlayReadyPayload {
   const zoomLevel = resolveDesktopZoomLevelFromFactor(webFrame.getZoomFactor());
@@ -291,6 +273,10 @@ contextBridge.exposeInMainWorld("mycode", {
   /** 打开系统文件选择框，返回选中文件路径或 null */
   selectFile: (): Promise<string | null> => ipcRenderer.invoke(PlatformChannels.SelectFile),
   /** 打开系统多文件选择框，返回选中文件路径；取消时返回空数组 */
+  selectFilesAndFolders: (): Promise<string[]> =>
+    ipcRenderer.invoke(PlatformChannels.SelectFilesAndFolders),
+  captureInteractiveScreenshot: (): Promise<{ name: string; dataUrl: string } | null> =>
+    ipcRenderer.invoke(PlatformChannels.CaptureInteractiveScreenshot),
   selectFiles: (): Promise<string[]> => ipcRenderer.invoke(PlatformChannels.SelectFiles),
   /** 通过 main process 的原生另存为对话框明确落盘 */
   saveFile: (payload: SaveFileRequest): Promise<SaveFileResult> =>
@@ -580,9 +566,6 @@ contextBridge.exposeInMainWorld("mycode", {
   },
   /** 打开外部 URL（用于 OAuth 跳转浏览器） */
   openExternal: (url: string) => ipcRenderer.send(PlatformChannels.OpenExternal, url),
-  /** 查询当前语言下是否存在可用的用户社群入口 */
-  canOpenCommunity: (locale: Locale): Promise<boolean> =>
-    ipcRenderer.invoke(PlatformChannels.CanOpenCommunity, locale),
   /** 在系统文件管理器中打开指定路径 */
   openInFileManager: (path: string) => ipcRenderer.invoke(PlatformChannels.OpenInFileManager, path),
   /** 使用系统默认应用打开本地文件 */
@@ -799,6 +782,10 @@ contextBridge.exposeInMainWorld("mycode", {
   quitAndInstallUpdate: () => ipcRenderer.invoke(PlatformChannels.QuitAndInstallUpdate),
   /** 获取已安装的编辑器/终端列表（含图标） */
   getInstalledEditors: () => ipcRenderer.invoke(PlatformChannels.GetInstalledEditors),
+  getWebsiteBrowsers: () => ipcRenderer.invoke(PlatformChannels.GetWebsiteBrowsers),
+  getDesktopToolEnvironment: () => ipcRenderer.invoke(PlatformChannels.GetDesktopToolEnvironment),
+  openWebsiteBrowser: (browserId, url) =>
+    ipcRenderer.invoke(PlatformChannels.OpenWebsiteBrowser, { browserId, url }),
   getApplicationIcon: (request: string | ApplicationIconRequest) =>
     ipcRenderer.invoke(PlatformChannels.GetApplicationIcon, request),
   /** 用指定编辑器打开路径 */

@@ -1,3 +1,4 @@
+import type { IMyChatService } from "./mychat/myChat.js";
 import { IOffPeakTaskService } from "./session/offPeakTask.js";
 import type { IFileService } from "./file/file.js";
 import type { IMediaPreviewService } from "./media-preview/mediaPreview.js";
@@ -20,7 +21,7 @@ import type {
   IProviderSettingsService,
 } from "./model-provider/providerFacadeServices.js";
 import type { IUsageStatsService } from "./usage-stats/usageStats.js";
-import type { ICodingPlanSubscriptionService } from "./coding-plan-subscription/codingPlanSubscription.js";
+import type { IRuntimeConfigService } from "./runtime-config/runtimeConfig.js";
 import type { IClientScenesService } from "./client-scenes/clientScenes.js";
 import type { ISkillsService } from "./skills/skills.js";
 import type { ISkillSyncService } from "./skill-sync/skillSync.js";
@@ -41,6 +42,7 @@ import type { IConversationShareService } from "./conversation-share/conversatio
 
 /** UI 层消费的统一服务接口 */
 export interface IServiceAccessor {
+  readonly myChatService?: IMyChatService;
   readonly fileService: IFileService;
   readonly mediaPreviewService?: IMediaPreviewService;
   readonly gitService: IGitService;
@@ -68,7 +70,7 @@ export interface IServiceAccessor {
   /** 当前 Environment Registry 发布的唯一模型选择 View。 */
   readonly modelSelectionService: IModelSelectionService;
   readonly usageStatsService: IUsageStatsService;
-  readonly codingPlanSubscriptionService: ICodingPlanSubscriptionService;
+  readonly runtimeConfigService: IRuntimeConfigService;
   readonly clientScenesService: IClientScenesService;
   /** 闲时任务管理（独立服务面）。 */
   readonly offPeakTaskService: IOffPeakTaskService;

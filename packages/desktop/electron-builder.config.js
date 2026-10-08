@@ -145,6 +145,8 @@ const asarCliPath = resolve(
   "asar.js",
 );
 const REQUIRED_ASAR_RUNTIME_MODULES = [
+  // 实际安装包启动在 jszip/lib/utils.js 缺少 setimmediate；必须注入并校验其完整依赖闭包。
+  "jszip",
   "module-details-from-path",
   "@opentelemetry/api-logs",
   // Bugfix: telemetry 的 OTLP exporter 会在启动阶段加载 sdk-metrics。pnpm 开发态可从
@@ -275,7 +277,9 @@ const PACKAGING_PRUNE_PATTERNS = [
 
 function buildDesktopArtifactName(platformName, extension = "${ext}") {
   // 测试环境产物必须和正式安装包文件名区分，避免上传、下载或人工验收时混用。
-  return `\${productName}-\${version}-${platformName}-\${arch}${desktopArtifactEnvSuffix}.${extension}`;
+  const date = process.env.APP2ME_RELEASE_DATE ?? new Date().toISOString().slice(0, 10);
+  const preview = desktopProductIdentity.flavor === "preview" ? "-preview" : "";
+  return `app2me-${date}${preview}-${platformName}-\${arch}${desktopArtifactEnvSuffix}.${extension}`;
 }
 
 function runAsarCommand(args) {
@@ -318,7 +322,7 @@ async function runTimedAsync(label, fn) {
 
 function resolveAppAsarPath(context) {
   if (context.electronPlatformName === "darwin") {
-    const appName = `${context.packager?.appInfo?.productFilename ?? "MyCode"}.app`;
+    const appName = `${context.packager?.appInfo?.productFilename ?? "app2me"}.app`;
     return resolve(context.appOutDir, appName, "Contents", "Resources", "app.asar");
   }
 
@@ -327,7 +331,7 @@ function resolveAppAsarPath(context) {
 
 function resolvePackagedResourcesDir(context) {
   if (context.electronPlatformName === "darwin") {
-    const appName = `${context.packager?.appInfo?.productFilename ?? "MyCode"}.app`;
+    const appName = `${context.packager?.appInfo?.productFilename ?? "app2me"}.app`;
     return resolve(context.appOutDir, appName, "Contents", "Resources");
   }
 
@@ -496,9 +500,9 @@ export default {
   extraMetadata: {
     version: buildMetadata.appVersion,
     mycodeProductFlavor: desktopProductIdentity.flavor,
-    homepage: "https://github.com/5201200abc/mycode",
+    homepage: "https://github.com/5201200abc/app2me",
     author: {
-      name: "MyCode",
+      name: "app2me",
       email: "dev@mycode.com",
     },
   },
@@ -517,6 +521,9 @@ export default {
     mirror: resolveElectronDownloadMirror(),
   },
   productName: desktopProductIdentity.productName,
+  ...(targetPlatform.os === "win32" && process.env.APP2ME_WINDOWS_BUILD_VERSION
+    ? { buildVersion: process.env.APP2ME_WINDOWS_BUILD_VERSION }
+    : {}),
   directories: {
     // macOS arm64/x64 CI 可能共享同一个 checkout 并行打包。
     // 输出根目录允许按架构隔离，避免一个 job 清理 dist 时删除另一个 job 正在签名的 .app。
@@ -608,6 +615,17 @@ export default {
     }
   },
   extraResources: [
+    ...(targetPlatform.os === "darwin"
+      ? [
+          {
+            from: resolve(
+              workspaceRoot,
+              "packages/services/src/mychat/native/mychat-video-extract",
+            ),
+            to: "mychat/mychat-video-extract",
+          },
+        ]
+      : []),
     ...(["darwin", "win32"].includes(targetPlatform.os)
       ? [
           {
@@ -629,12 +647,6 @@ export default {
           },
         ]
       : []),
-    {
-      // 正式包不能依赖仓库目录读取社区、反馈等内置兜底配置。
-      // 显式放入 resources/config，与主进程的 process.resourcesPath 解析保持一致。
-      from: resolve(workspaceRoot, "config/default.json"),
-      to: "config/default.json",
-    },
     {
       // Provider Registry 的 MyCode Built-in Config 是静态 Provider/Model 事实的唯一内置来源。
       // 显式随包发布，避免正式 Host 回退到旧 Catalog/Preset hardcode。
@@ -745,7 +757,7 @@ export default {
   linux: {
     target: ["AppImage", "deb", "rpm", "pacman"],
     artifactName: buildDesktopArtifactName("linux"),
-    // desktop 包名是 scoped package（@mycode/desktop），electron-builder 默认会把
+    // desktop 包名是 scoped package（@app2me/desktop），electron-builder 默认会把
     // Linux executable/Icon 推成 @mycodedesktop。部分桌面环境无法按这个 icon name 命中
     // hicolor 图标，最终回退成系统齿轮。这里固定成稳定的小写名称，让 Icon=mycode
     // 与 /usr/share/icons/hicolor/*/apps/mycode.png 保持一致。
@@ -806,6 +818,7 @@ export default {
   detectUpdateChannel: false,
   publish: {
     provider: "generic",
+    channel: process.env.APP2ME_UPDATE_CHANNEL ?? `latest-${targetPlatform.arch}`,
     // 当前 OSS/CDN 对多 Range 请求返回 206，但 Content-Type 仍是 application/x-msdownload，
     // electron-updater 会因缺少 multipart/byteranges 直接回退整包下载。关闭 multiple range 后仍走差分，
     // 只是按单 Range 顺序拉取差异块，避免 Windows 用户更新时从约 15MB 退化成 300MB+ 全量包。

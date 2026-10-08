@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Anchor, Download, ShieldCheck } from "lucide-react";
+import { Anchor, ShieldCheck } from "@/components/icons/tabler.js";
 import type { Hook, PluginHookDetail, PluginScope } from "@mycode/shared";
 import { Badge } from "@/components/ui/badge.js";
 import { Button } from "@/components/ui/button.js";
@@ -24,14 +24,9 @@ export interface PluginHookRow {
 
 type HookSection =
   | { kind: "installed"; title: "Installed"; count: number; hooks: Hook[] }
-  | { kind: "legacy"; title: "Legacy"; count: number; hooks: Hook[] }
   | { kind: "plugin"; title: string; pluginId: string; count: number; hooks: PluginHookRow[] };
 
-function groupHookSections(
-  editableHooks: Hook[],
-  compatibilityHooks: Hook[],
-  pluginHooks: PluginHookRow[],
-): HookSection[] {
+function groupHookSections(editableHooks: Hook[], pluginHooks: PluginHookRow[]): HookSection[] {
   const sections: HookSection[] = [];
   if (editableHooks.length > 0) {
     sections.push({
@@ -57,26 +52,16 @@ function groupHookSections(
       hooks,
     });
   }
-  if (compatibilityHooks.length > 0) {
-    sections.push({
-      kind: "legacy",
-      title: "Legacy",
-      count: compatibilityHooks.length,
-      hooks: compatibilityHooks,
-    });
-  }
   return sections;
 }
 
 export function HooksList({
-  compatibilityHooks,
   editableHooks,
   operatingHookId,
   pluginHooks,
   trustActionAvailable = false,
   trustingHookId,
   onEdit,
-  onImport,
   onTrust,
   onToggle,
   formatPluginName = (name) => name,
@@ -86,14 +71,12 @@ export function HooksList({
   installedEmptyTitle,
   showInstalledSection = false,
 }: {
-  compatibilityHooks: Hook[];
   editableHooks: Hook[];
   operatingHookId: string | null;
   pluginHooks: PluginHookRow[];
   trustActionAvailable?: boolean;
   trustingHookId?: string | null;
   onEdit: (hook: Hook) => void;
-  onImport: (hook: Hook) => Promise<void>;
   onTrust?: (hook: Hook) => Promise<void>;
   onToggle: (hook: Hook, enabled: boolean) => Promise<void>;
   formatPluginName?: (name: string, pluginId?: string) => string;
@@ -104,30 +87,26 @@ export function HooksList({
   showInstalledSection?: boolean;
 }) {
   const { intl } = useMyCodeIntl();
-  const groupedSections = groupHookSections(editableHooks, compatibilityHooks, pluginHooks);
+  const groupedSections = groupHookSections(editableHooks, pluginHooks);
   const sections: HookSection[] =
     showInstalledSection && editableHooks.length === 0
       ? [{ kind: "installed", title: "Installed", count: 0, hooks: [] }, ...groupedSections]
       : groupedSections;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {sections.map((section) => (
         <section
           key={`${section.kind}:${section.kind === "plugin" ? section.pluginId : section.title}`}
-          className="space-y-4"
+          className="space-y-3"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h3 className="flex h-7 items-center gap-1.5 text-ui-base font-medium text-foreground">
               {section.kind === "plugin"
                 ? formatPluginName(section.title, section.pluginId)
                 : intl.formatMessage({
-                    id:
-                      section.kind === "installed"
-                        ? "settings.hooks.group.installed"
-                        : "settings.hooks.group.legacy",
+                    id: "settings.hooks.group.installed",
                   })}
-              <span className="text-ui-sm font-normal text-foreground-subtle">{section.count}</span>
             </h3>
             {section.kind === "installed" ? installedAction : null}
           </div>
@@ -138,7 +117,7 @@ export function HooksList({
               actions={installedEmptyActions}
             />
           ) : (
-            <div className="overflow-hidden rounded-xl bg-surface">
+            <div className="overflow-hidden rounded-lg bg-surface/60">
               {section.kind === "plugin"
                 ? section.hooks.map((hook, index) => (
                     <div key={`${hook.pluginId}-${hook.detail.sourcePath}-${index}`}>
@@ -149,25 +128,17 @@ export function HooksList({
                 : section.hooks.map((hook, index) => (
                     <div key={hook.id}>
                       {index > 0 ? <div className="h-px bg-border/50" aria-hidden="true" /> : null}
-                      {section.kind === "installed" ? (
-                        <ConfiguredHookRow
-                          hook={hook}
-                          busy={operatingHookId === hook.id}
-                          readOnly={hook.editable === false}
-                          requiresTrust={requiresWorkspaceHookTrust(hook)}
-                          trustActionAvailable={trustActionAvailable}
-                          trusting={trustingHookId === hook.id}
-                          onToggle={onToggle}
-                          onEdit={onEdit}
-                          onTrust={onTrust}
-                        />
-                      ) : (
-                        <CompatibilityHookRow
-                          hook={hook}
-                          busy={operatingHookId === hook.id}
-                          onImport={onImport}
-                        />
-                      )}
+                      <ConfiguredHookRow
+                        hook={hook}
+                        busy={operatingHookId === hook.id}
+                        readOnly={hook.editable === false}
+                        requiresTrust={requiresWorkspaceHookTrust(hook)}
+                        trustActionAvailable={trustActionAvailable}
+                        trusting={trustingHookId === hook.id}
+                        onToggle={onToggle}
+                        onEdit={onEdit}
+                        onTrust={onTrust}
+                      />
                     </div>
                   ))}
             </div>
@@ -193,7 +164,7 @@ function HookItemFrame({
 }) {
   return (
     <div
-      className={`grid cursor-default grid-cols-[auto_minmax(0,1fr)] items-center gap-3 px-4 py-3 sm:grid-cols-[auto_minmax(0,1fr)_auto] ${onEdit ? "transition-colors hover:bg-hover" : ""}`}
+      className={`grid cursor-default grid-cols-[auto_minmax(0,1fr)] items-center gap-2 px-3 py-2 sm:grid-cols-[auto_minmax(0,1fr)_auto] ${onEdit ? "transition-colors hover:bg-hover" : ""}`}
       data-testid={testId}
       {...settingsResourceRowInteraction(onEdit)}
     >
@@ -302,30 +273,6 @@ function ConfiguredHookRow({
             disabled={busy || trusting || requiresTrust || readOnly}
           />
         </>
-      }
-    >
-      <HookContent event={hook.event} command={[hook.command, ...(hook.args ?? [])].join(" ")} />
-    </HookItemFrame>
-  );
-}
-
-function CompatibilityHookRow({
-  busy,
-  hook,
-  onImport,
-}: {
-  busy: boolean;
-  hook: Hook;
-  onImport: (hook: Hook) => Promise<void>;
-}) {
-  const { intl } = useMyCodeIntl();
-  return (
-    <HookItemFrame
-      actions={
-        <Button variant="outline" size="sm" disabled={busy} onClick={() => void onImport(hook)}>
-          <Download className="size-3" />
-          {intl.formatMessage({ id: "settings.hooks.import" })}
-        </Button>
       }
     >
       <HookContent event={hook.event} command={[hook.command, ...(hook.args ?? [])].join(" ")} />

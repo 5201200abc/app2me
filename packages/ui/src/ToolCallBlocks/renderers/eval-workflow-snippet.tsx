@@ -1,4 +1,4 @@
-import { FlaskConical } from "lucide-react";
+import { FlaskConical } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import type { ToolCallEvalWorkflowSnippetDisplay } from "@mycode/shared/mycode-protocol-v4";
 import {

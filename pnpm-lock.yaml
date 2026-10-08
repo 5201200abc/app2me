@@ -54,9 +54,6 @@ importers:
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
-      husky:
-        specifier: ^9.1.7
-        version: 9.1.7
       istanbul-lib-instrument:
         specifier: 6.0.3
         version: 6.0.3
@@ -1034,6 +1031,9 @@ importers:
       ignore:
         specifier: ^5.3.2
         version: 5.3.2
+      jszip:
+        specifier: ^3.10.1
+        version: 3.10.1
       node-forge:
         specifier: ^1.4.0
         version: 1.4.0
@@ -1156,6 +1156,9 @@ importers:
       '@stripe/stripe-js':
         specifier: ^9.6.0
         version: 9.6.0
+      '@tabler/icons-react':
+        specifier: 3.48.0
+        version: 3.48.0(react@19.2.7)
       '@xterm/addon-clipboard':
         specifier: ^0.2.0
         version: 0.2.0
@@ -1198,9 +1201,6 @@ importers:
       lexical:
         specifier: ^0.42.0
         version: 0.42.0
-      lucide-react:
-        specifier: ^1.17.0
-        version: 1.17.0(react@19.2.7)
       marked:
         specifier: 16.4.2
         version: 16.4.2
@@ -1234,6 +1234,9 @@ importers:
       react-jsx-parser:
         specifier: ^2.4.1
         version: 2.4.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react-markdown:
+        specifier: ^10.1.0
+        version: 10.1.0(@types/react@19.2.14)(react@19.2.7)
       react-pdf:
         specifier: ^10.4.1
         version: 10.4.1(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1246,6 +1249,9 @@ importers:
       remark-cjk-friendly-gfm-strikethrough:
         specifier: ^2.0.1
         version: 2.0.1(@types/mdast@4.0.4)(micromark-util-types@2.0.2)(micromark@4.0.2)(unified@11.0.5)
+      remark-gfm:
+        specifier: ^4.0.1
+        version: 4.0.1
       shadcn:
         specifier: 4.1.1
         version: 4.1.1(@types/node@25.6.0)(typescript@6.0.2)
@@ -4755,6 +4761,14 @@ packages:
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
     engines: {node: '>=10'}
 
+  '@tabler/icons-react@3.48.0':
+    resolution: {integrity: sha512-OCeAlpaWHEMV+EsgdVeGQ3YuKfmfnThZhc++CaZ/ujYzi5+/DONDQlX4OGvH1ikYhIfmc0grI4otJgHy7QAvng==}
+    peerDependencies:
+      react: 19.2.7
+
+  '@tabler/icons@3.48.0':
+    resolution: {integrity: sha512-lQk06gVHNVBnJp0UOgtth54mcZBJM7rdYKsAxKOProj1bbSAx+/xiuOWfHlyvgdL3M+Y+I0HINrjHa3ygp8eXQ==}
+
   '@tailwindcss/node@4.2.2':
     resolution: {integrity: sha512-pXS+wJ2gZpVXqFaUEjojq7jzMpTGf8rU6ipJz5ovJV6PUGmlJ+jvIwGrzdHdQ80Sg+wmQxUFuoW1UAAwHNEdFA==}
 
@@ -6993,11 +7007,6 @@ packages:
     resolution: {integrity: sha512-eKCa6bwnJhvxj14kZk5NCPc6Hb6BdsU9DZcOnmQKSnO1VKrfV0zCvtttPZUsBvjmNDn8rpcJfpwSYnHBjc95MQ==}
     engines: {node: '>=18.18.0'}
 
-  husky@9.1.7:
-    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   iconv-corefoundation@1.1.7:
     resolution: {integrity: sha512-T10qvkw0zz4wnm560lOEg0PovVqUXuOFhhHAkixw8/sycy7TJt7v/RrkEKEQnAw2viPSJu6iAkErxnzR0g8PpQ==}
     engines: {node: ^8.11.2 || >=10}
@@ -8581,6 +8590,12 @@ packages:
     peerDependencies:
       react: 19.2.7
       react-dom: 19.2.7
+
+  react-markdown@10.1.0:
+    resolution: {integrity: sha512-qKxVopLT/TyA6BX3Ue5NwabOsAzm0Q7kAPwq6L+wWDwisYs7R8vZ0nRXqq6rkueboxpkjvLGU9fWifiX/ZZFxQ==}
+    peerDependencies:
+      '@types/react': '>=18'
+      react: 19.2.7
 
   react-pdf@10.4.1:
     resolution: {integrity: sha512-kS/35staVCBqS29verTQJQZXw7RfsRCPO3fdJoW1KXylcv7A9dw6DZ3vJXC2w+bIBgLw5FN4pOFvKSQtkQhPfA==}
@@ -13301,6 +13316,13 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
+  '@tabler/icons-react@3.48.0(react@19.2.7)':
+    dependencies:
+      '@tabler/icons': 3.48.0
+      react: 19.2.7
+
+  '@tabler/icons@3.48.0': {}
+
   '@tailwindcss/node@4.2.2':
     dependencies:
       '@jridgewell/remapping': 2.3.5
@@ -15886,8 +15908,6 @@ snapshots:
 
   human-signals@8.0.1: {}
 
-  husky@9.1.7: {}
-
   iconv-corefoundation@1.1.7:
     dependencies:
       cli-truncate: 2.1.0
@@ -17852,6 +17872,24 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.28
       '@types/react-dom': 18.3.7(@types/react@18.3.28)
+
+  react-markdown@10.1.0(@types/react@19.2.14)(react@19.2.7):
+    dependencies:
+      '@types/hast': 3.0.4
+      '@types/mdast': 4.0.4
+      '@types/react': 19.2.14
+      devlop: 1.1.0
+      hast-util-to-jsx-runtime: 2.3.6
+      html-url-attributes: 3.0.1
+      mdast-util-to-hast: 13.2.1
+      react: 19.2.7
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.2
+      unified: 11.0.5
+      unist-util-visit: 5.1.0
+      vfile: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
 
   react-pdf@10.4.1(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:

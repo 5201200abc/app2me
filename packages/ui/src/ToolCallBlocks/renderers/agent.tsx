@@ -1,4 +1,4 @@
-import { BotIcon } from "lucide-react";
+import { BotIcon } from "@/components/icons/tabler.js";
 import { useCallback, useMemo, type ReactNode } from "react";
 import type { AgentColor } from "@mycode/shared";
 import { MessageResponse } from "@/components/ai-elements/message.js";
@@ -379,7 +379,6 @@ export function AgentToolCallBlock(context: ToolCallBlockRenderContext) {
         kindDetail={agentNameDetail}
         expandedKindDetail={agentNameDetail}
         sourceLabel={sourceLabel}
-        autoCollapseOnComplete
         primaryText={
           collapsedChildSummary ? collapsedChildSummary.primaryText : collapsedPrimaryText
         }

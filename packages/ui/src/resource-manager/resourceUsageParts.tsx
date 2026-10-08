@@ -2,7 +2,7 @@
  * 资源管理器 CPU / 内存 tab 的展示零件：双层指标卡、分组列表、进程行。
  * 只做格式化与布局，不持有任何指标状态。
  */
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from "@/components/icons/tabler.js";
 import type { ResourceUsageProcess } from "@mycode/shared";
 import { cn } from "@/components/lib/utils.js";
 import { formatBytes, formatPercent, type ResourceUsageGroupView } from "./resourceUsageView.js";

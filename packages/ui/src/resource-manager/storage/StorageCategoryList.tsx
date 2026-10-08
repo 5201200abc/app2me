@@ -1,4 +1,4 @@
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight, Loader2 } from "@/components/icons/tabler.js";
 import {
   type StorageCategoryId,
   TID_RESOURCE_MANAGER_STORAGE_CATEGORY_CLEAN,

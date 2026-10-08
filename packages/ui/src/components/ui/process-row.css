@@ -1,0 +1,223 @@
+[data-conversation-work-items],
+[data-conversation-share-work-items],
+.tool-call-layout,
+[data-process-row],
+[data-testid="chat-reasoning-content"] {
+  --row-font: max(0.8125rem, var(--text-ui-caption));
+}
+[data-process-row] {
+  --text-primary: var(--color-foreground);
+  --text-secondary: var(--color-foreground-subtle);
+  --text-muted: var(--color-foreground-subtlest);
+  display: grid !important;
+  grid-template-columns: 1em minmax(0, 1fr);
+  column-gap: 0.65em !important;
+  height: 2em !important;
+  min-height: 2em !important;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: var(--row-font);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+[data-process-icon] {
+  display: inline-flex;
+  width: 1em;
+  height: 1em;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+[data-process-icon] svg,
+[data-process-copy] [data-process-chevron] {
+  width: 1em;
+  height: 1em;
+  color: inherit;
+  stroke-width: 1.5px;
+}
+[data-process-icon] svg :is(path, rect, circle, line, polyline),
+[data-command-copy] svg :is(path, rect, circle, line, polyline),
+[data-process-chevron] :is(path, polyline) {
+  vector-effect: non-scaling-stroke;
+}
+[data-process-copy] {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 0.3em;
+  line-height: 1.5;
+}
+[data-process-copy] .animated-gradient-text {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  animation: none;
+}
+[data-process-copy] :is(.font-medium, .font-semibold, .font-bold) {
+  font-weight: 400;
+}
+[data-process-copy] :is(.text-ui-base, .text-ui-caption, .text-ui-xs, .text-ui-sm) {
+  font-size: var(--row-font);
+}
+[data-process-copy]
+  :is(
+    .tool-summary-kind-label,
+    [data-file-verb],
+    [data-file-name],
+    [data-reasoning-label],
+    [data-process-title],
+    [data-tool-summary-sentence]
+  ) {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+[data-process-copy] .tool-summary-content {
+  column-gap: 0.3em;
+  flex: 0 1 auto;
+  align-items: baseline;
+  color: var(--text-secondary);
+}
+[data-process-copy] :is([data-tool-diff-count], [data-reasoning-duration], [data-process-stat]) {
+  font-family: var(--font-sans);
+  font-size: var(--row-font);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+[data-process-copy] [data-tool-diff-count] {
+  gap: 0.3em;
+  align-items: baseline;
+}
+[data-process-copy] [data-tool-diff-count] * {
+  font-size: inherit;
+  color: inherit;
+}
+[data-process-copy] :is([data-file-name], .tool-summary-content button) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+[data-process-copy] .tool-summary-content button img {
+  display: none;
+}
+[data-process-copy] [data-process-chevron] {
+  flex-shrink: 0;
+  margin-left: 0;
+  align-self: center;
+  color: var(--text-secondary);
+  opacity: 1 !important;
+  transition: transform 150ms;
+}
+[data-tool-summary-sentence-button] [data-process-chevron] {
+  margin-left: auto;
+}
+.tool-call-layout > [data-slot="collapsible-content"] > div,
+[data-testid="chat-reasoning-content"] {
+  padding-left: 0;
+  border-left: none;
+}
+[data-conversation-work-items],
+[data-conversation-share-work-items] {
+  gap: 0 !important;
+}
+[data-conversation-work-items] .conversation-answer,
+[data-conversation-share-work-items] [data-conversation-share-row-kind="assistantText"] {
+  font-size: var(--text-ui-base);
+  font-weight: 400;
+  line-height: var(--ui-body-line-height);
+}
+[data-conversation-work-items] > :has(.conversation-answer) + *,
+[data-conversation-work-items] > * + :has(.conversation-answer) {
+  margin-top: 12px;
+}
+.tool-detail-scroll,
+[data-reasoning-scroll-mask] {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-card);
+  padding: 16px;
+  max-height: 220px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) transparent;
+  font-size: var(--row-font);
+  font-weight: 400;
+  line-height: 1.5;
+}
+.tool-detail-scroll :is(pre, code, p),
+[data-reasoning-scroll-mask] {
+  font-size: var(--row-font) !important;
+  line-height: 1.5 !important;
+}
+.tool-detail-scroll :is(pre, code, [data-language]) {
+  font-family: var(--font-mono);
+  font-size: var(--row-font) !important;
+  line-height: 1.5 !important;
+  color: var(--color-foreground-subtle);
+}
+/* 分组只组织行；限高与滚动只属于每个原文卡片，避免重复滚动和缩进。 */
+.tool-detail-scroll:has([data-process-row]) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  max-height: none;
+  overflow: visible;
+}
+.tool-detail-scroll > div:has(> .tool-call-layout) {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+.tool-detail-scroll > div > .tool-call-layout {
+  margin-block: 0;
+}
+.tool-detail-scroll:has([data-command-scroll]) {
+  max-height: none;
+  overflow: visible;
+}
+.tool-detail-scroll
+  :is([class*="overflow-auto"], [class*="overflow-y-auto"]):not([data-command-scroll]) {
+  max-height: none;
+  overflow: visible;
+}
+[data-command-scroll] {
+  max-height: 186px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) transparent;
+  font-size: var(--row-font);
+  line-height: 1.5;
+}
+[data-command-content],
+[data-skill-content] {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: var(--row-font);
+  font-weight: 400;
+  line-height: 1.5;
+}
+[data-command-line] {
+  display: flex;
+  align-items: start;
+  gap: 0.65em;
+  font-family: var(--font-mono);
+}
+[data-command-line] pre {
+  min-width: 0;
+  flex: 1;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+[data-command-copy] svg {
+  width: 1em;
+  height: 1em;
+  stroke-width: 1.5px;
+}
+[data-command-copy] {
+  width: 1.5em;
+  height: 1.5em;
+  font-size: var(--row-font);
+}

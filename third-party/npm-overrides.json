@@ -507,5 +507,104 @@
     "source": "https://registry.npmjs.org/%40arms%2frum-electron%400.0.3",
     "evidenceKind": "publisher-license-identifier-and-standard-terms",
     "license": "MIT"
+  },
+  {
+    "package": "@trycua/cua-driver@0.30.4",
+    "file": "third-party/upstream/c0779290c1d4783169aa3dbfb55feb505e563ef8a004bbf55298ceffcfbda8d9.txt",
+    "sha256": "c0779290c1d4783169aa3dbfb55feb505e563ef8a004bbf55298ceffcfbda8d9",
+    "source": "https://raw.githubusercontent.com/trycua/cua/ec4a15455f192a12dcc11d2d7f9dbc3c506f54d0/LICENSE.md",
+    "license": "MIT",
+    "referenceRevision": "ec4a15455f192a12dcc11d2d7f9dbc3c506f54d0",
+    "provenance": "Publisher repository license reference; npm package does not record a source revision."
+  },
+  {
+    "package": "@ubjs/core@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-darwin-arm64@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-darwin-x64@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-linux-arm64-gnu@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-linux-arm64-musl@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-linux-x64-gnu@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-linux-x64-musl@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-win32-arm64-msvc@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
+  },
+  {
+    "package": "@ubjs/node-win32-x64-msvc@0.31.0-3",
+    "file": "third-party/upstream/3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04.txt",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "source": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "license": "MPL-2.0",
+    "referenceRevision": "49bc59194d183a05855ed4104c18eb92fb465e02",
+    "provenance": "Publisher source LICENSE at https://github.com/jhugman/uniffi-bindgen-react-native/blob/49bc59194d183a05855ed4104c18eb92fb465e02/LICENSE directs recipients to these complete MPL 2.0 terms."
   }
 ]

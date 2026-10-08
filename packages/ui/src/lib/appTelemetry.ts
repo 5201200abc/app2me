@@ -1,9 +1,5 @@
 import {
-  BIGMODEL_PROVIDER_ID,
-  BUILTIN_MODEL_PROVIDER_IDS,
-  ZAI_PROVIDER_ID,
   collectTelemetryRendererContext,
-  isZaiCodingPlanProviderId,
   sanitizeTelemetryEventDetail,
   type BuiltinModelProviderId,
   type IPlatformService,
@@ -11,19 +7,6 @@ import {
 import { logger } from "@/logger.js";
 
 export function resolveProviderTelemetryLabel(providerId: string): string {
-  if (providerId === ZAI_PROVIDER_ID || isZaiCodingPlanProviderId(providerId)) {
-    return "removed-provider";
-  }
-
-  if (
-    providerId === BIGMODEL_PROVIDER_ID ||
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan ||
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
-  ) {
-    return "removed-provider";
-  }
-
   return providerId;
 }
 

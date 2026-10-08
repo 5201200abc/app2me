@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { Check, Globe, Info, Lock, UserRoundPen } from "lucide-react";
+import { Check, Globe, Info, Lock, UserRoundPen } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 

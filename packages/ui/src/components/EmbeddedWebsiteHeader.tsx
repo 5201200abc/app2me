@@ -1,4 +1,9 @@
-import { ChevronLeftIcon, ChevronRightIcon, RefreshCwIcon, XIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  RefreshCwIcon,
+  XIcon,
+} from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

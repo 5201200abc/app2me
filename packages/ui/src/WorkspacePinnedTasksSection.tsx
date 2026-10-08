@@ -745,7 +745,7 @@ export function WorkspacePinnedTasksSection({
       {canToggleExpanded ? (
         <div className="cursor-pointer pl-8.5">
           <span
-            className="text-ui-base text-foreground-subtlest hover:text-foreground-subtle"
+            className="text-ui-caption font-normal text-foreground-subtlest hover:text-foreground-subtle"
             onClick={() => {
               setShowAllTasks((current) => !current);
             }}

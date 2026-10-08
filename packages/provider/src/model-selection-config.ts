@@ -18,7 +18,10 @@ interface ModelSelectionCompletionView {
       readonly modelId: string;
       readonly config: {
         readonly optionSpecs: {
-          readonly reasoningLevel: { readonly values: readonly string[] };
+          readonly reasoningLevel: {
+            readonly values: readonly string[];
+            readonly defaultValue?: string;
+          };
         };
       };
     }[];
@@ -54,7 +57,7 @@ export function resolveInitialModelSelection(input: {
   return { source: "none" };
 }
 
-/** 仅在用户主动选模型或全新初始化时构造最高档；不能用于恢复/重解析已有选择。 */
+/** 仅主动选模型或全新初始化时采用模型声明的默认档位；旧配置仍采用最高档。 */
 export function completeNewModelSelection(
   registry: ModelSelectionCompletionView,
   selection: ModelSelection,
@@ -62,7 +65,9 @@ export function completeNewModelSelection(
   const model = registry.providers
     .find((provider) => provider.providerId === selection.providerId)
     ?.models.find((candidate) => candidate.modelId === selection.modelId);
-  const reasoningLevel = model?.config.optionSpecs.reasoningLevel.values.at(-1);
+  // DeepSeek 官方默认 high，直接取最后一项会误升为 max；已有选择仍不补档。
+  const spec = model?.config.optionSpecs.reasoningLevel;
+  const reasoningLevel = spec?.defaultValue ?? spec?.values.at(-1);
   if (!reasoningLevel) return undefined;
   return {
     providerId: selection.providerId,

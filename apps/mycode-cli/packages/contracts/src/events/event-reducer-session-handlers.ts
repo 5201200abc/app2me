@@ -4,6 +4,7 @@ import type {
   TurnCompletePayload,
   TurnErrorPayload,
   ModelCompletePayload,
+  ModelSelectedPayload,
   SessionModeChangedPayload,
 } from "./session.events.js";
 import type {
@@ -155,7 +156,22 @@ export const sessionEventHandlers: EventHandlerMap = {
     const contextUsed = getModelUsageContextTokens(payload.usage);
     return {
       ...p,
+      // 主轮次已携带实际模型容量，旧 reducer 漏读会令 headless/恢复仍显示通用 500K。
+      ...(Number.isSafeInteger(payload.contextWindow) && payload.contextWindow! > 0
+        ? { contextWindow: payload.contextWindow! }
+        : {}),
       ...(contextUsed !== undefined ? { contextUsed } : {}),
+      updatedAt: e.timestamp,
+    };
+  },
+  [EventTypes.ModelSelected]: (p, e) => {
+    const payload = e.payload as ModelSelectedPayload;
+    // 容量在应用选型时一并提交；不能等下一轮请求才纠正旧模型分母。
+    return {
+      ...p,
+      ...(Number.isSafeInteger(payload.contextWindow) && payload.contextWindow! > 0
+        ? { contextWindow: payload.contextWindow! }
+        : {}),
       updatedAt: e.timestamp,
     };
   },

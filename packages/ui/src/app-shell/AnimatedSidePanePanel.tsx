@@ -17,7 +17,6 @@ import { horizontalListSortingStrategy, SortableContext } from "@dnd-kit/sortabl
 import type { BrowserViewScreenshotSurfacePreparePayload, GitChangeSourceId } from "@mycode/shared";
 import { PreviewPane } from "@/PreviewPane.js";
 import { SidePaneTerminalPane } from "@/SidePaneTerminalPane.js";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import { WorkspaceSidePaneToggleButton } from "@/WorkspaceSidePaneToggleButton.js";
 import { DesktopWindowControls } from "@/DesktopWindowControls.js";
 import { BrowserUseSidePaneContent } from "@/browser-use/BrowserUseSidePaneContent.js";
@@ -44,6 +43,7 @@ import { SubagentSessionSidePane } from "@/app-shell/SubagentSessionSidePane.js"
 import { SubagentDirectorySidePane } from "@/app-shell/SubagentDirectorySidePane.js";
 import { SelectionSideChatPane } from "@/app-shell/SelectionSideChatPane.js";
 import { BackgroundBashOutputSidePane } from "@/app-shell/BackgroundBashOutputSidePane.js";
+import { SourcesSidePane } from "@/app-shell/SourcesSidePane.js";
 import { PlanDetailSidePane } from "@/app-shell/PlanDetailSidePane.js";
 import { WorkflowRunSidePane } from "@/app-shell/WorkflowRunSidePane.js";
 import { WorkflowRunDirectorySidePane } from "@/app-shell/WorkflowRunDirectorySidePane.js";
@@ -96,8 +96,8 @@ import {
   MessageSquareTextIcon,
   PlusIcon,
   SquareTerminalIcon,
-  type LucideIcon,
-} from "lucide-react";
+  type UiIcon,
+} from "@/components/icons/tabler.js";
 
 const SIDE_PANE_CONTENT_WIDTH_LOCK_DURATION_MS = 200;
 const PREVIEW_PANE_RESIZE_SETTLE_DELAY_MS = 220;
@@ -108,7 +108,7 @@ type TabsScrollMaskEdges = {
 type OpenTabLauncherItem = {
   id: OpenTabLauncherItemId;
   label: string;
-  icon: LucideIcon;
+  icon: UiIcon;
   onOpen: () => void;
 };
 const EMPTY_SIDE_PANE_TABS: WorkspaceSidePaneState["tabs"] = [];
@@ -402,7 +402,6 @@ export function AnimatedSidePanePanel({
   onSelectGitSource: (value: GitChangeSourceId) => void;
 }) {
   const { intl } = useMyCodeIntl();
-  const isOfficeMode = useIsOfficeMode();
   const developerToolsEnabled = useDeveloperToolsVisibility();
   const isDragCollapsible = !isVisible;
   const isResizeDisabled = !isVisible;
@@ -705,7 +704,7 @@ export function AnimatedSidePanePanel({
             <span>{intl.formatMessage({ id: "sidePane.selectionChat" })}</span>
           </DropdownMenuItem>
         ) : null}
-        {!isOfficeMode && !hasReviewTab ? (
+        {!hasReviewTab ? (
           <DropdownMenuItem
             onSelect={() => {
               onOpenReviewTab();
@@ -724,7 +723,7 @@ export function AnimatedSidePanePanel({
           <PaletteIcon className="size-4" />
           <span>{intl.formatMessage({ id: "whiteboard.title" })}</span>
         </DropdownMenuItem> */}
-        {!isOfficeMode ? (
+        {
           <DropdownMenuItem
             data-side-pane-add-item="terminal"
             onSelect={() => {
@@ -734,7 +733,7 @@ export function AnimatedSidePanePanel({
             <SquareTerminalIcon className="size-4" />
             <span>{intl.formatMessage({ id: "terminal.title" })}</span>
           </DropdownMenuItem>
-        ) : null}
+        }
         {supportsEmbeddedBrowser ? (
           <DropdownMenuItem
             data-side-pane-add-item="browser"
@@ -797,9 +796,7 @@ export function AnimatedSidePanePanel({
     developerToolsEnabled,
     hasReviewTab,
     supportsEmbeddedBrowser,
-  })
-    .filter((itemId) => !isOfficeMode || (itemId !== "terminal" && itemId !== "review"))
-    .map((itemId) => openTabLauncherItemById[itemId]);
+  }).map((itemId) => openTabLauncherItemById[itemId]);
   const closeSidePaneButton =
     isVisible && onCloseSidePane ? (
       <div className="flex shrink-0 items-center gap-0.5 [app-region:no-drag]">
@@ -1127,6 +1124,12 @@ export function AnimatedSidePanePanel({
                             onOpenCodeViewer={onOpenCodeViewer}
                             onOpenFileLink={onOpenFileLink}
                             onUnavailable={onCloseTab}
+                          />
+                        ) : tab.type === "sources" ? (
+                          <SourcesSidePane
+                            tab={tab}
+                            onOpenBrowserUrl={onOpenBrowserUrl}
+                            onOpenCodeViewer={onOpenCodeViewer}
                           />
                         ) : tab.type === "plan-detail" ? (
                           <PlanDetailSidePane

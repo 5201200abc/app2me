@@ -1,8 +1,9 @@
 import type { KeyboardEvent, ReactNode } from "react";
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon } from "@/components/icons/tabler.js";
 import { testId, TID_TOOL_SUMMARY_TRIGGER } from "@mycode/shared";
 import { cn } from "@/components/lib/utils.js";
 import { CollapsibleTrigger } from "@/components/ui/collapsible.js";
+import { ProcessRowContent } from "@/components/ui/process-row.js";
 import { QueuedSummaryContent } from "@/ToolCallBlocks/QueuedSummaryContent.js";
 
 export interface ToolSummaryAction {
@@ -25,6 +26,7 @@ function handleToolSummaryActionKeyDown(
 }
 
 interface ToolSummaryRowProps {
+  inlineChevron?: boolean;
   action?: ToolSummaryAction;
   animateContent: boolean;
   canToggle: boolean;
@@ -48,6 +50,9 @@ interface ToolSummaryRowProps {
   title?: string;
   toggleAriaLabel: string;
   toolId: string;
+  summaryText?: string;
+  fileSentence?: boolean;
+  fileActivity?: boolean;
 }
 
 function SummaryLeadingContent({
@@ -71,14 +76,14 @@ function SummaryLeadingContent({
   return (
     <>
       {showIcon ? (
-        <span className="shrink-0 text-foreground-subtlest [&_svg]:text-foreground-subtlest">
+        <span className="shrink-0 text-foreground-subtlest [&_svg]:size-3.5 [&_svg]:stroke-2 [&_svg]:text-foreground-subtlest">
           {icon}
         </span>
       ) : null}
       {kindLabel != null && kindLabel !== false && kindLabel !== "" ? (
         <span
           className={cn(
-            "tool-summary-kind-label",
+            "tool-summary-kind-label min-w-0 overflow-hidden text-ellipsis",
             kindLabelClassName,
             prioritizePrimaryText && "@max-[360px]/conversation:hidden",
           )}
@@ -90,7 +95,7 @@ function SummaryLeadingContent({
       {sourceLabel ? (
         <span
           className={cn(
-            "shrink-0 rounded border border-border bg-background-alt px-1.5 py-0.5 text-ui-xs leading-none text-foreground-subtlest",
+            "shrink-0 text-ui-caption text-foreground-subtlest",
             prioritizePrimaryText && "@max-[360px]/conversation:hidden",
           )}
         >
@@ -140,7 +145,7 @@ function SummaryContent({
   return (
     <div
       className={cn(
-        "tool-summary-content min-w-0 flex max-w-full items-center gap-2 text-foreground-subtlest",
+        "tool-summary-content flex min-w-0 flex-1 overflow-hidden max-w-full items-center gap-1.5 text-foreground-subtlest",
         prioritizePrimaryText && "flex-1 overflow-hidden",
       )}
     >
@@ -156,16 +161,84 @@ function SummaryContent({
         enabled={animateContent && !isExpanded}
         disableAnimation={disableContentAnimation}
       />
-      {statusNode}
+      {statusNode != null ? <span data-process-stat>{statusNode}</span> : null}
     </div>
   );
 }
 
 export function ToolSummaryRow(props: ToolSummaryRowProps) {
   const { action, canToggle, forceOpen, isExpanded, title, toggleAriaLabel, toolId } = props;
-  const sharedContent = (
+  if (props.summaryText !== undefined) {
+    const content = (
+      <ProcessRowContent icon={props.icon} showIcon={props.showIcon}>
+        <span
+          data-tool-summary-sentence="true"
+          className="min-w-0 shrink truncate font-sans font-normal text-foreground-subtle"
+        >
+          {props.summaryText}
+        </span>
+        {props.statusNode != null ? <span data-process-stat>{props.statusNode}</span> : null}
+        {canToggle ? (
+          <ChevronRightIcon
+            aria-hidden
+            data-process-chevron
+            className={cn(
+              "size-3 shrink-0 text-foreground-subtlest transition-transform duration-200",
+              isExpanded ? "rotate-90 opacity-100" : "rotate-0",
+              forceOpen && "opacity-100",
+            )}
+          />
+        ) : null}
+      </ProcessRowContent>
+    );
+    const className =
+      "group/tool-summary flex h-7 min-h-7 w-full min-w-0 items-center gap-1.5 rounded-lg text-left font-sans text-ui-base font-normal text-foreground-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-input-border-focused";
+    // 命令句子没有内嵌文件预览按钮，可使用原生 button；其他摘要保留原来的交互结构。
+    return canToggle ? (
+      <CollapsibleTrigger asChild>
+        <button
+          type="button"
+          data-process-row
+          data-tool-summary-sentence-button="true"
+          data-testid={testId(TID_TOOL_SUMMARY_TRIGGER, toolId)}
+          aria-expanded={isExpanded}
+          aria-label={toggleAriaLabel}
+          className={cn(className, "cursor-pointer")}
+          title={title}
+        >
+          {content}
+        </button>
+      </CollapsibleTrigger>
+    ) : (
+      <div
+        data-process-row
+        data-testid={testId(TID_TOOL_SUMMARY_TRIGGER, toolId)}
+        className={cn(className, "cursor-default")}
+        title={title}
+      >
+        {content}
+      </div>
+    );
+  }
+  const sharedContent = props.fileSentence ? (
     <>
-      <SummaryLeadingContent {...props} />
+      <span data-file-verb className="shrink-0 whitespace-nowrap font-normal">
+        {props.kindLabel}
+      </span>
+      <span className="min-w-0 shrink overflow-hidden">{props.primaryText}</span>
+      {props.diffCount}
+      {props.fileActivity ? (
+        <span
+          data-file-activity
+          aria-hidden
+          className="size-1.5 shrink-0 rounded-full bg-warning"
+        />
+      ) : null}
+      {props.statusNode != null ? <span data-process-stat>{props.statusNode}</span> : null}
+    </>
+  ) : (
+    <>
+      <SummaryLeadingContent {...props} showIcon={false} />
       <SummaryContent {...props} />
     </>
   );
@@ -173,16 +246,19 @@ export function ToolSummaryRow(props: ToolSummaryRowProps) {
   if (action) {
     return (
       <div
+        data-process-row
         data-testid={action.testId ?? testId(TID_TOOL_SUMMARY_TRIGGER, toolId)}
         role="button"
         tabIndex={0}
         aria-label={action.ariaLabel}
         onClick={action.onActivate}
         onKeyDown={(event) => handleToolSummaryActionKeyDown(event, action.onActivate)}
-        className="group/tool-summary inline-flex max-w-full cursor-pointer items-center gap-2 self-start text-left text-ui-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-input-border-focused"
+        className="group/tool-summary flex h-7 min-h-7 w-full min-w-0 cursor-pointer items-center gap-1.5 rounded-lg text-left text-ui-base text-foreground-subtlest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-input-border-focused"
         title={title}
       >
-        {sharedContent}
+        <ProcessRowContent icon={props.icon} showIcon={props.showIcon}>
+          {sharedContent}
+        </ProcessRowContent>
       </div>
     );
   }
@@ -191,12 +267,16 @@ export function ToolSummaryRow(props: ToolSummaryRowProps) {
     return (
       <CollapsibleTrigger asChild>
         <div
+          data-process-row
           data-testid={testId(TID_TOOL_SUMMARY_TRIGGER, toolId)}
+          data-tool-file-sentence={props.fileSentence || undefined}
           role="button"
           tabIndex={0}
           aria-expanded={isExpanded}
           aria-label={toggleAriaLabel}
           onKeyDown={(event) => {
+            // 文件预览等子按钮自行处理键盘事件，不能同时触发父行折叠。
+            if (event.target !== event.currentTarget) return;
             if (event.key !== "Enter" && event.key !== " ") {
               return;
             }
@@ -206,18 +286,22 @@ export function ToolSummaryRow(props: ToolSummaryRowProps) {
             event.preventDefault();
             event.currentTarget.click();
           }}
-          className="group/tool-summary inline-flex max-w-full cursor-pointer items-center gap-2 self-start text-left text-ui-base transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-input-border-focused"
+          className="group/tool-summary flex h-7 min-h-7 w-full min-w-0 cursor-pointer items-center gap-1.5 rounded-lg text-left text-ui-base text-foreground-subtlest transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-input-border-focused"
           title={title}
         >
-          {sharedContent}
-          <ChevronRightIcon
-            aria-hidden
-            className={cn(
-              "size-4 text-foreground-subtlest opacity-0 transition-transform transition-opacity duration-200 ease-out will-change-transform group-hover/tool-summary:opacity-100 shrink-0",
-              isExpanded ? "rotate-90 opacity-100" : "rotate-0",
-              forceOpen && "opacity-100",
-            )}
-          />
+          <ProcessRowContent icon={props.icon} showIcon={props.showIcon}>
+            {sharedContent}
+            <ChevronRightIcon
+              aria-hidden
+              data-process-chevron
+              className={cn(
+                "size-3 shrink-0 text-foreground-subtlest transition-transform duration-200",
+                props.fileSentence && "size-4 transition-[transform,opacity] duration-150",
+                isExpanded ? "rotate-90 opacity-100" : "rotate-0",
+                forceOpen && "opacity-100",
+              )}
+            />
+          </ProcessRowContent>
         </div>
       </CollapsibleTrigger>
     );
@@ -225,11 +309,14 @@ export function ToolSummaryRow(props: ToolSummaryRowProps) {
 
   return (
     <div
+      data-process-row
       data-testid={testId(TID_TOOL_SUMMARY_TRIGGER, toolId)}
-      className="group/tool-summary cursor-default flex w-full items-center gap-2 text-left text-ui-base transition-colors focus-visible:outline-none"
+      className="group/tool-summary flex h-7 min-h-7 w-full min-w-0 cursor-default items-center gap-1.5 rounded-lg text-left text-ui-base text-foreground-subtlest transition-colors focus-visible:outline-none"
       title={title}
     >
-      {sharedContent}
+      <ProcessRowContent icon={props.icon} showIcon={props.showIcon}>
+        {sharedContent}
+      </ProcessRowContent>
     </div>
   );
 }

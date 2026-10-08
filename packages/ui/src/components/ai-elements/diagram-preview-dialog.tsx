@@ -1,6 +1,11 @@
 "use client";
 
-import { ChevronDownIcon, CircleMinusIcon, CirclePlusIcon, XIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  CircleMinusIcon,
+  CirclePlusIcon,
+  XIcon,
+} from "@/components/icons/tabler.js";
 import {
   useCallback,
   useEffect,

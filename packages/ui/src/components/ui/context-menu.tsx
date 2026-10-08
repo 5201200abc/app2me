@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronRightIcon } from "@/components/icons/tabler.js";
 
 import { cn } from "../lib/utils.js";
 

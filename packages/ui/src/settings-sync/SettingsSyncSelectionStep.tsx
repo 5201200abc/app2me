@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CheckIcon, MinusIcon } from "lucide-react";
+import { CheckIcon, MinusIcon } from "@/components/icons/tabler.js";
 import type { SettingsSyncCategory, SettingsSyncDiscoveryResult } from "@mycode/shared";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

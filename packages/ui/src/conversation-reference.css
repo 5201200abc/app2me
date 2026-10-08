@@ -1,0 +1,383 @@
+/* Colors and geometry measured from the supplied 3024×1964 reference. */
+.conversation-reference-surface {
+  --conversation-composer-radius: 20px;
+  --conversation-panel-max-width: 280px;
+  --conversation-panel-width: var(--conversation-panel-max-width);
+  /* 原 8px 留白小于 14px 滚动条轨道，面板向左微移 8px 避免遮挡。 */
+  --conversation-panel-edge: calc(var(--workspace-toolbar-edge, 8px) + 8px);
+  --conversation-main: var(--color-background);
+  --conversation-panel: var(--color-conversation-panel);
+  --conversation-input: var(--color-input);
+  --conversation-bubble: var(--color-conversation-bubble);
+  --conversation-link: var(--color-conversation-link);
+  --conversation-send: var(--color-conversation-send);
+  --conversation-text: var(--color-foreground);
+  --conversation-secondary: var(--color-foreground-subtle);
+  --conversation-tertiary: var(--color-foreground-subtlest);
+  --conversation-work: var(--color-foreground-subtlest);
+  background: var(--conversation-main);
+}
+
+.conversation-reference-surface .conversation-user-bubble {
+  background: var(--conversation-bubble);
+  color: var(--color-conversation-bubble-foreground);
+  border: 0;
+  border-radius: 14px;
+  padding: calc(var(--ui-space) * 2) calc(var(--ui-space) * 3);
+  line-height: var(--ui-body-line-height);
+  max-width: 52%;
+}
+.conversation-reference-surface [data-turn-key] {
+  /* padding 简写会清空与输入 dock 共用的响应式左右留白，导致问答向两侧散开。 */
+  padding-block: calc(var(--ui-space) * 6) calc(var(--ui-space) * 3);
+}
+.conversation-reference-surface [data-turn-key]:first-child {
+  padding-top: calc(var(--ui-space) * 6);
+}
+.conversation-reference-surface [data-turn-key] + [data-turn-key] {
+  padding-top: calc(var(--ui-space) * 2);
+}
+.conversation-reference-surface .group\/user-row {
+  position: relative;
+}
+.conversation-reference-surface .conversation-user-actions {
+  position: absolute;
+  top: 100%;
+  right: 0;
+}
+.conversation-reference-surface [data-v4-user-input-meta] {
+  color: var(--conversation-tertiary);
+  margin-top: 8px;
+}
+.conversation-reference-surface .conversation-answer {
+  font-weight: 400;
+  color: var(--conversation-text);
+  line-height: var(--ui-body-line-height);
+}
+.conversation-reference-surface .conversation-answer :is(p, li) {
+  text-align: start;
+  text-justify: auto;
+}
+.conversation-reference-surface .conversation-answer p {
+  margin-block: 0.75em;
+}
+.conversation-reference-surface .conversation-answer > :first-child {
+  margin-top: 0;
+}
+.conversation-reference-surface .conversation-answer > :last-child {
+  margin-bottom: 0;
+}
+.conversation-reference-surface .conversation-answer :is(strong, b) {
+  font-weight: 400;
+}
+.conversation-reference-surface .conversation-answer :is(ul, ol) {
+  padding-inline-start: 20px;
+  margin-block: 0.75em;
+}
+.conversation-reference-surface .conversation-answer li {
+  margin-block: 2px;
+  font-weight: 400;
+}
+.conversation-reference-surface .conversation-answer li > p {
+  margin-block: 0;
+}
+.conversation-reference-surface .conversation-answer li::marker {
+  color: var(--conversation-secondary);
+  font-size: 0.65em;
+}
+.conversation-reference-surface .conversation-answer :is(p, li, td) code {
+  background: rgb(255 255 255 / 0.06);
+  border: 0;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 0.9em;
+}
+.conversation-reference-surface .conversation-answer :is(a, .conversation-external-link),
+.conversation-reference-surface .conversation-website-link {
+  color: var(--conversation-link);
+  text-decoration: none;
+  font-weight: 400;
+}
+.conversation-external-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.conversation-site-icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  align-self: center;
+}
+.conversation-reference-surface .conversation-website-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 0;
+  text-align: left;
+  background: transparent;
+  border: 0;
+}
+.conversation-reference-surface .conversation-answer img:not(.conversation-site-icon) {
+  max-width: min(360px, 100%);
+  border-radius: 12px;
+  border: 0;
+}
+.conversation-reference-surface .conversation-work-summary {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+.conversation-reference-surface .history-message > [data-row-id] {
+  margin-top: 0;
+}
+/* 历史内行的 gap 与轮尾正文边界不同，且旧覆盖清空了最终正文的留白。统一为 8px。 */
+.conversation-reference-surface .history-message > [data-row-id]:not(:first-child) {
+  margin-top: 8px;
+}
+.conversation-reference-surface .conversation-work-log {
+  padding-top: 0;
+}
+.conversation-reference-surface .conversation-work-summary button {
+  color: var(--conversation-work);
+}
+.conversation-reference-surface .conversation-message-actions {
+  gap: calc(var(--ui-space) * 1.5);
+  opacity: 1;
+  color: color-mix(in srgb, var(--conversation-text) 45%, transparent);
+}
+.conversation-reference-surface .conversation-message-actions button {
+  width: calc(var(--ui-space) * 6);
+  height: calc(var(--ui-space) * 6);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+.conversation-reference-surface .conversation-message-actions button:hover {
+  color: color-mix(in srgb, var(--conversation-text) 80%, transparent);
+}
+.conversation-reference-surface .conversation-message-actions svg {
+  stroke-width: 1.5;
+}
+.conversation-reference-surface .conversation-action-time {
+  opacity: 0;
+}
+.conversation-reference-surface .conversation-message-actions:hover .conversation-action-time {
+  opacity: 1;
+}
+.conversation-reference-surface [data-prompt-editor-shell] {
+  background: var(--conversation-input);
+  border: 0 !important;
+  border-radius: 20px;
+  min-height: calc(var(--ui-space) * 24.5);
+  padding: calc(var(--ui-space) * 4) calc(var(--ui-space) * 3) calc(var(--ui-space) * 2);
+  gap: calc(var(--ui-space) * 3);
+  box-shadow: none;
+}
+.conversation-reference-surface [data-prompt-editor-shell] [contenteditable] {
+  min-height: calc(var(--ui-space) * 7.5);
+}
+.conversation-reference-surface [data-composer-placeholder] {
+  font-size: var(--text-ui-base);
+  color: var(--conversation-tertiary);
+}
+.conversation-reference-surface [data-composer-leading-actions] {
+  min-width: 0;
+}
+.conversation-reference-surface [data-composer-leading-content] {
+  gap: 12px;
+}
+.conversation-reference-surface [data-testid="chat-mode-select-trigger"] {
+  color: var(--conversation-link);
+  background: transparent;
+  font-size: var(--text-ui-base);
+  border: 0;
+}
+.conversation-reference-surface [data-testid="chat-mode-select-trigger"] svg {
+  width: 14px;
+  height: 14px;
+}
+.conversation-reference-surface [data-testid="v4-composer-send"] {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--conversation-send);
+  border: 0;
+  color: var(--color-conversation-send-foreground);
+}
+.conversation-reference-surface [data-testid="composer-model-controls"] button {
+  background: transparent;
+  color: var(--conversation-secondary);
+  font-size: var(--text-ui-base);
+  font-weight: 400;
+}
+.conversation-reference-surface .conversation-inventory-float {
+  padding-top: 12px;
+}
+.conversation-reference-surface [data-testid="chat-summary-panel"][data-state="expanded"] {
+  width: var(--conversation-panel-width);
+  margin-inline: 0;
+  max-width: min(
+    100%,
+    calc(100vw - var(--workspace-toolbar-edge, 8px) - var(--conversation-panel-edge))
+  );
+  background: var(--conversation-panel);
+  color: var(--conversation-secondary);
+  border: 0;
+  border-radius: 16px;
+  box-shadow: none;
+}
+.conversation-reference-surface
+  .conversation-inventory-float:has(> [data-testid="chat-summary-panel"][data-state="expanded"]) {
+  /* 窄分栏处于文档流，旧 viewport right 偏移会把卡片向左推并裁切。 */
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 8px var(--conversation-panel-edge) 0 var(--workspace-toolbar-edge, 8px);
+}
+.conversation-reference-surface [data-conversation-inventory] {
+  padding: 12px;
+  gap: 0;
+}
+.conversation-reference-surface [data-conversation-inventory] > section + section {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+}
+.conversation-reference-surface [data-conversation-inventory] h3,
+.conversation-reference-surface [data-inventory-source-title] {
+  color: var(--conversation-secondary);
+}
+.conversation-reference-surface [data-inventory-title-row] {
+  height: 24px;
+  margin-bottom: 2px;
+}
+.conversation-reference-surface [data-inventory-empty] {
+  height: 24px;
+  color: var(--conversation-tertiary);
+}
+.conversation-reference-surface
+  [data-conversation-inventory]
+  :is([data-source-kind], [data-inventory-item], [data-inventory-view-all]) {
+  height: 28px;
+  border-radius: 8px;
+  color: var(--conversation-secondary);
+}
+.conversation-reference-surface [data-conversation-inventory] [data-source-kind] > button {
+  gap: 8px;
+}
+.conversation-reference-surface [data-conversation-inventory] [data-source-summary-row] {
+  gap: 8px;
+  padding-inline: 0;
+}
+.conversation-reference-surface [data-conversation-inventory] [data-source-kind] svg {
+  width: 16px;
+  height: 16px;
+}
+.conversation-reference-surface
+  [data-conversation-inventory]
+  > section:has([data-inventory-change])
+  + section {
+  padding-top: 0;
+  border-top: 0;
+}
+.conversation-reference-surface [data-source-kind] svg {
+  width: 14px;
+  height: 14px;
+}
+.conversation-reference-surface [data-source-kind] [data-source-count] {
+  color: var(--conversation-tertiary);
+}
+.conversation-reference-surface [data-inventory-view-all] {
+  margin-top: 6px;
+  gap: 10px;
+  color: var(--conversation-tertiary);
+}
+.conversation-reference-surface .conversation-inventory-scroll {
+  scrollbar-color: transparent transparent;
+}
+.conversation-reference-surface .conversation-inventory-scroll[data-scrolling="true"] {
+  scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+}
+.conversation-reference-surface [data-inventory-process] {
+  padding: 0 16px 16px;
+}
+.conversation-reference-surface [data-inventory-process] > summary {
+  min-height: 30px;
+  color: var(--conversation-secondary);
+  list-style: none;
+}
+.conversation-reference-surface [data-inventory-process] :is([class*="border"], [class*="shadow"]) {
+  border: 0;
+  box-shadow: none;
+}
+@media (min-width: 1024px) {
+  .conversation-reference-surface .conversation-inventory-float {
+    right: 12px;
+  }
+}
+@container conversation (min-width: 640px) {
+  .conversation-reference-surface
+    .conversation-inventory-float:has(> [data-testid="chat-summary-panel"][data-state="expanded"]) {
+    right: var(--conversation-panel-edge);
+    width: auto;
+    max-width: calc(100% - var(--workspace-toolbar-edge, 8px) - var(--conversation-panel-edge));
+    padding-inline: 0;
+  }
+}
+@media (max-width: 900px) {
+  .conversation-reference-surface {
+    --conversation-panel-width: min(
+      var(--conversation-panel-max-width),
+      calc(100vw - var(--workspace-toolbar-edge, 8px) - var(--conversation-panel-edge))
+    );
+  }
+  .conversation-reference-surface .conversation-user-bubble {
+    max-width: 85%;
+  }
+}
+
+/* 消息与输入 dock 共用比例留白，保留原有 container 断点与阅读列宽度。 */
+.conversation-reference-surface
+  :is([data-turn-key], [data-v4-composer-dock-content][class*="px-4"]) {
+  padding-inline: calc(var(--ui-space) * 4);
+}
+@container conversation (min-width: 28rem) {
+  .conversation-reference-surface
+    :is([data-turn-key], [data-v4-composer-dock-content][class*="px-4"]) {
+    padding-inline: calc(var(--ui-space) * 6);
+  }
+}
+
+/* 内描边呈现 1px 边框，不改变已对齐的控件尺寸和输入 padding。 */
+.theme-mycode-dark .conversation-reference-surface [data-prompt-editor-shell],
+.theme-mycode-dark
+  .conversation-reference-surface
+  .chat-composer-input-surface:has(> [data-composer-project-controls]) {
+  outline: 1px solid var(--color-input-border);
+  outline-offset: -1px;
+}
+.theme-mycode-dark
+  .conversation-reference-surface
+  .chat-composer-input-surface:has(> [data-composer-project-controls]) {
+  background: var(--color-composer-outer);
+}
+.theme-mycode-dark .conversation-reference-surface [data-prompt-editor-shell]:focus-within {
+  outline-color: var(--color-input-border-focused);
+}
+.theme-mycode-dark .conversation-reference-surface [data-composer-placeholder] {
+  color: var(--color-placeholder);
+}
+/* 摘要图片长名称只裁切末端；详情视图仍保留原完整名称展示。 */
+[data-source-name-fade] {
+  display: block;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  mask-image: linear-gradient(to right, black calc(100% - 1rem), transparent);
+}

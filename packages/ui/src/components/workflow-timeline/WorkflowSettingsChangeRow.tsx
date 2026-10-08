@@ -6,7 +6,7 @@
 // 它是记录，不是控件。
 
 import { Fragment } from "react";
-import { SlidersHorizontalIcon } from "lucide-react";
+import { SlidersHorizontalIcon } from "@/components/icons/tabler.js";
 import type { WorkflowSettingsAmendMeta } from "@mycode/shared/mycode-protocol-v4";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { workflowSettingsChangeSegments } from "./workflowSettingsChange.js";

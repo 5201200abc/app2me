@@ -9,7 +9,14 @@ import {
 } from "react";
 import type { MyCodeElicitationQuestion, MyCodeElicitationRequest } from "@mycode/shared";
 import type { InteractionAutoResolution } from "@mycode/shared/mycode-protocol-v4";
-import { CheckIcon, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Info } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  Info,
+} from "@/components/icons/tabler.js";
 import { Badge } from "@/components/ui/badge.js";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";

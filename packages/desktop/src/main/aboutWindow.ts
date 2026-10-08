@@ -1,8 +1,9 @@
+import { MYCODE_BRAND_PATHS, MYCODE_BRAND_VIEW_BOX } from "@mycode/shared";
+
 interface CustomAboutDialogHtmlInput {
   applicationName: string;
   appVersion: string;
   copyright: string;
-  optimizationLine: string;
   versionLabel: string;
   okButtonLabel: string;
 }
@@ -21,181 +22,54 @@ export function createCustomAboutDialogHtml(input: CustomAboutDialogHtmlInput): 
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'"
-    />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'" />
     <title>${escapeHtml(input.applicationName)}</title>
     <style>
       :root {
         color-scheme: light dark;
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-        --startup-page-bg: #f4f4f5;
-        --about-primary: #0a0a0a;
-        --about-primary-foreground: #fafafa;
-        --about-primary-active: color-mix(in oklab, var(--about-primary) 80%, transparent);
+        --about-bg: #f7f7f7;
+        --about-text: #505054;
+        --about-subtle: #858589;
+        --about-button: #eeeeef;
+        --about-border: rgba(0, 0, 0, .08);
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-        background: var(--startup-page-bg);
-      }
-
-      body {
-        display: grid;
-        place-items: center;
-        padding: 0;
-        user-select: none;
-      }
-
-      .about-window {
-        width: 100%;
-        max-width: 256px;
-        height: 280px;
-        display: grid;
-        place-items: stretch;
-        padding: 0;
-        background: transparent;
-      }
-
+      * { box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--about-bg); }
+      body { user-select: none; }
+      .about-window { height: 100%; padding: 20px; }
       .about-card {
-        width: 100%;
-        height: 100%;
-        padding: 22px 15px 14px;
-        display: flex;
-        flex-direction: column;
-        border: 0;
-        border-radius: 0;
-        background: transparent;
-        color: #1d1d1f;
-        box-shadow: none;
-        -webkit-app-region: drag;
+        height: 100%; display: flex; flex-direction: column; align-items: center;
+        color: var(--about-text); -webkit-app-region: drag;
       }
-
-      .content {
-        width: 100%;
-        max-width: 222px;
-        margin: 0 auto;
-        flex: 1;
-        min-height: 0;
-      }
-
-      .app-icon {
-        width: 52px;
-        height: 52px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        background: linear-gradient(180deg, #000000 0%, #151718 100%);
-        color: #ffffff;
-        box-shadow: 0 10px 13px -3px rgb(0 0 0 / 0.2), 0 4px 5px -3px rgb(0 0 0 / 0.2);
-      }
-
-      .app-logo {
-        width: 30px;
-        height: auto;
-        display: block;
-      }
-
-      .title {
-        margin: 20px 0 0;
-        font-size: 13.5px;
-        line-height: 1.18;
-        font-weight: 700;
-        letter-spacing: 0;
-      }
-
-      .meta {
-        margin-top: 28px;
-        display: flex;
-        flex-direction: column;
-        gap: 17px;
-        font-size: 13px;
-        line-height: 1.2;
-        font-weight: 400;
-        letter-spacing: 0;
-        color: #303033;
-      }
-
-
+      .app-logo { width: 40px; height: 40px; color: var(--about-subtle); opacity: .65; }
+      .title { margin: 12px 0 0; font-size: 13px; line-height: 20px; font-weight: 500; }
+      .version { margin: 4px 0 0; color: var(--about-subtle); font-size: 12px; line-height: 18px; }
+      .meta { margin: 12px 0 0; color: var(--about-subtle); font-size: 11px; line-height: 18px; }
       .ok-button {
-        width: 100%;
-        height: 36px;
-        border: 0;
-        border-radius: 18px;
-        background: var(--about-primary);
-        color: var(--about-primary-foreground);
-        font: inherit;
-        font-size: 13px;
-        font-weight: 500;
-        letter-spacing: 0;
-        outline: none;
-        cursor: default;
-        -webkit-app-region: no-drag;
+        width: 100%; height: 28px; margin-top: auto; border: 1px solid var(--about-border);
+        border-radius: 8px; background: var(--about-button); color: var(--about-text);
+        font: inherit; font-size: 12px; cursor: default; -webkit-app-region: no-drag;
       }
-
-      .ok-button:active {
-        background: var(--about-primary-active);
-      }
-
+      .ok-button:hover { filter: brightness(.97); }
+      .ok-button:focus-visible { outline: 1px solid var(--about-subtle); outline-offset: 2px; }
       @media (prefers-color-scheme: dark) {
         :root {
-          --startup-page-bg: #171717;
-          --about-primary: #fafafa;
-          --about-primary-foreground: #0a0a0a;
-          --about-primary-active: color-mix(in oklab, var(--about-primary) 80%, transparent);
-        }
-
-        .about-card {
-          color: #e8e8e8;
-        }
-
-        .meta {
-          color: #e2e2e2;
+          --about-bg: #1e1e1e; --about-text: #c2c2c5; --about-subtle: #919195;
+          --about-button: #282828; --about-border: rgba(255, 255, 255, .09);
         }
       }
     </style>
   </head>
   <body>
-    <main class="about-window" aria-label="${escapeHtml(input.applicationName)} About Window">
+    <main class="about-window">
       <section class="about-card" role="dialog" aria-modal="true" aria-labelledby="about-title">
-        <div class="content">
-          <div class="app-icon" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="118"
-              height="100"
-              fill="none"
-              viewBox="0 0 256 218"
-              class="app-logo"
-              focusable="false"
-            >
-              <path
-                fill="currentColor"
-                d="M20 15 H65 V160 H115 V200 H20 Z M135 15 H180 V150 C180 162 185 168 195 168 C205 168 210 162 210 150 V15 H255 V150 C255 185 232 203 195 203 C158 203 135 185 135 150 Z"
-              />
-            </svg>
-          </div>
-          <h1 id="about-title" class="title">
-            ${escapeHtml(input.applicationName)}<br />
-            ${escapeHtml(input.versionLabel)} ${escapeHtml(input.appVersion)}
-          </h1>
-          <div class="meta">
-            ${input.optimizationLine ? `<div>${escapeHtml(input.optimizationLine)}</div>` : ""}
-            <div>${escapeHtml(input.copyright)}</div>
-          </div>
-        </div>
-        <div class="spacer"></div>
+        <svg class="app-logo" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="${MYCODE_BRAND_VIEW_BOX}" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round">
+          ${MYCODE_BRAND_PATHS.map((path) => `<path d="${path}" />`).join("")}
+        </svg>
+        <h1 id="about-title" class="title">${escapeHtml(input.applicationName)}</h1>
+        <p class="version">${escapeHtml(input.versionLabel)} ${escapeHtml(input.appVersion)}</p>
+        <p class="meta">${escapeHtml(input.copyright)}</p>
         <button class="ok-button" type="button" autofocus>${escapeHtml(input.okButtonLabel)}</button>
       </section>
     </main>

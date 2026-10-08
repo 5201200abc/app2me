@@ -8,7 +8,7 @@ import {
   CircleDashedIcon,
   LoaderCircleIcon,
   PauseCircleIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { useSessionSubagents } from "@/hooks/useSessionSubagents.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

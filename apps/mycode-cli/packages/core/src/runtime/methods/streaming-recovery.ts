@@ -14,10 +14,7 @@ import { recordModelHistoryRound, type RegularTurnLoopState } from "./turn-loop-
 const STREAM_RECOVERY_MAX_RETRIES = 10;
 const PREVIOUS_MESSAGE_ANCHOR_SUFFIX = "previous-message-anchor";
 const START_PLAN_BUSY_PROVIDER_CODES = new Set(["3008", "3009", "3010"]);
-const START_PLAN_BUSY_RETRY_PROVIDER_IDS = new Set([
-  "account:bigmodel-start-plan",
-  "account:zai-start-plan",
-]);
+const START_PLAN_BUSY_RETRY_PROVIDER_IDS = new Set<string>();
 const START_PLAN_BUSY_MAIN_TURN_ADMISSION_RETRY_DELAYS_MS = [1_000, 2_000] as const;
 export const START_PLAN_BUSY_AUTO_RETRY_EXHAUSTED_MESSAGE =
   "Start Plan is busy and automatic model stream recovery reached the maximum retry count.";

@@ -1,4 +1,10 @@
-import { Activity, List, ListChecks, SlidersHorizontal, type LucideIcon } from "lucide-react";
+import {
+  Activity,
+  List,
+  ListChecks,
+  SlidersHorizontal,
+  type UiIcon,
+} from "@/components/icons/tabler.js";
 import { ClientSceneLucideIcon } from "@/components/ClientSceneLucideIcon.js";
 
 export type OffPeakTemplateIconName =
@@ -9,7 +15,7 @@ export type OffPeakTemplateIconName =
   | "standupGitSummarySecondary"
   | "followUpMonitor";
 
-const OFF_PEAK_TEMPLATE_ICONS: Record<OffPeakTemplateIconName, LucideIcon> = {
+const OFF_PEAK_TEMPLATE_ICONS: Record<OffPeakTemplateIconName, UiIcon> = {
   standupGitSummary: List,
   ciFlakyReport: Activity,
   // 合并 release/current 后新增文档同步模板；沿用检查清单语义，避免目录与图标联合类型漂移。

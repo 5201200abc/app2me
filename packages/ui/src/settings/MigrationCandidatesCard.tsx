@@ -1,4 +1,4 @@
-import { Check, Download, Loader2, TriangleAlert } from "lucide-react";
+import { Check, Download, Loader2, TriangleAlert } from "@/components/icons/tabler.js";
 import type {
   MyCodeImportSessionsResult,
   MyCodeImportableSessionCandidate,

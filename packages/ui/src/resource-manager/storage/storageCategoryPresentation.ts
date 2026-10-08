@@ -10,7 +10,7 @@ import {
   KeyRound,
   PackageOpen,
   Route,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { StorageCategoryId, StorageCategoryUsage, StorageRootUsage } from "@mycode/shared";
 import { APP_USAGE_MODEL_CHART_COLORS } from "@/settings/usage-stats/appUsageChartPalette.js";
 

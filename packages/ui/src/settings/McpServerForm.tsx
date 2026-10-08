@@ -14,7 +14,7 @@ import { PluginScopeMenu } from "@/settings/PluginScopeMenu.js";
 import type { WorkspaceTabState } from "@/store/tabStore.js";
 import { SettingsFormTextarea } from "@/settings/SettingsFormTextarea.js";
 import { SettingsFormActions } from "@/settings/SettingsFormActions.js";
-import { ChevronDown, ChevronUpIcon as ChevronUp, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUpIcon as ChevronUp, Trash2 } from "@/components/icons/tabler.js";
 import {
   EMPTY_FORM,
   formToJsonDraft,
@@ -273,7 +273,7 @@ export function McpServerForm({
               <SelectTrigger size="lg" className="w-48">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="agent-settings-typography">
                 <SelectItem value="stdio">
                   {intl.formatMessage({ id: "settings.mcp.form.type.stdio" })}
                 </SelectItem>
@@ -317,7 +317,7 @@ export function McpServerForm({
                 <SelectTrigger size="lg" className="w-48">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="agent-settings-typography">
                   <SelectItem value="auto">
                     {intl.formatMessage({ id: "settings.mcp.form.protocolVersion.auto" })}
                   </SelectItem>

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ChevronRightIcon, ListIcon, Maximize2Icon, Workflow } from "lucide-react";
+import { ChevronRightIcon, ListIcon, Maximize2Icon, Workflow } from "@/components/icons/tabler.js";
 import type { WorkflowRunState } from "@mycode/shared/mycode-protocol-v4";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";

@@ -1,5 +1,8 @@
-import { ChevronRightIcon, PlugIcon } from "lucide-react";
-import { useCallback } from "react";
+import { isComputerOperationService } from "@/lib/computerOperationPresentation.js";
+import { readApplicationListSummary } from "@/ToolCallBlocks/toolResultSummary.js";
+import { ChevronRightIcon, Pointer2Icon, Waypoints } from "@/components/icons/tabler.js";
+import { useCallback, useContext } from "react";
+import { ToolOperationListContext } from "@/ToolCallBlocks/ToolPresentationContext.js";
 import {
   CodeBlock,
   CodeBlockActions,
@@ -26,7 +29,7 @@ interface McpToolPresentation {
   description?: string;
 }
 
-const MCP_TOOL_ICON = <PlugIcon className="size-4 shrink-0 text-foreground-subtle" />;
+const MCP_TOOL_ICON = <Waypoints className="size-4 shrink-0 text-foreground-subtle" />;
 const COMPACT_RESULT_MAX_LENGTH = 160;
 const COLLAPSIBLE_CODE_LAYOUT_STYLE = {
   containIntrinsicSize: "none",
@@ -156,6 +159,7 @@ function formatMcpToolLabel(toolName: string, serverLabel: string): string {
 }
 
 export function McpToolCallBlock(context: ToolCallBlockRenderContext) {
+  const operationList = useContext(ToolOperationListContext);
   const { intl } = useMyCodeIntl();
   const presentation = readMcpToolPresentation(context);
   const { toolCall } = context.toolCallNode;
@@ -173,6 +177,13 @@ export function McpToolCallBlock(context: ToolCallBlockRenderContext) {
   const parametersLabel = intl.formatMessage({ id: "chat.toolCall.mcp.parameters" });
   const hasCallDetails = Boolean(presentation?.description || toolCall.input !== undefined);
   const resultText = stringifyMcpResult(toolCall.output);
+  const applications =
+    toolCall.status === "completed" && /list[ _]apps/i.test(presentation?.toolName ?? "")
+      ? readApplicationListSummary(resultText)
+      : null;
+  const summaryToolLabel = applications
+    ? intl.formatMessage({ id: "chat.toolCall.applicationListSummary" }, applications)
+    : toolLabel;
   const visibleError =
     toolCall.status === "failed" ? (toolCall.error ?? context.errorText) : undefined;
   const hasPrimaryResult = Boolean(resultText || visibleError);
@@ -209,24 +220,21 @@ export function McpToolCallBlock(context: ToolCallBlockRenderContext) {
           </section>
         ) : resultText && isCompactResult(resultText) ? (
           <p
-            className="break-words rounded-xl border border-border bg-card px-3 py-2 text-ui-base text-foreground-subtle"
+            className="break-words font-mono text-ui-caption text-foreground-subtle"
             data-testid="mcp-result-surface"
           >
             {resultText.trim()}
           </p>
         ) : resultText ? (
-          <div
-            className="max-h-72 overflow-auto rounded-xl border border-border bg-card"
-            data-testid="mcp-result-surface"
-          >
+          <div className="rounded-lg bg-transparent" data-testid="mcp-result-surface">
             <CodeBlock
               appTheme={context.theme}
-              className="bg-card"
+              className="bg-transparent"
               code={resultText}
-              enableSyntaxHighlighting={looksLikeJson(resultText)}
+              enableSyntaxHighlighting={false}
               language={looksLikeJson(resultText) ? "json" : "log"}
               renderMermaid={false}
-              style={COLLAPSIBLE_CODE_LAYOUT_STYLE}
+              style={{ ...COLLAPSIBLE_CODE_LAYOUT_STYLE, fontSize: 12, lineHeight: 1.5 }}
               wrapLongLines
             >
               <CodeBlockHeader className="pl-3 pr-2 pt-2">
@@ -244,7 +252,7 @@ export function McpToolCallBlock(context: ToolCallBlockRenderContext) {
           </div>
         ) : toolCall.status === "pending" ? (
           <p
-            className="break-words rounded-xl border border-border bg-card px-3 py-2 text-ui-base text-foreground-subtle"
+            className="break-words font-mono text-ui-caption text-foreground-subtle"
             data-testid="mcp-pending-surface"
           >
             {context.statusLabel}
@@ -284,7 +292,7 @@ export function McpToolCallBlock(context: ToolCallBlockRenderContext) {
                     <h4 className="text-ui-sm font-medium text-foreground-subtlest">
                       {parametersLabel}
                     </h4>
-                    <div className="max-h-72 overflow-auto rounded-xl border border-border bg-card">
+                    <div className="rounded-lg bg-transparent">
                       <CodeBlock
                         appTheme={context.theme}
                         code={JSON.stringify(toolCall.input, null, 2)}
@@ -330,18 +338,21 @@ export function McpToolCallBlock(context: ToolCallBlockRenderContext) {
   return (
     <ToolLayout
       toolId={toolCall.toolId}
-      icon={MCP_TOOL_ICON}
+      icon={isComputerOperationService(presentation.serverName) ? <Pointer2Icon /> : MCP_TOOL_ICON}
+      preserveIcon
       showIcon={context.showIcon !== false}
       // Pending / stopped 没有可消费结果，展开只会重复状态或暴露诊断参数。
       // 即使父层请求 forceOpen，也必须遵守这两个生命周期的 summary-only 语义。
       canToggle={!isSummaryOnlyLifecycle && (context.canToggle ?? true)}
       forceOpen={!isSummaryOnlyLifecycle && (context.forceOpen ?? false)}
-      kindLabel="MCP"
+      kindLabel={operationList ? null : "MCP"}
       kindDetail={
-        serverLabel ? <span className="text-foreground-subtle">{serverLabel}</span> : undefined
+        !operationList && serverLabel ? (
+          <span className="text-foreground-subtle">{serverLabel}</span>
+        ) : undefined
       }
-      primaryText={toolLabel}
-      summaryContentSeparator="·"
+      primaryText={summaryToolLabel}
+      summaryContentSeparator={operationList ? undefined : "·"}
       // Pending/Running/Completed 都是正常生命周期，不在摘要重复状态；Stopped 是异常终态，
       // 用显式分隔节点避免非动画摘要的两个文本节点粘连。Failed 使用专用错误状态槽位。
       secondaryText={stoppedSummaryStatus}

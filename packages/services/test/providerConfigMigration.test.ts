@@ -10,17 +10,17 @@ import { getAppConfigDir, setDataBaseDir } from "../src/paths.js";
 
 const legacyConfig = {
   provider: {
-    "zai-api": {
+    "builtin:retired-api": {
       name: "Retired account provider",
       npm: "@ai-sdk/openai-compatible",
       options: { baseURL: "https://retired.example/v1", apiKey: "retired-key" },
-      models: { "glm-4": { limit: { context: 128000 } } },
+      models: { "retired-model": { limit: { context: 128000 } } },
     },
-    "bigmodel-api": {
+    "account:retired-plan": {
       name: "Retired plan provider",
       npm: "@ai-sdk/openai-compatible",
       options: { baseURL: "https://retired.example/v1", apiKey: "retired-key" },
-      models: { "glm-4-plus": { limit: { context: 128000 } } },
+      models: { "retired-model-large": { limit: { context: 128000 } } },
     },
     "custom-retired": {
       name: "Retired",
@@ -93,8 +93,8 @@ test("startup retains DeepSeek, removes retired providers and preserves the lega
     assert.equal(fixture.readCount(), 1);
     assert.deepEqual(fixture.recoveries, []);
     assert.equal(config.personalProviders.has("custom-retired"), false);
-    assert.equal(config.personalProviders.has("zai-api"), false);
-    assert.equal(config.personalProviders.has("bigmodel-api"), false);
+    assert.equal(config.personalProviders.has("builtin:retired-api"), false);
+    assert.equal(config.personalProviders.has("account:retired-plan"), false);
     const rule = config.personalProviders.getRule("deepseek-existing");
     assert.ok(rule);
     assert.equal(rule.providerName, "DeepSeek existing");

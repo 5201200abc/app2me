@@ -1,6 +1,10 @@
-import { Eye, EyeOff, RotateCcw, Save, Trash2 } from "lucide-react";
+import { Eye, EyeOff, RotateCcw, Save, Trash2 } from "@/components/icons/tabler.js";
 import { useState } from "react";
-import type { MyCodePluginInfo, MyCodePluginScope, MyCodePluginUserConfigOption } from "@mycode/shared";
+import type {
+  MyCodePluginInfo,
+  MyCodePluginScope,
+  MyCodePluginUserConfigOption,
+} from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";
 import { Switch } from "@/components/ui/switch.js";

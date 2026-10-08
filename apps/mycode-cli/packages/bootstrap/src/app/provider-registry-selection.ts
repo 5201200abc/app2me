@@ -187,13 +187,14 @@ function toModelOption(provider: Provider, model: ProviderModel): MyCodeModelOpt
   const reasoning = optionSpecs.reasoningLevel;
   return {
     ref: { providerId: provider.providerId, modelId: model.modelId },
-    label: model.modelId,
+    label: properties.displayName ?? model.modelId,
     providerLabel: provider.providerName ?? provider.providerId,
     contextWindow: properties.contextWindow,
     maxOutputTokens: optionSpecs.maxOutputTokens.max,
     reasoning: {
       levels: reasoning.values.map((level) => ({ value: level, label: level })),
-      defaultLevel: reasoning.values.at(-1),
+      // 默认是模型事实；DeepSeek 的 high 低于最高档 max。
+      defaultLevel: reasoning.defaultValue ?? reasoning.values.at(-1),
     },
     properties: {
       inputFormat: properties.inputFormat,

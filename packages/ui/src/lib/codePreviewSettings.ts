@@ -22,3 +22,11 @@ export const DEFAULT_CODE_PREVIEW_SETTINGS: CodePreviewSettings = {
   wrapLongLines: false,
   fontSizePx: 12,
 };
+
+export const MIN_CODE_FONT_SIZE_PX = 11;
+export const MAX_CODE_FONT_SIZE_PX = 16;
+export function normalizeCodeFontSizePx(value: number): number {
+  return Number.isFinite(value)
+    ? Math.min(MAX_CODE_FONT_SIZE_PX, Math.max(MIN_CODE_FONT_SIZE_PX, Math.round(value)))
+    : DEFAULT_CODE_PREVIEW_SETTINGS.fontSizePx;
+}

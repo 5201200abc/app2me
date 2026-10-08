@@ -1,15 +1,17 @@
+import { stripDisplayEmoji } from "@/lib/compactConversationDisplay.js";
+import { ToolPresentationStatusContext } from "@/ToolCallBlocks/ToolPresentationContext.js";
 /*
  * Derived from vercel/ai-elements (packages/elements/src/code-block.tsx).
  * Copyright 2023 Vercel, Inc. Licensed under Apache-2.0.
  * Modified by MyCode: local integration, formatting and adaptations.
  * See THIRD-PARTY-NOTICES.md in the repository root for license and provenance.
  */
-"use client";
+("use client");
 
 import { Button } from "../ui/button.js";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select.js";
 import { cn } from "../lib/utils.js";
-import { CheckIcon, CopyIcon, Maximize2Icon, WrapTextIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, Maximize2Icon, WrapTextIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps, CSSProperties, HTMLAttributes } from "react";
 import {
   createContext,
@@ -261,6 +263,7 @@ export const CodeBlock = ({
   ...props
 }: CodeBlockProps) => {
   const { intl } = useMyCodeIntl();
+  const toolDisplayStatus = useContext(ToolPresentationStatusContext);
   const [isWrapped, setIsWrapped] = useState(wrapLongLines);
   const [mermaidPreviewSvg, setMermaidPreviewSvg] = useState<string | null>(null);
   const [mermaidPreviewOpen, setMermaidPreviewOpen] = useState(false);
@@ -326,7 +329,7 @@ export const CodeBlock = ({
         <div className={cn("p-2 pt-0 pb-3", contentClassName)}>
           {shouldRenderMermaid ? (
             <MermaidBlock
-              code={code}
+              code={toolDisplayStatus ? stripDisplayEmoji(code) : code}
               theme={appTheme}
               onOpenPreview={openMermaidPreview}
               onPreviewSvgChange={setMermaidPreviewSvg}
@@ -334,7 +337,7 @@ export const CodeBlock = ({
             />
           ) : (
             <CodeViewer
-              code={code}
+              code={toolDisplayStatus ? stripDisplayEmoji(code) : code}
               enableSyntaxHighlighting={enableSyntaxHighlighting}
               language={language}
               showLineNumbers={showLineNumbers}
@@ -344,7 +347,7 @@ export const CodeBlock = ({
               focusRequestId={focusRequestId}
               markedLines={markedLines}
               className="bg-transparent"
-              fontSizePx={fontSizePx}
+              fontSizePx={toolDisplayStatus ? 12 : fontSizePx}
               // markdown 代码块外层是 bg-card，但 CodeViewer 默认把 @pierre/diffs 背景设成 background。
               // 这里仅覆盖 markdown CodeBlock 入口，避免侧边栏文件预览的背景层级被一起改掉。
               style={
@@ -353,6 +356,12 @@ export const CodeBlock = ({
                   "--diffs-light-bg": "var(--color-card)",
                   "--diffs-dark-bg": "var(--color-card)",
                   "--diffs-gap-block": "0px",
+                  ...(toolDisplayStatus
+                    ? {
+                        "--diffs-font-size": "var(--row-font)",
+                        "--diffs-line-height": "calc(var(--row-font) * 1.5)",
+                      }
+                    : {}),
                 } as CSSProperties
               }
             />
@@ -446,6 +455,7 @@ export const CodeBlockMermaidPreviewButton = ({
 };
 
 export type CodeBlockCopyButtonProps = ComponentProps<typeof Button> & {
+  text?: string;
   onCopy?: () => void;
   onError?: (error: Error) => void;
   timeout?: number;
@@ -453,6 +463,7 @@ export type CodeBlockCopyButtonProps = ComponentProps<typeof Button> & {
 
 export const CodeBlockCopyButton = ({
   "aria-label": ariaLabel,
+  text,
   onCopy,
   onError,
   title,
@@ -464,6 +475,7 @@ export const CodeBlockCopyButton = ({
   const [isCopied, setIsCopied] = useState(false);
   const timeoutRef = useRef<number>(0);
   const { code } = useContext(CodeBlockContext);
+  const copyText = text ?? code;
   const { intl } = useMyCodeIntl();
   const label = title ?? intl.formatMessage({ id: "codeBlock.copyCode" });
 
@@ -475,7 +487,7 @@ export const CodeBlockCopyButton = ({
 
     try {
       if (!isCopied) {
-        await navigator.clipboard.writeText(code);
+        await navigator.clipboard.writeText(copyText);
         setIsCopied(true);
         onCopy?.();
         timeoutRef.current = window.setTimeout(() => setIsCopied(false), timeout);
@@ -483,7 +495,7 @@ export const CodeBlockCopyButton = ({
     } catch (error) {
       onError?.(error as Error);
     }
-  }, [code, onCopy, onError, timeout, isCopied]);
+  }, [copyText, onCopy, onError, timeout, isCopied]);
 
   useEffect(
     () => () => {

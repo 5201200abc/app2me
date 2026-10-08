@@ -250,5 +250,17 @@
     "license": "MIT",
     "scope": "Vendored React/Next.js guidance and local adaptations; local README preserves Shu Ding / Vercel attribution.",
     "reviewRequired": "Pinned upstream README and skill declare MIT, but a complete original copyright/license notice has not been obtained."
+  },
+  {
+    "id": "tabler-icons",
+    "referenceRevision": "v3.48.0",
+    "source": "https://github.com/tabler/tabler-icons/blob/v3.48.0/LICENSE",
+    "file": "third-party/upstream/b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db.txt",
+    "sha256": "b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db",
+    "importRevision": "v3.48.0",
+    "provenance": "SVG node data copied from the published @tabler/icons-react 3.48.0 package; React icons use that dependency directly.",
+    "roots": ["packages/ui/src/mentions/nodes/mentionIconDom.ts"],
+    "scope": "Official outline SVG paths used by native Lexical mention nodes; local DOM construction is MyCode code.",
+    "license": "MIT"
   }
 ]

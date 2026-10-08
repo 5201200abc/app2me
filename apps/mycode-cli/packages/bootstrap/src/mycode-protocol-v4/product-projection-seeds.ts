@@ -188,6 +188,14 @@ export const projectionSeeds = {
             ? {
                 ...currentContextWindow,
                 usedTokens: seededContextWindow.usedTokens,
+                // 冷恢复的合成事件已固定容量但没有详情；旧分支只补 token 数，
+                // 导致持久化的缓存命中率和分类丢失。事件详情优先，种子仅补缺失字段。
+                ...(currentContextWindow.cache || seededContextWindow.cache
+                  ? { cache: currentContextWindow.cache ?? seededContextWindow.cache }
+                  : {}),
+                ...(currentContextWindow.breakdown || seededContextWindow.breakdown
+                  ? { breakdown: currentContextWindow.breakdown ?? seededContextWindow.breakdown }
+                  : {}),
               }
             : null,
           cumulative,

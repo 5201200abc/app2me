@@ -1,4 +1,5 @@
-import { Keyboard, Pencil, Trash2 } from "lucide-react";
+import { WriteIcon } from "@/components/ui/write-icon.js";
+import { Keyboard, Trash2 } from "@/components/icons/tabler.js";
 import type { ShortcutCommandEntry, ShortcutCommandId } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { Kbd, KbdGroup } from "@/components/ui/kbd.js";
@@ -57,12 +58,13 @@ export function ShortcutBindingRow({
   const { intl } = useMyCodeIntl();
   const conflictBinding = isRecording ? recording?.conflictBinding : null;
 
+  // 录制替换绑定时保留同一 key，避免多绑定列表丢失节点身份并触发 React 警告。
   // 录制内嵌块：出现在被替换条目 / 追加条目的位置（预览 kbd 抢占焦点）
-  function renderRecorder() {
+  function renderRecorder(bindingKey?: string) {
     return (
-      <span className="flex min-w-0 flex-col gap-1">
+      <span key={bindingKey} className="flex min-w-0 flex-col gap-1">
         <span className="flex items-center gap-2">
-          <Keyboard className="size-4 text-foreground-subtle" />
+          <Keyboard className="size-3.5 text-foreground-subtle" strokeWidth={1.5} />
           <kbd
             ref={(el) => {
               // 录制开始即抢占焦点：把焦点从可编辑元素（如上方搜索框）里拉出来，
@@ -115,7 +117,7 @@ export function ShortcutBindingRow({
         <button
           type="button"
           disabled={menuChannelUnavailable}
-          className="w-fit rounded-lg px-0 py-1 text-left focus-visible:outline-2 focus-visible:outline-offset-4 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-fit rounded-md px-0 py-0.5 text-left focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           aria-label={intl.formatMessage(
             { id: "settings.shortcuts.rebindAria" },
             { command: commandLabel },
@@ -125,7 +127,10 @@ export function ShortcutBindingRow({
         >
           <KbdGroup>
             {formatShortcutBindingLabelParts(binding).map((part, partIndex) => (
-              <Kbd key={`${part}-${partIndex}`} className={isOverridden ? "text-brand" : undefined}>
+              <Kbd
+                key={`${part}-${partIndex}`}
+                className={`h-4 min-w-4 px-0.5 font-normal ${isOverridden ? "text-brand" : ""}`}
+              >
                 {part}
               </Kbd>
             ))}
@@ -142,7 +147,7 @@ export function ShortcutBindingRow({
           data-testid={`settings-shortcut-edit-${entry.id}-${index}`}
           onClick={() => onRecord(index)}
         >
-          <Pencil className="size-3.5" />
+          <WriteIcon className="size-3" strokeWidth={1.5} />
         </Button>
       </span>
     );
@@ -150,16 +155,16 @@ export function ShortcutBindingRow({
 
   return (
     <div
-      className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_80px_72px] items-center border-t border-border px-4 py-3 text-ui-base"
+      className="grid grid-cols-[minmax(0,1fr)_minmax(100px,1fr)_24px_24px] items-center gap-x-2 border-t border-border/50 px-2.5 py-1 text-ui-caption sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_56px_40px]"
       data-testid={`settings-shortcut-row-${entry.id}`}
     >
       <span className="flex min-w-0 items-center">
         <span className="truncate">{commandLabel}</span>
       </span>
-      <span className="flex min-w-0 flex-col items-start gap-1.5">
+      <span className="flex min-w-0 flex-col items-start gap-0.5">
         {bindings.map((binding, index) =>
           isRecording && recording?.mode === "replace" && recording.bindingIndex === index
-            ? renderRecorder()
+            ? renderRecorder(binding)
             : renderBinding(binding, index),
         )}
         {/* 未分配命令录第一条：bindings 为空时录制态占满键位单元格 */}
@@ -184,7 +189,7 @@ export function ShortcutBindingRow({
       </span>
       {/* 作用域独立成列：global = 全局生效；composer = 仅聊天输入框内生效 */}
       <span
-        className="text-ui-sm text-foreground-subtle"
+        className="text-ui-xs text-foreground-subtle"
         data-testid={`settings-shortcut-scope-${entry.id}`}
       >
         {entry.scope === "composer"
@@ -204,7 +209,7 @@ export function ShortcutBindingRow({
         onClick={onClearAll}
         data-testid={`settings-shortcut-clear-${entry.id}`}
       >
-        <Trash2 className="size-4" />
+        <Trash2 className="size-3" strokeWidth={1.5} />
       </Button>
     </div>
   );

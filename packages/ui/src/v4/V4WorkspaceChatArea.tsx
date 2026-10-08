@@ -16,6 +16,7 @@ import type {
   OpenScopedSubagentDirectorySideTabRequest,
   OpenSelectionSideChatRequest,
   OpenScopedPlanDetailSideTabRequest,
+  OpenSourcesSideTabRequest,
   OpenScopedWorkflowArtifactSideTabRequest,
   OpenScopedWorkflowRunSideTabRequest,
   OpenScopedWorkflowActorSessionSideTabRequest,
@@ -87,7 +88,7 @@ interface V4WorkspaceChatAreaProps {
    * 草稿态 composer contextHeader（m5：workspace 菜单 + Git 分支），
    * 仅下发给 primary pane——其余 pane 的 draft 不承载壳级 workspace 切换。
    */
-  draftComposerHeader?: ReactNode;
+  draftComposerHeader?: ReactNode | ((modeControls: ReactNode) => ReactNode);
   /** 桌面轻量草稿标题栏复用主草稿 composer 的 drop controller。 */
   onPrimaryDraftDropTargetControllerChange?: (
     controller: ConversationDropTargetController | null,
@@ -113,6 +114,7 @@ interface V4WorkspaceChatAreaProps {
   onSyncSubagentSessionTabs?: (request: SyncSubagentSessionTabsRequest) => void;
   onOpenSelectionSideChat?: (request: OpenSelectionSideChatRequest) => void;
   onOpenPlanDetail?: (request: OpenScopedPlanDetailSideTabRequest) => void;
+  onOpenSources?: (request: OpenSourcesSideTabRequest) => void;
   onOpenWorkflowRun?: (request: OpenScopedWorkflowRunSideTabRequest) => void;
   onOpenWorkflowArtifact?: (request: OpenScopedWorkflowArtifactSideTabRequest) => void;
   onOpenWorkflowRunDirectory?: (request: OpenScopedWorkflowRunDirectorySideTabRequest) => void;
@@ -174,6 +176,7 @@ export function V4WorkspaceChatArea({
   onSyncSubagentSessionTabs,
   onOpenSelectionSideChat,
   onOpenPlanDetail,
+  onOpenSources,
   onOpenWorkflowRun,
   onOpenWorkflowArtifact,
   onOpenWorkflowRunDirectory,
@@ -299,6 +302,7 @@ export function V4WorkspaceChatArea({
       onSyncSubagentSessionTabs,
       onOpenSelectionSideChat,
       onOpenPlanDetail,
+      onOpenSources,
       onOpenWorkflowRun,
       onOpenWorkflowArtifact,
       onOpenWorkflowRunDirectory,
@@ -344,6 +348,7 @@ export function V4WorkspaceChatArea({
       onSyncSubagentSessionTabs,
       onOpenSelectionSideChat,
       onOpenPlanDetail,
+      onOpenSources,
       onOpenWorkflowRun,
       onOpenWorkflowArtifact,
       onOpenWorkflowRunDirectory,

@@ -1,4 +1,6 @@
-import { memo, useEffect } from "react";
+import { useMyCodeStore } from "@/store/StoreProvider.js";
+import { memo, useEffect, useState } from "react";
+import MyChatWorkspace from "@/mychat/MyChatWorkspace.js";
 import { App } from "@/App.js";
 import { ScopedErrorBoundary } from "@/ErrorBoundary.js";
 import { ServiceProvider } from "@/hooks/useServices.js";
@@ -81,6 +83,13 @@ export function RootWorkspaceContent({
   windowsWindowControlsRightPaddingPx,
 }: RootWorkspaceContentProps) {
   const workspaceKey = workspaceIdentity?.trim() || workspaceShellPath;
+  const mode = useMyCodeStore((state) => state.interfaceMode);
+  const isMyChat = mode === "mychat";
+  const [hasOpenedMyChat, setHasOpenedMyChat] = useState(isMyChat);
+  useEffect(() => {
+    if (isMyChat) setHasOpenedMyChat(true);
+  }, [isMyChat]);
+  const hideMyCode = isSettingsTabActive || isMyChat;
 
   useEffect(() => {
     logger.info("[RootWorkspaceContent] settings layer visibility changed", {
@@ -93,10 +102,10 @@ export function RootWorkspaceContent({
   return (
     <>
       <div
-        className={isSettingsTabActive ? "h-full opacity-0 pointer-events-none" : "h-full"}
-        aria-hidden={isSettingsTabActive}
-        data-root-workspace-surface={isSettingsTabActive ? "inert" : "interactive"}
-        inert={isSettingsTabActive ? true : undefined}
+        className={hideMyCode ? "h-full opacity-0 pointer-events-none" : "h-full"}
+        aria-hidden={hideMyCode}
+        data-root-workspace-surface={hideMyCode ? "inert" : "interactive"}
+        inert={hideMyCode ? true : undefined}
       >
         {/* 设置页之前通过条件分支直接替换整个 App，关闭设置时会把主界面整棵树卸载再重建，
             聊天区、终端等本地 UI 状态都会被当成一次“重新进入 workspace”。
@@ -117,7 +126,7 @@ export function RootWorkspaceContent({
             抢走设置表单焦点；设置页覆盖期间必须把整棵 workspace 标为 inert，等用户显式返回后再恢复交互。 */}
         <ConversationTelemetryWorkspaceAttachment
           enabled={isDesktop === true}
-          foregroundEnabled={!isSettingsTabActive}
+          foregroundEnabled={!hideMyCode}
           services={workspaceScopedServices}
           workspacePath={workspaceShellPath}
           workspaceIdentity={workspaceIdentity}
@@ -158,7 +167,7 @@ export function RootWorkspaceContent({
                 allowOpenWorkspace={allowOpenWorkspace}
                 allowRemoteWorkspace={allowRemoteWorkspace}
                 remoteWorkspaceSessions={remoteWorkspaceSessions}
-                isWorkspaceVisible={!isSettingsTabActive}
+                isWorkspaceVisible={!hideMyCode}
                 isDesktop={isDesktop}
                 isMacDesktop={isMacDesktop}
                 isWindowsDesktop={isWindowsDesktop}
@@ -169,7 +178,33 @@ export function RootWorkspaceContent({
         </ConversationTelemetryWorkspaceAttachment>
       </div>
 
-      {isSettingsTabActive ? (
+      {hasOpenedMyChat || isMyChat ? (
+        <div
+          className={`absolute inset-0 z-20 ${isMyChat ? "" : "opacity-0 pointer-events-none"}`}
+          inert={!isMyChat ? true : undefined}
+          aria-hidden={!isMyChat}
+        >
+          <ServiceProvider services={workspaceScopedServices}>
+            <ScopedErrorBoundary
+              scope="mychat"
+              resetKeys={[workspaceKey]}
+              variant="panel"
+              className="h-full"
+            >
+              <MyChatWorkspace
+                active={isMyChat}
+                workspacePath={workspaceShellPath}
+                workspaceIdentity={workspaceIdentity}
+                isDesktop={isDesktop}
+                isMacDesktop={isMacDesktop}
+                isWindowsDesktop={isWindowsDesktop}
+              />
+            </ScopedErrorBoundary>
+          </ServiceProvider>
+        </div>
+      ) : null}
+
+      {isSettingsTabActive && !isMyChat ? (
         <ScopedErrorBoundary
           scope="workspace-settings-layer"
           resetKeys={[workspaceKey, isSettingsTabActive]}

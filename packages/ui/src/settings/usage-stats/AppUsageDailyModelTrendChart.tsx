@@ -249,8 +249,8 @@ export function AppUsageDailyModelTrendChart({ snapshot }: { snapshot: AppUsageS
   );
 
   return (
-    <section className="space-y-3 rounded-xl bg-surface p-4">
-      <h3 className="text-ui-base font-medium text-foreground">
+    <section className="space-y-3 rounded-lg bg-surface p-4">
+      <h3 className="text-ui-caption font-medium text-foreground">
         {intl.formatMessage({ id: "settings.usage.dailyChartTitle" })}
       </h3>
       {maxTokens <= 0 ? (
@@ -261,7 +261,7 @@ export function AppUsageDailyModelTrendChart({ snapshot }: { snapshot: AppUsageS
           })}
         />
       ) : (
-        <div className="px-3 py-3">
+        <div className="px-2.5 py-2.5">
           <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2" role="list">
             {topModels.map((model, index) => (
               <div
@@ -281,7 +281,7 @@ export function AppUsageDailyModelTrendChart({ snapshot }: { snapshot: AppUsageS
               </div>
             ))}
           </div>
-          <ChartContainer config={chartConfig} className="h-60 w-full">
+          <ChartContainer config={chartConfig} className="h-48 w-full">
             <LineChart accessibilityLayer data={chartData} margin={APP_USAGE_TREND_CHART_MARGIN}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
               <XAxis

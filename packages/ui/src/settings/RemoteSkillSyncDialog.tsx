@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- 远端 Skill 同步弹窗集中维护加载、选择、预检和结果状态，拆分会增加跨状态传递复杂度。 */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Loader2, UploadCloud } from "lucide-react";
+import { Loader2, UploadCloud } from "@/components/icons/tabler.js";
 import {
   normalizeUnknownError,
   SKILL_SYNC_SIZE_LIMIT_ERROR_CODE,
@@ -410,7 +410,7 @@ export function RemoteSkillSyncDialog(props: RemoteSkillSyncDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="h-[min(720px,calc(100dvh-2rem))] max-h-[min(720px,calc(100dvh-2rem))] max-w-2xl flex flex-col overflow-hidden">
+      <DialogContent className="agent-settings-typography h-[min(720px,calc(100dvh-2rem))] max-h-[min(720px,calc(100dvh-2rem))] max-w-2xl flex flex-col overflow-hidden">
         <DialogHeader>
           <RemoteSkillSyncTitle />
           <RemoteSkillSyncTargetRow

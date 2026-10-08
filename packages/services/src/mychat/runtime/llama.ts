@@ -1,0 +1,579 @@
+/* oxlint-disable eslint(max-lines) -- 保留完整 MyChat 功能单元，宿主适配独立于业务代码。 */
+import type {
+  Attachment,
+  ChatMessage,
+  Effort,
+  ResearchProgress,
+  Settings,
+} from "@mycode/shared/mychat";
+import { detectReasoningControl, normalizeReasoningEffort } from "@mycode/shared/mychat";
+import { planChatRequest } from "@mycode/shared/mychat";
+import { memoryBlock } from "./memory.js";
+import { deepResearch } from "./research.js";
+import { extractVideoFramesNative } from "./video-extract.js";
+
+export type StreamHandlers = {
+  onDelta: (chunk: { thinking?: string; content?: string }) => void;
+  onStatus: (status: {
+    phase: "preparing" | "searching" | "thinking" | "answering";
+    text: string;
+  }) => void;
+  onResearch: (progress: ResearchProgress) => void;
+  onDone: (result: {
+    thinking: string;
+    content: string;
+    stopped: boolean;
+    research?: ResearchProgress;
+  }) => void;
+  onError: (error: string) => void;
+};
+
+type OpenAIPart =
+  | { type: "text"; text: string }
+  | { type: "image_url"; image_url: { url: string } };
+
+type OpenAIMessage = {
+  role: "system" | "user" | "assistant";
+  content: string | OpenAIPart[];
+  reasoning_content?: string;
+  reasoning?: string;
+};
+
+function ensureResearchSources(
+  content: string,
+  research: ResearchProgress | undefined,
+  language: Settings["language"],
+): string {
+  if (!research?.sources?.length || /\[[^\]]+\]\(https?:\/\/[^)]+\)/i.test(content)) return content;
+  const links = research.sources.slice(0, 4).map((source) => {
+    const title = source.title.replace(/[[\]\r\n]+/g, " ").trim() || source.domain;
+    return `- [${title}](${source.url})`;
+  });
+  return `${content.trimEnd()}\n\n**${language === "zh" ? "来源" : "Sources"}**\n\n${links.join("\n")}`;
+}
+
+class ThinkSplitter {
+  thinking = "";
+  content = "";
+  mode: "text" | "think" = "text";
+  isThinking = false;
+  private tail = "";
+
+  push(piece: string): void {
+    const data = this.tail + piece;
+    this.tail = "";
+    let i = 0;
+    while (i < data.length) {
+      if (this.mode === "text") {
+        const idx = data.indexOf("<think>", i);
+        if (idx === -1) {
+          const lt = data.lastIndexOf("<");
+          if (lt >= i && "<think>".startsWith(data.slice(lt))) {
+            this.content += data.slice(i, lt);
+            this.tail = data.slice(lt);
+            return;
+          }
+          this.content += data.slice(i);
+          return;
+        }
+        this.content += data.slice(i, idx);
+        this.mode = "think";
+        this.isThinking = true;
+        i = idx + 7;
+      } else {
+        const idx = data.indexOf("</think>", i);
+        if (idx === -1) {
+          const lt = data.lastIndexOf("<");
+          if (lt >= i && "</think>".startsWith(data.slice(lt))) {
+            this.thinking += data.slice(i, lt);
+            this.tail = data.slice(lt);
+            return;
+          }
+          this.thinking += data.slice(i);
+          return;
+        }
+        this.thinking += data.slice(i, idx);
+        this.mode = "text";
+        this.isThinking = false;
+        i = idx + 8;
+      }
+    }
+  }
+
+  finish(): void {
+    if (!this.tail) return;
+    if (this.mode === "think") this.thinking += this.tail;
+    else this.content += this.tail;
+    this.tail = "";
+  }
+}
+
+function effortParams(settings: Settings, effort: Effort): Record<string, Effort | boolean> {
+  const configured = settings.llamaModels.find((model) => model.name === settings.model);
+  const control = configured?.reasoningControl ?? detectReasoningControl(settings.model);
+  if (control === "none") return {};
+  if (control === "toggle") {
+    return { enable_thinking: !["none", "minimal", "low"].includes(effort) };
+  }
+  return {
+    reasoning_effort: normalizeReasoningEffort(effort, configured?.reasoningEfforts),
+  };
+}
+
+function reasoningControl(settings: Settings) {
+  return (
+    settings.llamaModels.find((model) => model.name === settings.model)?.reasoningControl ??
+    detectReasoningControl(settings.model)
+  );
+}
+
+function userContent(
+  text: string,
+  attachments: Attachment[],
+  vision: boolean,
+): string | OpenAIPart[] {
+  if (!attachments.length) return text;
+  const images = attachments.filter((file) => file.kind === "image" && file.dataUrl).slice(0, 4);
+  const videos = attachments
+    .filter((file) => file.kind === "video" && (file.frames?.length || file.dataUrl))
+    .slice(0, 2);
+  const files = attachments
+    .filter((file) => file.kind !== "image" && file.kind !== "video")
+    .slice(0, 24);
+  const fileDetails = files
+    .map((file) => {
+      const label = file.relativePath || file.name;
+      return file.text
+        ? `<file name="${label}">\n${trimToTokens(file.text, 1200)}\n</file>`
+        : `- ${label}${file.path ? ` (${file.path})` : ""} [binary content is not directly readable by this chat model]`;
+    })
+    .join("\n\n");
+  const fileBlock = files.length ? `Attached files:\n${trimToTokens(fileDetails, 5200)}` : "";
+  const visualCount = images.length + videos.length;
+  const imageNote =
+    visualCount && !vision
+      ? `${visualCount} visual attachment(s) added, but vision/multimodal understanding is unavailable because llama-server has no mmproj loaded.`
+      : "";
+  const combinedText = [text, fileBlock, imageNote].filter(Boolean).join("\n\n");
+  if (!visualCount || !vision) return combinedText;
+  const parts: OpenAIPart[] = [];
+  if (combinedText.trim()) parts.push({ type: "text", text: combinedText });
+  for (const file of images) {
+    parts.push({ type: "image_url", image_url: { url: file.dataUrl! } });
+  }
+  for (const video of videos) {
+    const frames = video.frames?.length ? video.frames : video.dataUrl ? [video.dataUrl] : [];
+    const dur = Math.round(video.duration || 0);
+    const videoDesc = `\n\n[Attached full video: "${video.name}" - ${frames.length} frames covering complete video timeline from 0s to ${dur}s]`;
+    parts.push({ type: "text", text: videoDesc });
+    for (let idx = 0; idx < frames.length; idx++) {
+      const frameUrl = frames[idx];
+      const timeSec =
+        dur > 0 ? ((dur * idx) / Math.max(1, frames.length - 1)).toFixed(1) : `${idx}`;
+      parts.push({ type: "text", text: `[Frame ${idx + 1}/${frames.length} @ ${timeSec}s]` });
+      parts.push({ type: "image_url", image_url: { url: frameUrl ?? "" } });
+    }
+  }
+  if (!combinedText.trim())
+    parts.unshift({
+      type: "text",
+      text: "Describe and analyze the attached visual/video content in detail.",
+    });
+  return parts;
+}
+
+function estimateTokens(text: string): number {
+  let ascii = 0;
+  let nonAscii = 0;
+  for (const char of text) {
+    if (char.charCodeAt(0) < 128) ascii += 1;
+    else nonAscii += 1;
+  }
+  return Math.ceil(ascii / 3.5 + nonAscii * 1.25);
+}
+
+function trimToTokens(text: string, maxTokens: number): string {
+  if (estimateTokens(text) <= maxTokens) return text;
+  let low = 0;
+  let high = text.length;
+  while (low < high) {
+    const mid = Math.ceil((low + high) / 2);
+    if (estimateTokens(text.slice(0, mid)) <= maxTokens) low = mid;
+    else high = mid - 1;
+  }
+  return `${text.slice(0, low).trimEnd()}\n\n[Content truncated to fit the model context.]`;
+}
+
+function contentTokens(content: string | OpenAIPart[]): number {
+  if (typeof content === "string") return estimateTokens(content);
+  return content.reduce(
+    (total, part) => total + (part.type === "text" ? estimateTokens(part.text) : 1100),
+    0,
+  );
+}
+
+function historyMessages(history: ChatMessage[], vision: boolean, budget: number): OpenAIMessage[] {
+  const out: OpenAIMessage[] = [];
+  let used = 0;
+  for (const item of [...history].reverse()) {
+    if (item.role === "system") continue;
+    const content =
+      item.role === "user"
+        ? userContent(trimToTokens(item.content, 2400), item.attachments.slice(0, 8), vision)
+        : trimToTokens(item.content, 2400);
+    if (item.role === "assistant" && !item.content.trim()) continue;
+    const cost = contentTokens(content) + 12;
+    if (used + cost > budget) {
+      if (item.role === "user" && out[0]?.role === "assistant") out.shift();
+      break;
+    }
+    used += cost;
+    if (item.role === "assistant") {
+      out.unshift({ role: "assistant", content });
+    } else {
+      out.unshift({ role: "user", content });
+    }
+  }
+  return out;
+}
+
+export async function streamChat(opts: {
+  settings: Settings;
+  conversationId: string;
+  history: ChatMessage[];
+  userText: string;
+  attachments: Attachment[];
+  effort: Effort;
+  webSearch: boolean;
+  vision: boolean;
+  abort: AbortController;
+  handlers: StreamHandlers;
+}): Promise<void> {
+  const { settings, handlers, abort } = opts;
+  const plan = planChatRequest(opts.userText, opts.webSearch, settings.language);
+  const control = reasoningControl(settings);
+  const configuredEfforts = settings.llamaModels.find(
+    (model) => model.name === settings.model,
+  )?.reasoningEfforts;
+  const effectiveEffort: Effort =
+    control === "effort" ? normalizeReasoningEffort(opts.effort, configuredEfforts) : opts.effort;
+  const params = effortParams(settings, effectiveEffort);
+  const enableThinking =
+    control === "effort"
+      ? effectiveEffort !== "none"
+      : control === "toggle"
+        ? !["none", "minimal", "low"].includes(effectiveEffort)
+        : false;
+  let searchBlock = "";
+  let research: ResearchProgress | undefined;
+  if (plan.useWeb && opts.userText.trim()) {
+    handlers.onStatus({
+      phase: "searching",
+      text: settings.language === "zh" ? "正在启动深度研究" : "Starting Deep Research",
+    });
+    try {
+      const result = await deepResearch({
+        settings,
+        question: opts.userText.trim(),
+        signal: abort.signal,
+        onStatus: (text) => handlers.onStatus({ phase: "searching", text }),
+        onProgress: (progress) => {
+          research = progress;
+          handlers.onResearch(progress);
+        },
+      });
+      searchBlock = result.evidence;
+      research = result.progress;
+    } catch (err) {
+      if (abort.signal.aborted) {
+        handlers.onDone({ thinking: "", content: "", stopped: true, research });
+        return;
+      }
+      handlers.onError(err instanceof Error ? err.message : String(err));
+      return;
+    }
+  }
+
+  const mem = settings.memoryEnabled ? memoryBlock(opts.userText, opts.conversationId) : "";
+  const modelStyle =
+    settings.systemPrompt.trim() || "你是本地助手，接在本机 Llama / OpenAI-compatible 接口上。";
+  const customInstructions = settings.chatInstructions.trim();
+  const system = [
+    `<model_style>\n${trimToTokens(modelStyle, 1800)}\n</model_style>`,
+    customInstructions
+      ? `<custom_instructions>\n${trimToTokens(customInstructions, 1200)}\n</custom_instructions>`
+      : "",
+    "Reasoning discipline: solve simple tasks directly, never repeat the same verification or restart an established reasoning path, and answer as soon as the result is established.",
+    plan.kind === "arithmetic"
+      ? "Arithmetic response rule: return the result directly with at most one short calculation line."
+      : "",
+    trimToTokens(mem, 1000),
+    searchBlock ? `Deep Research material:\n${trimToTokens(searchBlock, 6000)}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  const resolvedAttachments = await Promise.all(
+    opts.attachments.map(async (att) => {
+      if (att.kind === "video" && (!att.frames || att.frames.length === 0) && att.path) {
+        try {
+          const res = await extractVideoFramesNative(att.path);
+          return {
+            ...att,
+            frames: res.frames,
+            duration: res.duration,
+            dataUrl: res.frames[0] || att.dataUrl,
+          };
+        } catch {
+          return att;
+        }
+      }
+      return att;
+    }),
+  );
+
+  const currentUser = userContent(
+    trimToTokens(opts.userText, 3200),
+    resolvedAttachments.slice(0, 24),
+    opts.vision,
+  );
+  const historyBudget = Math.max(
+    0,
+    Math.min(3600, 9_200 - estimateTokens(system) - contentTokens(currentUser) - 700),
+  );
+  const messages: OpenAIMessage[] = [
+    { role: "system", content: system },
+    ...historyMessages(opts.history, opts.vision, historyBudget),
+    { role: "user", content: currentUser },
+  ];
+
+  const url = `${settings.llamaUrl.replace(/\/$/, "")}/chat/completions`;
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (settings.llamaApiKey) headers.Authorization = `Bearer ${settings.llamaApiKey}`;
+
+  const request = async (requestMessages: OpenAIMessage[]): Promise<Response> => {
+    const body = JSON.stringify({
+      model: settings.model,
+      messages: requestMessages,
+      stream: true,
+      temperature: plan.kind === "creative" ? 0.8 : plan.enableThinking ? 0.7 : 0.3,
+      top_p: 0.95,
+      top_k: 20,
+      min_p: 0.0,
+      presence_penalty: 0.0,
+      repetition_penalty: 1.05,
+      // Keep the prompt under roughly 9k tokens so a 16k server has a
+      // dedicated completion budget and does not cut off the final answer.
+      max_tokens:
+        plan.kind === "arithmetic" && !enableThinking
+          ? 128
+          : enableThinking
+            ? ["minimal", "low"].includes(effectiveEffort)
+              ? 3072
+              : effectiveEffort === "medium"
+                ? 4608
+                : effectiveEffort === "high"
+                  ? 5632
+                  : 6144
+            : 4096,
+      reasoning_effort: params.reasoning_effort,
+      chat_template_kwargs: {
+        ...(control !== "none" ? { enable_thinking: enableThinking } : {}),
+        ...(control !== "none" ? { preserve_thinking: enableThinking } : {}),
+        reasoning_effort: params.reasoning_effort,
+      },
+      ...(control !== "none" ? { enable_thinking: enableThinking } : {}),
+      ...(control !== "none" ? { preserve_thinking: enableThinking } : {}),
+      reasoning_format: "auto",
+    });
+    let lastError: unknown;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        return await fetch(url, { method: "POST", headers, body, signal: abort.signal });
+      } catch (error) {
+        if (abort.signal.aborted) throw error;
+        lastError = error;
+        if (attempt < 2) {
+          handlers.onStatus({
+            phase: "preparing",
+            text:
+              settings.language === "zh"
+                ? "模型连接中断，正在重试"
+                : "Model connection interrupted; retrying",
+          });
+          await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+        }
+      }
+    }
+    throw new Error(
+      settings.language === "zh"
+        ? `本地模型连接中断，MyChat 已重试三次：${lastError instanceof Error ? lastError.message : String(lastError)}`
+        : `The local model connection was interrupted after three retries: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+    );
+  };
+
+  handlers.onStatus({
+    phase: "preparing",
+    text: settings.language === "zh" ? "正在生成" : "Generating",
+  });
+  let res: Response;
+  try {
+    res = await request(messages);
+  } catch (err) {
+    if (abort.signal.aborted) {
+      handlers.onDone({ thinking: "", content: "", stopped: true });
+      return;
+    }
+    handlers.onError(err instanceof Error ? err.message : String(err));
+    return;
+  }
+
+  if (!res.ok) {
+    let body = await res.text().catch(() => "");
+    if (res.status === 400 && /exceed(?:s|_context)|context size|n_ctx/i.test(body)) {
+      handlers.onStatus({
+        phase: "preparing",
+        text:
+          settings.language === "zh"
+            ? "上下文较长，正在自动压缩后重试"
+            : "The context is long; compressing it and retrying",
+      });
+      try {
+        res = await request([
+          { role: "system", content: trimToTokens(system, 2200) },
+          { role: "user", content: currentUser },
+        ]);
+        if (!res.ok) body = await res.text().catch(() => "");
+      } catch (err) {
+        handlers.onError(err instanceof Error ? err.message : String(err));
+        return;
+      }
+    }
+    if (!res.ok) {
+      handlers.onError(
+        /exceed(?:s|_context)|context size|n_ctx/i.test(body)
+          ? "This message still exceeds the model’s context capacity after automatic compression. Shorten it or attach fewer images, then try again."
+          : `Llama ${res.status}: ${body.slice(0, 400)}`,
+      );
+      return;
+    }
+  }
+  if (!res.body) {
+    const body = await res.text().catch(() => "");
+    handlers.onError(`Llama ${res.status}: ${body.slice(0, 400)}`);
+    return;
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  const split = new ThinkSplitter();
+  let reasoning = "";
+  let phase: "preparing" | "thinking" | "answering" = "preparing";
+  let lastDeltaAt = 0;
+
+  const emitDelta = (force = false): void => {
+    const now = Date.now();
+    if (!force && now - lastDeltaAt < 80) return;
+    lastDeltaAt = now;
+    handlers.onDelta({
+      thinking: reasoning + split.thinking,
+      content: split.content,
+    });
+  };
+
+  const consume = (line: string): void => {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("data:")) return;
+    const data = trimmed.slice(5).trim();
+    if (!data || data === "[DONE]") return;
+    let json: {
+      choices?: Array<{
+        delta?: {
+          content?: string;
+          reasoning_content?: string;
+          reasoning?: string;
+        };
+      }>;
+    };
+    try {
+      json = JSON.parse(data);
+    } catch {
+      return;
+    }
+    const delta = json.choices?.[0]?.delta;
+    if (!delta) return;
+    const rc = delta.reasoning_content || delta.reasoning || "";
+    const cc = delta.content || "";
+    if (rc) {
+      if (phase !== "thinking") {
+        phase = "thinking";
+        handlers.onStatus({
+          phase: "thinking",
+          text: settings.language === "zh" ? "正在深度思考" : "Thinking",
+        });
+      }
+      reasoning += rc;
+      emitDelta();
+    }
+    if (cc) {
+      split.push(cc);
+      if (split.isThinking) {
+        if (phase !== "thinking") {
+          phase = "thinking";
+          handlers.onStatus({
+            phase: "thinking",
+            text: settings.language === "zh" ? "正在深度思考" : "Thinking",
+          });
+        }
+      } else if (phase === "thinking") {
+        phase = "preparing";
+        handlers.onStatus({
+          phase: "preparing",
+          text: settings.language === "zh" ? "正在生成" : "Generating",
+        });
+      }
+      if (split.content && phase !== "answering") {
+        phase = "answering";
+        handlers.onStatus({
+          phase: "answering",
+          text: settings.language === "zh" ? "正在生成" : "Generating",
+        });
+      }
+      emitDelta();
+    }
+  };
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split("\n");
+      buf = lines.pop() || "";
+      for (const line of lines) consume(line);
+    }
+    buf += decoder.decode();
+    if (buf.trim()) consume(buf);
+    split.finish();
+    emitDelta(true);
+    handlers.onDone({
+      thinking: reasoning + split.thinking,
+      content: ensureResearchSources(split.content, research, settings.language),
+      stopped: false,
+      research,
+    });
+  } catch (err) {
+    split.finish();
+    if (abort.signal.aborted) {
+      handlers.onDone({
+        thinking: reasoning + split.thinking,
+        content: split.content,
+        stopped: true,
+        research,
+      });
+      return;
+    }
+    handlers.onError(err instanceof Error ? err.message : String(err));
+  }
+}

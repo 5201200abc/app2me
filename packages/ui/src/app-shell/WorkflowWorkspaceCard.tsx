@@ -23,7 +23,7 @@ import {
   SearchIcon,
   SquareTerminalIcon,
   TerminalIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { WorkflowRunState } from "@mycode/shared/mycode-protocol-v4";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

@@ -1,26 +1,23 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  validateBigModelAccountProviderAvailability,
-  validateZaiAccountProviderAvailability,
-} from "../src/model-provider/codingPlanProviderAvailability.js";
+  createOfficialMcpAuthHeadersResolver,
+  resolveOfficialMcpCredentials,
+} from "../src/official-mcp/officialMcpCredentials.js";
 
-test("历史账号可用性只返回未连接且不读取外部依赖", async () => {
-  const providers = [
-    { providerId: "old-zai", family: "zai", planKind: "individual-coding-plan" },
-    { providerId: "old-bigmodel", family: "bigmodel", planKind: "team-coding-plan" },
-  ] as const;
-  const unavailable = { kind: "unavailable", reason: "coding_plan_not_connected" };
-  const forbiddenContext = new Proxy({}, {
-    get() {
-      throw new Error("旧官方依赖被读取");
+test("retired account MCP auth never reads credentials or contacts external dependencies", async () => {
+  const forbidden = new Proxy(
+    {},
+    {
+      get() {
+        throw new Error("retired dependency accessed");
+      },
     },
-  });
-
-  assert.deepEqual(await validateZaiAccountProviderAvailability(providers, forbiddenContext), {
-    "old-zai": unavailable,
-  });
-  assert.deepEqual(await validateBigModelAccountProviderAvailability(providers, forbiddenContext), {
-    "old-bigmodel": unavailable,
-  });
+  );
+  const unavailable = { ok: false, reason: "official_auth_unavailable" };
+  assert.deepEqual(await resolveOfficialMcpCredentials(forbidden as never), unavailable);
+  assert.deepEqual(
+    await createOfficialMcpAuthHeadersResolver(forbidden as never).resolveHeaders(),
+    unavailable,
+  );
 });

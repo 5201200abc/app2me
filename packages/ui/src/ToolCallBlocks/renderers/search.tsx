@@ -1,4 +1,4 @@
-import { SearchIcon } from "lucide-react";
+import { Globe, SearchIcon } from "@/components/icons/tabler.js";
 import { useMemo } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";
@@ -100,7 +100,13 @@ export function SearchToolCallBlock(context: ToolCallBlockRenderContext) {
     <>
       <ToolLayout
         toolId={toolCall.toolId}
-        icon={SEARCH_TOOL_ICON}
+        icon={
+          toolCall.toolName === "WebSearch" || toolCall.toolName === "WebFetch" ? (
+            <Globe className="size-3.5" strokeWidth={1.5} />
+          ) : (
+            SEARCH_TOOL_ICON
+          )
+        }
         showIcon={context.showIcon !== false}
         canToggle={false}
         kindLabel={

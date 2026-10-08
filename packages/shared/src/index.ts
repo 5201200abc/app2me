@@ -28,6 +28,8 @@ export type {
 } from "./protocol.js";
 export type { WorkspacePurpose } from "./workspacePurpose.js";
 export { DEFAULT_LOCALE } from "./protocol.js";
+export * from "./desktopZoom.js";
+export { MYCODE_BRAND_VIEW_BOX, MYCODE_BRAND_PATHS } from "./mycodeBrand.js";
 export { MYCODE_VERSION, MYCODE_COMMIT, MYCODE_BUILD_TIME } from "./version.js";
 export type { HelloMessage, HelloAckMessage } from "./handshake.js";
 export type { ArmsRumEnv, MyCodeEnv, MyCodeProductFlavor } from "./env.js";
@@ -124,8 +126,6 @@ export * from "./oauth.js";
 export * from "./desktopMenu.js";
 export * from "./feedback.js";
 export * from "./e2e-test-bridge.js";
-export * from "./remoteAppConfig.js";
-export * from "./helpAppConfig.js";
 export * from "./remoteAssetInstallMode.js";
 export * from "./onboardingRecord.js";
 export * from "./remoteResourcePackages.js";
@@ -210,6 +210,8 @@ export type {
   EmbeddedBrowserDataClearResult,
   EmbeddedBrowserOpenUrlRequest,
   IPlatformService,
+  DesktopToolEnvironment,
+  WebsiteBrowserInfo,
   OpenInEditorRemoteTarget,
   OpenInEditorOptions,
   PostUpdateReleaseNotesPayload,
@@ -249,7 +251,6 @@ export * from "./model-selection-types.js";
 export * from "./model-selection-key.js";
 export * from "./model-selection.js";
 export * from "./legacy-model-provider-identity.js";
-export * from "./official-glm-model-id.js";
 export * from "./skills-types.js";
 export * from "./skill-sync.js";
 export * from "./mcp-sync.js";
@@ -279,7 +280,6 @@ export * from "./permission-request-preview.js";
 export * from "./settings-sync.js";
 export * from "./uuid.js";
 export * from "./usage-stats.js";
-export * from "./coding-plan-subscription.js";
 export * from "./forceUpdate.js";
 export * from "./intranetProbe.js";
 export * from "./intranetDefaults.js";

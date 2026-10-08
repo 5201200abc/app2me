@@ -1,4 +1,5 @@
 import type { MouseEvent, ReactNode } from "react";
+import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 
@@ -24,7 +25,7 @@ function TaskRowActionButton({
       type="button"
       variant="ghost"
       size="icon-sm"
-      className={className}
+      className={cn("size-6 rounded-md [&_svg]:size-3 [&_svg]:stroke-[1.5]", className)}
       disabled={Boolean(disabledReason)}
       data-testid={testId}
       onMouseDown={(event) => {

@@ -1,4 +1,4 @@
-import { AlertTriangle, Loader2, RefreshCw, Trash2 } from "lucide-react";
+import { AlertTriangle, Loader2, RefreshCw, Trash2 } from "@/components/icons/tabler.js";
 import type { MyCodePluginMarketplaceSummary } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog.js";
@@ -58,7 +58,7 @@ export function PluginStoreSourcesDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-[min(480px,calc(100vw-2rem))] max-w-none"
+        className="agent-settings-typography w-[min(480px,calc(100vw-2rem))] max-w-none"
         data-testid="plugin-store-sources-dialog"
       >
         <DialogTitle className="text-ui-lg font-medium text-foreground">

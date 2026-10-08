@@ -1,19 +1,19 @@
-/* oxlint-disable eslint(max-lines) -- V4ComposerToolbar 汇聚模型/思考深度/context usage 三件套；继续拆分会打散工具条热键与模型目录 memo 的共享状态。 */
+/* oxlint-disable eslint(max-lines) -- V4ComposerToolbar 汇聚模型与思考深度；继续拆分会打散工具条热键与模型目录 memo 的共享状态。 */
 /**
  * V4 composer 工具条。
  *
  * 展示件全部复用旧 chat-input-toolbar 的纯 props 组件（ModelConfigSelect /
- * ChatModeSwitchControl / ThoughtLevelCycleControl / ChatContextUsage），外观与旧
+ * ChatModeSwitchControl / ThoughtLevelCycleControl），外观与旧
  * ChatInputToolbar 对齐；但状态编排是全新 v4 wiring，不复活旧 ChatInputToolbar 的
  * effect 链 / 旧协议写路径：
- * - 当前模型/档位来自 Composer；已运行会话的用量来自 snapshot.usage.contextWindow
+ * - 当前模型/档位来自 Composer；上下文用量由发送控件呈现
  * - 模型、思考深度和模式只更新下一次 Submission 的 Composer 意图
  * - 模型静态事实来自目标 Host ModelSelectionView；workspace configOptions 只提供
  *   mode 等非模型 presentation
  *
  * 新任务和已有会话采用相同的 Composer 显示事实；prewarm 不补模型或档位。
  * 提交时由宿主（SessionPane）把冻结选择随 Submission 一起发送。
- * 三件套不能全部门控在 config!==null 上——草稿态会整体不渲染。
+ * 模型控件不能全部门控在 config!==null 上——草稿态会整体不渲染。
  */
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -30,18 +30,15 @@ import type {
 } from "@mycode/shared/mycode-protocol-v4";
 import { ModelConfigSelect, type ModelSelectGroup } from "@/ModelConfigSelect.js";
 import { Button } from "@/components/ui/button.js";
-import { ChatContextUsage } from "@/chat-input-toolbar/display.js";
-import { ThoughtLevelSlider } from "@/chat-input-toolbar/ThoughtLevelSlider.js";
+import {
+  ThoughtLevelSlider,
+  ThoughtLevelSummary,
+} from "@/chat-input-toolbar/ThoughtLevelSlider.js";
 import { getNextThoughtLevelValue } from "@/chat-input-toolbar/thoughtLevelOptions.js";
 import type { V4ComposerConfigPicker } from "@/v4/composer/configPickerState.js";
 import { useToolbarShortcutBindings } from "@/v4/composer/toolbarShortcuts.js";
-import {
-  resolveModelSelectTriggerDisplay,
-  shouldShowManageModelsAction,
-} from "@/chat-input-toolbar/modelSelection.js";
+import { resolveModelSelectTriggerDisplay } from "@/chat-input-toolbar/modelSelection.js";
 import { resolveV4ModelTriggerDisplay } from "@/v4/composer/modelTriggerDisplay.js";
-import { setPendingSettingsSectionIntent } from "@/lib/settingsNavigation.js";
-import { useTabStore } from "@/store/TabStoreProvider.js";
 import type { ModelSelectionView } from "@mycode/services";
 import type { ModelSelectionState } from "@/hooks/useModelSelectionView.js";
 import { useToolbarConfigOptions } from "@/hooks/useMyCodeConfig.js";
@@ -109,10 +106,9 @@ export interface V4ComposerToolbarProps {
     value: string,
     sourceModel: ModelSelectionSource | null,
   ) => Promise<void> | void;
-  onSendCompressionCommand?: (command: string) => void;
 }
 
-/** 模型 / 思考深度 / context usage 簇（渲染在发送键左侧，与旧 UI 同位）。 */
+/** 模型与思考深度簇；上下文窗口单独在发送/停止按钮左侧呈现。 */
 function V4ComposerModelControlsImpl({
   workspacePath,
   workspaceIdentity,
@@ -128,10 +124,9 @@ function V4ComposerModelControlsImpl({
   onConfigPickerOpenChange,
   onSelectModel,
   onSelectThought,
-  onSendCompressionCommand,
   onRecoverCustomModelSelection,
 }: V4ComposerToolbarProps) {
-  const { intl, locale } = useMyCodeIntl();
+  const { intl } = useMyCodeIntl();
   const displayProvider = provider ?? MYCODE_AGENT_PROVIDER;
   // 配置面读取：workspace 缺省目录（taskId=null），不读旧会话态。
   const { error: configOptionsError } = useToolbarConfigOptions(
@@ -139,9 +134,7 @@ function V4ComposerModelControlsImpl({
     null,
     workspaceIdentity,
   );
-  const openSettingsTab = useTabStore((state) => state.openSettingsTab);
   const modelTriggerRef = useRef<HTMLSpanElement | null>(null);
-  const thoughtTriggerRef = useRef<HTMLSpanElement | null>(null);
   // Ctrl+M 热键：递增 openRequestKey 请求 ModelConfigSelect 打开菜单（旧 handleOpenModelMenuShortcut 语义）。
   const [modelMenuOpenRequestKey, setModelMenuOpenRequestKey] = useState(0);
   const [recoveryPending, setRecoveryPending] = useState(false);
@@ -151,12 +144,6 @@ function V4ComposerModelControlsImpl({
   const handleModelPickerOpenChange = useCallback(
     (open: boolean) => {
       onConfigPickerOpenChange("model", open);
-    },
-    [onConfigPickerOpenChange],
-  );
-  const handleThoughtPickerOpenChange = useCallback(
-    (open: boolean) => {
-      onConfigPickerOpenChange("thought", open);
     },
     [onConfigPickerOpenChange],
   );
@@ -191,38 +178,10 @@ function V4ComposerModelControlsImpl({
 
   const modelSelectGroups = useMemo<ModelSelectGroup[]>(() => {
     if (!modelSelectionView) return [];
-    return buildRegistryModelSelectGroups(displayProvider, modelSelectionView, {
-      apiKeyLabel: intl.formatMessage({ id: "settings.modelProvider.apiKey" }),
-      apiKeyBadgeLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.apiKeyBadge",
-      }),
-      codingPlanLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.codingPlan",
-      }),
-      codingPlanBadgeLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.codingPlanBadge",
-      }),
-      startPlanLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.startPlan",
-      }),
-      startPlanBadgeLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.startPlanBadge",
-      }),
-      teamPlanBadgeLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.teamPlanBadge",
-      }),
-      teamPlanFallbackLabel: intl.formatMessage({
-        id: "settings.modelProvider.connectionMode.teamPlan",
-      }),
-    });
+    return buildRegistryModelSelectGroups(displayProvider, modelSelectionView);
   }, [displayProvider, intl, modelSelectionView]);
 
-  // 修复：恢复「管理模型」入口（老版 onManageModels = 打开设置页并定位模型供应商区）。
-  const handleOpenModelProviderSettings = useCallback(() => {
-    setPendingSettingsSectionIntent("modelProvider");
-    openSettingsTab();
-  }, [openSettingsTab]);
-  const showManageModelsAction = shouldShowManageModelsAction(handleOpenModelProviderSettings);
+  const showManageModelsAction = false;
   const manageModelsLabel = intl.formatMessage({
     id: "chat.toolbar.model.manageModels",
   });
@@ -408,16 +367,6 @@ function V4ComposerModelControlsImpl({
     });
   }, [effectiveConfig, onSelectThought, thoughtOption]);
 
-  const taskUsage = useMemo(() => {
-    const contextWindow = usage?.contextWindow;
-    if (!contextWindow) return null;
-    return {
-      used: contextWindow.usedTokens,
-      size: contextWindow.maxTokens,
-      ...(contextWindow.cache ? { cache: contextWindow.cache } : {}),
-      ...(contextWindow.breakdown ? { breakdown: contextWindow.breakdown } : {}),
-    };
-  }, [usage?.contextWindow]);
   // 工具条热键已转正为命令表命令：tooltip 快捷键文案读生效表，
   // 改绑后按钮提示即时跟随（不能用硬编码文案）。
   const modelShortcutLabel = useShortcutCommandLabel("openModelMenu");
@@ -427,9 +376,9 @@ function V4ComposerModelControlsImpl({
   // 键盘热键（旧 useToolbarShortcutBindings）：Ctrl+M 打开模型菜单、Ctrl+T 循环思考深度。
   // 模式循环（Ctrl+Shift+M）由 V4ComposerModeSwitch 单独绑定（modeOption 在彼处）。
   // 模型留空是正常的待选择状态，包括已有会话；不能因为没有已选模型隐藏重选入口。
-  // 有可选组时正常显示；无组但有「管理模型」入口时也显示，避免用户零模型入口。
+  // 模型目录有可选组时显示；管理入口统一由设置页提供。
   const modelMenuVisible = modelSelectGroups.length > 0 || showManageModelsAction;
-  const providerSubmenuClassName = undefined;
+  const providerSubmenuClassName = "composer-model-menu w-56 min-w-0 rounded-lg p-1";
   useToolbarShortcutBindings({
     hasAnyOption: Boolean(modelOption) || Boolean(thoughtOption),
     toolbarDisabled: disabled || recoveryPending,
@@ -470,16 +419,10 @@ function V4ComposerModelControlsImpl({
         data-usage-max={usage?.contextWindow?.maxTokens ?? ""}
         className="hidden"
       />
-      <ChatContextUsage
-        taskUsage={taskUsage}
-        selectedProvider={displayProvider}
-        intl={intl}
-        locale={locale}
-        onSendCompressionCommand={onSendCompressionCommand}
-        compressionDisabled={disabled || recoveryPending}
-      />
       <div className="inline-flex min-w-0 items-center" data-testid="composer-model-controls">
-        {modelSelectionState.status === "error" && modelSelectionReload ? (
+        {(modelSelectionState.status === "error" ||
+          (modelSelectionState.status === "refreshing" && modelSelectionState.error)) &&
+        modelSelectionReload ? (
           <Button
             type="button"
             variant="ghost"
@@ -501,6 +444,7 @@ function V4ComposerModelControlsImpl({
         ) : modelMenuVisible ? (
           <ModelConfigSelect
             roundedList
+            contentClassName="composer-model-menu w-56 min-w-0 rounded-lg p-1 [&_[data-slot=dropdown-menu-item]]:min-h-7 [&_[data-slot=dropdown-menu-item]]:py-1 [&_[data-slot=dropdown-menu-item]]:text-ui-caption [&_[data-slot=dropdown-menu-sub-trigger]]:min-h-7 [&_[data-slot=dropdown-menu-sub-trigger]]:py-1 [&_[data-slot=dropdown-menu-sub-trigger]]:text-ui-caption"
             modelGroups={modelSelectGroups}
             normalizedValue={normalizedModelValue}
             triggerLabel={modelTriggerDisplay.modelLabel || modelTriggerDisplay.fullLabel}
@@ -509,7 +453,6 @@ function V4ComposerModelControlsImpl({
             triggerLabelPrefixClassName="composer-provider-prefix inline group-data-[composer-provider-compact=true]/toolbar:hidden"
             showManageModelsAction={showManageModelsAction}
             manageModelsLabel={manageModelsLabel}
-            onManageModels={handleOpenModelProviderSettings}
             lockReasonMessage={intl.formatMessage({
               id: "chat.toolbar.modelSwitch.lockedByRunningTask",
             })}
@@ -523,26 +466,32 @@ function V4ComposerModelControlsImpl({
             onOpenChange={handleModelPickerOpenChange}
             openRequestKey={modelMenuOpenRequestKey}
             labelVisibilityClassName="hidden @sm/composer:inline-flex"
-            indicatorClassName="hidden"
-            triggerLabelClassName="block min-w-0 text-left group-data-[composer-model-icon=true]/toolbar:hidden [&>span]:max-w-full [&>span>span]:block [&>span>span]:truncate"
-            triggerClassName="composer-model-trigger h-8 rounded-lg px-2 group-data-[composer-model-icon=true]/toolbar:size-7 group-data-[composer-model-icon=true]/toolbar:p-0 group-data-[composer-model-icon=true]/toolbar:gap-0 group-data-[composer-model-icon=true]/toolbar:justify-center"
-            triggerIconClassName="hidden group-data-[composer-model-icon=true]/toolbar:inline-flex"
+            indicatorClassName="size-3 group-data-[composer-model-icon=true]/toolbar:hidden"
+            triggerBadge={
+              thoughtOption ? (
+                <ThoughtLevelSummary
+                  option={thoughtOption}
+                  className="group-data-[composer-model-icon=true]/toolbar:hidden"
+                />
+              ) : undefined
+            }
+            menuControls={
+              thoughtOption ? (
+                <ThoughtLevelSlider
+                  presentation="model-menu"
+                  option={thoughtOption}
+                  onValueChange={handleThoughtValueChange}
+                  disabled={disabled || recoveryPending}
+                  shortcutLabel={thoughtShortcutLabel}
+                />
+              ) : undefined
+            }
+            triggerTextClassName="composer-model-text"
+            triggerLabelClassName="composer-model-name block min-w-0 text-left group-data-[composer-model-icon=true]/toolbar:hidden [&>span]:max-w-full [&>span>span]:block [&>span>span]:truncate"
+            triggerClassName="composer-model-trigger h-6.5 text-ui-caption font-normal rounded-lg bg-hover/30 px-1.5 data-[state=open]:bg-hover group-data-[composer-model-icon=true]/toolbar:size-7 group-data-[composer-model-icon=true]/toolbar:p-0 group-data-[composer-model-icon=true]/toolbar:gap-0 group-data-[composer-model-icon=true]/toolbar:justify-center"
+            triggerIconClassName="inline-flex size-3"
             focusSelectorOnClose={V4_COMPOSER_INPUT_SELECTOR}
             providerSubmenuClassName={providerSubmenuClassName}
-          />
-        ) : null}
-        {thoughtOption ? (
-          <ThoughtLevelSlider
-            composerCollapsePriority={3}
-            modelLabel={modelTriggerDisplay.modelLabel}
-            option={thoughtOption}
-            onValueChange={handleThoughtValueChange}
-            disabled={disabled || recoveryPending}
-            shortcutLabel={thoughtShortcutLabel}
-            triggerRef={thoughtTriggerRef}
-            open={activeConfigPicker === "thought"}
-            onOpenChange={handleThoughtPickerOpenChange}
-            restoreFocusSelector={V4_COMPOSER_INPUT_SELECTOR}
           />
         ) : null}
       </div>

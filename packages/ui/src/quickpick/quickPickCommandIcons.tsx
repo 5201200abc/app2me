@@ -5,14 +5,13 @@ import {
   GlobeIcon,
   MessageCirclePlus,
   MoonIcon,
-  PanelLeftClose,
-  PanelLeftOpen,
+  PanelLeft,
   ServerIcon,
   SettingsIcon,
   SquareTerminalIcon,
   SunIcon,
   WandSparkles,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { QuickPickCommandIcon } from "@/quickpick/quickPickCommands.js";
 
 export const QUICK_PICK_ICON_BY_KIND = {
@@ -23,8 +22,8 @@ export const QUICK_PICK_ICON_BY_KIND = {
   message: MessageCirclePlus,
   mcp: ServerIcon,
   settings: SettingsIcon,
-  sidebarClose: PanelLeftClose,
-  sidebarOpen: PanelLeftOpen,
+  sidebarClose: PanelLeft,
+  sidebarOpen: PanelLeft,
   skills: WandSparkles,
   themeDark: MoonIcon,
   themeLight: SunIcon,

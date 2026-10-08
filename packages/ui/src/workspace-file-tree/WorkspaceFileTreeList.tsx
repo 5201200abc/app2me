@@ -1,6 +1,6 @@
 import type { CSSProperties, KeyboardEvent, RefCallback } from "react";
 import type { VirtualItem } from "@tanstack/react-virtual";
-import { AlertCircle, Files, LoaderCircle } from "lucide-react";
+import { AlertCircle, Files, LoaderCircle } from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import {
   areWorkspaceFilePathsEqual,

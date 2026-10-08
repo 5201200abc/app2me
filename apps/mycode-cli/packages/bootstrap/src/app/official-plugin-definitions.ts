@@ -1,4 +1,5 @@
 import { MYCODE_OFFICIAL_PLUGIN_MARKETPLACE } from "@mycode/contracts";
+import { OFFICIAL_PLUGIN_DESCRIPTIONS_ZH_CN } from "@mycode/shared";
 
 // 内置插件的商店信息 seed（原样写入官方 marketplace.json 的条目 raw，键名与 CDN 目录
 // schema 一致：displayName_i18n / examplePrompts_i18n 等），解析复用 adapter 的
@@ -54,7 +55,7 @@ export interface OfficialPluginDefinition {
   version: string;
 }
 
-const ZAI_AUTHOR = { name: "MyCode", url: "https://github.com/5201200abc/mycode" } as const;
+const APP_AUTHOR = { name: "MyCode", url: "https://github.com/5201200abc/app2me" } as const;
 const OFFICIAL_PLUGIN_ASSETS_BASE_URL = "/assets/official-plugin";
 
 const OFFICIAL_NODE_REPL_HOST_REQUIRED_SEED_PATHS = ["dist/mcp/server.js"] as const;
@@ -106,7 +107,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
   },
   {
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "developer-tools",
       displayName: "Android Emulator",
       displayName_i18n: { "zh-CN": "Android 模拟器" },
@@ -130,13 +131,13 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
     defaultEnabled: true,
     hostMcpServerNames: ["node_repl"],
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "productivity",
       displayName: "Browser Use",
       displayName_i18n: { "zh-CN": "浏览器操作" },
       icon: `${OFFICIAL_PLUGIN_ASSETS_BASE_URL}/browser-use/icon.png`,
       description_i18n: {
-        "zh-CN": "操作 MyCode 内置浏览器，检查网页并验证交互。",
+        "zh-CN": OFFICIAL_PLUGIN_DESCRIPTIONS_ZH_CN.browserUse,
       },
     },
     name: OFFICIAL_BROWSER_USE_PLUGIN_NAME,
@@ -162,7 +163,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
     ([name, skill, displayName, chineseName]): OfficialPluginDefinition => ({
       defaultEnabled: true,
       listing: {
-        author: ZAI_AUTHOR,
+        author: APP_AUTHOR,
         category: "productivity",
         displayName,
         displayName_i18n: { "zh-CN": chineseName },
@@ -185,7 +186,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
     // 沿用原聚合文档插件的官方搜图能力，仅拆出独立开关；认证仍由官方 MCP adapter 注入。
     defaultEnabled: true,
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "productivity",
       displayName: "Image Search",
       displayName_i18n: { "zh-CN": "搜图" },
@@ -203,7 +204,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
   },
   {
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "developer-tools",
       displayName: "iOS Simulator",
       displayName_i18n: { "zh-CN": "iOS 模拟器" },
@@ -223,7 +224,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
   },
   {
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "utilities",
       displayName: "Restore Legacy Sessions",
       displayName_i18n: { "zh-CN": "恢复旧版会话" },
@@ -246,7 +247,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
     name: "plugin-creator",
     version: "0.1.1",
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "utilities",
       displayName: "Plugin Creator",
       // 创建器使用客户端自带图标，不再借用 skill-creator 的远端图片。
@@ -275,7 +276,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
   {
     defaultEnabled: true,
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "utilities",
       displayName: "Skill Creator",
       displayName_i18n: { "zh-CN": "技能创建器" },
@@ -296,7 +297,7 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
     // 让用户/agent 开箱即用地拿到 MyCode 配置指南、自诊断技能与 dynamic workflow 编写指南。
     defaultEnabled: true,
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "utilities",
       displayName: "MyCode Guide",
       displayName_i18n: { "zh-CN": "MyCode 使用指南" },
@@ -333,16 +334,16 @@ export const OFFICIAL_PLUGIN_DEFINITIONS: readonly OfficialPluginDefinition[] = 
     // isMyCodeCuaInternalFeatureEnabled（打包层默认 true）与输入框入口 hidden 默认值的联动语义。
     name: "computer-use",
     hostMcpServerNames: ["cua_driver"],
-    // 用户露出名统一为「Computer Use / 电脑控制」。包名与 producer 仓库仍保持 mycode-cua，
+    // 用户露出名统一为「Computer Use / 计算机使用」。包名与 producer 仓库仍保持 mycode-cua，
     // 以兼容原生 Helper identity；EN 描述基线走 manifest
     // description，这里只放 zh-CN 覆盖；resolveLocalizedText 在 en-US 时回退到 manifest。
     listing: {
-      author: ZAI_AUTHOR,
+      author: APP_AUTHOR,
       category: "productivity",
       displayName: "Computer Use",
-      displayName_i18n: { "zh-CN": "电脑控制" },
+      displayName_i18n: { "zh-CN": "计算机使用" },
       description_i18n: {
-        "zh-CN": "自动化桌面应用：智能体驱动鼠标、键盘与界面元素，代你完成实际任务。",
+        "zh-CN": OFFICIAL_PLUGIN_DESCRIPTIONS_ZH_CN.computerUse,
       },
       // 插件更名为 computer-use 后，CDN 图标仍发布在 mycode-cua 目录；沿用资源路径避免 404。
       icon: `${OFFICIAL_PLUGIN_ASSETS_BASE_URL}/mycode-cua/icon.png`,

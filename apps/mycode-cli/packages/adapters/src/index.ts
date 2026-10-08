@@ -13,7 +13,6 @@ export * from "./config/index.js";
 export * from "./skills/index.js";
 export * from "./commands/index.js";
 export * from "./plugins/index.js";
-export * from "./auth/index.js";
 export * from "./browser/index.js";
 export * from "./mcp/index.js";
 export * from "./workflow/index.js";

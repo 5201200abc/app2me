@@ -1,10 +1,9 @@
-import { ChevronDown, Cloud, Folder, Monitor } from "lucide-react";
+import { ChevronDown, Cloud, Folder, Monitor } from "@/components/icons/tabler.js";
 import { testId } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -12,25 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { getWorkspaceKey } from "@/lib/workspaceKey.js";
+import { isPluginScopeWorkspaceSelectable } from "@/lib/pluginScopeWorkspaces.js";
+export { isPluginScopeWorkspaceConnected } from "@/lib/pluginScopeWorkspaces.js";
 import type { WorkspaceTabState } from "@/store/tabStore.js";
 
 export function getPluginWorkspaceKey(tab: WorkspaceTabState): string {
   return getWorkspaceKey(tab.workspacePath, tab.workspaceIdentity);
-}
-
-export function isPluginScopeWorkspaceConnected(tab: WorkspaceTabState): boolean {
-  // 持久化 tab 会保留已经断开的远端项目和已失效的本地目录；Scope 若继续展示，
-  // 用户会选中一个没有可用 service target 的项目。远端必须有当前 session，本地必须仍可用。
-  if (tab.availability === "unavailable-local-directory") {
-    return false;
-  }
-  const isRemote = Boolean(
-    tab.workspaceIdentity?.trim() || tab.remoteTarget || tab.remoteSessionId,
-  );
-  if (!isRemote) {
-    return true;
-  }
-  return Boolean(tab.remoteSessionId);
 }
 
 export function PluginScopeMenu({
@@ -61,7 +47,7 @@ export function PluginScopeMenu({
   const { intl } = useMyCodeIntl();
   const scopeWorkspaces =
     workspaceOptions ??
-    workspaceTabs.filter(isPluginScopeWorkspaceConnected).map((tab) => ({
+    workspaceTabs.filter(isPluginScopeWorkspaceSelectable).map((tab) => ({
       key: getPluginWorkspaceKey(tab),
       label: tab.label,
       remote: Boolean(tab.remoteTarget || tab.remoteSessionId),
@@ -81,37 +67,47 @@ export function PluginScopeMenu({
           data-testid={triggerTestId}
           data-plugin-scope-trigger="true"
           data-plugin-scope-key={selectedScopeKey}
-          className="rounded-full"
+          className="gap-1.5 rounded-md px-2 text-ui-caption"
         >
           {selectedWorkspace || !includeUser ? (
             <SelectedWorkspaceIcon
-              className="size-4"
+              className="size-3.5"
+              strokeWidth={1.5}
               aria-hidden="true"
               data-testid={triggerIconTestId}
             />
           ) : (
-            <Monitor className="size-4" aria-hidden="true" data-testid={triggerIconTestId} />
+            <Monitor
+              className="size-3.5"
+              strokeWidth={1.5}
+              aria-hidden="true"
+              data-testid={triggerIconTestId}
+            />
           )}
           <span className="max-w-48 truncate">{selectedWorkspace?.label ?? userLabel}</span>
-          <ChevronDown className="size-4 text-foreground-subtlest" aria-hidden="true" />
+          <ChevronDown
+            className="size-3 text-foreground-subtlest"
+            strokeWidth={1.5}
+            aria-hidden="true"
+          />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align} className="w-64 max-w-[calc(100vw-2rem)]">
+      <DropdownMenuContent
+        align={align}
+        className="agent-settings-typography w-48 max-w-[calc(100vw-2rem)] text-ui-caption"
+      >
         <DropdownMenuRadioGroup value={selectedScopeKey} onValueChange={onScopeKeyChange}>
           {includeUser ? (
             <DropdownMenuRadioItem value="user" data-testid={userOptionTestId}>
-              <Monitor className="size-4" aria-hidden="true" />
-              <span className="truncate text-ui-base font-medium text-foreground">{userLabel}</span>
+              <Monitor className="size-3.5" strokeWidth={1.5} aria-hidden="true" />
+              <span className="truncate text-ui-caption font-normal text-foreground">
+                {userLabel}
+              </span>
             </DropdownMenuRadioItem>
           ) : null}
           {scopeWorkspaces.length > 0 ? (
             <>
               {includeUser ? <DropdownMenuSeparator /> : null}
-              <DropdownMenuLabel>
-                {intl.formatMessage({
-                  id: "settings.plugin.scope.workspaces",
-                })}
-              </DropdownMenuLabel>
               {scopeWorkspaces.map((workspace) => {
                 const WorkspaceIcon = workspace.remote ? Cloud : Folder;
                 return (
@@ -123,11 +119,11 @@ export function PluginScopeMenu({
                         ? testId(workspaceOptionTestIdPrefix, workspace.key)
                         : undefined
                     }
-                    className="items-start py-2"
+                    className="items-center py-1 text-ui-caption"
                   >
-                    <WorkspaceIcon className="mt-0.5 size-4" aria-hidden="true" />
+                    <WorkspaceIcon className="size-3.5" strokeWidth={1.5} aria-hidden="true" />
                     <span className="min-w-0">
-                      <span className="block truncate text-ui-base font-medium text-foreground">
+                      <span className="block truncate text-ui-caption font-normal text-foreground">
                         {workspace.label}
                       </span>
                     </span>

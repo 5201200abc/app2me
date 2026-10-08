@@ -1,4 +1,4 @@
-import { GitBranchIcon, TagIcon } from "lucide-react";
+import { GitBranchIcon, TagIcon } from "@/components/icons/tabler.js";
 import type { GitGraphRef } from "./layout.js";
 
 export function getShortHash(hash: string): string {

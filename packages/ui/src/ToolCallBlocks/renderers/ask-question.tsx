@@ -1,4 +1,4 @@
-import { CircleHelpIcon } from "lucide-react";
+import { CircleHelpIcon } from "@/components/icons/tabler.js";
 import { useCallback } from "react";
 import {
   getAskUserQuestionAnswerText,
@@ -63,7 +63,6 @@ export function AskQuestionToolCallBlock(context: ToolCallBlockRenderContext) {
         showIcon={context.showIcon !== false}
         canToggle={!isRunning}
         forceOpen={false}
-        autoOpen={false}
         kindLabel={intl.formatMessage({
           id: isRunning ? "chat.askQuestion.asking" : "chat.askQuestion.asked",
         })}

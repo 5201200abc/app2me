@@ -12,7 +12,6 @@
 import { decodeCustomModelValue } from "./custom-model-value.js";
 import { migrateLegacyModelProviderId } from "./legacy-model-provider-identity.js";
 import { isBuiltinModelProviderId } from "./model-provider-types.js";
-import { OFFICIAL_GLM_MODEL_IDS } from "./official-glm-model-id.js";
 
 /** 单字段默认上限；ARMS 单字段过长会被截断或拒绝，主动截断保证关键头部一定上得去。 */
 export const TELEMETRY_TEXT_MAX_LENGTH = 2_048;
@@ -140,20 +139,8 @@ function redactTelemetryRouteSegment(segment: string): string {
   return segment.slice(0, TELEMETRY_ROUTE_SEGMENT_MAX_LENGTH);
 }
 
-/** 官方 GLM 名单之外的历史内置模型；仍是 MyCode 自己发布的稳定 ID，不是用户命名。 */
-const TELEMETRY_LEGACY_BUILTIN_MODEL_IDS: readonly string[] = ["charglm-4", "codegeex-4", "emohaa"];
-
-/**
- * telemetry 模型白名单：只有这里的内置稳定模型 ID 允许原样进入遥测。
- *
- * 白名单独立于账号返回的运行时 catalog，但以人工维护的官方 GLM 名单为来源：
- * 修复原因：此前手抄一份列表漏掉了 GLM-5.3 / GLM-5.3-Flash / GLM-5V-Turbo，导致旗舰模型在
- * plan_* / perf_ui_* 里整体写成 `custom`。派生自官方名单后，两处不会再各自漂移。
- */
-export const TELEMETRY_SAFE_BUILTIN_MODEL_IDS: ReadonlySet<string> = new Set([
-  ...OFFICIAL_GLM_MODEL_IDS.map((id) => id.toLowerCase()),
-  ...TELEMETRY_LEGACY_BUILTIN_MODEL_IDS,
-]);
+/** 所有用户配置模型名称均按自定义身份脱敏。 */
+export const TELEMETRY_SAFE_BUILTIN_MODEL_IDS: ReadonlySet<string> = new Set();
 
 export type TelemetryProviderScope = "builtin" | "custom" | "unknown";
 
@@ -162,14 +149,7 @@ export interface TelemetryProviderIdentity {
   providerScope: TelemetryProviderScope;
 }
 
-/**
- * 旧报表身份（`builtin:zai` / `builtin:zai-start-plan` 等）是 MyCode 自己的固定 ID。
- *
- * 修复原因：V4 supervisor 投影 /report detail 时会用 legacyTelemetryProviderId 把运行时
- * `account:*` 映射成这些旧身份，plan_ttft / perf_ui_* 复用同一份 detail。只认 `account:*`
- * 会让全部内置用户被当成自定义 provider 归一为 `custom`。复用 shared 的单向迁移表判定，
- * 未知的 `builtin:` 前缀仍按自定义处理，不能借前缀混入。
- */
+
 function isLegacyBuiltinTelemetryProviderId(providerId: string): boolean {
   const migrated = migrateLegacyModelProviderId(providerId);
   return migrated !== undefined && migrated !== providerId;

@@ -1,5 +1,4 @@
 import {
-  BUILTIN_MODEL_PROVIDER_IDS,
   createUuid,
   type OAuthProviderId,
   type BuiltinModelProviderId,
@@ -28,13 +27,7 @@ export const PRESET_PROVIDER_SPEC_BY_ID = new Map<BuiltinModelProviderId, Preset
   PRESET_PROVIDER_SPECS.map((item) => [item.id, item]),
 );
 
-export type CodingPlanProviderId =
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan;
+export type CodingPlanProviderId = string;
 
 export type CodingPlanStatus =
   | "disconnected"
@@ -55,21 +48,6 @@ export interface CodingPlanEntitlementState {
 export function resolveModelProviderDisplayName(
   provider: Pick<ProviderSettingsFormProvider, "providerId" | "config">,
 ): string {
-  if (
-    provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
-  ) {
-    return "Z.ai - Coding Plan";
-  }
-
-  if (provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan) {
-    return "Start Plan";
-  }
-
-  if (provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan) {
-    return "Start Plan";
-  }
-
   return getProviderFormLabel(provider);
 }
 

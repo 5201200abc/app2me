@@ -4,21 +4,17 @@ import {
   Settings,
   Settings2,
   Package,
-  Bot,
   Palette,
   Sun,
   BarChart3,
   Terminal,
   AlarmClock,
   Anchor,
-  Brain,
   Blocks,
   Globe2,
-  Cable,
-  WandSparkles,
   Keyboard,
   FileSearch,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { isSettingsSectionEnabled, type SettingsSectionId } from "@/lib/settingsNavigation.js";
 import type { Theme } from "@/useTheme.js";
 
@@ -31,7 +27,7 @@ export const THEME_MODES: Array<{
   { mode: "mycode-light", icon: Sun },
 ];
 
-type SettingsSectionGroupId = "basics" | "agentCapabilities" | "dataAndStats";
+type SettingsSectionGroupId = "basics" | "integrations" | "coding" | "tools" | "dataAndStats";
 
 interface SettingsSectionDefinition {
   id: SettingsSectionId;
@@ -48,9 +44,11 @@ const BASE_SETTINGS_SECTION_GROUPS: Array<{
 }> = [
   { id: "basics", titleId: "settings.sidebar.group.basics" },
   {
-    id: "agentCapabilities",
+    id: "integrations",
     titleId: "settings.sidebar.group.agentCapabilities",
   },
+  { id: "coding", titleId: "settings.sidebar.group.coding" },
+  { id: "tools", titleId: "settings.sidebar.group.tools" },
   { id: "dataAndStats", titleId: "settings.sidebar.group.dataAndStats" },
 ];
 
@@ -73,70 +71,34 @@ const BASE_SETTINGS_SECTIONS: SettingsSectionDefinition[] = [
     titleId: "settings.modelProviderTitle",
     groupId: "basics",
   },
+  { id: "plugin", icon: Blocks, titleId: "settings.plugins.title", groupId: "integrations" },
   {
-    id: "memory",
-    icon: Brain,
-    titleId: "settings.memory",
-    groupId: "agentCapabilities",
+    id: "computerUse",
+    icon: Monitor,
+    titleId: "settings.computerUse.title",
+    groupId: "integrations",
   },
-  {
-    id: "subagents",
-    icon: Bot,
-    titleId: "settings.subagents.title",
-    groupId: "agentCapabilities",
-  },
-  {
-    id: "plugin",
-    icon: Blocks,
-    titleId: "settings.plugins.title",
-    groupId: "agentCapabilities",
-  },
-  {
-    id: "mcp",
-    icon: Cable,
-    titleId: "settings.mcpTitle",
-    groupId: "agentCapabilities",
-  },
-  {
-    id: "skill",
-    icon: WandSparkles,
-    titleId: "settings.skills.title",
-    groupId: "agentCapabilities",
-  },
+  { id: "browser", icon: Globe2, titleId: "settings.browser.title", groupId: "integrations" },
   {
     id: "commands",
     icon: Terminal,
     titleId: "settings.commands.title",
-    groupId: "agentCapabilities",
+    groupId: "tools",
   },
   {
     id: "automations",
     icon: AlarmClock,
     titleId: "settings.automations.title",
     titleBadgeId: "settings.automations.betaBadge",
-    groupId: "agentCapabilities",
+    groupId: "integrations",
   },
   {
     id: "hooks",
     icon: Anchor,
     titleId: "settings.hooks.title",
-    groupId: "agentCapabilities",
+    groupId: "coding",
   },
-  {
-    id: "browser",
-    icon: Globe2,
-    titleId: "settings.browser.title",
-    groupId: "basics",
-  },
-  // 电脑控制紧跟「浏览器」：两者都是给 Agent 用的本机操控入口，
-  // 放在基础设置里让用户在同一处理解「控制浏览器 / 控制整台电脑」的关系。
-  {
-    id: "computerUse",
-    icon: Monitor,
-    titleId: "settings.computerUse.title",
-    groupId: "basics",
-  },
-  // 键盘快捷键紧跟「电脑控制」：同属本机操控/效率配置，收纳在基础设置尾部。
+  // 键盘快捷键仍是界面基础设置。
   {
     id: "shortcuts",
     icon: Keyboard,

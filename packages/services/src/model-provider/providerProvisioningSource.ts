@@ -19,16 +19,7 @@ import {
 import type { ISettingService } from "../setting/setting.js";
 
 const CREDENTIAL_FILE_NAME = "credentials.json";
-export const PROVIDER_PROVISIONING_OAUTH_CREDENTIAL_KEYS = [
-  "oauth:active_provider",
-  "oauth:zai:access_token",
-  "oauth:zai:refresh_token",
-  "oauth:zai:user_info",
-  "oauth:bigmodel:access_token",
-  "oauth:bigmodel:refresh_token",
-  "oauth:bigmodel:user_info",
-  "mycodejwttoken",
-] as const;
+export const PROVIDER_PROVISIONING_OAUTH_CREDENTIAL_KEYS: readonly string[] = [];
 
 export interface ProviderProvisioningSource {
   read(syncId: string): Promise<ProviderProvisioningEnvelope>;

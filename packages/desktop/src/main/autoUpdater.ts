@@ -20,6 +20,11 @@ import pkg, { CancellationToken } from "electron-updater";
 import semver from "semver";
 import { logger } from "./logger.js";
 import { getElectronReleasePlatform, ManifestUpdateProvider } from "./manifestUpdateProvider.js";
+import {
+  APP2ME_RELEASE_FEED_URL,
+  resolveApp2meUpdateChannel,
+  usesApp2meReleaseFeed,
+} from "./app2meUpdateFeed.js";
 const { autoUpdater } = pkg;
 
 export const CHECK_FOR_UPDATE_MENU_ID = "check-for-update";
@@ -717,6 +722,8 @@ export function resolveUpdateFeedSourceFromStartupConfig(
 async function resolveUpdateReleaseChannel(
   settingService: SettingServiceLike | undefined,
 ): Promise<ElectronReleaseChannel> {
+  // app2me 只有一个正式发布槽位，不能让旧 Preview 设置把更新重新路由到 MyCode 历史版本。
+  if (usesApp2meReleaseFeed(app.isPackaged, MYCODE_PRODUCT_FLAVOR)) return "stable";
   if (!settingService) {
     return "stable";
   }
@@ -752,6 +759,16 @@ async function syncAutoUpdateCheckChannelFromSettings(
 }
 
 function applyManifestUpdateProvider(options: InitAutoUpdaterOptions): void {
+  if (usesApp2meReleaseFeed(app.isPackaged, MYCODE_PRODUCT_FLAVOR)) {
+    autoUpdater.setFeedURL({
+      provider: "generic",
+      url: APP2ME_RELEASE_FEED_URL,
+      channel: resolveApp2meUpdateChannel(process.arch),
+      useMultipleRangeRequest: false,
+    });
+    logger.info("[auto-update] app2me fixed latest release feed applied");
+    return;
+  }
   const manifestUrl = options.updateFeedSource?.url.trim();
   autoUpdater.setFeedURL({
     provider: "custom",

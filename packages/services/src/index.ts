@@ -231,11 +231,11 @@ export { IUsageStatsService } from "./usage-stats/usageStats.js";
 // Storage（资源管理器「存储」tab）：数据类型在 @mycode/shared；这里只导出服务接口与卷分组纯函数
 export type { IStorageService } from "./storage/contract.js";
 
-// CodingPlanSubscription service — ICodingPlanSubscriptionService is both a type (interface) and value (descriptor)
+// Runtime configuration service — IRuntimeConfigService is both a type (interface) and value (descriptor)
 export {
-  ICodingPlanSubscriptionService,
+  IRuntimeConfigService,
   type OffPeakClientConfig,
-} from "./coding-plan-subscription/codingPlanSubscription.js";
+} from "./runtime-config/runtimeConfig.js";
 export {
   IClientScenesService,
   type ClientSceneConfig,
@@ -311,3 +311,5 @@ export type {
 // 本地模型扫描依赖 node:fs/os/path；运行时转导出会让 Web 在 React 挂载前崩溃。
 // 根入口仅保留类型，扫描函数通过已有的 @mycode/services/node 入口提供。
 export type { DiscoveredLocalModel, LocalModelScanResult } from "@mycode/provider";
+
+export { IMyChatService } from "./mychat/myChat.js";

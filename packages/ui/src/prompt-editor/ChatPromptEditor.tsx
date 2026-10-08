@@ -1,5 +1,7 @@
 /* oxlint-disable eslint(max-lines) -- 输入壳同时收口 Lexical 同步、拖拽和工具栏插槽，暂不拆组件。 */
 // 输入展示壳：纯 props 组件、无 store/协议依赖；mention 面板通过 enableMentionPanel 透传。
+import "./composer-bottom-bar.css";
+import { useComposerIconBounds } from "./useComposerIconBounds.js";
 import type {
   KeyboardEventHandler,
   DragEventHandler,
@@ -9,7 +11,7 @@ import type {
 } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TID_CHAT_SEND_BUTTON } from "@mycode/shared";
-import { ArrowUpIcon, Hand, XIcon } from "lucide-react";
+import { ArrowUpIcon, Hand, XIcon } from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { Button } from "@/components/ui/button.js";
 import { Spinner } from "@/components/ui/spinner.js";
@@ -62,7 +64,9 @@ export function ChatPromptEditor({
   dragAttachmentHint,
   topContent,
   leadingActions,
+  goalMarkerContainer,
   attachmentAction,
+  planAction,
   betweenCancelAndSubmitAction,
   submitControl,
   inputTestId,
@@ -75,6 +79,7 @@ export function ChatPromptEditor({
   className,
   shellClassName,
   compactPlaceholder = false,
+  uniformToolbar = false,
   onChange,
   onSubmit,
   onModifiedSubmit,
@@ -112,7 +117,9 @@ export function ChatPromptEditor({
   isDraggingOver?: boolean;
   dragAttachmentHint?: string;
   topContent?: ReactNode;
+  planAction?: { enabled: boolean; onSelect: () => void };
   leadingActions?: ReactNode;
+  goalMarkerContainer?: HTMLElement | null;
   attachmentAction?: {
     label: string;
     onSelect: () => void;
@@ -132,6 +139,7 @@ export function ChatPromptEditor({
   className?: string;
   shellClassName?: string;
   compactPlaceholder?: boolean;
+  uniformToolbar?: boolean;
   onChange?: (value: string) => void;
   // 适配：返回 false 表示业务层拒绝/延迟本次提交，Lexical 不自行 reset（草稿保留）。
   onSubmit: (value: string) => boolean | void;
@@ -151,6 +159,7 @@ export function ChatPromptEditor({
 }) {
   const { intl } = useMyCodeIntl();
   const toolbarRef = useComposerToolbarFit();
+  useComposerIconBounds(toolbarRef, uniformToolbar);
   const internalInputApiRef = useRef<LexicalChatInputHandle | null>(null);
   const resolvedInputApiRef = inputApiRef ?? internalInputApiRef;
   const [internalTriggerPanelContainer, setInternalTriggerPanelContainer] =
@@ -340,6 +349,7 @@ export function ChatPromptEditor({
         />
       )}
       <div
+        data-prompt-editor-shell="true"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -361,6 +371,7 @@ export function ChatPromptEditor({
 
         {topContent}
         <LexicalChatInput
+          goalMarkerContainer={goalMarkerContainer}
           placeholder={placeholder}
           disabled={disabled}
           submitDisabled={submitDisabled}
@@ -385,7 +396,14 @@ export function ChatPromptEditor({
           appSlashCommands={appSlashCommands}
           enableMentionPanel={enableMentionPanel}
         />
-        <div ref={toolbarRef} className="group/toolbar flex items-end gap-3">
+        <div
+          ref={toolbarRef}
+          data-composer-bottom-bar={uniformToolbar || undefined}
+          className={cn(
+            "group/toolbar",
+            uniformToolbar ? "composer-bottom-bar" : "flex items-end gap-3",
+          )}
+        >
           <div className="flex min-w-0 flex-1 items-center" data-composer-leading-actions>
             <div className="flex shrink-0 items-center gap-1" data-composer-leading-content>
               {hasActionMenu ? (
@@ -393,6 +411,7 @@ export function ChatPromptEditor({
                   actionMenuTitle={actionMenuTitle}
                   excludedSlashCommandNames={excludedSlashCommandNames}
                   attachmentAction={attachmentAction}
+                  planAction={planAction}
                   disabled={disabled}
                   disabledReason={disabledReason}
                   inputApiRef={resolvedInputApiRef}

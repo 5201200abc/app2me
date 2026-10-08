@@ -254,6 +254,7 @@ export function CuaGroupToolCallBlock(context: CuaGroupRenderProps) {
     <ToolLayout
       toolId={toolCall.toolId}
       icon={isRunning ? null : CUA_TOOL_ICON}
+      preserveIcon
       showIcon={!isRunning}
       canToggle={context.canToggle ?? true}
       forceOpen={!isRunning && (context.forceOpen ?? false)}

@@ -1,3 +1,4 @@
+import { ToolPresentationScopeContext } from "@/ToolCallBlocks/ToolPresentationContext.js";
 import type {
   AttachmentRef,
   CommandAck,
@@ -59,24 +60,32 @@ export function ConversationTurnRow({
   userInputStatus,
 }: ConversationTurnRowProps) {
   return (
-    <ConversationRowView
-      row={row}
-      context={context}
-      onFork={onFork}
-      onRetry={onRetry}
-      onFeedbackChange={onFeedbackChange}
-      onEdit={onEdit}
-      editWorkspaceRewindAvailability={editWorkspaceRewindAvailability}
-      hideAssistantActions={hideAssistantActions}
-      deferAssistantActions={deferAssistantActions}
-      assistantCopyText={assistantCopyText}
-      assistantPreviewCards={assistantPreviewCards}
-      assistantPreviewCardsAutoOpenKey={assistantPreviewCardsAutoOpenKey}
-      assistantCodeCommentCards={assistantCodeCommentCards}
-      assistantCodeCommentProjectionEnabled={assistantCodeCommentProjectionEnabled}
-      reasoningContentVariant={reasoningContentVariant}
-      userInputStatus={userInputStatus}
-    />
+    <ToolPresentationScopeContext.Provider
+      value={JSON.stringify([
+        context.workspaceIdentity?.trim() || context.workspacePath,
+        context.sessionId,
+        context.logEpoch,
+      ])}
+    >
+      <ConversationRowView
+        row={row}
+        context={context}
+        onFork={onFork}
+        onRetry={onRetry}
+        onFeedbackChange={onFeedbackChange}
+        onEdit={onEdit}
+        editWorkspaceRewindAvailability={editWorkspaceRewindAvailability}
+        hideAssistantActions={hideAssistantActions}
+        deferAssistantActions={deferAssistantActions}
+        assistantCopyText={assistantCopyText}
+        assistantPreviewCards={assistantPreviewCards}
+        assistantPreviewCardsAutoOpenKey={assistantPreviewCardsAutoOpenKey}
+        assistantCodeCommentCards={assistantCodeCommentCards}
+        assistantCodeCommentProjectionEnabled={assistantCodeCommentProjectionEnabled}
+        reasoningContentVariant={reasoningContentVariant}
+        userInputStatus={userInputStatus}
+      />
+    </ToolPresentationScopeContext.Provider>
   );
 }
 

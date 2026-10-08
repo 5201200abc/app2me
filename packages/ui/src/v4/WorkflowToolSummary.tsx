@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon } from "lucide-react";
+import { ArrowUpRightIcon } from "@/components/icons/tabler.js";
 import { useMemo } from "react";
 import { WORKFLOW_CARD_ICON } from "@/components/workflow-timeline/WorkflowCardChrome.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

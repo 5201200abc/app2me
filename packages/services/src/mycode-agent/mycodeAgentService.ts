@@ -1,4 +1,6 @@
 import { requestPluginReferenceCatalog } from "#src/mycode-agent/pluginReferenceCatalogRequest.js";
+import { resolveSessionMcpServers } from "./sessionMcpServers.js";
+import type { CuaProductMcpServerResolver } from "#src/cua-permission-broker/index.js";
 import {
   localTtftFactsSchema,
   sessionDebugSnapshotSchema,
@@ -17,7 +19,7 @@ import type {
   ProviderSource,
 } from "@mycode/provider";
 import { completeNewModelSelection } from "@mycode/provider";
-import type { OffPeakClientConfig } from "#src/coding-plan-subscription/codingPlanSubscription.js";
+import type { OffPeakClientConfig } from "#src/runtime-config/runtimeConfig.js";
 import {
   MYCODE_SESSION_RUNTIME_PREFERENCES_REQUEST_TIMEOUT_MS,
   formatLogPrefix,
@@ -63,7 +65,6 @@ import {
   mycodeAutomationUpdateParamsSchema,
   mycodeOffPeakCreateParamsSchema,
   mycodeOffPeakListParamsSchema,
-  OFF_PEAK_PROVIDER_IDS,
   mycodeComputerUseOperationEventSchema,
   mycodeProviderRuntimeHeadersCancelledSchema,
   mycodeProviderRuntimeHeadersRequestParamsSchema,
@@ -900,6 +901,8 @@ interface CreateMyCodeAgentServiceOptions extends Omit<
    * browser 命令返回 backend_unavailable，不影响其它功能。
    */
   browserControlExecutor?: BrowserAmbientContextExecutor;
+  /** Desktop 原生 MCP 仅在 CLI 创建/恢复 runtime 时经可信 stdio 解析。 */
+  cuaProductMcpServerResolver?: CuaProductMcpServerResolver;
   /**
    * 官方 Server MCP 身份头解析器。Agent 进程不持有用户身份权威，
    * 经 interaction/requestOfficialMcpAuthHeaders 向 host 索取本次请求的身份头。
@@ -2291,6 +2294,24 @@ export function createMyCodeAgentService(
           return;
         }
 
+        if (request.method === mycodeProtocolMethods.interactionResolveSessionMcpServers) {
+          // socket 不进入 V4 发送队列；workspace 权威来自当前 Agent 连接而非请求字段。
+          void resolveSessionMcpServers({
+            params: request.params,
+            workspace,
+            resolver: options?.cuaProductMcpServerResolver,
+          })
+            .then((result) => client.respond(request.id, result))
+            .catch(() => {
+              // 不回传原始异常，避免解析错误把 env/socket 配置带进日志或业务消息。
+              void client.respondError(request.id, {
+                code: -32603,
+                message: "Session MCP resolution failed",
+              });
+            });
+          return;
+        }
+
         // 官方 Server MCP 身份头：纯 RPC 中继，host 自动解析并响应。
         // 不 emitSessionEvent、不进 pending map——该请求没有 UI 语义，renderer 不参与。
         if (request.method === mycodeProtocolMethods.interactionRequestOfficialMcpAuthHeaders) {
@@ -2580,7 +2601,7 @@ export function createMyCodeAgentService(
                   ? await offPeakTaskService.getCodingPlanSupport()
                   : undefined;
               const providerId = support?.supported
-                ? OFF_PEAK_PROVIDER_IDS[support.providerFamily]
+                ? "mock:idle-task"
                 : undefined;
               const allowedModels = providerId
                 ? resolveOffPeakAllowedModels(grayConfig, providerId)

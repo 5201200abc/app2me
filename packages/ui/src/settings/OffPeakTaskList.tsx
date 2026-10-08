@@ -11,7 +11,7 @@ import {
   type ReactNode,
   type SVGProps,
 } from "react";
-import { CircleCheck, Loader2, TriangleAlert } from "lucide-react";
+import { CircleCheck, Loader2, TriangleAlert } from "@/components/icons/tabler.js";
 import {
   TID_OFFPEAK_ACTION_CONTINUE,
   TID_OFFPEAK_ACTION_DELETE,
@@ -224,7 +224,7 @@ export function OffPeakTaskList({
                     "flex w-fit shrink-0 items-center gap-0.5 font-normal",
                     footer.className,
                     (task.status === "queued" || task.status === "paused") &&
-                      // Zai Dark 的 brand 是白色，闲时排队 Tag 必须使用设计稿专用紫色语义。
+
                       "rounded-[8px] bg-idle-task-surface py-0.5 pl-1 pr-2 text-idle-task",
                   )}
                 >

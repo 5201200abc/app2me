@@ -4,7 +4,7 @@ import type { KeyboardEvent, MouseEvent } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import type { UniqueIdentifier } from "@dnd-kit/core";
 import { isCronTask, isOffPeakTask, type MyCodeTaskMeta } from "@mycode/shared";
-import { ArrowUpToLine, Clock, Cloud, Folder, ListTree, LoaderIcon, Moon, X } from "lucide-react";
+import { CircleX, Clock, Cloud, Folder, LoaderIcon, Moon, X } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { Badge } from "@/components/ui/badge.js";
 import { toast } from "@/components/ui/toast.js";
@@ -27,6 +27,7 @@ import { useTaskListItemContextActions } from "@/useTaskListItemContextActions.j
 import { useFeedbackStore } from "@/feedback/feedbackStore.js";
 import { getTaskListAttention, getTaskListRowActivity } from "@/v4/taskListRowActivity.js";
 import { GroupedTaskContextMenuContent } from "@/workspace-grouped-tasks/task-context-menu-content.js";
+import { TaskRowMoreMenu } from "@/workspace-grouped-tasks/task-row-more-menu.js";
 import { TaskRowActionButton } from "@/workspace-grouped-tasks/task-row-action-button.js";
 import { TaskInteractionBadge } from "@/TaskInteractionBadge.js";
 import { formatGroupedTaskHoverChangeParts } from "@/workspace-grouped-tasks/task-row-tooltip.js";
@@ -52,9 +53,7 @@ function GroupedTaskRowComponent({
   workspaceLabel,
   onSelectTask,
   onCloseTask,
-  onOpenFileTree,
   onMoveTaskToGroup,
-  onMoveTaskToTop,
   onStartRenameTask,
   onArchiveTask,
   onMarkTaskAsUnread,
@@ -103,10 +102,6 @@ function GroupedTaskRowComponent({
   // 交互胶囊是当前最高优先级的右侧状态；无论来自 sessions-index 摘要还是
   // activity attention，都不应再并排显示相对时间并挤压任务标题。
   const hasPendingInteraction = Boolean(task.pendingInteraction) || taskAttention !== null;
-  // 远端 session 未就绪时打开文件树必然会被 resolver 拒绝，因此不要暴露
-  // 无效 action；本地 task 不需要 remoteSessionId，仍保持入口可用。
-  const canOpenFileTree =
-    Boolean(onOpenFileTree) && (!task.workspaceIdentity?.trim() || Boolean(remoteSessionId));
   const taskAttentionLabel = taskAttention
     ? intl.formatMessage({
         id: taskAttention.kind === "userInput" ? "taskList.userInputTag" : "taskList.permissionTag",
@@ -136,12 +131,10 @@ function GroupedTaskRowComponent({
     activeTaskId === task.taskId;
   const isMobileActive = false;
   const statusDotClassName =
-    leadingIndicator === "error"
-      ? "bg-destructive"
-      : leadingIndicator === "unread"
-        ? // grouped task 未读点需要和普通 task list 共用 sky 色，避免 brand 色在不同主题下表达漂移。
-          "bg-sky-500 dark:bg-sky-400"
-        : null;
+    leadingIndicator === "unread"
+      ? // grouped task 未读点需要和普通 task list 共用 sky 色，避免 brand 色在不同主题下表达漂移。
+        "bg-sky-500 dark:bg-sky-400"
+      : null;
   const canShowHoverActions = !dragOverlay;
   // 工作流运行行：分组行同样长在标题下；
   // drag overlay 只是纯展示，不挂确认副作用与点击入口。
@@ -208,6 +201,15 @@ function GroupedTaskRowComponent({
           >
             {leadingIndicator === "loading" ? (
               <LoaderIcon className="size-3.5 animate-spin text-foreground-subtle" />
+            ) : leadingIndicator === "error" ? (
+              <CircleX
+                data-error-indicator="true"
+                aria-label="上次执行失败"
+                className="size-3.5 text-foreground-subtlest"
+                strokeWidth={1.5}
+              >
+                <title>上次执行失败</title>
+              </CircleX>
             ) : statusDotClassName ? (
               <span aria-hidden="true" className="flex size-4 shrink-0 items-center justify-center">
                 <span className={cn("size-1.5 rounded-full", statusDotClassName)} />
@@ -227,7 +229,14 @@ function GroupedTaskRowComponent({
                 className="size-3.5 shrink-0"
               />
             ) : null}
-            {!hasPendingInteraction ? <span className="mr-1">{taskTimeLabel}</span> : null}
+            {!hasPendingInteraction ? (
+              <span
+                data-task-time
+                className="mr-1 text-ui-caption font-normal tabular-nums text-foreground-subtlest"
+              >
+                {taskTimeLabel}
+              </span>
+            ) : null}
           </span>
         </span>
       </span>
@@ -238,6 +247,7 @@ function GroupedTaskRowComponent({
   if (dragOverlay) return taskRow;
 
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [taskRowHovered, setTaskRowHovered] = useState(false);
   const [taskRowFocusWithin, setTaskRowFocusWithin] = useState(false);
   const [isHoverNone] = useState(
@@ -260,7 +270,7 @@ function GroupedTaskRowComponent({
     taskId: task.taskId,
     provider: task.provider,
     intl,
-    loadTaskPaths: contextMenuOpen,
+    loadTaskPaths: contextMenuOpen || moreMenuOpen,
   });
   const handleSelect = () => {
     onSelectTask(task.workspacePath, task.taskId, task.workspaceIdentity);
@@ -272,22 +282,6 @@ function GroupedTaskRowComponent({
       return;
     }
     onCloseTask(task);
-  };
-  const handleOpenFileTree = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (workspaceActionsDisabled) {
-      return;
-    }
-    onOpenFileTree?.(task);
-  };
-  const handleMoveTaskToTop = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (workspaceActionsDisabled) {
-      return;
-    }
-    onMoveTaskToTop(task);
   };
   const handleOpenTaskFeedback = async () => {
     openFeedbackSubmit({
@@ -324,7 +318,8 @@ function GroupedTaskRowComponent({
     event.preventDefault();
     handleSelect();
   };
-  const dragDisabled = workspaceActionsDisabled || !dragId || contextMenuOpen || dragOverlay;
+  const dragDisabled =
+    workspaceActionsDisabled || !dragId || contextMenuOpen || moreMenuOpen || dragOverlay;
   const draggable = useDraggable({
     id: dragId ?? `disabled:${workspaceKey}:${task.taskId}`,
     disabled: dragDisabled,
@@ -399,6 +394,15 @@ function GroupedTaskRowComponent({
             <span className="flex shrink-0 items-center gap-1">
               {leadingIndicator === "loading" ? (
                 <LoaderIcon className="size-3.5 animate-spin text-foreground-subtle" />
+              ) : leadingIndicator === "error" ? (
+                <CircleX
+                  data-error-indicator="true"
+                  aria-label="上次执行失败"
+                  className="size-3.5 text-foreground-subtlest"
+                  strokeWidth={1.5}
+                >
+                  <title>上次执行失败</title>
+                </CircleX>
               ) : statusDotClassName ? (
                 <span
                   aria-hidden="true"
@@ -422,37 +426,52 @@ function GroupedTaskRowComponent({
                   className="size-3.5 shrink-0"
                 />
               ) : null}
-              {!hasPendingInteraction ? <span className="mr-1">{taskTimeLabel}</span> : null}
+              {!hasPendingInteraction ? (
+                <span
+                  data-task-time
+                  className="mr-1 text-ui-caption font-normal tabular-nums text-foreground-subtlest"
+                >
+                  {taskTimeLabel}
+                </span>
+              ) : null}
             </span>
           ) : null}
-          {shouldMountHoverActions ? (
+          {shouldMountHoverActions || moreMenuOpen || isActive ? (
             <span className="flex shrink-0 items-center gap-0.5">
-              {canOpenFileTree ? (
+              <TaskRowMoreMenu
+                label={intl.formatMessage({ id: "common.more" })}
+                open={moreMenuOpen}
+                onOpenChange={setMoreMenuOpen}
+              >
+                <GroupedTaskContextMenuContent
+                  menuKind="dropdown"
+                  task={task}
+                  currentGroupId={currentGroupId}
+                  groups={groups}
+                  intl={intl}
+                  fileManagerLabel={fileManagerLabel}
+                  taskSessionFile={taskSessionFile}
+                  taskNativeSessionLogFile={taskNativeSessionLogFile}
+                  onMoveTaskToGroup={onMoveTaskToGroup}
+                  onStartRenameTask={onStartRenameTask}
+                  onArchiveTask={onArchiveTask}
+                  onMarkTaskAsUnread={onMarkTaskAsUnread}
+                  onOpenTaskPathInFileManager={() => void handleOpenTaskPathInFileManager()}
+                  onCopyText={(label, text) => void handleCopyText(label, text)}
+                  onOpenTaskFeedback={() => void handleOpenTaskFeedback()}
+                  disabledReason={workspaceActionsDisabledReason}
+                />
+              </TaskRowMoreMenu>
+              {shouldMountHoverActions ? (
                 <TaskRowActionButton
-                  label={intl.formatMessage({ id: "git.action.showTree" })}
-                  onClick={handleOpenFileTree}
+                  label={intl.formatMessage({ id: "common.close" })}
+                  onClick={handleCloseTask}
                   showTooltip
                   disabledReason={workspaceActionsDisabledReason}
                 >
-                  <ListTree className="size-3.5" />
+                  <X className="size-3.5" />
                 </TaskRowActionButton>
               ) : null}
-              <TaskRowActionButton
-                label={intl.formatMessage({ id: "taskGroup.moveToTop" })}
-                onClick={handleMoveTaskToTop}
-                showTooltip
-                disabledReason={workspaceActionsDisabledReason}
-              >
-                <ArrowUpToLine className="size-3.5" />
-              </TaskRowActionButton>
-              <TaskRowActionButton
-                label={intl.formatMessage({ id: "common.close" })}
-                onClick={handleCloseTask}
-                showTooltip
-                disabledReason={workspaceActionsDisabledReason}
-              >
-                <X className="size-3.5" />
-              </TaskRowActionButton>
             </span>
           ) : null}
         </span>
@@ -461,7 +480,7 @@ function GroupedTaskRowComponent({
     </div>
   );
 
-  // grouped row 不能用原生 button 承载整行；行内还有菜单、关闭、文件树等 button，外层继续用 role=button，避免嵌套 button 破坏键盘和右键菜单语义。
+  // grouped row 不能用原生 button 承载整行；行内还有关闭 button，外层继续用 role=button，避免嵌套 button 破坏键盘和右键菜单语义。
   return (
     <ContextMenu onOpenChange={setContextMenuOpen}>
       {tooltipsDisabled ? (
@@ -510,7 +529,6 @@ function GroupedTaskRowComponent({
           taskSessionFile={taskSessionFile}
           taskNativeSessionLogFile={taskNativeSessionLogFile}
           onMoveTaskToGroup={onMoveTaskToGroup}
-          onMoveTaskToTop={onMoveTaskToTop}
           onStartRenameTask={onStartRenameTask}
           onArchiveTask={onArchiveTask}
           onMarkTaskAsUnread={onMarkTaskAsUnread}

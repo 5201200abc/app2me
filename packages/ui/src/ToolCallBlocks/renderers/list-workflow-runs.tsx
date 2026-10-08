@@ -1,4 +1,4 @@
-import { History } from "lucide-react";
+import { History } from "@/components/icons/tabler.js";
 import { useMemo } from "react";
 import type { ToolCallListWorkflowRunsDisplay } from "@mycode/shared/mycode-protocol-v4";
 import {

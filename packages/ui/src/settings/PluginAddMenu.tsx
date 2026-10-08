@@ -1,4 +1,4 @@
-import { ChevronDown, Loader2, Plus, Sparkles } from "lucide-react";
+import { ChevronDown, Loader2, Plus, Sparkles } from "@/components/icons/tabler.js";
 import type { CreateTaskRequest } from "@/app-shell/types.js";
 import { Button } from "@/components/ui/button.js";
 import {
@@ -24,13 +24,22 @@ export function PluginAddMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button type="button" variant="default" data-testid={testId}>
+        <Button
+          type="button"
+          variant="default"
+          className="gap-1 rounded-md px-2 text-ui-caption"
+          data-testid={testId}
+        >
           {creator.busy ? <Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> : null}
           {intl.formatMessage({ id: "pluginCreator.add" })}
           <ChevronDown className="size-3.5" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" data-testid="plugin-add-menu">
+      <DropdownMenuContent
+        align="end"
+        className="agent-settings-typography"
+        data-testid="plugin-add-menu"
+      >
         <DropdownMenuItem
           data-testid="plugin-create-menu-item"
           disabled={creator.busy || !creator.available}

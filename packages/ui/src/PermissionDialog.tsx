@@ -47,7 +47,7 @@ import { isSaveWorkflowToolCall } from "@/lib/workflowToolNames.js";
 import { useMyCodeStoreWithDefault } from "@/store/StoreProvider.js";
 import { DEFAULT_CODE_PREVIEW_SETTINGS } from "@/lib/codePreviewSettings.js";
 import { useMyCodeIntl } from "./i18n/IntlProvider.js";
-import { Info, LoaderIcon, WrenchIcon } from "lucide-react";
+import { Info, LoaderIcon, WrenchIcon } from "@/components/icons/tabler.js";
 
 const MCP_PERMISSION_TOOL_ICON = <WrenchIcon className="size-4 shrink-0 text-foreground-subtle" />;
 

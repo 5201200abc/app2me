@@ -1,3 +1,4 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 import {
   closestCenter,
   DndContext,
@@ -21,7 +22,7 @@ import {
   testId,
 } from "@mycode/shared";
 import type { QueueState } from "@mycode/shared/mycode-protocol-v4";
-import { ArrowUpFromLine, GripVertical, PencilIcon, Trash2Icon } from "lucide-react";
+import { ArrowUpFromLine, GripVertical, Trash2Icon } from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { Button } from "@/components/ui/button.js";
 import { cn } from "@/components/lib/utils.js";
@@ -244,7 +245,7 @@ const QueueRow = memo(function QueueRow({
             disabled={rowLocked}
             onClick={() => void onEditItem(item.queueItemId)}
           >
-            <PencilIcon className="size-4" />
+            <WriteIcon className="size-4" />
           </Button>
         </ControlHintTooltip>
       ) : null}

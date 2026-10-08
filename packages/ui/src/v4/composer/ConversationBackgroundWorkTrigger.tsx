@@ -1,5 +1,5 @@
 import { memo, useMemo } from "react";
-import { ActivityIcon, BotIcon, SquareTerminalIcon, Workflow } from "lucide-react";
+import { ActivityIcon, BotIcon, SquareTerminalIcon, Workflow } from "@/components/icons/tabler.js";
 import { TID_V4_COMPOSER_BACKGROUND_WORK_TRIGGER } from "@mycode/shared";
 import type { BackgroundWorkSummary } from "@mycode/shared/mycode-protocol-v4";
 import { Button } from "@/components/ui/button.js";

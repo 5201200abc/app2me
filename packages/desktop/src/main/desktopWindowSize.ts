@@ -1,82 +1,127 @@
 import type { BrowserWindow, Rectangle } from "electron";
 import type { AppSettings } from "@mycode/shared";
 
-export const DEFAULT_DESKTOP_WINDOW_WIDTH = 1200;
-export const DEFAULT_DESKTOP_WINDOW_HEIGHT = 800;
-export const MIN_DESKTOP_WINDOW_WIDTH = 480;
-export const MIN_DESKTOP_WINDOW_HEIGHT = 640;
+export const DEFAULT_DESKTOP_WINDOW_WIDTH = 1080;
+export const DEFAULT_DESKTOP_WINDOW_HEIGHT = 720;
+export const MIN_DESKTOP_WINDOW_WIDTH = 760;
+export const MIN_DESKTOP_WINDOW_HEIGHT = 520;
 const WINDOW_SIZE_PERSIST_DEBOUNCE_MS = 250;
-
 export type DesktopWindowSize = NonNullable<AppSettings["desktopWindowSize"]>;
 
 function clampDimension(value: number, minimum: number, available: number): number {
-  const maximum = Math.max(minimum, Math.floor(available));
-  return Math.min(Math.max(Math.floor(value), minimum), maximum);
+  return Math.min(Math.max(Math.floor(value), minimum), Math.max(minimum, Math.floor(available)));
 }
 
 export function resolveDesktopWindowSize(
   persisted: DesktopWindowSize | undefined,
-  workAreaSize: Pick<Rectangle, "width" | "height">,
+  workArea: Pick<Rectangle, "width" | "height"> & Partial<Pick<Rectangle, "x" | "y">>,
 ): DesktopWindowSize {
-  const width = persisted?.width ?? DEFAULT_DESKTOP_WINDOW_WIDTH;
-  const height = persisted?.height ?? DEFAULT_DESKTOP_WINDOW_HEIGHT;
-
+  const width = clampDimension(
+    persisted?.width ?? DEFAULT_DESKTOP_WINDOW_WIDTH,
+    MIN_DESKTOP_WINDOW_WIDTH,
+    workArea.width,
+  );
+  const height = clampDimension(
+    persisted?.height ?? DEFAULT_DESKTOP_WINDOW_HEIGHT,
+    MIN_DESKTOP_WINDOW_HEIGHT,
+    workArea.height,
+  );
+  const hasPosition = Number.isFinite(persisted?.x) && Number.isFinite(persisted?.y);
   return {
-    width: clampDimension(width, MIN_DESKTOP_WINDOW_WIDTH, workAreaSize.width),
-    height: clampDimension(height, MIN_DESKTOP_WINDOW_HEIGHT, workAreaSize.height),
+    width,
+    height,
+    ...(hasPosition
+      ? {
+          x: Math.min(
+            Math.max(Math.floor(persisted!.x!), workArea.x ?? 0),
+            (workArea.x ?? 0) + Math.max(0, workArea.width - width),
+          ),
+          y: Math.min(
+            Math.max(Math.floor(persisted!.y!), workArea.y ?? 0),
+            (workArea.y ?? 0) + Math.max(0, workArea.height - height),
+          ),
+        }
+      : {}),
     maximized: persisted?.maximized ?? false,
   };
 }
 
 type WindowSizePersistenceTarget = Pick<
   BrowserWindow,
-  "getNormalBounds" | "isDestroyed" | "isMaximized" | "on"
->;
+  "getNormalBounds" | "isDestroyed" | "isMaximized"
+> & {
+  on(
+    event: "resize" | "move" | "maximize" | "unmaximize" | "close" | "closed",
+    listener: () => void,
+  ): unknown;
+};
+type WindowSizePersistenceController = { flushForQuit: () => Promise<void> };
+const windowPersistenceControllers = new Set<WindowSizePersistenceController>();
+
+export async function flushDesktopWindowSizePersistenceForQuit(): Promise<void> {
+  await Promise.all(
+    [...windowPersistenceControllers].map((controller) => controller.flushForQuit()),
+  );
+}
 
 export function attachDesktopWindowSizePersistence(
   win: WindowSizePersistenceTarget,
   save: (state: DesktopWindowSize) => Promise<void>,
   onSaveError: (error: unknown) => void = () => undefined,
-): void {
-  let resizeTimer: ReturnType<typeof setTimeout> | null = null;
-
-  const persistCurrentState = (): void => {
+): WindowSizePersistenceController {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let frozen = false;
+  const pending = new Set<Promise<void>>();
+  const clearTimer = () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+  };
+  const capture = () => {
     if (win.isDestroyed()) return;
-
-    // 最大化窗口的当前 bounds 等于显示器工作区，直接持久化会覆盖用户最后一次
-    // 手动调整的普通窗口尺寸。始终读取 normal bounds，并把 maximized 作为独立状态保存。
+    // 最大化时保存 normal bounds，避免工作区覆盖用户的普通窗口尺寸和位置。
     const bounds = win.getNormalBounds();
-    const state: DesktopWindowSize = {
+    const write = save({
+      x: Math.floor(bounds.x),
+      y: Math.floor(bounds.y),
       width: Math.max(MIN_DESKTOP_WINDOW_WIDTH, Math.floor(bounds.width)),
       height: Math.max(MIN_DESKTOP_WINDOW_HEIGHT, Math.floor(bounds.height)),
       maximized: win.isMaximized(),
-    };
-    void save(state).catch(onSaveError);
+    }).catch(onSaveError);
+    pending.add(write);
+    void write.then(() => pending.delete(write));
   };
-
-  const clearResizeTimer = () => {
-    if (resizeTimer === null) return;
-    clearTimeout(resizeTimer);
-    resizeTimer = null;
+  const persistImmediately = () => {
+    clearTimer();
+    if (!frozen) capture();
   };
-  const persistImmediately = (): void => {
-    clearResizeTimer();
-    persistCurrentState();
+  const schedule = () => {
+    clearTimer();
+    if (frozen) return;
+    timer = setTimeout(persistImmediately, WINDOW_SIZE_PERSIST_DEBOUNCE_MS);
   };
-
-  win.on("resize", () => {
-    // resize 在 Linux 和部分 Windows 窗口管理器中会随拖拽高频触发；只保存稳定后的尺寸，
-    // 避免把与渲染帧同量级的写入堆进 setting.json 原子写队列。
-    clearResizeTimer();
-    resizeTimer = setTimeout(() => {
-      resizeTimer = null;
-      void persistCurrentState();
-    }, WINDOW_SIZE_PERSIST_DEBOUNCE_MS);
+  const controller: WindowSizePersistenceController = {
+    async flushForQuit() {
+      // close 曾只取消防抖，丢失最后一次调整。退出开始时捕获并等待原子写完成，
+      // 同时冻结后续事件，避免退出屏障结束后新写入遗留 setting.json.lock。
+      clearTimer();
+      if (!frozen) {
+        frozen = true;
+        capture();
+      }
+      await Promise.all([...pending]);
+    },
+  };
+  windowPersistenceControllers.add(controller);
+  win.on("resize", schedule);
+  win.on("move", schedule);
+  win.on("maximize", persistImmediately);
+  win.on("unmaximize", persistImmediately);
+  win.on("close", persistImmediately);
+  win.on("closed", () => {
+    clearTimer();
+    frozen = true;
+    // 已关闭窗口的在途写入仍纳入退出屏障，完成后再释放注册。
+    void Promise.all([...pending]).then(() => windowPersistenceControllers.delete(controller));
   });
-  win.on("maximize", () => void persistImmediately());
-  win.on("unmaximize", () => void persistImmediately());
-  // 退出屏障结束后 Electron 会再次触发 close；这里若启动异步设置写入，
-  // 随后的 app.exit 可能在 releaseLock 完成前终止 Main，遗留 setting.json.lock。
-  // close 只取消尚未触发的 resize 防抖，不再启动新的设置写入。
-  win.on("close", clearResizeTimer);
+  return controller;
 }

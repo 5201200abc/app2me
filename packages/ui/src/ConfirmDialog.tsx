@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox.js";
-import { XIcon } from "lucide-react";
+import { XIcon } from "@/components/icons/tabler.js";
 import { TID_CONFIRM_DIALOG_CONFIRM } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import {

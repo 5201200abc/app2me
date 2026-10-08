@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon } from "@/components/icons/tabler.js";
 import type { MyCodeTaskSnapshotToolFieldRef } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

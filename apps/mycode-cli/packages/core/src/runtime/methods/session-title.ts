@@ -56,6 +56,25 @@ export function maybeStartDeferredSessionTitleGeneration(
   });
 }
 
+/** 首轮标题属于输入 admission；必须等持久化事件完成后再启动主模型。 */
+export async function prepareInitialSessionTitle(
+  this: AgentRuntimeInternal,
+  input: string,
+  messageID: MessageId,
+  traceContext: TraceContext,
+): Promise<boolean> {
+  let pending: Promise<void> | undefined;
+  const started = maybeStartSessionTitleGenerationFromSeed.call(this, input, {
+    messageID,
+    traceContext,
+    bypassShortInputGuard: true,
+    onStarted: (generation) => { pending = generation; },
+  });
+  // /goal 首次 admission 已启动同一标题任务，主 turn 复用该 Promise，不能重复发模型请求。
+  if (pending ?? this.sessionTitleGenerationWork) await (pending ?? this.sessionTitleGenerationWork);
+  return started;
+}
+
 export function maybeStartSessionTitleGenerationFromExternalInput(
   this: AgentRuntimeInternal,
   input: string,
@@ -79,6 +98,7 @@ function maybeStartSessionTitleGenerationFromSeed(
     messageID?: MessageId;
     traceContext: TraceContext;
     bypassShortInputGuard?: boolean;
+    onStarted?: (generation: Promise<void>) => void;
   },
 ): boolean {
   if (
@@ -132,6 +152,8 @@ function maybeStartSessionTitleGenerationFromSeed(
       status: "failed",
     });
   });
+  this.sessionTitleGenerationWork = generation;
+  options.onStarted?.(generation);
   return true;
 }
 

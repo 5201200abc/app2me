@@ -6,7 +6,7 @@ import {
   MessageCircleIcon,
   SearchIcon,
   XIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
@@ -18,7 +18,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import {
   getConversationFindState,
   resolveConversationFindNavigationSelection,
@@ -64,7 +63,6 @@ export function TaskFindDialog({
   onFileChangeFindNavigate,
   onOpenFileChanges,
 }: TaskFindDialogProps) {
-  const isOfficeMode = useIsOfficeMode();
   const { intl } = useMyCodeIntl();
   const titleId = useId();
   const descriptionId = useId();
@@ -304,13 +302,12 @@ export function TaskFindDialog({
           onClick: () => moveSelection("next"),
           children: <ArrowDownIcon className="size-3.5" />,
         })}
-        {(!isOfficeMode || scope === "changes") &&
-          renderFindIconButton({
-            label: nextScopeLabel,
-            tooltipLabel: scopeTooltipLabel,
-            onClick: handleToggleScope,
-            children: <ScopeIcon className="size-3.5" />,
-          })}
+        {renderFindIconButton({
+          label: nextScopeLabel,
+          tooltipLabel: scopeTooltipLabel,
+          onClick: handleToggleScope,
+          children: <ScopeIcon className="size-3.5" />,
+        })}
       </div>
       <div className="ml-0.5 flex shrink-0 border-l border-border pl-1.5">
         {renderFindIconButton({

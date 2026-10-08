@@ -1,23 +1,13 @@
-# MyCode
+# app2me
 
 <div align="center">
-  <img src="public/logo/icons/1024x1024.png" alt="MyCode" width="128" height="128" />
+  <img src="public/logo/icons/1024x1024.png" alt="app2me" width="128" height="128" />
 </div>
-<p align="center">
-  <a href="https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=47ag983c-8fcb-4d6d-814b-5395193a712c&amp;qr_code=true">飞书社群</a> ·
-  <a href="https://discord.gg/z9aBcQXZQ3">Discord</a>
-</p>
 <p align="center">
   简体中文 | <a href="README.en.md">English</a>
 </p>
 
-
-
-MyCode 是 AI 编程工作台，提供桌面应用、浏览器界面和终端 Agent。本仓库包含客户端、后端服务、共享 UI，以及 Agent CLI 与运行时源码。
-
-## 更新
-
-- 2026-9-23：更新至 MyCode v3.14.3 版本。
+app2me 是包含 MyCode 编程工作台和 MyChat 聊天模式的项目。本仓库包含桌面应用、Web 客户端、后端服务、共享 UI，以及 MyCode Agent CLI 与运行时源码。
 
 ## 初始化
 
@@ -28,8 +18,6 @@ pnpm bootstrap
 ```
 
 `pnpm bootstrap` 安装 workspace 依赖、准备桌面本地运行资源，再执行 `build:bootstrap`。
-
-Agent CLI 与运行时源码位于 [apps/mycode-cli/](apps/mycode-cli/)，作为普通目录随本仓库一起克隆，无需单独拉取或初始化 Git submodule。
 
 根据需要选择其他初始化或构建入口：
 
@@ -77,7 +65,7 @@ pnpm dev:web
 MYCODE_SERVER_WORKSPACE=/path/to/project pnpm dev:web
 ```
 
-该命令同时启动 Web 开发服务器（默认 `http://localhost:5173`）和后端（默认 `http://localhost:3030`）；浏览器访问前者。`/ws` 和一般 `/api` 请求代理到本地后端，`/api/v1/oauth/token` 单独代理到当前配置的产品服务。
+该命令同时启动 Web 开发服务器（默认 `http://localhost:5173`）和后端（默认 `http://localhost:3030`）；浏览器访问前者。`/ws` 和一般 `/api` 请求代理到本地后端。
 
 Agent 源码修改后，执行 `pnpm --filter @mycode/cli... build` 并重启服务。需要验证完整发行包时，按下方“MyCode 命令行版”打包章节解压运行。
 
@@ -125,18 +113,16 @@ node apps/mycode-cli/packages/cli/dist/mycode.cjs --help
 
 根目录 [.env.example](.env.example) 提供服务地址与构建配置示例，可按需复制到 `.env`，本地覆盖放入 `.env.local`。Desktop 的开发环境通过 `dev:desktop:test` / `dev:desktop:prod` 选择。
 
-| 配置                                 | 用途                                             |
-| ------------------------------------ | ------------------------------------------------ |
-| `MYCODE_DATA_BASE_DIR`                | 应用数据基目录，数据写入其下的 `.mycode/`         |
+| 配置                                  | 用途                                             |
+| ------------------------------------- | ------------------------------------------------ |
+| `MYCODE_DATA_BASE_DIR`                | 应用数据基目录，数据写入其下的 `.mycode/`        |
 | `MYCODE_SERVER_WORKSPACE`             | Web 后端的工作区路径                             |
 | `MYCODE_BUILTIN_PROVIDER_CONFIG_FILE` | 本地 Provider 配置文件路径；未设置时使用内置配置 |
 | `MYCODE_DIST_BASE_URL`                | 命令行安装脚本使用的下载根地址                   |
 
-运行时变量可在启动命令的环境中显式设置。随客户端发布的默认配置见 [config/README.md](config/README.md)。
+运行时变量可在启动命令的环境中显式设置。随客户端发布的内置模型配置见 [mycode-builtin.json](config/provider/mycode-builtin.json)。
 
 ## 打包
-
-第三方声明生成、发行校验流程及声明在发行物中的位置见 [third-party/README.md](third-party/README.md)。
 
 ### 桌面版
 
@@ -149,12 +135,12 @@ pnpm bundle:desktop -- --os win --arch x64
 pnpm bundle:desktop -- --help
 ```
 
-默认目标为 macOS arm64，默认输出目录为 `packages/desktop/dist/`。`--os` 支持 `mac`、`win`、`linux`，`--arch` 支持 `x64`、`arm64`；实际打包与签名需要目标平台对应的工具和配置。
+默认目标为当前系统和 CPU 架构，输出目录为 `releases/current/`。`bundle:desktop` 与 `release` 共用构建入口，产物名为 `app2me-YYYY-MM-DD`。`pnpm release:publish` 发布至 GitHub 固定 `latest`。`--os` 支持 `mac`、`win`、`linux`，`--arch` 支持 `x64`、`arm64`；实际打包与签名需要目标平台对应的工具和配置。
 
-安装：双击打开产物 DMG，将 MyCode 拖入"应用程序"。本地构建未签名，首次打开若被 macOS 拦截，执行：
+安装：双击打开产物 DMG，将 app2me 拖入"应用程序"。本地构建未签名，首次打开若被 macOS 拦截，执行：
 
 ```bash
-sudo xattr -rd com.apple.quarantine /Applications/MyCode.app
+sudo xattr -rd com.apple.quarantine /Applications/app2me.app
 ```
 
 ### MyCode 命令行版
@@ -184,8 +170,6 @@ pnpm build:mycode --help
 
 完整目录可上传到配置的下载根地址。安装脚本从该地址下载运行包，默认安装到 `~/.mycode/runtime`，并在 `~/.local/bin` 创建 `mycode` 命令。安装目录可通过 `MYCODE_DIST_HOME` 修改，命令目录可通过 `MYCODE_DIST_BIN_DIR` 修改。
 
-旧 Lite 用户需要改用上述构建命令、环境变量和新的安装脚本。新安装不会删除旧 Lite 目录，也不会迁移或删除已有会话数据。
-
 本地调试打包产物时，可直接解压运行，无需上传或安装：
 
 ```bash
@@ -210,14 +194,20 @@ node dist/mycode/debug/mycode/bin/mycode.mjs --web \
 | `packages/desktop`                                   | Electron Main、Host、Renderer 与桌面打包   |
 | `packages/web`                                       | Web 客户端                                 |
 | `packages/server`                                    | HTTP / WebSocket 服务与远程连接            |
-| `packages/mycode-server-cli`                          | 独立 Server 启动与进程管理                 |
+| `packages/mycode-server-cli`                         | 独立 Server 启动与进程管理                 |
 | `packages/ui`                                        | 共享 React 组件、hooks 与 Zustand 状态     |
 | `packages/services`                                  | 业务服务与持久化                           |
 | `packages/shared`、`packages/rpc`、`packages/client` | 共享协议和类型、RPC 框架、Agent 客户端 SDK |
 | `packages/provider`、`packages/provider-node`        | Provider 公共能力与 Node 实现              |
-| `apps/mycode-cli`                                     | Agent CLI、TUI、运行时与工具               |
+| [apps/mycode-cli](apps/mycode-cli/README.md)         | Agent CLI、TUI、运行时与工具               |
 | `scripts`、`config`、`third-party`                   | 构建维护脚本、内置配置与第三方声明材料     |
 
-## 项目声明
+## 自动发布
 
-功能与优惠范围、维护规则、执行与数据风险，以及许可和第三方版权说明，详见 [NOTICE.md](NOTICE.md)。
+每次推送到 `main`（含 PR 合并）后，[GitHub Actions](.github/workflows/release.yml) 为每条新代码提交准备递增的内部版本，并构建 macOS、Windows、Linux 的 x64 和 arm64 安装包。六个目标均通过严格许可与产物校验后，统一覆盖 GitHub 固定 `latest` 发布。日期命名保持 `app2me-YYYY-MM-DD`。已随提交更新的版本直接复用，重跑同一提交不重复增加版本，旧任务不能覆盖更新版本。手动重试使用工作流的提交 SHA 输入。
+
+工作流需要仓库允许 Actions 写入版本提交和 Releases；若分支保护禁止机器人直接写入 `main`，应为该工作流配置合适的 GitHub App 权限。安装包默认未签名；签名需单独配置对应平台凭据。
+
+## 许可
+
+[Apache-2.0](LICENSE) · [项目声明](NOTICE.md) · [第三方声明](THIRD-PARTY-NOTICES.md)

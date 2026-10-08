@@ -1,4 +1,4 @@
-import { Clock } from "lucide-react";
+import { Clock } from "@/components/icons/tabler.js";
 import { useEffect, useState } from "react";
 import type { MyCodeTaskMeta } from "@mycode/shared";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
@@ -31,8 +31,11 @@ export function WorkspaceLastActivity({ task }: { task: MyCodeTaskMeta | null })
           { count: minutes < 60 ? minutes : Math.floor(minutes / (minutes < 1440 ? 60 : 1440)) },
         );
   return (
-    <span data-workspace-last-activity="" className="flex min-w-0 items-center gap-2 font-normal">
-      <Clock className="size-4 shrink-0" />
+    <span
+      data-workspace-last-activity=""
+      className="flex min-w-0 items-center gap-1.5 text-ui-sm font-normal text-foreground-subtle"
+    >
+      <Clock className="size-3.5 shrink-0" strokeWidth={1.5} />
       <span>{intl.formatMessage({ id: "workspace.context.lastActivity" }, { time })}</span>
     </span>
   );

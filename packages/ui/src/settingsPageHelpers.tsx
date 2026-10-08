@@ -26,12 +26,10 @@ import {
 import { Switch } from "@/components/ui/switch.js";
 import { Input } from "@/components/ui/input.js";
 import { Button } from "@/components/ui/button.js";
-import { SettingsBadge, SettingsGroupCard, SettingsRow } from "@/settings/SettingsPageParts.js";
+import { SettingsGroupCard, SettingsRow } from "@/settings/SettingsPageParts.js";
+import { DefaultFileOpenLocationRow } from "@/settings/DefaultFileOpenLocationRow.js";
 import { DataBaseDirControl } from "@/settings/DataBaseDirControl.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-import { useOptionalServices } from "@/hooks/useServices.js";
-import { ProactiveSuggestionsSetting } from "@/settings/ProactiveSuggestionsSetting.js";
-import { normalizeInterfaceMode, type InterfaceMode } from "@/lib/interfaceMode.js";
 import {
   createSettingsPageConfig,
   resolveSettingsSectionForPlatform,
@@ -50,8 +48,6 @@ const MYCODE_INTERACTION_BEHAVIOR_OPTIONS: readonly MyCodeInteractionBehavior[] 
 
 export function GeneralSectionContent({
   localePreference,
-  interfaceMode = "coding",
-  setInterfaceMode = () => {},
   notificationEnabled,
   notificationSoundEnabled,
   closeToTrayOnWindows,
@@ -78,7 +74,6 @@ export function GeneralSectionContent({
   taskAutoArchiveEnabled,
   taskAutoArchiveOlderThanDays,
   messageStreamShowReasoning,
-  messageStreamShowTodos,
   toolGroupingExploreEnabled,
   toolGroupingTerminalEnabled,
   toolGroupingChangesEnabled,
@@ -102,7 +97,6 @@ export function GeneralSectionContent({
   onReceivePreviewUpdatesChange,
   onAutoDownloadAndInstallUpdatesChange,
   onMessageStreamShowReasoningChange,
-  onMessageStreamShowTodosChange,
   onToolGroupingExploreEnabledChange,
   onToolGroupingTerminalEnabledChange,
   onToolGroupingChangesEnabledChange,
@@ -111,8 +105,6 @@ export function GeneralSectionContent({
   onModelIoFullRetentionEnabledChange = async () => {},
 }: {
   localePreference: LocalePreference;
-  interfaceMode?: InterfaceMode;
-  setInterfaceMode?: (mode: InterfaceMode) => void;
   notificationEnabled: boolean;
   notificationSoundEnabled: boolean;
   closeToTrayOnWindows: boolean;
@@ -140,7 +132,6 @@ export function GeneralSectionContent({
   taskAutoArchiveEnabled: boolean;
   taskAutoArchiveOlderThanDays: number;
   messageStreamShowReasoning: boolean;
-  messageStreamShowTodos: boolean;
   toolGroupingExploreEnabled: boolean;
   toolGroupingTerminalEnabled: boolean;
   toolGroupingChangesEnabled: boolean;
@@ -164,7 +155,6 @@ export function GeneralSectionContent({
   onReceivePreviewUpdatesChange: (enabled: boolean) => Promise<void>;
   onAutoDownloadAndInstallUpdatesChange: (enabled: boolean) => Promise<void>;
   onMessageStreamShowReasoningChange: (enabled: boolean) => Promise<void>;
-  onMessageStreamShowTodosChange: (enabled: boolean) => Promise<void>;
   onToolGroupingExploreEnabledChange: (enabled: boolean) => Promise<void>;
   onToolGroupingTerminalEnabledChange: (enabled: boolean) => Promise<void>;
   onToolGroupingChangesEnabledChange: (enabled: boolean) => Promise<void>;
@@ -173,7 +163,6 @@ export function GeneralSectionContent({
   onModelIoFullRetentionEnabledChange?: (enabled: boolean) => Promise<void>;
 }) {
   const { intl } = useMyCodeIntl();
-  const hasServices = Boolean(useOptionalServices());
   // 部分 SSR 单测会用精简 props 直接渲染本组件，新增终端设置项后旧 helper 未必同步传值。
   // 这里把运行时缺省值兜到“继承系统 profile”，避免 undefined.trim() 把无关测试打断。
   const [localTerminalFontFamily, setLocalTerminalFontFamily] = useState(terminalFontFamily);
@@ -278,7 +267,7 @@ export function GeneralSectionContent({
   }, [normalizedHttpProxyCaCertPath, onHttpProxyCaCertPathChange]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <SettingsGroupCard>
         <SettingsRow
           label={intl.formatMessage({ id: "settings.locale" })}
@@ -289,7 +278,7 @@ export function GeneralSectionContent({
               onValueChange={(value) => setLocalePreference(value as LocalePreference)}
             >
               <SelectTrigger
-                size="lg"
+                size="sm"
                 className="w-[260px] min-w-0 justify-between"
                 data-testid={TID_SETTINGS_LOCALE_SELECT_TRIGGER}
               >
@@ -318,37 +307,7 @@ export function GeneralSectionContent({
             </Select>
           }
         />
-      </SettingsGroupCard>
-
-      <SettingsGroupCard>
-        <SettingsRow
-          controlLayout="wide"
-          label={intl.formatMessage({ id: "settings.interfaceMode" })}
-          description={intl.formatMessage({ id: "settings.interfaceMode.description" })}
-          control={
-            <Select
-              value={interfaceMode}
-              onValueChange={(value) => setInterfaceMode(normalizeInterfaceMode(value))}
-            >
-              <SelectTrigger
-                size="lg"
-                className="w-full min-w-0 sm:w-64"
-                aria-label={intl.formatMessage({ id: "settings.interfaceMode" })}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="coding">
-                  {intl.formatMessage({ id: "settings.interfaceMode.coding" })}
-                </SelectItem>
-                <SelectItem value="office">
-                  {intl.formatMessage({ id: "settings.interfaceMode.office" })}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          }
-        />
-        {hasServices ? <ProactiveSuggestionsSetting /> : null}
+        {isDesktop ? <DefaultFileOpenLocationRow /> : null}
       </SettingsGroupCard>
 
       <SettingsGroupCard>
@@ -370,7 +329,7 @@ export function GeneralSectionContent({
           control={
             <Button
               type="button"
-              size="lg"
+              size="sm"
               disabled={!isTerminalFontFamilyDirty}
               onClick={() => void handleTerminalFontFamilySave()}
             >
@@ -378,22 +337,24 @@ export function GeneralSectionContent({
             </Button>
           }
           detail={
-            <Input
-              size="lg"
-              value={localTerminalFontFamily}
-              placeholder={intl.formatMessage({
-                id: "settings.terminalFontFamilyPlaceholder",
-              })}
-              onChange={(event) => {
-                setLocalTerminalFontFamily(event.currentTarget.value);
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" && isTerminalFontFamilyDirty) {
-                  void handleTerminalFontFamilySave();
-                }
-              }}
-              className="max-w-[520px] font-mono"
-            />
+            <div className="max-w-[480px]">
+              <Input
+                size="sm"
+                value={localTerminalFontFamily}
+                placeholder={intl.formatMessage({
+                  id: "settings.terminalFontFamilyPlaceholder",
+                })}
+                onChange={(event) => {
+                  setLocalTerminalFontFamily(event.currentTarget.value);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && isTerminalFontFamilyDirty) {
+                    void handleTerminalFontFamilySave();
+                  }
+                }}
+                className="h-7 rounded-md border-input-border/60 text-ui-caption"
+              />
+            </div>
           }
         />
         {showIntegratedTerminalShell ? (
@@ -409,7 +370,7 @@ export function GeneralSectionContent({
                   void handleIntegratedTerminalShellChange(value);
                 }}
               >
-                <SelectTrigger size="lg" className="w-[260px] min-w-0 justify-between">
+                <SelectTrigger size="sm" className="w-[260px] min-w-0 justify-between">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -455,7 +416,7 @@ export function GeneralSectionContent({
           control={
             <Button
               type="button"
-              size="lg"
+              size="sm"
               disabled={!isHttpProxyDirty}
               onClick={() => void handleHttpProxySave()}
             >
@@ -464,7 +425,7 @@ export function GeneralSectionContent({
           }
           detail={
             <Input
-              size="lg"
+              size="sm"
               value={localHttpProxy}
               placeholder={intl.formatMessage({
                 id: "settings.httpProxyPlaceholder",
@@ -490,7 +451,7 @@ export function GeneralSectionContent({
           control={
             <Button
               type="button"
-              size="lg"
+              size="sm"
               disabled={!isHttpProxyNoProxyDirty}
               onClick={() => void handleHttpProxyNoProxySave()}
             >
@@ -499,7 +460,7 @@ export function GeneralSectionContent({
           }
           detail={
             <Input
-              size="lg"
+              size="sm"
               value={localHttpProxyNoProxy}
               placeholder={intl.formatMessage({
                 id: "settings.httpProxyNoProxyPlaceholder",
@@ -525,7 +486,7 @@ export function GeneralSectionContent({
           control={
             <Button
               type="button"
-              size="lg"
+              size="sm"
               disabled={!isHttpProxyCaCertPathDirty}
               onClick={() => void handleHttpProxyCaCertPathSave()}
             >
@@ -534,7 +495,7 @@ export function GeneralSectionContent({
           }
           detail={
             <Input
-              size="lg"
+              size="sm"
               value={localHttpProxyCaCertPath}
               placeholder={intl.formatMessage({
                 id: "settings.httpProxyCaCertPathPlaceholder",
@@ -683,7 +644,7 @@ export function GeneralSectionContent({
                 void onMyCodeInteractionBehaviorChange(value as MyCodeInteractionBehavior);
               }}
             >
-              <SelectTrigger size="lg" className="w-[260px] min-w-0 justify-between">
+              <SelectTrigger size="sm" className="w-[260px] min-w-0 justify-between">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -744,21 +705,6 @@ export function GeneralSectionContent({
               checked={messageStreamShowReasoning}
               onCheckedChange={(checked) => {
                 void onMessageStreamShowReasoningChange(checked);
-              }}
-            />
-          }
-        />
-        <SettingsRow
-          label={intl.formatMessage({ id: "settings.messageStreamShowTodos" })}
-          description={intl.formatMessage({
-            id: "settings.messageStreamShowTodosDescription",
-          })}
-          control={
-            <Switch
-              aria-label={intl.formatMessage({ id: "settings.messageStreamShowTodos" })}
-              checked={messageStreamShowTodos}
-              onCheckedChange={(checked) => {
-                void onMessageStreamShowTodosChange(checked);
               }}
             />
           }
@@ -827,9 +773,10 @@ export function GeneralSectionContent({
         />
         <SettingsRow
           label={intl.formatMessage({ id: "settings.taskAutoArchiveDays" })}
-          description={intl.formatMessage({
-            id: "settings.taskAutoArchiveDaysDescription",
-          })}
+          description={intl.formatMessage(
+            { id: "settings.taskAutoArchiveDaysDescription" },
+            { days: taskAutoArchiveOlderThanDays },
+          )}
           control={
             <Select
               value={String(taskAutoArchiveOlderThanDays)}
@@ -838,7 +785,7 @@ export function GeneralSectionContent({
               }}
               disabled={!taskAutoArchiveEnabled}
             >
-              <SelectTrigger size="lg" className="w-[260px] min-w-0 justify-between">
+              <SelectTrigger size="sm" className="w-[260px] min-w-0 justify-between">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -871,18 +818,6 @@ export function GeneralSectionContent({
           }
         />
       </SettingsGroupCard>
-    </div>
-  );
-}
-
-export function GeneralSectionHeader({ localePreference }: { localePreference: LocalePreference }) {
-  const { intl } = useMyCodeIntl();
-
-  return (
-    <div className="mt-4 flex flex-wrap gap-2">
-      <SettingsBadge>
-        {intl.formatMessage({ id: `settings.locale.${localePreference}` })}
-      </SettingsBadge>
     </div>
   );
 }

@@ -183,7 +183,13 @@ export const projectionModel = {
     const usage = payload.usage as ModelUsage;
     const usedTokens = getModelUsageContextTokens(usage) ?? 0;
     this.contextWindowState.usedTokens = usedTokens;
-    const maxTokens = payload.contextWindow ?? this.contextWindowState.maxTokens;
+    // 主轮次的新容量必须写回投影状态，否则下一条缺容量的旧事件会退回通用 500K。
+    // 与 ModelSelected 一样标记已触碰，防止恢复 seed 覆盖这条日志事实。
+    if (Number.isSafeInteger(payload.contextWindow) && payload.contextWindow! > 0) {
+      this.contextWindowState.maxTokens = payload.contextWindow!;
+      this.contextWindowState.touchedByEvent = true;
+    }
+    const maxTokens = this.contextWindowState.maxTokens;
     const cumulative = this.snapshot.usage.cumulative;
     deltas.push({
       op: "state.updated",

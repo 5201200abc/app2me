@@ -1,4 +1,4 @@
-import { GitGraph, GitMergeIcon, RefreshCwIcon } from "lucide-react";
+import { GitGraph, GitMergeIcon, RefreshCwIcon } from "@/components/icons/tabler.js";
 import { useCallback, useMemo, useState, type UIEvent } from "react";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";

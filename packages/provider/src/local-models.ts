@@ -8,6 +8,8 @@ export interface DiscoveredLocalModel {
   mmprojPath: string | null;
   sizeBytes: number;
   vision: boolean;
+  /** 已识别模型的原生总窗口；未知模型不冒用其他模型容量。 */
+  contextWindow?: number;
   reasoningControl: "effort" | "toggle";
   reasoningLevels: string[];
   defaultReasoningLevel: string;

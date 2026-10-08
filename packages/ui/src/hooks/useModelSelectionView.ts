@@ -10,6 +10,7 @@ import { logger } from "@/logger.js";
 export type ModelSelectionState =
   | { status: "loading" }
   | { status: "ready"; view: ModelSelectionView }
+  | { status: "refreshing"; view: ModelSelectionView; error?: Error }
   | { status: "unavailable"; reason: "remote-waiting" | "missing-target" }
   | { status: "error"; error: Error };
 
@@ -23,6 +24,7 @@ interface OwnedModelSelectionState {
   enabled: boolean;
   unavailableReason: "remote-waiting" | "missing-target";
   inputKey: string | undefined;
+  selectionIdentity: string | undefined;
   state: ModelSelectionState;
 }
 
@@ -48,6 +50,30 @@ function initialState(
     : { status: "unavailable", reason: unavailableReason };
 }
 
+function retainedPresentationState(
+  previous: OwnedModelSelectionState,
+  service: IModelSelectionService | null,
+  enabled: boolean,
+  unavailableReason: OwnedModelSelectionState["unavailableReason"],
+  inputKey: string | undefined,
+  selectionIdentity: string | undefined,
+): ModelSelectionState | null {
+  if (
+    !enabled ||
+    !service ||
+    previous.service !== service ||
+    previous.enabled !== enabled ||
+    previous.unavailableReason !== unavailableReason ||
+    (previous.state.status !== "ready" && previous.state.status !== "refreshing")
+  )
+    return null;
+  if (previous.inputKey === inputKey) return previous.state;
+  // 思考更新曾卸载 range 并丢失拖动；同模型只保留展示目录，refreshing 不能用于业务提交。
+  return selectionIdentity !== undefined && previous.selectionIdentity === selectionIdentity
+    ? { status: "refreshing", view: previous.state.view }
+    : null;
+}
+
 /** 订阅明确 Host Service；返回状态在同一次 render 即绑定新 owner，不暴露旧 Host View。 */
 export function useModelSelectionServiceView(
   service: IModelSelectionService | null | undefined,
@@ -59,12 +85,16 @@ export function useModelSelectionServiceView(
   // 调用方可每次 render 创建参数对象；所有权按选择内容绑定，不按对象引用反复订阅。
   const inputKey = input === undefined ? undefined : JSON.stringify(input);
   const stableInput = useMemo(() => input, [inputKey]);
+  const selectionIdentity = input?.selection
+    ? JSON.stringify([input.selection.providerId, input.selection.modelId])
+    : undefined;
   const [reloadVersion, reload] = useReducer((value: number) => value + 1, 0);
   const [owned, setOwned] = useState<OwnedModelSelectionState>(() => ({
     service: normalizedService,
     enabled,
     unavailableReason,
     inputKey,
+    selectionIdentity,
     state: initialState(normalizedService, enabled, unavailableReason),
   }));
   const ownedRef = useRef(owned);
@@ -77,31 +107,40 @@ export function useModelSelectionServiceView(
     owned.unavailableReason === unavailableReason;
   const visibleState = ownerMatches
     ? owned.state
-    : initialState(normalizedService, enabled, unavailableReason);
+    : (retainedPresentationState(
+        owned,
+        normalizedService,
+        enabled,
+        unavailableReason,
+        inputKey,
+        selectionIdentity,
+      ) ?? initialState(normalizedService, enabled, unavailableReason));
 
   useEffect(() => {
     generationRef.current += 1;
     const generation = generationRef.current;
     const previous = ownedRef.current;
-    const retainedReady =
-      previous.service === normalizedService &&
-      previous.enabled === enabled &&
-      previous.inputKey === inputKey &&
-      previous.unavailableReason === unavailableReason &&
-      previous.state.status === "ready"
-        ? previous.state
-        : null;
+    const retained = retainedPresentationState(
+      previous,
+      normalizedService,
+      enabled,
+      unavailableReason,
+      inputKey,
+      selectionIdentity,
+    );
+    const retainedView = retained && "view" in retained ? retained.view : null;
     setOwned({
       service: normalizedService,
       enabled,
       unavailableReason,
       inputKey,
-      state: retainedReady ?? initialState(normalizedService, enabled, unavailableReason),
+      selectionIdentity,
+      state: retained ?? initialState(normalizedService, enabled, unavailableReason),
     });
     if (!enabled || !normalizedService) return;
 
-    let latestRevision = retainedReady?.view.revision ?? -1;
-    let hasReadyView = retainedReady !== null;
+    let latestRevision = retainedView?.revision ?? -1;
+    let hasReadyView = retained?.status === "ready";
     let requestId = 0;
     let retryCount = 0;
     let retryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -119,6 +158,7 @@ export function useModelSelectionServiceView(
         enabled,
         unavailableReason,
         inputKey,
+        selectionIdentity,
         state: { status: "ready", view: candidate },
       });
     };
@@ -140,7 +180,10 @@ export function useModelSelectionServiceView(
               enabled,
               unavailableReason,
               inputKey,
-              state: { status: "error", error },
+              selectionIdentity,
+              state: retainedView
+                ? { status: "refreshing", view: retainedView, error }
+                : { status: "error", error },
             });
             const delay = INITIAL_READ_RETRY_DELAYS[retryCount];
             if (delay !== undefined && isTransientReadError(cause)) {
@@ -166,7 +209,15 @@ export function useModelSelectionServiceView(
       cancelRetry();
       subscription.dispose();
     };
-  }, [enabled, normalizedService, reloadVersion, unavailableReason, inputKey, stableInput]);
+  }, [
+    enabled,
+    normalizedService,
+    reloadVersion,
+    unavailableReason,
+    inputKey,
+    stableInput,
+    selectionIdentity,
+  ]);
 
   return { state: visibleState, reload: useCallback(() => reload(), []) };
 }

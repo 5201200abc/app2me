@@ -4,6 +4,11 @@ import {
   ContextMenuSeparator,
 } from "@/components/ui/context-menu.js";
 import { TaskActionMenuContent } from "@/TaskActionMenuContent.js";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu.js";
 
 export function TaskListItemContextMenu({
   intl,
@@ -27,6 +32,7 @@ export function TaskListItemContextMenu({
   onViewModelTrajectory,
   disableTaskActions = false,
   disabledReason,
+  menuKind = "context",
 }: {
   intl: {
     formatMessage: (desc: { id: string }, values?: Record<string, string>) => string;
@@ -57,9 +63,16 @@ export function TaskListItemContextMenu({
   onViewModelTrajectory?: () => void;
   disableTaskActions?: boolean;
   disabledReason?: string;
+  menuKind?: "context" | "dropdown";
 }) {
+  const Content = menuKind === "dropdown" ? DropdownMenuContent : ContextMenuContent;
   return (
-    <ContextMenuContent className="w-52">
+    <Content
+      className="w-52"
+      {...(menuKind === "dropdown"
+        ? { side: "right" as const, align: "start" as const, "data-sidebar-task-menu": "" }
+        : {})}
+    >
       <TaskActionMenuContent
         intl={intl}
         isPinned={isPinned}
@@ -67,8 +80,8 @@ export function TaskListItemContextMenu({
         taskSessionFile={taskSessionFile}
         activeSessionId={activeSessionId}
         taskNativeSessionLogFile={taskNativeSessionLogFile}
-        Item={ContextMenuItem}
-        Separator={ContextMenuSeparator}
+        Item={menuKind === "dropdown" ? DropdownMenuItem : ContextMenuItem}
+        Separator={menuKind === "dropdown" ? DropdownMenuSeparator : ContextMenuSeparator}
         onTogglePinTask={onTogglePinTask}
         onStartRenameTask={onStartRenameTask}
         onArchiveTask={onArchiveTask}
@@ -85,6 +98,6 @@ export function TaskListItemContextMenu({
         disableTaskActions={disableTaskActions}
         disabledReason={disabledReason}
       />
-    </ContextMenuContent>
+    </Content>
   );
 }

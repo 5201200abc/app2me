@@ -1,4 +1,4 @@
-import { CheckIcon, FolderIcon, Loader2Icon } from "lucide-react";
+import { CheckIcon, FolderIcon, Loader2Icon } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { Progress } from "@/components/ui/progress.js";
 import {

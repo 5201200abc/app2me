@@ -1,4 +1,4 @@
-import { HardDrive } from "lucide-react";
+import { HardDrive } from "@/components/icons/tabler.js";
 import {
   type StorageVolumeGroup,
   TID_RESOURCE_MANAGER_STORAGE_DISK_CARD,

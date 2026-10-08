@@ -7,6 +7,14 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
 } from "@/components/ui/context-menu.js";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from "@/components/ui/dropdown-menu.js";
 import { TaskGroupColorDot } from "@/workspace-grouped-tasks/colors.js";
 import type { TaskGroupMenuItem } from "@/workspace-grouped-tasks/types.js";
 
@@ -19,7 +27,6 @@ export function GroupedTaskContextMenuContent({
   taskSessionFile,
   taskNativeSessionLogFile,
   onMoveTaskToGroup,
-  onMoveTaskToTop,
   onStartRenameTask,
   onArchiveTask,
   onMarkTaskAsUnread,
@@ -27,6 +34,7 @@ export function GroupedTaskContextMenuContent({
   onCopyText,
   onOpenTaskFeedback,
   disabledReason,
+  menuKind = "context",
 }: {
   task: MyCodeTaskMeta;
   currentGroupId?: string;
@@ -38,7 +46,6 @@ export function GroupedTaskContextMenuContent({
   taskSessionFile: { loading: boolean; path: string | null };
   taskNativeSessionLogFile: { loading: boolean; path: string | null };
   onMoveTaskToGroup: (task: MyCodeTaskMeta, groupId: string | null) => void;
-  onMoveTaskToTop: (task: MyCodeTaskMeta) => void;
   onStartRenameTask: (task: MyCodeTaskMeta) => void;
   onArchiveTask: (task: MyCodeTaskMeta) => void;
   onMarkTaskAsUnread: (task: MyCodeTaskMeta) => void;
@@ -46,15 +53,27 @@ export function GroupedTaskContextMenuContent({
   onCopyText: (label: string, text: string | null) => void;
   onOpenTaskFeedback: () => void;
   disabledReason?: string;
+  menuKind?: "context" | "dropdown";
 }) {
+  const Content = menuKind === "dropdown" ? DropdownMenuContent : ContextMenuContent;
+  const Item = menuKind === "dropdown" ? DropdownMenuItem : ContextMenuItem;
+  const Separator = menuKind === "dropdown" ? DropdownMenuSeparator : ContextMenuSeparator;
+  const Sub = menuKind === "dropdown" ? DropdownMenuSub : ContextMenuSub;
+  const SubContent = menuKind === "dropdown" ? DropdownMenuSubContent : ContextMenuSubContent;
+  const SubTrigger = menuKind === "dropdown" ? DropdownMenuSubTrigger : ContextMenuSubTrigger;
   return (
-    <ContextMenuContent className="w-56">
-      <ContextMenuSub>
-        <ContextMenuSubTrigger disabled={Boolean(disabledReason)} title={disabledReason}>
+    <Content
+      className="w-56"
+      {...(menuKind === "dropdown"
+        ? { side: "right" as const, align: "start" as const, "data-sidebar-task-menu": "" }
+        : {})}
+    >
+      <Sub>
+        <SubTrigger disabled={Boolean(disabledReason)} title={disabledReason}>
           {intl.formatMessage({ id: "taskGroup.moveToGroup" })}
-        </ContextMenuSubTrigger>
-        <ContextMenuSubContent className="w-52">
-          <ContextMenuItem
+        </SubTrigger>
+        <SubContent className="w-52">
+          <Item
             disabled={Boolean(disabledReason) || !currentGroupId}
             title={disabledReason}
             onSelect={() => {
@@ -64,10 +83,10 @@ export function GroupedTaskContextMenuContent({
             }}
           >
             {intl.formatMessage({ id: "taskGroup.removeFromGroup" })}
-          </ContextMenuItem>
-          <ContextMenuSeparator />
+          </Item>
+          <Separator />
           {groups.map((group) => (
-            <ContextMenuItem
+            <Item
               key={group.id}
               disabled={Boolean(disabledReason) || group.id === currentGroupId}
               title={disabledReason}
@@ -79,23 +98,12 @@ export function GroupedTaskContextMenuContent({
             >
               <TaskGroupColorDot color={group.color} />
               <span className="truncate">{group.title}</span>
-            </ContextMenuItem>
+            </Item>
           ))}
-        </ContextMenuSubContent>
-      </ContextMenuSub>
-      <ContextMenuItem
-        disabled={Boolean(disabledReason)}
-        title={disabledReason}
-        onSelect={() => {
-          if (!disabledReason) {
-            onMoveTaskToTop(task);
-          }
-        }}
-      >
-        {intl.formatMessage({ id: "taskGroup.moveToTop" })}
-      </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem
+        </SubContent>
+      </Sub>
+      <Separator />
+      <Item
         disabled={Boolean(disabledReason)}
         title={disabledReason}
         onSelect={() => {
@@ -105,8 +113,8 @@ export function GroupedTaskContextMenuContent({
         }}
       >
         {intl.formatMessage({ id: "taskList.rename" })}
-      </ContextMenuItem>
-      <ContextMenuItem
+      </Item>
+      <Item
         disabled={Boolean(disabledReason)}
         title={disabledReason}
         onSelect={() => {
@@ -116,8 +124,8 @@ export function GroupedTaskContextMenuContent({
         }}
       >
         {intl.formatMessage({ id: "taskList.archive" })}
-      </ContextMenuItem>
-      <ContextMenuItem
+      </Item>
+      <Item
         disabled={Boolean(disabledReason)}
         title={disabledReason}
         onSelect={() => {
@@ -127,9 +135,9 @@ export function GroupedTaskContextMenuContent({
         }}
       >
         {intl.formatMessage({ id: "taskList.markAsUnread" })}
-      </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem
+      </Item>
+      <Separator />
+      <Item
         disabled={Boolean(disabledReason)}
         title={disabledReason}
         onSelect={() => {
@@ -139,23 +147,23 @@ export function GroupedTaskContextMenuContent({
         }}
       >
         {fileManagerLabel}
-      </ContextMenuItem>
-      <ContextMenuItem
+      </Item>
+      <Item
         onSelect={() =>
           onCopyText(intl.formatMessage({ id: "appHeader.copyPath" }), task.workspacePath)
         }
       >
         {intl.formatMessage({ id: "appHeader.copyPath" })}
-      </ContextMenuItem>
-      <ContextMenuItem
+      </Item>
+      <Item
         disabled={taskSessionFile.loading || !taskSessionFile.path}
         onSelect={() =>
           onCopyText(intl.formatMessage({ id: "appHeader.copyTaskPath" }), taskSessionFile.path)
         }
       >
         {intl.formatMessage({ id: "appHeader.copyTaskPath" })}
-      </ContextMenuItem>
-      <ContextMenuItem
+      </Item>
+      <Item
         disabled={taskNativeSessionLogFile.loading || !taskNativeSessionLogFile.path}
         onSelect={() =>
           onCopyText(
@@ -165,18 +173,16 @@ export function GroupedTaskContextMenuContent({
         }
       >
         {intl.formatMessage({ id: "appHeader.copyLogPath" })}
-      </ContextMenuItem>
-      <ContextMenuItem
+      </Item>
+      <Item
         onSelect={() =>
           onCopyText(intl.formatMessage({ id: "appHeader.copySessionId" }), task.taskId)
         }
       >
         {intl.formatMessage({ id: "appHeader.copySessionId" })}
-      </ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem onSelect={onOpenTaskFeedback}>
-        {intl.formatMessage({ id: "taskList.feedback" })}
-      </ContextMenuItem>
-    </ContextMenuContent>
+      </Item>
+      <Separator />
+      <Item onSelect={onOpenTaskFeedback}>{intl.formatMessage({ id: "taskList.feedback" })}</Item>
+    </Content>
   );
 }

@@ -64,8 +64,8 @@ export function AppUsageModelUsagePieChart({ snapshot }: { snapshot: AppUsageSna
   );
 
   return (
-    <section className="space-y-3 rounded-xl bg-surface p-4">
-      <h3 className="text-ui-base font-medium text-foreground">
+    <section className="space-y-3 rounded-lg bg-surface p-4">
+      <h3 className="text-ui-caption font-medium text-foreground">
         {intl.formatMessage({ id: "settings.usage.modelChartTitle" })}
       </h3>
       {totalModelTokens <= 0 ? (
@@ -76,9 +76,9 @@ export function AppUsageModelUsagePieChart({ snapshot }: { snapshot: AppUsageSna
           })}
         />
       ) : (
-        <div className="grid gap-4 px-3 py-3 md:grid-cols-2">
-          <div className="relative mx-auto h-56 w-full max-w-64 self-center md:h-64 md:max-w-72">
-            <ChartContainer config={chartConfig} className="relative z-20 h-56 w-full md:h-64">
+        <div className="grid gap-4 px-2.5 py-2.5 md:grid-cols-2">
+          <div className="relative mx-auto h-44 w-full max-w-64 self-center md:h-52 md:max-w-60">
+            <ChartContainer config={chartConfig} className="relative z-20 h-44 w-full md:h-52">
               <PieChart accessibilityLayer margin={APP_USAGE_MODEL_PIE_CHART_MARGIN}>
                 <ChartTooltip cursor={false} content={tooltipContent} />
                 <Pie

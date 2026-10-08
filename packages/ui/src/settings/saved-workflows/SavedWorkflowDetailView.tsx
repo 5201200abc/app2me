@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { Copy } from "lucide-react";
+import { Copy } from "@/components/icons/tabler.js";
 import {
   TID_WORKFLOW_DETAIL,
   TID_WORKFLOW_DETAIL_SCRIPT,

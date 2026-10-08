@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo } from "react";
-import { HourglassIcon } from "lucide-react";
+import { HourglassIcon } from "@/components/icons/tabler.js";
 import type { MessageFileLinkTarget } from "@/components/ai-elements/message.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type { CodeViewerSource } from "@/lib/codeViewer.js";

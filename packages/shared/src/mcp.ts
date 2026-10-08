@@ -28,7 +28,7 @@ export interface McpServerConfig {
   args?: string[]; // stdio server arguments
   env?: Record<string, string>; // stdio server environment variables
   headers?: Record<string, string>; // HTTP/SSE server request headers
-  http_headers?: Record<string, string>; // 兼容旧配置字段，历史 BigModel MCP 配置会把鉴权头写在这里
+  http_headers?: Record<string, string>;
   oauth?: McpOAuthConfig; // HTTP/SSE OAuth 机器凭据配置
   // Linear specific fields
   apiKey?: string;

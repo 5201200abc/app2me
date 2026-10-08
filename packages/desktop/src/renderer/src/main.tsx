@@ -73,7 +73,7 @@ function registerE2EStoreBridgesIfEnabled() {
   });
 }
 
-// 初始化主题：默认 Zai dark，后续由 useTheme hook 接管
+
 {
   const saved = localStorage.getItem("mycode-theme") || "mycode-dark";
   const resolved =

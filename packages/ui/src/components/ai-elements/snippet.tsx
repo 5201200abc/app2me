@@ -14,7 +14,7 @@ import {
   InputGroupText,
 } from "../ui/input-group.js";
 import { cn } from "../lib/utils.js";
-import { CheckIcon, CopyIcon } from "lucide-react";
+import { CheckIcon, CopyIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 import {
   createContext,

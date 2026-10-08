@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
   type RefObject,
+  type ComponentProps,
 } from "react";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { cn } from "@/components/lib/utils.js";
@@ -33,7 +34,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip.js";
-import { AlertCircle, CheckIcon, ChevronDownIcon, LoaderIcon, PackageIcon } from "lucide-react";
+import { AlertCircle, CheckIcon, ChevronDownIcon, LoaderIcon } from "@/components/icons/tabler.js";
 import {
   TID_CHAT_MODEL_SELECT_GROUP,
   TID_CHAT_MODEL_SELECT_ITEM,
@@ -46,7 +47,7 @@ import {
 } from "@/lib/pickerFocus.js";
 import { RollingToolbarLabel } from "@/chat-input-toolbar/RollingToolbarLabel.js";
 import { ModelInputCapabilityBadge } from "@/components/ModelInputCapabilityBadge.js";
-import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
+import { ModelLogo } from "@/components/ModelLogo.js";
 
 export interface ModelSelectGroupItem {
   key: string;
@@ -54,6 +55,7 @@ export interface ModelSelectGroupItem {
   name: string;
   badgeLabel?: string;
   supportsVisionInput?: boolean;
+  logo?: ComponentProps<typeof ModelLogo>["logo"];
 }
 
 export interface ModelSelectConnectionOption {
@@ -70,6 +72,7 @@ export interface ModelSelectConnectionOption {
 export interface ModelSelectGroup {
   key: string;
   label: string;
+  logo?: ComponentProps<typeof ModelLogo>["logo"];
   labelBadge?: string;
   directItems?: boolean;
   selectedOptionKey?: string;
@@ -86,7 +89,7 @@ export interface ModelSelectFooterAction {
 
 const EMPTY_MODEL_SELECT_FOOTER_ACTIONS: readonly ModelSelectFooterAction[] = [];
 export const MODEL_CONFIG_SELECT_BADGE_CLASS_NAME =
-  "shrink-0 rounded-full bg-surface px-1 py-px text-ui-xs font-medium leading-normal text-foreground-subtle";
+  "shrink-0 rounded-full bg-surface px-1 py-px text-ui-xs font-normal leading-normal text-foreground-subtle";
 
 function shouldShowModelProviderLevel(modelGroups: readonly ModelSelectGroup[]): boolean {
   return modelGroups.length > 0;
@@ -163,6 +166,7 @@ interface ModelConfigSelectProps {
   indicatorClassName?: string;
   triggerClassName?: string;
   triggerIconClassName?: string;
+  triggerTextClassName?: string;
   triggerLabelClassName?: string;
   triggerTestId?: string;
   formatTriggerLabel?: (label: string) => string;
@@ -176,6 +180,7 @@ interface ModelConfigSelectProps {
   focusSelectorOnClose?: string | null;
   contentSide?: "top" | "bottom" | "left" | "right";
   contentAlign?: "start" | "center" | "end";
+  contentClassName?: string;
   /**
    * 排在所有分组之上的单选项（与分组之间隔一条线）。工作流「配置」弹层用它把「会话模型」放在第一位；
    * 缺省即无。
@@ -183,6 +188,8 @@ interface ModelConfigSelectProps {
   leadingItems?: readonly ModelSelectGroupItem[];
   /** 触发器里标签之后的小徽标（如「会话模型」「不可用」）；缺省即无。 */
   triggerBadge?: ReactNode;
+  /** 当前会话配置子菜单，位于模型目录与底部操作之间。 */
+  menuControls?: ReactNode;
 }
 
 export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
@@ -213,7 +220,8 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
   labelVisibilityClassName = "hidden @xl/composer:inline-flex",
   indicatorClassName,
   triggerClassName,
-  triggerIconClassName = "hidden",
+  triggerIconClassName,
+  triggerTextClassName,
   triggerLabelClassName: customTriggerLabelClassName,
   triggerTestId = TID_CHAT_MODEL_SELECT_TRIGGER,
   formatTriggerLabel,
@@ -225,14 +233,22 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
   focusSelectorOnClose = '[data-testid="chat-input"]',
   contentSide = "top",
   contentAlign = "start",
+  contentClassName,
   leadingItems,
   triggerBadge,
+  menuControls,
 }: ModelConfigSelectProps) {
-  const { intl } = useMyCodeIntl();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const open = controlledOpen ?? uncontrolledOpen;
   const lastOpenRequestKeyRef = useRef(openRequestKey);
   const hasSelectableModel = modelGroups.length > 0;
+  const currentModelLogo = useMemo(
+    () =>
+      modelGroups
+        .find((group) => group.items.some((item) => item.value === normalizedValue))
+        ?.items.find((item) => item.value === normalizedValue)?.logo,
+    [modelGroups, normalizedValue],
+  );
   // 闲时任务白名单只有一层模型值；只要存在 group 就强制展示 provider 层的话，
   // 下方已有的扁平模型分支永远不可达，也无法复用 New Task 模型选择器。
   const shouldShowProviderLevel = showProviderLevel ?? shouldShowModelProviderLevel(modelGroups);
@@ -302,7 +318,8 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
       const content = (
         <>
           <span className="flex min-w-0 flex-1 items-center gap-1.5 text-left">
-            <span className="min-w-0 truncate" title={item.name}>
+            <ModelLogo logo={item.logo} className="size-[1em]" />
+            <span className="min-w-0 truncate font-normal" title={item.name}>
               {item.name}
             </span>
             {item.badgeLabel ? (
@@ -325,7 +342,7 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
                       event.stopPropagation();
                     }}
                   >
-                    <AlertCircle className="size-4" />
+                    <AlertCircle className="size-[1em]" />
                   </span>
                 </TooltipTrigger>
                 <TooltipContent side="right" align="center" sideOffset={6}>
@@ -345,7 +362,7 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
           <DropdownMenuItem
             key={itemKey}
             {...commonProps}
-            className="min-h-8 cursor-not-allowed gap-2 px-2 text-ui-base text-foreground-subtlest data-[highlighted]:text-foreground-subtlest"
+            className="min-h-7 cursor-not-allowed gap-2 px-2 text-ui-caption text-foreground-subtlest data-[highlighted]:text-foreground-subtlest"
             onSelect={(event) => event.preventDefault()}
           >
             {content}
@@ -359,8 +376,8 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
           {...commonProps}
           value={item.value}
           className={cn(
-            "min-h-8 gap-2 pl-2 pr-8 text-ui-base",
-            roundedList && "min-h-8 rounded-md px-2 pr-8 text-ui-base",
+            "min-h-7 gap-2 pl-2 pr-8 text-ui-caption",
+            roundedList && "min-h-7 rounded-md px-2 pr-8 text-ui-caption",
           )}
           onSelect={() => {
             handleModelValueChange(item.value);
@@ -392,10 +409,11 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
 
   const renderGroupLabel = useCallback(
     (group: ModelSelectGroup, options: { mutedLabel?: boolean } = {}) => (
-      <span className="min-w-0 flex-1 items-center gap-1.5 text-left inline-flex">
+      <span className="min-w-0 flex-1 items-center gap-1.5 text-left inline-flex text-ui-caption font-normal">
+        {group.logo ? <ModelLogo logo={group.logo} className="size-[1em]" /> : null}
         <span
           className={cn(
-            "min-w-0 whitespace-normal break-words text-ui-base",
+            "min-w-0 whitespace-normal break-words text-ui-caption",
             options.mutedLabel && "text-foreground-subtle",
           )}
           title={group.label}
@@ -418,9 +436,9 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
         const selectedConnection =
           options.find((option) => option.key === selectedOptionKey) ?? options[0];
         return (
-          <div className="flex min-h-8 items-center gap-2 px-2 py-1">
+          <div className="flex min-h-7 items-center gap-2 px-2 py-1">
             <span
-              className="min-w-0 flex-1 truncate text-left text-ui-sm font-medium text-foreground-subtlest"
+              className="min-w-0 flex-1 truncate text-left text-ui-sm font-normal text-foreground-subtlest"
               title={group.label}
             >
               {group.label}
@@ -487,6 +505,37 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
     return actions;
   }, [footerActions, manageModelsLabel, onManageModels, showManageModelsAction]);
 
+  const triggerText = (
+    <>
+      <span className={triggerLabelClassName} title={currentTriggerTitle}>
+        <RollingToolbarLabel
+          label={currentTriggerLabel}
+          prefix={pending ? undefined : triggerLabelPrefix}
+          prefixClassName={triggerLabelPrefixClassName}
+          value={pending ? undefined : triggerLabelValue}
+        />
+      </span>
+      {triggerBadge}
+    </>
+  );
+  const triggerTail = (
+    <>
+      {triggerTextClassName ? (
+        <span className={triggerTextClassName}>{triggerText}</span>
+      ) : (
+        triggerText
+      )}
+      {pending ? (
+        <LoaderIcon className="pointer-events-none size-3.5 animate-spin text-foreground" />
+      ) : null}
+      {!pending && (
+        <ChevronDownIcon
+          data-bar-chevron
+          className={cn("pointer-events-none size-3.5 text-foreground-subtle", indicatorClassName)}
+        />
+      )}
+    </>
+  );
   const modelTrigger = (
     <DropdownMenuTrigger asChild>
       <Button
@@ -500,33 +549,21 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
         aria-label={triggerAriaLabel}
         onClick={guideTooltipOpen ? onGuideTooltipDismiss : undefined}
         className={cn(
-          "w-fit justify-between gap-1 rounded-lg pl-2 pr-1.5 text-ui-base whitespace-nowrap",
+          "w-fit justify-between gap-1 rounded-lg pl-2 pr-1.5 text-ui-caption whitespace-nowrap",
           triggerClassName,
         )}
       >
-        <PackageIcon
-          className={cn("pointer-events-none size-4 shrink-0 text-current", triggerIconClassName)}
-          aria-hidden="true"
+        <ModelLogo
+          logo={currentModelLogo}
+          className={cn(
+            "pointer-events-none size-[1em] shrink-0 text-current",
+            triggerIconClassName,
+          )}
         />
-        <span className={triggerLabelClassName} title={currentTriggerTitle}>
-          <RollingToolbarLabel
-            label={currentTriggerLabel}
-            prefix={pending ? undefined : triggerLabelPrefix}
-            prefixClassName={triggerLabelPrefixClassName}
-            value={pending ? undefined : triggerLabelValue}
-          />
-        </span>
-        {triggerBadge}
-        {pending ? (
-          <LoaderIcon className="pointer-events-none size-3.5 animate-spin text-foreground" />
-        ) : null}
-        {!pending && (
-          <ChevronDownIcon
-            className={cn(
-              "pointer-events-none size-3.5 text-foreground-subtle",
-              indicatorClassName,
-            )}
-          />
+        {triggerTextClassName ? (
+          <span className="composer-model-tail">{triggerTail}</span>
+        ) : (
+          triggerTail
         )}
       </Button>
     </DropdownMenuTrigger>
@@ -551,10 +588,11 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
         <DropdownMenuContent
           className={cn(
             roundedList
-              ? "w-64 max-w-[calc(100vw-1.5rem)] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] overflow-y-auto rounded-xl p-1.5 shadow-md"
+              ? "w-64 max-w-[calc(100vw-1.5rem)] max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] overflow-y-auto rounded-xl p-1 shadow-xs"
               : shouldShowProviderLevel
                 ? "w-max min-w-48 max-w-[calc(100vw-2rem)]"
                 : "w-48 max-h-72 overflow-y-auto",
+            contentClassName,
           )}
           align={contentAlign}
           side={contentSide}
@@ -580,11 +618,6 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
             input?.focus();
           }}
         >
-          {roundedList && (
-            <DropdownMenuLabel className="px-2 pb-1 text-ui-sm font-normal text-foreground-subtle">
-              {intl.formatMessage({ id: "chat.toolbar.strength.modelMenu" })}
-            </DropdownMenuLabel>
-          )}
           {leadingItems !== undefined && leadingItems.length > 0 ? (
             <>
               {renderModelItems(leadingItems)}
@@ -594,8 +627,8 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
           {roundedList
             ? modelGroups.map((group) => (
                 <div key={group.key} data-testid={testId(TID_CHAT_MODEL_SELECT_GROUP, group.key)}>
-                  <DropdownMenuLabel className="px-2 py-1 text-ui-xs font-normal text-foreground-subtle">
-                    {group.label}
+                  <DropdownMenuLabel className="px-2 py-1 text-ui-caption font-normal text-foreground-subtle">
+                    {renderGroupLabel(group, { mutedLabel: true })}
                   </DropdownMenuLabel>
                   {renderModelItems(group.items)}
                 </div>
@@ -614,7 +647,7 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
                         {groupSeparator}
                         <div>
                           <DropdownMenuLabel
-                            className="flex min-h-8 items-center px-2 py-1"
+                            className="flex min-h-7 items-center px-2 py-1"
                             data-testid={testId(TID_CHAT_MODEL_SELECT_GROUP, group.key)}
                             data-model-provider-key={group.key}
                           >
@@ -635,7 +668,7 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
                       {groupSeparator}
                       <DropdownMenuSub>
                         <DropdownMenuSubTrigger
-                          className="min-h-8"
+                          className="min-h-7"
                           data-testid={testId(TID_CHAT_MODEL_SELECT_GROUP, group.key)}
                           data-model-provider-key={group.key}
                           data-model-provider-selected={groupSelected ? "true" : undefined}
@@ -651,6 +684,7 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
                             // 固定宽度会提前截断模型名；按内容扩展，并让可用空间优先于最小宽度。
                             providerSubmenuClassName ??
                               "w-max min-w-[min(12rem,var(--radix-dropdown-menu-content-available-width))] max-w-(--radix-dropdown-menu-content-available-width)",
+                            contentClassName,
                           )}
                         >
                           {renderModelItems(group.items)}
@@ -662,13 +696,19 @@ export const ModelConfigSelect = memo(function ModelConfigSelectComponent({
               : hasSelectableModel
                 ? renderModelItems(modelGroups[0]?.items ?? [])
                 : null}
+          {menuControls ? (
+            <>
+              <DropdownMenuSeparator />
+              {menuControls}
+            </>
+          ) : null}
           {renderedFooterActions.length > 0 ? (
             <div className="sticky bottom-0 z-10 bg-menu after:absolute after:left-0 after:top-full after:h-1 after:w-full after:bg-menu after:content-['']">
               {hasSelectableModel ? <DropdownMenuSeparator /> : null}
               {renderedFooterActions.map((action) => (
                 <DropdownMenuItem
                   key={action.key}
-                  className="min-h-8 gap-2 px-2"
+                  className="min-h-7 gap-2 px-2"
                   data-model-footer-action={action.key}
                   data-model-footer-action-selected={action.selected ? "true" : undefined}
                   onSelect={() => {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, Minus } from "lucide-react";
+import { Check, Minus } from "@/components/icons/tabler.js";
 import { Checkbox as CheckboxPrimitive } from "radix-ui";
 import { cn } from "../lib/utils.js";
 

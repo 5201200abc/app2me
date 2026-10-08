@@ -1,4 +1,4 @@
-import { MessageCircleQuestion } from "lucide-react";
+import { MessageCircleQuestion } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";

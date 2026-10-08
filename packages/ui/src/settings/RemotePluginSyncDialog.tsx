@@ -8,7 +8,7 @@ import {
   Loader2,
   Cable,
   UploadCloud,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type {
   PluginSyncCandidate,
   PluginSyncImportResult,
@@ -1815,7 +1815,7 @@ export function RemotePluginSyncDialog(props: RemotePluginSyncDialogProps) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={step !== "preflighting" && step !== "syncing"}
-        className="h-[min(720px,calc(100dvh-2rem))] max-h-[min(720px,calc(100dvh-2rem))] max-w-2xl flex flex-col overflow-hidden"
+        className="agent-settings-typography h-[min(720px,calc(100dvh-2rem))] max-h-[min(720px,calc(100dvh-2rem))] max-w-2xl flex flex-col overflow-hidden"
       >
         <DialogHeader>
           <RemotePluginSyncTitle />

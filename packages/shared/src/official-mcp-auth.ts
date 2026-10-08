@@ -17,10 +17,6 @@ export const MYCODE_OFFICIAL_MCP_AUTH_PROVIDER_JWT_TOKEN = "jwt_token" as const;
  */
 export const OFFICIAL_MCP_AUTH_HEADER_NAMES = {
   authorization: "Authorization",
-  codingPlanAuthorization: "X-Bigmodel-Authorization",
-  targetType: "Bigmodel-Target-Type",
-  organization: "Bigmodel-Organization",
-  project: "Bigmodel-Project",
 } as const;
 
 /**
@@ -71,7 +67,7 @@ export function findOfficialMcpReservedHeaders(
   return [...hits].sort();
 }
 
-/** 服务端 `Bigmodel-Target-Type` 的取值（对齐 mycode-server 的 CodingPlanTargetType）。 */
+/** 历史服务端身份类别（对齐 mycode-server 的 CodingPlanTargetType）。 */
 export type OfficialMcpTargetType = "PERSONAL" | "TEAM";
 
 /**
@@ -147,17 +143,7 @@ export function summarizeOfficialMcpIdentityHeaders(
   const lower = new Map(
     Object.entries(headers).map(([name, value]) => [name.toLowerCase(), value]),
   );
-  const organization = lower.has("bigmodel-organization");
-  const project = lower.has("bigmodel-project");
-  return {
-    identityHeaderNames: [...lower.keys()].sort(),
-    identityOrganizationPresent: organization,
-    identityProjectPresent: project,
-    identityTeamPaired: organization === project,
-    ...(lower.get("bigmodel-target-type")
-      ? { identityTargetType: lower.get("bigmodel-target-type") }
-      : {}),
-  };
+  return { identityHeaderNames: [...lower.keys()].sort() };
 }
 
 export interface OfficialMcpTrustResult {

@@ -1,4 +1,4 @@
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon } from "@/components/icons/tabler.js";
 import { TID_MODEL_PROVIDER_API_KEY_INPUT } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";

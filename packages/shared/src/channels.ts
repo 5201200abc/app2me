@@ -73,6 +73,7 @@ import type {
 
 /** RPC 服务频道名。与 ServiceDescriptor.channelName 对应。 */
 export const ServiceChannels = {
+  MyChat: "mychat",
   File: "file",
   MediaPreview: "media-preview",
   System: "system",
@@ -112,8 +113,8 @@ export const ServiceChannels = {
   ProviderProvisioningTarget: "provider-provisioning-target",
   /** 本地 usage 统计服务 */
   UsageStats: "usage-stats",
-  /** Coding Plan 订阅购买服务 */
-  CodingPlanSubscription: "coding-plan-subscription",
+  /** 本地运行配置服务 */
+  RuntimeConfig: "runtime-config",
   /** MyCode 客户端场景配置服务 */
   ClientScenes: "client-scenes",
   /** Skills 管理服务 */
@@ -164,6 +165,8 @@ export const PlatformChannels = {
   SelectFile: "mycode:select-file",
   /** 打开系统多文件选择框 */
   SelectFiles: "mycode:select-files",
+  SelectFilesAndFolders: "mycode:select-files-and-folders",
+  CaptureInteractiveScreenshot: "mycode:capture-interactive-screenshot",
   /** Renderer → Main：写入宿主 ~/.mycode 临时文本附件 */
   CreateTempTextAttachment: "mycode:create-temp-text-attachment",
   /** Renderer → Main：通过原生另存为对话框保存文件 */
@@ -258,7 +261,7 @@ export const PlatformChannels = {
   WindowControlsOverlayChanged: "mycode:window-controls-overlay-changed",
   /** Preload → Main：preload 已同步读到当前窗口控制区安全边距 */
   WindowControlsOverlayReady: "mycode:window-controls-overlay-ready",
-  /** 获取资源管理器快照（CPU / 内存，按基础服务、内置插件、社区插件归类） */
+  /** 获取资源管理器快照（CPU / 内存，按基础服务、内置插件、第三方插件归类） */
   GetResourceUsageSnapshot: "mycode:get-resource-usage-snapshot",
   SetResourceUsageSamplingActive: "mycode:set-resource-usage-sampling-active",
   /** 打开资源管理器窗口（其他窗口触发） */
@@ -277,8 +280,6 @@ export const PlatformChannels = {
   StorageScanProgress: "mycode:storage-scan-progress",
   /** Renderer → Main：打开外部 URL（用于 OAuth 跳转浏览器） */
   OpenExternal: "mycode:open-external",
-  /** Renderer → Main：查询当前语言下是否存在可用的用户社群入口 */
-  CanOpenCommunity: "mycode:can-open-community",
   /** Renderer → Main：在系统文件管理器中打开路径 */
   OpenInFileManager: "mycode:open-in-file-manager",
   /** Renderer → Main：使用系统默认应用打开本地文件 */
@@ -411,6 +412,9 @@ export const PlatformChannels = {
   QuitAndInstallUpdate: "mycode:quit-and-install-update",
   /** Renderer → Main：获取系统中已安装的编辑器/终端列表（含图标） */
   GetInstalledEditors: "mycode:get-installed-editors",
+  GetWebsiteBrowsers: "mycode:get-website-browsers",
+  OpenWebsiteBrowser: "mycode:open-website-browser",
+  GetDesktopToolEnvironment: "mycode:get-desktop-tool-environment",
   /** Renderer → Main：按 bundle id 获取系统应用图标 */
   GetApplicationIcon: "mycode:get-application-icon",
   /** Renderer → Main：用指定编辑器打开路径 */
@@ -442,41 +446,6 @@ export const EmbeddedBrowserWebviewChannels = {
 export interface EmbeddedBrowserWheelBoundaryPayload {
   deltaX: number;
   deltaY: number;
-}
-
-// ============================================================================
-// Coding Plan WebView 频道 —— 官网页 preload ↔ App renderer
-// ============================================================================
-
-/**
- * Electron `<webview>`（partition=persist:mycode-coding-plan）的 `sendToHost` / `ipc-message` 频道。
- * 官网页通过 preload 注入的 window.mycodeBridge 调用，不经过 main process。
- */
-export const CodingPlanWebviewChannels = {
-  /** 官网页购买成功后通知 App 刷新 entitlements 并关闭 webview。 */
-  PurchaseComplete: "mycode:coding-plan-purchase-complete",
-} as const;
-
-/** 购买完成回传 payload。provider 与官网 CodingPlanProvider / auth-ready 事件 detail.provider 同构。 */
-export interface CodingPlanPurchaseCompletePayload {
-  provider: "zai" | "bigmodel";
-  /** 客户端时间戳，用于 App 侧去重/日志，不参与判等。 */
-  timestamp: number;
-}
-
-/**
- * 官网页 window.__mycodeLang__ 的取值，与 App IntlProvider 的 Locale 一致。
- * App locale 变化时通过 executeJavaScript 重写此变量并派发 lang-change 事件。
- */
-export type CodingPlanWebviewLocale = "zh-CN" | "en-US";
-
-/**
- * 官网页 lang-change 事件 detail。App 用 executeJavaScript 在 main world 派发
- * `mycode-coding-plan-lang-change` CustomEvent，website 侧（mycodeBridge.onLangChange 或
- * 直接 window.addEventListener）订阅后切换 copy。
- */
-export interface CodingPlanWebviewLangChangeDetail {
-  locale: CodingPlanWebviewLocale;
 }
 
 // ============================================================================
@@ -677,6 +646,11 @@ export interface PlatformChannelMap {
     request: void;
     response: string | null;
   };
+  [PlatformChannels.SelectFilesAndFolders]: { request: void; response: string[] };
+  [PlatformChannels.CaptureInteractiveScreenshot]: {
+    request: void;
+    response: { name: string; dataUrl: string } | null;
+  };
   [PlatformChannels.SelectFiles]: {
     request: void;
     response: string[];
@@ -863,10 +837,6 @@ export interface PlatformChannelMap {
   [PlatformChannels.BrowserViewRestore]: {
     request: BrowserViewResidencyTransitionPayload;
     response: void;
-  };
-  [PlatformChannels.CanOpenCommunity]: {
-    request: Locale;
-    response: boolean;
   };
   [PlatformChannels.OpenInFileManager]: {
     request: string;

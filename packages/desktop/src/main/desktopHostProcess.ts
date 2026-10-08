@@ -263,6 +263,9 @@ export function spawnHostProcess(
       ...buildHostProcessEnv(dependencies.hostProcessLocalEnv),
       ...buildHostE2ECoverageEnv(),
       MYCODE_PROCESS_LABEL: label,
+      MYCODE_MYCHAT_VIDEO_EXTRACTOR: app.isPackaged
+        ? join(process.resourcesPath, "mychat", "mychat-video-extract")
+        : join(app.getAppPath(), "../../packages/services/src/mychat/native/mychat-video-extract"),
       // macOS-only: the Computer Use Helper launcher runs inside this forked host utilityProcess, whose
       // code-signing identity is a nested Electron helper (NOT dev.mycode.app). Publish THIS (main
       // Electron) process's pid — which IS dev.mycode.app — so helperLauncher passes it as
@@ -285,9 +288,6 @@ export function spawnHostProcess(
   );
   dependencies.logger.info(`[spawnHostProcess] host module path: ${hostModulePath}`);
   dependencies.logger.info(`[spawnHostProcess] glm binary path: ${glmBinaryPath ?? "<not found>"}`);
-  dependencies.logger.info(
-    `[spawnHostProcess] BIGMODEL_OAUTH_APP_SECRET source: ${process.env.BIGMODEL_OAUTH_APP_SECRET ? "process" : dependencies.hostProcessLocalEnv.BIGMODEL_OAUTH_APP_SECRET ? "dotenv" : "fallback"}`,
-  );
 
   // 远程连接与本地服务共享 window Host，进程级 stdout 没有请求身份。
   // 连接进度改由 HostResponseTypes.RemoteWorkspaceConnectionLog 按 requestId 上报。

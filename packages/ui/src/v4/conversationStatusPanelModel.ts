@@ -118,7 +118,6 @@ export interface ConversationStatusPanelModel {
 }
 
 interface BuildConversationStatusPanelModelInput {
-  isOfficeMode?: boolean;
   gitSummary?: GitRepositorySummary | null;
   gitDirtyFileCount?: number;
   gitWorktreeChangeSummary?: { added: number; removed: number } | null;
@@ -165,22 +164,6 @@ function buildGitModel({
     ahead: gitSummary.ahead,
     behind: gitSummary.behind,
     isClean,
-  };
-}
-
-function buildPlanModel(plan: PlanState | null | undefined) {
-  if (!plan || plan.items.length === 0) {
-    return null;
-  }
-  const completed = plan.items.filter((item) => item.status === "completed");
-  return {
-    items: plan.items,
-    // 按状态重新分组会让 Todo 完成时从原位置跳到列表末尾，破坏 TodoWrite
-    // snapshot 的权威顺序。这里完整保留原数组，只由 renderer 负责滚动和状态样式。
-    displayItems: plan.items,
-    completedCount: completed.length,
-    waitingCount: plan.items.length - completed.length,
-    totalCount: plan.items.length,
   };
 }
 
@@ -298,10 +281,11 @@ export function resolveSoleRunningWorkflowRunTarget(
 export function buildConversationStatusPanelModel(
   input: BuildConversationStatusPanelModelInput,
 ): ConversationStatusPanelModel {
-  const git = input.isOfficeMode ? null : buildGitModel(input);
+  const git = buildGitModel(input);
   const goal = input.goal ?? null;
   const sessionPlans = buildSessionPlansModel(input.sessionPlans, input.workspacePath);
-  const plan = buildPlanModel(input.plan);
+  // Todo 任务步骤已退役；旧 snapshot 仍可读取，但不再投影到用户界面。
+  const plan = null;
   const runningBashWorks: BackgroundWorkSummary[] = [];
   const workflowWorkByWorkId = new Map<string, BackgroundWorkSummary>();
   const subagentControlByChildSessionId = new Map<string, BackgroundWorkSummary | null>();

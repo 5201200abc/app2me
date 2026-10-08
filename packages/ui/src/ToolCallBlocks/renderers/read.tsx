@@ -1,4 +1,4 @@
-import { SearchIcon } from "lucide-react";
+import { BookOpenIcon } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import {
   FileDisplayIcon,
@@ -11,7 +11,9 @@ import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotic
 import type { ToolCallBlockRenderContext } from "../shared.js";
 import { renderFilePath } from "../shared.js";
 
-const READ_TOOL_ICON = <SearchIcon className="size-4 shrink-0 text-foreground-subtle" />;
+const READ_TOOL_ICON = (
+  <BookOpenIcon className="size-3.5 shrink-0 text-foreground-subtle" strokeWidth={1.5} />
+);
 
 export type ReadSummary = {
   path: string;
@@ -223,7 +225,7 @@ export function ReadFileChip({
     return (
       <button
         type="button"
-        className="inline-flex min-w-0 max-w-full cursor-pointer items-center gap-1.5 text-foreground-subtle hover:underline"
+        className="inline-flex min-w-0 max-w-full cursor-pointer items-center gap-1.5 text-ui-base font-normal text-foreground-subtlest hover:underline"
         title={summary.path}
         onMouseDown={(event) => {
           event.preventDefault();
@@ -234,7 +236,7 @@ export function ReadFileChip({
           onClick?.();
         }}
       >
-        <FileDisplayIcon src={summary.fileIconSrc} size={16} className="size-4 shrink-0" />
+        <FileDisplayIcon src={summary.fileIconSrc} size={14} className="size-3.5 shrink-0" />
         <span className="min-w-0 truncate">{summary.fileName}</span>
       </button>
     );
@@ -242,10 +244,10 @@ export function ReadFileChip({
 
   return (
     <span
-      className="inline-flex min-w-0 text-foreground-subtle max-w-full items-center gap-1.5"
+      className="inline-flex min-w-0 text-ui-base font-normal text-foreground-subtlest max-w-full items-center gap-1.5"
       title={summary.path}
     >
-      <FileDisplayIcon src={summary.fileIconSrc} size={16} className="size-4 shrink-0" />
+      <FileDisplayIcon src={summary.fileIconSrc} size={14} className="size-3.5 shrink-0" />
       <span className="min-w-0 truncate">{summary.fileName}</span>
     </span>
   );
@@ -283,6 +285,7 @@ export function ReadToolCallBlock(context: ToolCallBlockRenderContext) {
       <ToolLayout
         toolId={toolCall.toolId}
         icon={READ_TOOL_ICON}
+        preserveIcon
         showIcon={context.showIcon !== false}
         canToggle={false}
         kindLabel={intl.formatMessage({

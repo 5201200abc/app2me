@@ -4,9 +4,9 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   MessageCirclePlus,
-  PanelLeftClose,
-  PanelLeftOpen,
-} from "lucide-react";
+  PanelLeft,
+  SearchIcon,
+} from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { UpdateStatusButton } from "@/UpdateStatusButton.js";
 import { DesktopTopOverlayActionButton } from "@/DesktopTopOverlayActionButton.js";
@@ -43,6 +43,9 @@ interface DesktopTopOverlayProps {
   onGoForward: () => void;
   hideTaskNavigationButtons?: boolean;
   newTaskDisabledReason?: string;
+  onOpenSettings?: () => void;
+  onOpenSearch?: () => void;
+  searchShortcutLabel?: string;
 }
 
 export function DesktopTopOverlay({
@@ -73,11 +76,14 @@ export function DesktopTopOverlay({
   onGoForward,
   hideTaskNavigationButtons = false,
   newTaskDisabledReason,
+  onOpenSearch,
+  searchShortcutLabel,
 }: DesktopTopOverlayProps) {
   const { intl } = useMyCodeIntl();
-  const SidebarToggleIcon = isSidebarVisible ? PanelLeftClose : PanelLeftOpen;
   const isLinuxDesktop = Boolean(isDesktop && !isMacDesktop && !isWindowsDesktop);
   const usesCustomCaptionArea = isWindowsDesktop || isLinuxDesktop;
+  // 收起态主面板从 4px 外沿和 1px 边框开始；Mac 的 h-14/pt-1 会让图标中心下移 1px。
+  const alignsWithMainHeader = usesCustomCaptionArea || (isMacDesktop && !isSidebarVisible);
   const toggleSidebarTitle = intl.formatMessage({
     id: "workspaceSidebar.toggleSidebar",
   });
@@ -89,23 +95,25 @@ export function DesktopTopOverlay({
     isMacDesktop && !isMacFullscreen && Number.isFinite(macWindowControlsLeftPaddingPx)
       ? { paddingLeft: `${Math.round(macWindowControlsLeftPaddingPx ?? 96)}px` }
       : undefined;
-  const windowsTopOverlayPaddingStyle = isWindowsDesktop
-    ? {
-        ...createWindowsCaptionControlsStyle(windowsWindowControlsRightPaddingPx),
-        paddingRight: WINDOWS_CAPTION_CONTROLS_RIGHT_INSET_VAR,
-      }
-    : undefined;
+  const windowsTopOverlayPaddingStyle =
+    isWindowsDesktop && !isSidebarVisible
+      ? {
+          ...createWindowsCaptionControlsStyle(windowsWindowControlsRightPaddingPx),
+          paddingRight: WINDOWS_CAPTION_CONTROLS_RIGHT_INSET_VAR,
+        }
+      : undefined;
   const topOverlayWidthStyle = isSidebarVisible
     ? { width: "var(--workspace-sidebar-panel-width)" }
     : undefined;
 
   return (
     <div
+      data-testid="desktop-top-overlay"
       style={topOverlayWidthStyle}
       className={cn(
         "@container/topoverlayer pointer-events-none absolute h-14 flex left-0 top-0 z-20 w-fit",
         // Windows/Linux 主面板新增 4px 留白及 1px 边框，左侧工具组需同步偏移才能对齐 Header 中心线。
-        usesCustomCaptionArea && "top-1 mt-px",
+        alignsWithMainHeader && "top-1 mt-px",
       )}
     >
       <div
@@ -114,13 +122,14 @@ export function DesktopTopOverlay({
           ...windowsTopOverlayPaddingStyle,
         }}
         className={cn(
-          "flex items-center",
-          isMacDesktop && "h-14",
-          usesCustomCaptionArea && "h-12",
+          "flex min-w-0 items-center",
+          isSidebarVisible && "w-full pr-2",
+          isMacDesktop && isSidebarVisible && "h-14",
+          alignsWithMainHeader && "h-12",
           // Windows/Linux 工具组计入 4px 外沿留白和 1px 边框，较 8px 左边距右移 5px。
           usesCustomCaptionArea && "pl-3 ml-px",
-          isMacDesktop &&
-            (isMacFullscreen ? (!isSidebarVisible ? "pl-5 pt-1" : "pl-3 pt-1") : "pt-1"),
+          isMacDesktop && isMacFullscreen && (isSidebarVisible ? "pl-3" : "pl-5"),
+          isMacDesktop && isSidebarVisible && "pt-1",
         )}
       >
         <div
@@ -131,35 +140,6 @@ export function DesktopTopOverlay({
             "pointer-events-auto flex items-center gap-1 shrink-0 [app-region:no-drag]",
           )}
         >
-          {usesCustomCaptionArea && (
-            <DesktopTopOverlayActionButton
-              title={toggleSidebarTitle}
-              shortcut={toggleSidebarShortcutLabel}
-              ariaLabel={toggleSidebarTitle}
-              buttonClassName="group relative overflow-hidden rounded-lg"
-              onClick={onToggleSidebar}
-            >
-              <img
-                src={appLogoUrl}
-                alt="MyCode"
-                className="size-5 transition-opacity duration-150 group-hover:opacity-0"
-                draggable={false}
-              />
-              <SidebarToggleIcon className="absolute inset-0 m-auto size-4 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
-            </DesktopTopOverlayActionButton>
-          )}
-
-          {isMacDesktop && (
-            <DesktopTopOverlayActionButton
-              title={toggleSidebarTitle}
-              shortcut={toggleSidebarShortcutLabel}
-              ariaLabel={toggleSidebarTitle}
-              onClick={onToggleSidebar}
-            >
-              <SidebarToggleIcon className="size-4" />
-            </DesktopTopOverlayActionButton>
-          )}
-
           {/* 远程控制移动端左上角空间有限，任务前进/后退在这里会与主操作拥挤重叠。*/}
           {hideTaskNavigationButtons ? null : (
             <>
@@ -177,6 +157,7 @@ export function DesktopTopOverlay({
                 title={taskForwardTitle}
                 shortcut={goForwardShortcutLabel}
                 ariaLabel={taskForwardTitle}
+                testId="desktop-top-nav-forward"
                 disabled={!canTaskNavForward}
                 onClick={onGoForward}
               >
@@ -185,23 +166,60 @@ export function DesktopTopOverlay({
             </>
           )}
 
-          <div
-            aria-hidden={!isNewTaskButtonVisible}
-            className={cn(
-              "inline-flex overflow-hidden transition-[opacity,width] duration-300 ease-out",
-              isNewTaskButtonVisible ? "w-7 opacity-100" : "pointer-events-none w-0 opacity-0",
-            )}
-          >
+          {usesCustomCaptionArea && (
             <DesktopTopOverlayActionButton
-              title={newTaskDisabledReason ?? newTaskTitle}
-              shortcut={newTaskShortcutLabel}
-              ariaLabel={newTaskTitle}
-              disabled={Boolean(newTaskDisabledReason)}
-              onClick={onCreateTask}
+              title={toggleSidebarTitle}
+              shortcut={toggleSidebarShortcutLabel}
+              ariaLabel={toggleSidebarTitle}
+              buttonClassName="group relative overflow-hidden rounded-lg"
+              testId="desktop-top-sidebar-toggle"
+              onClick={onToggleSidebar}
             >
-              <MessageCirclePlus className="size-4" />
+              <img
+                src={appLogoUrl}
+                alt="MyCode"
+                className="size-5 transition-opacity duration-150 group-hover:opacity-0"
+                draggable={false}
+              />
+              <PanelLeft
+                className="absolute inset-0 m-auto size-3.5 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                strokeWidth={1.5}
+              />
             </DesktopTopOverlayActionButton>
-          </div>
+          )}
+
+          {isMacDesktop && (
+            <DesktopTopOverlayActionButton
+              title={toggleSidebarTitle}
+              shortcut={toggleSidebarShortcutLabel}
+              ariaLabel={toggleSidebarTitle}
+              testId="desktop-top-sidebar-toggle"
+              onClick={onToggleSidebar}
+            >
+              <PanelLeft className="size-3.5" strokeWidth={1.5} />
+            </DesktopTopOverlayActionButton>
+          )}
+
+          {showNewTaskButton === false ? null : (
+            <div
+              aria-hidden={!isNewTaskButtonVisible}
+              className={cn(
+                "inline-flex overflow-hidden transition-[opacity,width] duration-300 ease-out",
+                isNewTaskButtonVisible ? "w-7 opacity-100" : "pointer-events-none w-0 opacity-0",
+              )}
+            >
+              <DesktopTopOverlayActionButton
+                title={newTaskDisabledReason ?? newTaskTitle}
+                shortcut={newTaskShortcutLabel}
+                testId="desktop-top-new-task"
+                ariaLabel={newTaskTitle}
+                disabled={Boolean(newTaskDisabledReason)}
+                onClick={onCreateTask}
+              >
+                <MessageCirclePlus className="size-4" />
+              </DesktopTopOverlayActionButton>
+            </div>
+          )}
 
           {/* <div className="flex items-center [app-region:no-drag]"> */}
           {/* 侧栏收起后，更新按钮之前会跟着“展开态的容器宽度阈值”一起被隐藏。
@@ -217,6 +235,19 @@ export function DesktopTopOverlay({
           />
           {/* </div> */}
         </div>
+        {isDesktop && isSidebarVisible && onOpenSearch ? (
+          <div className="pointer-events-auto ml-auto pl-1 [app-region:no-drag]">
+            <DesktopTopOverlayActionButton
+              title={intl.formatMessage({ id: "commandCenter.open" })}
+              ariaLabel={intl.formatMessage({ id: "commandCenter.open" })}
+              shortcut={searchShortcutLabel}
+              testId="desktop-top-search"
+              onClick={onOpenSearch}
+            >
+              <SearchIcon className="size-4" />
+            </DesktopTopOverlayActionButton>
+          </div>
+        ) : null}
       </div>
     </div>
   );

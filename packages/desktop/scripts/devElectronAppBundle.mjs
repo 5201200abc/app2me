@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const DEV_ELECTRON_PROTOCOL_SCHEME = "mycode";
-export const DEV_ELECTRON_APP_NAME = "MyCode Dev";
+export const DEV_ELECTRON_APP_NAME = "app2me Dev";
 export const DEV_ELECTRON_APP_BUNDLE_ID = "dev.mycode.app.development";
 // 副本布局版本，见 prepareDevElectronAppBundle 中的指纹说明。
 export const DEV_ELECTRON_BUNDLE_FORMAT = 2;

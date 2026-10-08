@@ -1,7 +1,14 @@
-import type { EditorInfo } from "@mycode/shared";
-import { ChevronDownIcon, CopyIcon, ExternalLinkIcon } from "lucide-react";
+import type { EditorInfo, WebsiteBrowserInfo } from "@mycode/shared";
+import {
+  ChevronDownIcon,
+  CircleDotIcon,
+  CompassIcon,
+  CopyIcon,
+  ExternalLinkIcon,
+} from "@/components/icons/tabler.js";
 import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button.js";
+import { cn } from "@/components/lib/utils.js";
 import { toast } from "@/components/ui/toast.js";
 import type { MessageFileLinkTarget } from "@/components/ai-elements/message.js";
 import {
@@ -11,11 +18,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.js";
+import { usePreferredEditorId } from "@/hooks/usePreferredEditorId.js";
 import { usePlatform } from "@/hooks/usePlatform.js";
 import { useFileContextActions } from "@/hooks/useFileContextActions.js";
 import { useWorkspaceOpenInEditorTarget } from "@/hooks/useWorkspaceOpenInEditorTarget.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-import { persistLastSelectedEditorId, readLastSelectedEditorId } from "@/lib/editorPreference.js";
+import { persistLastSelectedEditorId } from "@/lib/editorPreference.js";
 import type { CodeViewerSource } from "@/lib/codeViewer.js";
 import { getWorkspaceFileRelativePath } from "@/workspace-file-tree/model.js";
 import { resolveWorkspaceEditorSelection } from "@/lib/workspaceEditorSelection.js";
@@ -43,6 +51,7 @@ interface OpenSplitButtonProps {
   onOpenCodeViewer?: (source: CodeViewerSource) => void;
   hideOpenWithMenu?: boolean;
   stopPropagation?: boolean;
+  compact?: boolean;
 }
 
 export function OpenSplitButton({
@@ -52,6 +61,7 @@ export function OpenSplitButton({
   onOpenCodeViewer,
   hideOpenWithMenu = false,
   stopPropagation = false,
+  compact = false,
 }: OpenSplitButtonProps) {
   const { intl } = useMyCodeIntl();
   const platform = usePlatform();
@@ -68,6 +78,7 @@ export function OpenSplitButton({
     previewSource?.workspaceRemoteSessionId ||
     matchedOpenContext.isRemoteWorkspace,
   );
+  const [browsers, setBrowsers] = useState<WebsiteBrowserInfo[]>([]);
   const [editors, setEditors] = useState<EditorInfo[]>([]);
   const [editorsLoaded, setEditorsLoaded] = useState(false);
   const [loadingEditors, setLoadingEditors] = useState(false);
@@ -86,12 +97,12 @@ export function OpenSplitButton({
     target.type === "website"
       ? Boolean(onOpenBrowserUrl)
       : Boolean(onOpenFileLink || onOpenCodeViewer);
+  const selectedEditorId = usePreferredEditorId();
   const selectedEditor = useMemo(() => {
-    const selectedEditorId = readLastSelectedEditorId();
     return (
       sortedEditors.find((editor) => editor.id === selectedEditorId) ?? sortedEditors[0] ?? null
     );
-  }, [sortedEditors]);
+  }, [selectedEditorId, sortedEditors]);
 
   const stopEventPropagation = (event: { stopPropagation: () => void }) => {
     if (stopPropagation) {
@@ -100,17 +111,18 @@ export function OpenSplitButton({
   };
 
   const loadEditors = useCallback(async () => {
-    if (editorsLoaded || loadingEditors || target.type !== "file") {
+    if (editorsLoaded || loadingEditors) {
       return;
     }
 
     setLoadingEditors(true);
     try {
-      setEditors(await platform.getInstalledEditors());
+      if (target.type === "website") setBrowsers((await platform.getWebsiteBrowsers?.()) ?? []);
+      else setEditors(await platform.getInstalledEditors());
       setEditorsLoaded(true);
     } catch (error) {
       logger.warn("[OpenSplitButton] 获取第三方打开方式失败", {
-        path: target.path,
+        path: target.type === "file" ? target.path : target.url,
         error: error instanceof Error ? error.message : String(error),
       });
     } finally {
@@ -195,7 +207,10 @@ export function OpenSplitButton({
   if (hideOpenWithMenu) {
     return (
       <div
-        className="flex h-7 shrink-0 items-center overflow-hidden rounded-lg border border-border bg-input transition-all hover:border-border-hover"
+        className={cn(
+          "flex h-7 shrink-0 items-center overflow-hidden rounded-lg border border-border bg-input transition-all hover:border-border-hover",
+          compact && "h-6 border-border/60",
+        )}
         onClick={stopEventPropagation}
         onPointerDown={stopEventPropagation}
       >
@@ -203,7 +218,7 @@ export function OpenSplitButton({
           type="button"
           variant="ghost"
           size="default"
-          className="h-7 rounded-none border-0 gap-1 px-2"
+          className={cn("h-7 rounded-none border-0 gap-1 px-2", compact && "h-6 text-ui-caption")}
           disabled={!canPreview}
           onClick={(event) => {
             stopEventPropagation(event);
@@ -219,7 +234,10 @@ export function OpenSplitButton({
   return (
     <DropdownMenu onOpenChange={(open) => open && void loadEditors()}>
       <div
-        className="flex h-7 shrink-0 items-center overflow-hidden rounded-lg border border-border bg-input transition-all hover:border-border-hover"
+        className={cn(
+          "flex h-7 shrink-0 items-center overflow-hidden rounded-lg border border-border bg-input transition-all hover:border-border-hover",
+          compact && "h-6 border-border/60",
+        )}
         onClick={stopEventPropagation}
         onPointerDown={stopEventPropagation}
       >
@@ -227,7 +245,10 @@ export function OpenSplitButton({
           type="button"
           variant="ghost"
           size="default"
-          className="h-7 rounded-none border-0 gap-1 pr-1.5"
+          className={cn(
+            "h-7 rounded-none border-0 gap-1 pr-1.5",
+            compact && "h-6 px-2 pr-1 text-ui-caption",
+          )}
           disabled={!canPreview}
           onClick={(event) => {
             stopEventPropagation(event);
@@ -241,25 +262,62 @@ export function OpenSplitButton({
             type="button"
             variant="ghost"
             size="icon-md"
-            className="!w-5 rounded-none border-0 text-foreground-subtlest"
+            className={cn("!w-5 rounded-none border-0 text-foreground-subtlest", compact && "h-6")}
             aria-label={intl.formatMessage({ id: "appHeader.selectOpenApp" })}
             title={intl.formatMessage({ id: "appHeader.selectOpenApp" })}
             onClick={stopEventPropagation}
           >
-            <ChevronDownIcon className="size-3.5" />
+            <ChevronDownIcon
+              className={compact ? "size-3" : "size-3.5"}
+              strokeWidth={compact ? 1.5 : 2}
+            />
           </Button>
         </DropdownMenuTrigger>
       </div>
       <DropdownMenuContent align="end" side="top" className="w-44" onClick={stopEventPropagation}>
         {target.type === "website" ? (
-          <DropdownMenuItem onSelect={handleOpenExternal}>
-            <ExternalLinkIcon className="size-4" />
-            <span>
-              {intl.formatMessage({
-                id: "chat.previewCards.openExternal",
-              })}
-            </span>
-          </DropdownMenuItem>
+          <>
+            {platform.openWebsiteBrowser ? (
+              browsers.length ? (
+                browsers.map((browser) => {
+                  const Icon = browser.id === "chrome" ? CircleDotIcon : CompassIcon;
+                  return (
+                    <DropdownMenuItem
+                      key={browser.id}
+                      onSelect={() => {
+                        void platform.openWebsiteBrowser!(browser.id, target.url)
+                          .then((result) => {
+                            if (!result.success)
+                              toast(
+                                intl.formatMessage({ id: "chat.previewCards.openExternalFailed" }),
+                              );
+                          })
+                          .catch(() =>
+                            toast(
+                              intl.formatMessage({ id: "chat.previewCards.openExternalFailed" }),
+                            ),
+                          );
+                      }}
+                    >
+                      <Icon className="size-3.5" strokeWidth={1.5} />
+                      <span>{browser.name}</span>
+                    </DropdownMenuItem>
+                  );
+                })
+              ) : (
+                <DropdownMenuItem disabled>
+                  {intl.formatMessage({
+                    id: loadingEditors ? "common.loading" : "chat.previewCards.noOpenApps",
+                  })}
+                </DropdownMenuItem>
+              )
+            ) : (
+              <DropdownMenuItem onSelect={handleOpenExternal}>
+                <ExternalLinkIcon className="size-3.5" strokeWidth={1.5} />
+                <span>{intl.formatMessage({ id: "chat.previewCards.openExternal" })}</span>
+              </DropdownMenuItem>
+            )}
+          </>
         ) : (
           <>
             {selectedEditor ? (

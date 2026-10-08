@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { SquareArrowRightEnter } from "lucide-react";
+import { SquareArrowRightEnter } from "@/components/icons/tabler.js";
 
 import type { Locale } from "@mycode/shared";
 import type { ConversationRow } from "@mycode/shared/mycode-protocol-v4";

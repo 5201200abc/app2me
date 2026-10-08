@@ -99,7 +99,7 @@ export function resolveProviderBusinessCode(error: ProviderBusinessError): strin
   }
 
   // ProviderBusinessError 可能被 AI SDK/adapter 二次包装，外层 code 是包装类型，
-  // 真实 BigModel 码（如 1234/1261）只保留在 responseBodySummary 的深层结构里。
+
   return readNestedProviderCode(error.responseBodySummary);
 }
 
@@ -160,8 +160,8 @@ export function firstBracketedProviderCode(
 ): string | undefined {
   for (const record of records) {
     const code =
-      readBigModelBracketedProviderCode(record.message) ??
-      readBigModelBracketedProviderCode(record.providerMessage);
+      readBracketedProviderCode(record.message) ??
+      readBracketedProviderCode(record.providerMessage);
     if (code) {
       return code;
     }
@@ -210,7 +210,7 @@ export function normalizeHttpFailureStatus(value: number | undefined): number | 
   return value !== undefined && value >= 400 && value <= 599 ? value : undefined;
 }
 
-export function readBigModelBracketedProviderCode(value: unknown): string | undefined {
+export function readBracketedProviderCode(value: unknown): string | undefined {
   if (typeof value !== "string") {
     return undefined;
   }

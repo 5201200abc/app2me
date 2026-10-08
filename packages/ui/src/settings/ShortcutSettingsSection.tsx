@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw } from "@/components/icons/tabler.js";
 import {
   SHORTCUT_COMMANDS,
   getDefaultShortcutBindings,
@@ -59,7 +59,6 @@ export function ShortcutSettingsSection({ isDesktop = false }: { isDesktop?: boo
     const keyBinding = keySearch.binding;
     return SHORTCUT_COMMANDS.filter((entry) => {
       // 这些快捷键保留注册和冲突检测，但不在用户可见列表中展示。
-      if (entry.id === "toggleInterfaceMode") return false;
       const matchesText =
         !keyword ||
         entry.id.toLowerCase().includes(keyword) ||
@@ -212,7 +211,7 @@ export function ShortcutSettingsSection({ isDesktop = false }: { isDesktop?: boo
   const recordingCommandId = recording?.commandId ?? null;
 
   return (
-    <div className="space-y-4" data-testid="settings-shortcuts-section">
+    <div className="shortcut-settings space-y-3" data-testid="settings-shortcuts-section">
       <ShortcutSearchBar
         query={query}
         onQueryChange={setQuery}
@@ -222,18 +221,20 @@ export function ShortcutSettingsSection({ isDesktop = false }: { isDesktop?: boo
         actions={
           <Button
             variant="outline"
+            size="sm"
+            className="shrink-0 gap-1.5 px-2 text-ui-caption"
             onClick={resetAll}
             disabled={!overrides || Object.keys(overrides).length === 0}
             data-testid="settings-shortcut-reset-all"
           >
-            <RotateCcw className="mr-2 size-4" />
+            <RotateCcw className="size-3.5" strokeWidth={1.5} />
             {intl.formatMessage({ id: "settings.shortcuts.resetAll" })}
           </Button>
         }
       />
 
-      <div className="overflow-hidden rounded-xl border border-border">
-        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_80px_72px] bg-surface px-4 py-3 text-ui-sm text-foreground-subtle">
+      <div className="overflow-hidden rounded-lg border border-border/60">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(100px,1fr)_24px_24px] gap-x-2 bg-surface/60 px-2.5 py-2 text-ui-xs text-foreground-subtle sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_56px_40px]">
           <span>{intl.formatMessage({ id: "settings.shortcuts.columnHeaderCommand" })}</span>
           <span>{intl.formatMessage({ id: "settings.shortcuts.columnHeaderBinding" })}</span>
           <span>{intl.formatMessage({ id: "settings.shortcuts.columnHeaderScope" })}</span>

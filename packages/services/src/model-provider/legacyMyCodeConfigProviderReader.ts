@@ -2,7 +2,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { z } from "zod";
-import { BUILTIN_MODEL_PROVIDER_IDS } from "@mycode/shared";
 import {
   createModelProviderModelConfig,
   getDefaultModelSupportedFormatsFromApiFormat,
@@ -44,23 +43,8 @@ import {
 } from "./legacyModelProviderSerialized.js";
 import { getAppConfigDir } from "../paths.js";
 
-const LEGACY_PRESET_GLM_PROVIDER_IDS = new Set<string>([
-  "zai-api",
-  BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-  BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
-  BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
-  "bigmodel-api",
-  BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
-  BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
-  BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
-]);
-
-function isLegacyPresetGlmProviderId(providerId: string): boolean {
-  return (
-    LEGACY_PRESET_GLM_PROVIDER_IDS.has(providerId) ||
-    providerId === RETIRED_ZAPI_PROVIDER_ID ||
-    /(?:z\.ai|zai|zhipu|bigmodel|glm)/iu.test(providerId)
-  );
+function isRetiredProviderId(providerId: string): boolean {
+  return providerId.startsWith("builtin:") || providerId.startsWith("account:");
 }
 
 function getMyCodeConfigFilePath(): string {
@@ -68,7 +52,6 @@ function getMyCodeConfigFilePath(): string {
 }
 
 const LEGACY_FALLBACK_CONTEXT_WINDOW = MODEL_PROVIDER_NEW_MODEL_CONTEXT_WINDOW;
-const RETIRED_ZAPI_PROVIDER_ID = "builtin:zapi";
 
 type JsonObject = Record<string, unknown>;
 
@@ -656,7 +639,7 @@ async function readMyCodeConfigProviders(): Promise<ModelProviderConfig[] | null
     return null;
   }
   const providers = Object.entries(config.provider)
-    .filter(([providerId]) => !isLegacyPresetGlmProviderId(providerId))
+    .filter(([providerId]) => !isRetiredProviderId(providerId))
     .map(([providerId, provider]) => openCodeProviderToModelProviderConfig(providerId, provider));
   return applyProviderStoreMigrations(providers);
 }
@@ -815,7 +798,7 @@ function applyProviderStoreMigrations(providers: ModelProviderConfig[]): ModelPr
   // 在迁移边界清掉这些旧预置项，避免刷新后继续占用设置页和模型菜单。
   let next = providers.filter(
     (provider) =>
-      !isLegacyPresetGlmProviderId(provider.id) &&
+      !isRetiredProviderId(provider.id) &&
       !(provider.id.startsWith("default-") && provider.apiKey.trim().length === 0),
   );
 

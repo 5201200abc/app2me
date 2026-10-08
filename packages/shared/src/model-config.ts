@@ -34,8 +34,19 @@ export const completeEnumOptionSpecDataSchema = z
       .refine((values) => new Set(values).size === values.length, "reasoningLevel.values 不能重复")
       .readonly(),
     map: optionMapSchema("reasoningLevel"),
+    // 官方默认档位可能不是最高档；缺省时保留既有模型的最高档初始化规则。
+    defaultValue: z.string().min(1).optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((spec, context) => {
+    if (spec.defaultValue !== undefined && !spec.values.includes(spec.defaultValue)) {
+      context.addIssue({
+        code: "custom",
+        path: ["defaultValue"],
+        message: "默认思考档位必须属于 values",
+      });
+    }
+  });
 
 export const completeLimitOptionSpecDataSchema = z
   .object({
@@ -70,6 +81,8 @@ export const modelOutputFormatDataSchema = z
 
 export const completeModelPropertiesDataSchema = z
   .object({
+    // 请求 ID 不含当前版本时，由 Registry 传递官方显示名，避免 UI 猜版本。
+    displayName: z.string().trim().min(1).optional(),
     requiresMfjsToolSchema: z.boolean(),
     contextWindow: z.number().int().positive(),
     inputFormat: completeModelInputFormatDataSchema,

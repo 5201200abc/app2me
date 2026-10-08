@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- 技能管理面板需共享筛选、安装与开关交互状态，集中维护更便于一致性 */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   AlertTriangle,
   ChevronDown,
@@ -9,8 +9,7 @@ import {
   Plus,
   Trash2,
   UploadCloud,
-  WandSparkles,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { Button } from "@/components/ui/button.js";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog.js";
@@ -37,8 +36,8 @@ import { useConfirmDialog } from "@/hooks/useConfirmDialog.js";
 import { buildSkillMentionMarkdown } from "@/mentions/mentionMarkdown.js";
 import { filterSkillsForProvider } from "@/lib/skillSourceFilter.js";
 import { invalidateDeferredDraftSessionForSkillChange } from "@/lib/mycodeDraftSkillInvalidation.js";
-import { PluginStoreAvatar } from "@/settings/PluginStoreAvatar.js";
 import { SettingsResourceHeaderActions } from "@/settings/SettingsResourceHeaderActions.js";
+import { SettingsResourcePageHeader } from "@/settings/SettingsResourcePageHeader.js";
 import {
   SettingsResourceGroupHeader,
   SettingsResourceList,
@@ -149,6 +148,7 @@ interface SkillsSectionProps {
   remoteTarget?: RemoteTarget;
   scopeFilter: "user" | "workspace";
   searchQuery: string;
+  filters?: ReactNode;
   onVisibleCountChange?: (count: number) => void;
   onCreateTask?: (request?: CreateTaskRequest) => void;
   onDetailOpenChange?: (open: boolean) => void;
@@ -164,6 +164,7 @@ export function SkillsSection({
   remoteTarget,
   scopeFilter,
   searchQuery,
+  filters,
   onVisibleCountChange,
   onCreateTask,
   onDetailOpenChange,
@@ -493,19 +494,11 @@ export function SkillsSection({
     (skill) => skill.scope !== "plugin",
   ).length;
   const hideInstalledGroup = Boolean(query.trim()) && groupedSkills.local.length === 0;
-  const pluginIconItemById = useMemo(
-    () =>
-      new Map(
-        plugins.map((plugin) => [
-          plugin.id,
-          { name: plugin.name, listing: pluginListingById.get(plugin.id) },
-        ]),
-      ),
-    [pluginListingById, plugins],
-  );
+
   useEffect(() => {
     onVisibleCountChange?.(filteredSkillCount);
   }, [filteredSkillCount, onVisibleCountChange]);
+
   const handleCreateSkill = () => {
     if (!activeWorkspacePath || !onCreateTask) {
       return;
@@ -572,29 +565,11 @@ export function SkillsSection({
         )
       : "";
   const renderSkillRow = (skill: SkillSummary) => {
-    const pluginIconItem = skill.pluginId
-      ? pluginIconItemById.get(skill.pluginId)
-      : skill.pluginName
-        ? {
-            name: skill.pluginName,
-            listing: resolveUniquePluginListingByName(availablePlugins, skill.pluginName),
-          }
-        : undefined;
     return (
       <div
         key={skill.id}
-        className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-hover"
+        className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-3 py-2 transition-colors hover:bg-hover"
       >
-        {skill.scope === "plugin" && pluginIconItem ? (
-          <PluginStoreAvatar item={pluginIconItem} className="size-9 bg-background" />
-        ) : (
-          <div
-            className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-background text-foreground-subtle"
-            aria-hidden="true"
-          >
-            <WandSparkles className="size-4" />
-          </div>
-        )}
         <div
           role="button"
           tabIndex={0}
@@ -680,6 +655,12 @@ export function SkillsSection({
 
   return (
     <div className="space-y-4">
+      <SettingsResourcePageHeader
+        title={intl.formatMessage({ id: "settings.plugins.title" })}
+        description={intl.formatMessage({ id: "settings.plugins.description" })}
+        filters={filters}
+        actions={skillHeaderActions}
+      />
       {/* 独立 Skills 分区的详情是弹窗，不属于页面级导航；只有插件容器需要上报详情层级。 */}
       {reportDetailBreadcrumb && detailSkill ? (
         <SettingsBreadcrumbReporter
@@ -803,8 +784,6 @@ export function SkillsSection({
           <section className={hideInstalledGroup ? "hidden" : "space-y-4"}>
             <div data-skills-plugin-direct-actions="true">
               <SettingsResourceGroupHeader
-                actions={skillHeaderActions}
-                count={groupedSkills.local.length}
                 title={intl.formatMessage({
                   id: "settings.plugin.skills.installed",
                 })}
@@ -850,7 +829,6 @@ export function SkillsSection({
             .map((group) => (
               <section key={group.id} className="space-y-4">
                 <SettingsResourceGroupHeader
-                  count={group.skills.length}
                   title={resolvePluginDisplayName(
                     {
                       name: group.label,
@@ -874,7 +852,7 @@ export function SkillsSection({
           }
         }}
       >
-        <DialogContent className="max-h-[min(80vh,640px)] max-w-xl overflow-hidden p-0">
+        <DialogContent className="agent-settings-typography max-h-[min(80vh,640px)] max-w-xl overflow-hidden p-0">
           {detailSkill ? (
             <div className="flex min-h-0 flex-col">
               <DialogHeader className="border-b border-popover-border px-4 pt-4 pb-3">

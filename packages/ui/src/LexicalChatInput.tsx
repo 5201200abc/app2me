@@ -16,6 +16,7 @@
  */
 import { $getPromptMarkdown } from "@/mentions/promptSerialization.js";
 import { PromptClipboardPlugin } from "@/mentions/PromptClipboardPlugin.js";
+import { LeadingGoalToolbarPlugin } from "@/prompt-editor/LeadingGoalToolbarPlugin.js";
 import {
   resolveComposerKeyAction,
   shouldBareEnterFallThroughToNewline,
@@ -1309,6 +1310,7 @@ function EditorApiPlugin({
 }
 
 interface LexicalChatInputProps {
+  goalMarkerContainer?: HTMLElement | null;
   placeholder?: string;
   disabled?: boolean;
   submitDisabled?: boolean;
@@ -1342,6 +1344,7 @@ const EDITOR_THEME = {
 };
 
 export function LexicalChatInput({
+  goalMarkerContainer,
   placeholder,
   disabled = false,
   submitDisabled = false,
@@ -1441,6 +1444,7 @@ export function LexicalChatInput({
         "aria-placeholder": placeholder,
         placeholder: (
           <div
+            data-composer-placeholder
             className={`pointer-events-none absolute left-0 top-0 ${compactPlaceholder ? "line-clamp-2" : ""} text-ui-base leading-5 text-foreground-subtlest`}
           >
             {placeholder}
@@ -1483,6 +1487,7 @@ export function LexicalChatInput({
           <PlainTextPlugin contentEditable={contentEditable} ErrorBoundary={LexicalErrorBoundary} />
           <HistoryPlugin />
           <PromptClipboardPlugin />
+          <LeadingGoalToolbarPlugin container={goalMarkerContainer} disabled={disabled} />
           <TextContentPlugin onChange={onChange} taskId={taskId} />
           <KeyboardPlugin
             onSubmit={handleSubmit}

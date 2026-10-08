@@ -8,7 +8,7 @@
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible.js";
 import { cn } from "../lib/utils.js";
-import { BookIcon, ChevronDownIcon } from "lucide-react";
+import { BookIcon, ChevronDownIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 
 export type SourcesProps = ComponentProps<"div">;

@@ -1,5 +1,9 @@
 import { recordArmsCustomEventForE2E } from "@mycode/ui";
-import { DesktopCommandIds, buildLocalMediaPreviewUrl, type IPlatformService } from "@mycode/shared";
+import {
+  DesktopCommandIds,
+  buildLocalMediaPreviewUrl,
+  type IPlatformService,
+} from "@mycode/shared";
 
 import { desktopBrowserPlatformBridge } from "./desktopBrowserPlatformBridge.js";
 
@@ -12,6 +16,8 @@ export function createDesktopPlatform(options: {
     isLocalDevelopmentRuntime: options.isLocalDevelopmentRuntime,
     selectDirectory: () => window.mycode.selectDirectory(),
     selectFile: () => window.mycode.selectFile(),
+    selectFilesAndFolders: () => window.mycode.selectFilesAndFolders(),
+    captureInteractiveScreenshot: () => window.mycode.captureInteractiveScreenshot(),
     selectFiles: () => window.mycode.selectFiles?.() ?? Promise.resolve([]),
     createTempTextAttachment: (payload) => window.mycode.createTempTextAttachment(payload),
     onRemoteConnectionLog: (handler) => window.mycode.onRemoteConnectionLog(handler),
@@ -36,8 +42,6 @@ export function createDesktopPlatform(options: {
     migrateLegacyCommonMcp: (payload) => window.mycode.migrateLegacyCommonMcp(payload),
     openExternal: (url) => window.mycode.openExternal(url),
     openFeedback: () => window.mycode.executeDesktopCommand(DesktopCommandIds.OpenFeedback),
-    openCommunity: () => window.mycode.executeDesktopCommand(DesktopCommandIds.OpenCommunity),
-    canOpenCommunity: (locale) => window.mycode.canOpenCommunity(locale),
     openInFileManager: (path) => window.mycode.openInFileManager(path),
     openExternalFile: (path) => window.mycode.openExternalFile(path),
     openCuaPermissionOnboarding: window.mycode.openCuaPermissionOnboarding
@@ -111,7 +115,8 @@ export function createDesktopPlatform(options: {
     onDesktopWindowChromeStateChanged: window.mycode.onDesktopWindowChromeStateChanged
       ? (handler) => window.mycode.onDesktopWindowChromeStateChanged!(handler)
       : undefined,
-    getWindowControlsOverlayMetrics: () => window.mycode.getWindowControlsOverlayMetrics?.() ?? null,
+    getWindowControlsOverlayMetrics: () =>
+      window.mycode.getWindowControlsOverlayMetrics?.() ?? null,
     onWindowControlsOverlayChanged: (handler) =>
       window.mycode.onWindowControlsOverlayChanged?.(handler) ?? (() => {}),
     getDesktopZoomLevel: () =>
@@ -124,7 +129,8 @@ export function createDesktopPlatform(options: {
       window.mycode.captureWindowScreenshot?.() ?? Promise.resolve(null),
     onUpdateReady: (callback) => window.mycode.onUpdateReady(callback),
     onUpdateCheckResult: (callback) => window.mycode.onUpdateCheckResult(callback),
-    onUpdateStateChanged: (callback) => window.mycode.onUpdateStateChanged?.(callback) ?? (() => {}),
+    onUpdateStateChanged: (callback) =>
+      window.mycode.onUpdateStateChanged?.(callback) ?? (() => {}),
     getUpdateState: () =>
       window.mycode.getUpdateState?.() ?? Promise.resolve({ kind: "idle", enabled: true }),
     downloadUpdate: () => window.mycode.downloadUpdate?.() ?? Promise.resolve(),
@@ -150,6 +156,9 @@ export function createDesktopPlatform(options: {
     skipUpdateVersion: (version) => window.mycode.skipUpdateVersion?.(version) ?? Promise.resolve(),
     quitAndInstallUpdate: () => window.mycode.quitAndInstallUpdate(),
     getInstalledEditors: () => window.mycode.getInstalledEditors(),
+    getWebsiteBrowsers: () => window.mycode.getWebsiteBrowsers!(),
+    getDesktopToolEnvironment: () => window.mycode.getDesktopToolEnvironment!(),
+    openWebsiteBrowser: (browserId, url) => window.mycode.openWebsiteBrowser!(browserId, url),
     getApplicationIcon: (bundleId) =>
       window.mycode.getApplicationIcon?.(bundleId) ?? Promise.resolve(null),
     openInEditor: (editorId, path, editorOptions) =>

@@ -1,13 +1,4 @@
-/* off-peak（闲时任务）排队协议的适配层特判。
-   语义只对 Model Config 显式声明 off-peak-queue 协议的请求生效——业务码 3105/3102
-   在其它 bigmodel API 可能另有含义，禁止写进全局 failure-provider-business-codes 映射表。
 
-   - 429（含业务码 3105）= 排队应答：单次等待 min(Retry-After, 5min) 钳制 × 无限幂等探测；
-     调用方冻结 attempt 预算（否则默认 11 次后被误判为 API 失败）；abort 贯穿 sleep。
-   - 400/3102 = 票据不可用（active 3h 到期 / ready 废票）：立即以稳定标记落败，
-     desktop 端识别标记改走"同 task_id 重取号 → resume 续跑"，不是普通失败。
-   - 首派弃派不在适配层实现：首派挂网关时 ready 5min TTL 到期自然触发
-     3102 → 续跑回队，等待上界 ≈ TTL + 一次钳制探测 ≤ 10min，满足规则意图且少一套状态。 */
 import type { ClassifiedModelFailure } from "./failure-classifier.js";
 import { isProviderBusinessError } from "./model-execution.js";
 

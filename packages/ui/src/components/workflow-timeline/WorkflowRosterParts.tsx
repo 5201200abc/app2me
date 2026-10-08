@@ -1,4 +1,4 @@
-import { CircleCheckIcon, CircleXIcon, LoaderCircleIcon } from "lucide-react";
+import { CircleCheckIcon, CircleXIcon, LoaderCircleIcon } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import type { StepRunStatus } from "@/components/workflow-graph/types.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

@@ -1,4 +1,4 @@
-import { Plus, X } from "lucide-react";
+import { Plus, X } from "@/components/icons/tabler.js";
 import type { MyCodeSavedWorkflowArgType } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";

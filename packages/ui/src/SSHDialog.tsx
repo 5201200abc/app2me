@@ -7,7 +7,7 @@ import {
   TID_SSH_ERROR,
   TID_SSH_SUCCESS,
 } from "@mycode/shared";
-import { AlertTriangleIcon } from "lucide-react";
+import { AlertTriangleIcon, Cloud } from "@/components/icons/tabler.js";
 import { Button, buttonVariants } from "@/components/ui/button.js";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog.js";
 import { useCancelPendingRemoteConnection } from "@/hooks/useCancelPendingRemoteConnection.js";
@@ -449,7 +449,12 @@ export function RemoteConnectionDialog({
           data-testid={TID_SSH_CONNECT_TRIGGER}
           className={triggerClassName}
         >
-          {trigger ?? intl.formatMessage({ id: "remote.trigger" })}
+          {trigger ?? (
+            <>
+              <Cloud className="size-4 shrink-0" strokeWidth={1.5} />
+              <span>{intl.formatMessage({ id: "remote.trigger" })}</span>
+            </>
+          )}
         </Button>
       ) : null}
       <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -602,7 +607,9 @@ export function RemoteConnectionDialog({
                       localPluginSyncService={baseServices.pluginSyncService}
                       remotePluginSyncService={directoryBrowserServices?.pluginSyncService ?? null}
                       localMyCodeAgentService={baseServices.mycodeAgentService}
-                      remoteMyCodeAgentService={directoryBrowserServices?.mycodeAgentService ?? null}
+                      remoteMyCodeAgentService={
+                        directoryBrowserServices?.mycodeAgentService ?? null
+                      }
                       localWorkspacePath={localWorkspacePath}
                       selecting={selectingDirectory}
                       onSelect={(path) => {

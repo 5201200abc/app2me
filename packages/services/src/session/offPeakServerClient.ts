@@ -76,7 +76,7 @@ const takeNumberAvailabilityResponseSchema = z
   })
   .passthrough();
 
-/** 业务错误体（HTTP 非 2xx 时尽力解析；zai 网关惯例 code/msg，字段缺失容忍）。 */
+
 const errorBodySchema = z
   .object({
     code: z.number().optional(),

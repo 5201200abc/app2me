@@ -4,10 +4,6 @@ import type {
   TurnHeaderRow,
   UserInputRow,
 } from "@mycode/shared/mycode-protocol-v4";
-import {
-  ENABLE_CUA_TOOL_CALL_GROUPING,
-  prepareCuaGroupFlowItems,
-} from "@/v4/conversationCuaGroups.js";
 import { buildConversationFlowItems } from "@/v4/conversationTurnFlowItems.js";
 import type { AssistantWorkRow, ConversationTurnFlowItem } from "@/v4/conversationTurnFlowItems.js";
 
@@ -206,10 +202,8 @@ export function buildConversationTurnWorkSegments(options: {
     return {
       key: segmentKey,
       ...(segment.triggerRow ? { triggerRow: segment.triggerRow } : {}),
-      flowItems: prepareCuaGroupFlowItems(flowItems, {
-        enabled: ENABLE_CUA_TOOL_CALL_GROUPING,
-        stageTailIsRunning: segmentRunning,
-      }),
+      // 先聚合 CUA 会吞掉混合命令与正文边界；保留原事件流，由工作项 renderer 统一折叠。
+      flowItems,
       assistantWorkRows: segmentAssistantRows,
       assistantHistoryRows: segmentHistoryRows,
       assistantFollowingRows: segmentFollowingRows,

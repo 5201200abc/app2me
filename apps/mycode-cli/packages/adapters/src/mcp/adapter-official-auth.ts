@@ -110,9 +110,6 @@ export async function resolveOfficialStdioAuthMeta(
     identityHeaderNames: Object.keys(resolved.headers)
       .map((name) => name.toLowerCase())
       .sort(),
-    ...(resolved.headers["Bigmodel-Target-Type"]
-      ? { identityTargetType: resolved.headers["Bigmodel-Target-Type"] }
-      : {}),
     status: "completed",
   });
   return { ok: true, headers: resolved.headers };

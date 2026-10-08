@@ -1,21 +1,20 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 /* oxlint-disable eslint(max-lines) -- v4 逐行 row 渲染分发集中收口（每种 row 一个 memo 叶子 + timelineMarker 分隔线），拆分会打散行类型对照。 */
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArchiveIcon,
-  ArrowRightLeftIcon,
+  CircleAlertIcon,
   CheckIcon,
   CopyIcon,
   FileClockIcon,
   FileIcon,
   GitBranchIcon,
   GoalIcon,
-  PencilIcon,
   ThumbsDownIcon,
   ThumbsUpIcon,
-  TrendingUpDownIcon,
+  Share2Icon,
   XIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import {
   TID_V4_EDIT,
   TID_V4_EDIT_ATTACHMENT_REMOVE,
@@ -99,7 +98,6 @@ import {
   projectAssistantCodeComments,
   type AssistantCodeCommentCard,
 } from "@/lib/assistantCodeComment.js";
-import { resolveProviderLabel } from "@/lib/registryProviderView.js";
 import type { LexicalChatInputHandle } from "@/LexicalChatInput.js";
 import { ChatPromptEditor } from "@/prompt-editor/ChatPromptEditor.js";
 import { resolveToolCallIdentity } from "@/lib/toolIdentity.js";
@@ -861,7 +859,7 @@ const UserInputRowView = memo(function UserInputRowView({
   editWorkspaceRewindAvailability?: EditWorkspaceRewindAvailability;
   status?: string;
 }) {
-  const { intl } = useMyCodeIntl();
+  const { intl, locale } = useMyCodeIntl();
   // 引擎尾注折叠：正文只到 epilogueStart，
   // 之后的引擎文本折进气泡底部的披露。提示词上下文解析也只看正文——尾注里没有用户引用。
   const { body: bodyText, epilogue } = splitUserInputEpilogue(row.text, row.epilogueStart);
@@ -1253,10 +1251,10 @@ const UserInputRowView = memo(function UserInputRowView({
       {hasBubble ? (
         // 附件和上下文引用只属于消息行，不属于气泡；否则仅附件消息会留下空气泡。
         // 同一 row 会渲染在主会话和 Subagent 侧栏，固定宽度会忽略实际宿主宽度。
-        // 气泡保留 flex item 的自动宽度；宿主至少 624px 时再以 36rem 封顶并保留 48px 余量。
+        // 气泡按内容自适应，以宿主 52% 封顶，长提问不会在宽窗口横向铺满。
         <div
           data-v4-user-input-bubble="true"
-          className="flex max-w-full flex-col gap-2 rounded-xl rounded-tr-xs border border-border bg-surface px-4 py-3 text-ui-base text-foreground @min-[624px]/conversation:max-w-xl"
+          className="conversation-user-bubble flex w-fit max-w-[52%] flex-col gap-1.5 rounded-[20px] border-0 px-5 py-4 text-ui-base leading-normal text-white"
         >
           {hasVisibleText ? (
             <ConversationUserInputBody contentText={visibleText} rowId={row.rowId}>
@@ -1270,20 +1268,21 @@ const UserInputRowView = memo(function UserInputRowView({
           {epilogue === undefined ? null : <ConversationUserInputEpilogue text={epilogue} />}
         </div>
       ) : null}
-      {status ? (
+      {hasBubble || status ? (
         <div
+          data-v4-user-input-meta="true"
           data-v4-user-input-status="true"
-          className="mt-1 text-right text-ui-sm text-foreground-subtlest"
+          className="mt-1 text-right text-ui-caption text-foreground-subtlest"
           aria-live="polite"
         >
-          {status}
+          {status ?? formatMessageTimeLabel(row.createdAt, locale, intl)}
         </div>
       ) : null}
       {/* 手机远控没有 hover，v4 迁移时漏掉了旧 UserMessage 的常显分支，
           导致复制和编辑入口不可发现；远控直接显示，桌面端继续通过 hover/focus 降噪。 */}
       <MessageActions
         className={cn(
-          "mt-1",
+          "conversation-user-actions mt-1",
           "opacity-0 transition-opacity group-hover/user-row:opacity-100 focus-within:opacity-100",
         )}
       >
@@ -1299,7 +1298,7 @@ const UserInputRowView = memo(function UserInputRowView({
             data-testid={testId(TID_V4_EDIT, String(row.rowId))}
             onClick={handleOpenEdit}
           >
-            <PencilIcon className="size-3.5" />
+            <WriteIcon className="size-3.5" />
           </MessageAction>
         ) : null}
       </MessageActions>
@@ -1404,7 +1403,7 @@ export const ConversationAssistantTextActions = memo(function ConversationAssist
     }
   }, [entityId, onFork, rowId]);
   return (
-    <MessageActions className={cn(className)}>
+    <MessageActions className={cn("conversation-message-actions", className)}>
       <CopyRowAction
         text={text}
         rowId={rowId}
@@ -1459,7 +1458,7 @@ export const ConversationAssistantTextActions = memo(function ConversationAssist
           data-testid={testId(TID_V4_FORK, String(rowId))}
           onClick={handleFork}
         >
-          <TrendingUpDownIcon className="size-3.5" />
+          <Share2Icon className="size-3.5" />
         </MessageAction>
       ) : null}
       {turnId && hookInvocations ? (
@@ -1468,7 +1467,9 @@ export const ConversationAssistantTextActions = memo(function ConversationAssist
       {/* 旧 conversation surface 删除后，V4 动作栏漏掉了消息创建时间；
           时间是 row.createdAt 的只读派生展示，不新增 renderer 状态。 */}
       {timeLabel ? (
-        <span className="select-none text-ui-sm text-foreground-subtlest">{timeLabel}</span>
+        <span className="conversation-action-time select-none text-ui-caption text-foreground-subtlest">
+          {timeLabel}
+        </span>
       ) : null}
     </MessageActions>
   );
@@ -1502,7 +1503,6 @@ const AssistantTextRowView = memo(function AssistantTextRowView({
   codeCommentProjectionEnabled?: boolean;
 }) {
   const streaming = row.state === "streaming";
-  const isOfficeMode = useIsOfficeMode();
   const codeCommentCardsEnabled = useAssistantCodeCommentFeatureEnabled();
   const projectsCodeComments = codeCommentCardsEnabled && codeCommentProjectionEnabled === true;
   const visibleText = useMemo(
@@ -1520,8 +1520,9 @@ const AssistantTextRowView = memo(function AssistantTextRowView({
       {/* MessageResponse 只消费自身声明的 props，不会把 data-* 透传到真实 DOM，
           导致 assistant 正文虽然在 JSX 上标了 selectable，框选逻辑却永远找不到该区域。
           selectable 语义必须放在稳定的 DOM 包装层上，完成态和 streaming 共用同一路径。 */}
-      <div data-conversation-selectable="true" className="w-full text-ui-base">
+      <div data-conversation-selectable="true" className="w-full min-w-0 text-ui-base">
         <MessageResponse
+          className="conversation-answer text-ui-base font-normal leading-normal tracking-normal"
           renderMyCodeFileCitations
           streaming={streaming}
           workspacePath={context.workspacePath}
@@ -1529,7 +1530,6 @@ const AssistantTextRowView = memo(function AssistantTextRowView({
           workspaceRemoteSessionId={context.workspaceRemoteSessionId}
           theme={context.theme}
           codePreviewSettings={context.codePreviewSettings}
-          forceCodeWrap={isOfficeMode}
           onOpenCodeViewer={context.onOpenCodeViewer}
           onOpenFileLink={context.onOpenFileLink}
           onOpenExternalUrl={context.onOpenBrowserUrl}
@@ -1540,7 +1540,7 @@ const AssistantTextRowView = memo(function AssistantTextRowView({
         </MessageResponse>
       </div>
       {codeCommentCardsEnabled && codeCommentCards && codeCommentCards.length > 0 ? (
-        <div className="mt-3">
+        <div className="mt-2 w-full min-w-0">
           <AssistantCodeCommentCards
             cards={codeCommentCards}
             workspacePath={context.workspacePath}
@@ -1551,7 +1551,7 @@ const AssistantTextRowView = memo(function AssistantTextRowView({
         </div>
       ) : null}
       {visiblePreviewCards ? (
-        <div className="mt-3">
+        <div className="mt-2 w-full min-w-0">
           <AssistantPreviewCards
             cards={visiblePreviewCards}
             workspacePath={context.workspacePath}
@@ -1602,7 +1602,11 @@ const ReasoningRowView = memo(function ReasoningRowView({
   // 现在 streaming/complete 都默认收起，只保留运行态文案，用户可手动展开。
   // autoCollapseKey 仍保证状态边界不会覆盖已经发生过的用户交互。
   const durationSeconds =
-    row.durationMs !== undefined ? Math.max(1, Math.ceil(row.durationMs / 1000)) : undefined;
+    row.durationMs !== undefined
+      ? row.durationMs > 0
+        ? Math.max(1, Math.floor(row.durationMs / 1000))
+        : undefined
+      : undefined;
   if (streaming && row.text.length === 0) {
     return null;
   }
@@ -1611,6 +1615,7 @@ const ReasoningRowView = memo(function ReasoningRowView({
       <Reasoning
         className="w-full"
         isStreaming={streaming}
+        startedAt={row.createdAt}
         autoCollapseKey={streaming ? null : row.state}
         {...(durationSeconds !== undefined ? { duration: durationSeconds } : {})}
       >
@@ -1655,7 +1660,7 @@ const MARKER_GOAL_ICON = (
   />
 );
 const MARKER_MODEL_ICON = (
-  <ArrowRightLeftIcon
+  <CircleAlertIcon
     aria-hidden="true"
     className="size-3.5 shrink-0 text-[var(--color-foreground-subtle)]"
   />
@@ -1754,9 +1759,7 @@ const TimelineMarkerRowView = memo(function TimelineMarkerRowView({
   context: ConversationRowRenderContext;
 }) {
   const { intl } = useMyCodeIntl();
-  const isOfficeMode = useIsOfficeMode();
   const marker = row.marker;
-  const modelSelectionView = context.modelSelectionView ?? null;
   const view = useMemo((): {
     icon: React.ReactNode;
     label: React.ReactNode;
@@ -1765,8 +1768,7 @@ const TimelineMarkerRowView = memo(function TimelineMarkerRowView({
     switch (marker.type) {
       case "compact": {
         const running = marker.status === "running";
-        const automaticOptimization = isOfficeMode && marker.origin === "auto";
-        const scope = automaticOptimization ? "chat.contextOptimization" : "chat.contextCompaction";
+        const scope = "chat.contextCompaction";
         const statusMessage =
           marker.status === "running"
             ? "started"
@@ -1776,7 +1778,7 @@ const TimelineMarkerRowView = memo(function TimelineMarkerRowView({
                 ? "interrupted"
                 : marker.status === "failed"
                   ? "failed"
-                  : marker.origin === "auto" && !automaticOptimization
+                  : marker.origin === "auto" && true
                     ? "completedAuto"
                     : "completed";
         return {
@@ -1792,12 +1794,7 @@ const TimelineMarkerRowView = memo(function TimelineMarkerRowView({
           running: false,
         };
       case "modelChange": {
-        // marker 已携带完整 provider/model 元组，旧渲染却只读取 model，
-        // 且没有订阅 provider snapshot，导致同名模型无差异、目录水合后名称不刷新。
-        // 这里保留 provider ID fallback，并让现有 marker 随目录更新。
-        const fromProvider = resolveProviderLabel(marker.fromProvider, modelSelectionView);
-        const toProvider = resolveProviderLabel(marker.toProvider, modelSelectionView);
-        const to = formatModelChangeLabel(marker.toProvider, toProvider, marker.toModel, intl);
+        const to = formatModelChangeLabel(marker.toModel);
         if (marker.fromProvider === undefined || marker.fromModel === undefined) {
           return {
             // source-less 表示首次使用的模型事实，不是模型切换，因此不显示切换箭头。
@@ -1811,12 +1808,7 @@ const TimelineMarkerRowView = memo(function TimelineMarkerRowView({
           label: intl.formatMessage(
             { id: "chat.modelChange.switched" },
             {
-              from: formatModelChangeLabel(
-                marker.fromProvider,
-                fromProvider,
-                marker.fromModel,
-                intl,
-              ),
+              from: formatModelChangeLabel(marker.fromModel),
               to,
             },
           ),
@@ -1853,7 +1845,7 @@ const TimelineMarkerRowView = memo(function TimelineMarkerRowView({
       default:
         return null;
     }
-  }, [intl, isOfficeMode, marker, modelSelectionView]);
+  }, [intl, marker]);
 
   // fork 跳父会话（Tier 1）：仅 forkNotice 且宿主提供 onNavigateToRow 时可点，
   // 切到 marker.parentSessionId（rowId 预留 Tier 2 精确滚动，当前恒 0 占位）。
@@ -1992,7 +1984,7 @@ const ToolCallRowView = memo(function ToolCallRowView({
           workspacePath={context.workspacePath}
           theme={context.theme}
           codePreviewSettings={context.codePreviewSettings}
-          showTodoToolCalls={context.messageStreamShowTodos === true}
+          showTodoToolCalls={false}
           onOpenCodeViewer={context.onOpenCodeViewer}
           onOpenFileLink={context.onOpenFileLink}
           onOpenBrowserUrl={context.onOpenBrowserUrl}
@@ -2152,7 +2144,6 @@ function ConversationRowViewImpl({
       // 只在 ToolCallBlock 内返回 null 会留下空 RowShell 和多余间距；
       // 在行分发处按同一工具身份规则裁剪，设置关闭时不产生任何 Todo DOM。
       if (
-        context.messageStreamShowTodos !== true &&
         resolveToolCallIdentity({ toolName: row.toolName, kind: row.toolName }).family === "todo"
       ) {
         return null;

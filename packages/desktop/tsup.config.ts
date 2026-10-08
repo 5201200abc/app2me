@@ -34,21 +34,6 @@ function loadEnvFiles(): Record<string, string> {
   if (process.env.MYCODE_BASE_URL) vars.MYCODE_BASE_URL = process.env.MYCODE_BASE_URL;
   if (process.env.VITE_MYCODE_BASE_URL)
     vars.VITE_MYCODE_BASE_URL = process.env.VITE_MYCODE_BASE_URL;
-  // OAuth origin/client_id 由 host runtime 读取；这里保留覆盖入口，方便开发构建时观察统一 env 来源。
-  if (process.env.ZAI_OAUTH_CLIENT_ID) vars.ZAI_OAUTH_CLIENT_ID = process.env.ZAI_OAUTH_CLIENT_ID;
-  if (process.env.ZAI_OAUTH_ORIGIN) vars.ZAI_OAUTH_ORIGIN = process.env.ZAI_OAUTH_ORIGIN;
-  if (process.env.ZAI_BUSINESS_BASE_URL) {
-    vars.ZAI_BUSINESS_BASE_URL = process.env.ZAI_BUSINESS_BASE_URL;
-  }
-  if (process.env.ZAI_BUSINESS_LOGIN_URL) {
-    vars.ZAI_BUSINESS_LOGIN_URL = process.env.ZAI_BUSINESS_LOGIN_URL;
-  }
-  if (process.env.VITE_ZAI_OAUTH_CLIENT_ID) {
-    vars.VITE_ZAI_OAUTH_CLIENT_ID = process.env.VITE_ZAI_OAUTH_CLIENT_ID;
-  }
-  if (process.env.VITE_ZAI_OAUTH_ORIGIN) {
-    vars.VITE_ZAI_OAUTH_ORIGIN = process.env.VITE_ZAI_OAUTH_ORIGIN;
-  }
   return {
     ...vars,
     ...Object.fromEntries(
@@ -127,6 +112,9 @@ const desktopNodeRuntimeExternals = [
   "node-forge",
   // ZIP 解包器内部依赖 CommonJS require("fs")，不能内联到 ESM main/host 产物。
   "yauzl",
+  "jszip",
+  // tsup 的旧 builtin 表会把 node:sqlite 错写为外部 npm 包 sqlite；保留 Node 原生协议。
+  "node:sqlite",
 ];
 
 function createDevReadyMarkerHook(target: "main" | "host" | "preload"): string {

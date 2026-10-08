@@ -1,3 +1,4 @@
+import { CONVERSATION_CENTERED_EMPTY_LAYOUT_CLASS_NAME } from "@/v4/conversationLayout.js";
 /* oxlint-disable eslint(max-lines) -- ConversationTimeline 集中承载虚拟滚动、滚动锚定、loadOlder 与 find 高亮协调；拆散会让同一滚动状态跨文件传递。 */
 import {
   Component,
@@ -15,7 +16,7 @@ import {
   type WheelEvent as ReactWheelEvent,
 } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ArrowDownIcon } from "lucide-react";
+import { ArrowDownIcon } from "@/components/icons/tabler.js";
 import { TID_V4_TIMELINE, TID_V4_TIMELINE_BOTTOM } from "@mycode/shared";
 import type {
   ApiRetryState,
@@ -1764,7 +1765,7 @@ function ConversationTimelineImpl({
             responsiveCenteredEmptyLayout
               ? // 动态修改原生窗口下限会把内容换行反馈到窗口拖动，产生阻尼；
                 // 容器保留固有最小高度，由外层 timeline 统一承接受限高度下的溢出内容。
-                "flex min-h-full flex-col items-center px-4 before:block before:min-h-[52px] before:w-full before:shrink before:basis-[29dvh] before:content-[''] after:block after:min-h-4 after:w-full after:flex-1 after:content-['']"
+                CONVERSATION_CENTERED_EMPTY_LAYOUT_CLASS_NAME
               : centeredEmptyLayout
                 ? "flex min-h-full flex-col items-center justify-center gap-4 px-4"
                 : "flex min-h-full flex-col",
@@ -1814,8 +1815,8 @@ function ConversationTimelineImpl({
                 data-v4-timeline-virtual-history="true"
                 data-v4-timeline-content-column="true"
                 className={cn(
-                  // 默认（< 1280px）过渡 width/max-width/transform，让 w-full ↔ max-w-4xl
-                  // 的中等宽度切换平滑；≥1280px 触发的面板让位（max-w-6xl + 168px 左移）
+                  // 默认（< 1280px）过渡 width/max-width/transform，让阅读列宽度切换平滑；
+                  // ≥1280px 触发的面板让位
                   // 用 @min-[1280px] 降级为只过渡 transform，避免大范围跳变叠加位移抖动。
                   "relative mx-auto w-full shrink-0 transition-[width,max-width,transform] duration-150 ease-out @min-[1280px]/conversation:transition-[transform]",
                   contentWidthClassName,
@@ -1925,7 +1926,9 @@ function ConversationTimelineImpl({
                   // ≥1280px 面板让位时降级为只过渡 transform，避免大范围跳变叠加位移抖动。
                   "pointer-events-auto relative z-10 w-full shrink-0 transition-[width,max-width,transform] duration-150 ease-out @min-[1280px]/conversation:transition-[transform]",
                   contentWidthClassName,
-                  !centeredEmptyLayout && "px-4 pb-4",
+                  // 输入框与 turn 正文复用响应式内边距，避免桌面右边界多出 8px。
+                  // 最终产物/动作行曾紧贴 sticky 输入框；固定 24px 留白独立于消息高度。
+                  !centeredEmptyLayout && "px-4 @md/conversation:px-6 pt-6 pb-4",
                   !centeredEmptyLayout && summaryPanelInlineOffsetClassName,
                 )}
               >

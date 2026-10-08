@@ -1,10 +1,7 @@
-import { resolveSelectionSideInheritedModel } from "@/lib/selectionSideInheritedModel.js";
-import { useStartPlanRecommendation } from "@/hooks/useStartPlanRecommendation.js";
 import type { SessionCreateSource } from "@mycode/shared";
 import { reportSessionCreate } from "@/lib/sessionCreateTelemetry.js";
 import { getLocalTtftObserver } from "@/v4/telemetry/localTtftObserver.js";
 /* oxlint-disable eslint(max-lines) -- SessionPane 是单 pane 竖切的命令编排收口（订阅/发送/停止/fork/edit/retry/queue/slash 全集），与旧 ChatView 同粒度；HEAD 已超限（693 行计数），拆散命令组会打散 dispatchCommand/snapshotRef 的闭包纪律。 */
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import {
   useCallback,
   useEffect,
@@ -15,7 +12,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import { Hand } from "lucide-react";
+import { Hand } from "@/components/icons/tabler.js";
 import {
   buildCustomSupplierKey,
   TID_CHAT_EMPTY,
@@ -77,7 +74,6 @@ import { prepareWorkspaceWithMyCodeSessionService } from "@/hooks/useWorkspacePr
 import { decodeCustomModelValue, encodeCustomModelValue } from "@/lib/mycodeCustomModelValue.js";
 import { parseModelPickerValue } from "@/lib/mycodeSessionProjection.js";
 import { captureComposerRecentSubmission } from "@/lib/composerRecent.js";
-import { resolveProviderLabel } from "@/lib/registryProviderView.js";
 import {
   buildDraftCreateConfigPayload,
   useDraftConfigControl,
@@ -121,7 +117,11 @@ import { ConversationQueuePanel } from "@/v4/ConversationQueuePanel.js";
 import { projectPendingGuideQueue } from "@/v4/pendingGuideProjection.js";
 import { PendingCommandRecoveryBanner } from "@/v4/PendingCommandRecoveryBanner.js";
 import { WorkspaceHookPendingBanner } from "@/v4/WorkspaceHookPendingBanner.js";
+import { getConversationSourceNameResolver } from "@/v4/conversationSourceNames.js";
+import { buildConversationInventory } from "@/v4/conversationInventoryModel.js";
 import { ConversationStatusPanel } from "@/v4/ConversationStatusPanel.js";
+import { resolveConversationSummaryPanelVariant } from "@/v4/conversationSummaryPanelState.js";
+import { useConversationSummarySelection } from "@/hooks/useConversationSummarySelection.js";
 import { SessionSubscriptionErrorPanel } from "@/v4/SessionSubscriptionErrorPanel.js";
 import { ConversationTimeline } from "@/v4/ConversationTimeline.js";
 import { ConversationShareImportNotice } from "@/v4/ConversationShareImportNotice.js";
@@ -231,6 +231,7 @@ import { useOptionalTabStore } from "@/store/TabStoreProvider.js";
 import type {
   OpenPlanDetailSideTabRequest,
   OpenScopedPlanDetailSideTabRequest,
+  OpenSourcesSideTabRequest,
   OpenWorkflowRunSideTabRequest,
   OpenWorkflowRunDirectorySideTabRequest,
   OpenScopedWorkflowActorSessionSideTabRequest,
@@ -278,7 +279,7 @@ export interface SessionPaneProps {
   readOnly?: boolean;
   /** 观察视图的显式例外：允许文件摘要恢复 workspace，但不开放会话编辑能力。 */
   allowWorkspaceFileRewind?: boolean;
-  /** 框选副屏：保留普通 composer/tools，但隐藏并禁止 edit/retry/fork/goal。 */
+  /** 框选副屏：保留普通 composer/tools/独立目标，但隐藏并禁止 edit/retry/fork。 */
   selectionSideChat?: boolean;
   /** 主会话划词动作只投递到 Side Pane 当前激活的辅助 child。 */
   activeSelectionSideChatSessionId?: string | null;
@@ -316,7 +317,7 @@ export interface SessionPaneProps {
    * 由 app-shell 构造下发（依赖 workspaceTabs / 远程连接回调等壳层能力）；
    * 非 primary pane 不下发（workspace 切换是壳级动作）。
    */
-  draftComposerHeader?: ReactNode;
+  draftComposerHeader?: ReactNode | ((modeControls: ReactNode) => ReactNode);
   /** 主草稿把 drop controller 提给 app shell 的标题栏；其他 pane 只在自身 surface 消费。 */
   onDropTargetControllerChange?: (controller: ConversationDropTargetController | null) => void;
   gitSummary?: GitRepositorySummary | null;
@@ -339,6 +340,7 @@ export interface SessionPaneProps {
   onSyncSubagentSessionTabs?: (request: SyncSubagentSessionTabsRequest) => void;
   onOpenSelectionSideChat?: (request: OpenSelectionSideChatRequest) => void;
   onOpenPlanDetail?: (request: OpenScopedPlanDetailSideTabRequest) => void;
+  onOpenSources?: (request: OpenSourcesSideTabRequest) => void;
   onOpenWorkflowRun?: (request: OpenScopedWorkflowRunSideTabRequest) => void;
   /** 通知行的产物 chip → 全尺寸查看 tab。 */
   onOpenWorkflowArtifact?: (request: OpenScopedWorkflowArtifactSideTabRequest) => void;
@@ -515,6 +517,7 @@ export function SessionPane({
   onSyncSubagentSessionTabs,
   onOpenSelectionSideChat,
   onOpenPlanDetail,
+  onOpenSources,
   onOpenWorkflowRun,
   onOpenWorkflowArtifact,
   onOpenWorkflowRunDirectory,
@@ -1017,8 +1020,14 @@ export function SessionPane({
   );
   const [dismissedErrorKeys, setDismissedErrorKeys] = useState<readonly string[]>([]);
   const [sendSubmissionError, setSendSubmissionError] = useState<MyCodeUiError | null>(null);
-  const [paneLocalSummaryPanelVariantOverride, setPaneLocalSummaryPanelVariantOverride] =
-    useState<ChatViewSummaryPanelVariant | null>(null);
+  const localSummaryScopeKey = JSON.stringify([
+    workspaceIdentity?.trim() || workspacePath,
+    sessionId,
+  ]);
+  const {
+    variantOverride: paneLocalSummaryPanelVariantOverride,
+    setVariantOverride: setPaneLocalSummaryPanelVariantOverride,
+  } = useConversationSummarySelection(localSummaryScopeKey);
   const [terminalSectionOpen, setTerminalSectionOpen] = useState(false);
   const [agentSectionOpen, setAgentSectionOpen] = useState(false);
   const [workflowSectionOpen, setWorkflowSectionOpen] = useState(false);
@@ -1070,6 +1079,8 @@ export function SessionPane({
     },
     [onAutoOpenAssistantPptx],
   );
+  const inventoryAttachmentPickerRef = useRef<(() => void) | null>(null);
+  const handleAddInventorySource = useCallback(() => inventoryAttachmentPickerRef.current?.(), []);
   const composerDraftStateRef = useRef({ hasContent: false, busy: false });
   const [queueEditOperation, setQueueEditOperation] = useState<{
     queueItemId: string;
@@ -1086,8 +1097,6 @@ export function SessionPane({
     ((target: { unitIndex: number; rowId: number }) => void) | null
   >(null);
   const conversationLayoutContainerRef = useRef<HTMLDivElement>(null);
-  const isAssistantAnswering =
-    focused && (snapshot?.control.phase === "prewarming" || snapshot?.control.phase === "running");
   const hasExternalSummaryPanelVariantControl = Boolean(onSummaryPanelVariantOverrideChange);
   const effectiveSummaryPanelVariantOverride = hasExternalSummaryPanelVariantControl
     ? (summaryPanelVariantOverride ?? null)
@@ -1100,14 +1109,8 @@ export function SessionPane({
       }
       setPaneLocalSummaryPanelVariantOverride(variant);
     },
-    [onSummaryPanelVariantOverrideChange],
+    [onSummaryPanelVariantOverrideChange, setPaneLocalSummaryPanelVariantOverride],
   );
-  useEffect(() => {
-    // 回答开始后把展开写入面板状态；回答结束不回退为胶囊，避免再次遮住问答。
-    if (isAssistantAnswering && effectiveSummaryPanelVariantOverride !== "panel") {
-      handleSummaryPanelVariantChange("panel");
-    }
-  }, [effectiveSummaryPanelVariantOverride, handleSummaryPanelVariantChange, isAssistantAnswering]);
 
   const workspaceKey = workspaceIdentity?.trim() || workspacePath;
   const workspaceConfigOptions = useMyCodeSessionStore(
@@ -1280,7 +1283,6 @@ export function SessionPane({
     // 回收并按最新选择事实重建，已显式选择和正式会话仍保持冻结。
     useMyCodeSessionStore.getState().invalidateDraftRuntime(workspacePath, workspaceIdentity);
   }, [draftConfigRef, modelSelectionView?.revision, sessionId, workspaceIdentity, workspacePath]);
-  const recommendStartPlan = useStartPlanRecommendation(modelSelectionView);
   const createSubmissionFromComposer = useCallback(
     () => createComposerSubmissionConfig(draftConfigRef.current, modelSelectionView),
     [draftConfigRef, modelSelectionView],
@@ -1959,20 +1961,13 @@ export function SessionPane({
       if (!sessionId || !selectionSideChatKey || !onOpenSelectionSideChat) {
         throw new Error("selection side chat is unavailable");
       }
-      const inherited = resolveSelectionSideInheritedModel(
-        snapshotRef.current?.config,
-        modelSelectionView,
-      );
-      const chosen = inherited ? await recommendStartPlan(inherited) : undefined;
-      if (chosen === null) return false;
-      const modelSelection = chosen && chosen !== inherited ? chosen : undefined;
       // 参数命令每次都是新 child；同一条文本在 ACK 未回时重试仍复用 pending，
       // 不同文本则不能与 bare `/side` 或另一条 prompt 合并。
       const pendingKey = `${selectionSideChatKey}\u0000prompt\u0000${text}`;
       const childSessionId = await createSelectionSideChat(pendingKey, async () => {
         const ack = await dispatchCommand(
           "createSelectionSideSession",
-          { firstInput: { text, ...(modelSelection ? { modelSelection } : {}) } },
+          { firstInput: { text } },
           sessionId,
           undefined,
           undefined,
@@ -1998,7 +1993,6 @@ export function SessionPane({
     [
       dispatchCommand,
       modelSelectionView,
-      recommendStartPlan,
       onOpenSelectionSideChat,
       remoteSessionId,
       selectionSideChatKey,
@@ -2176,6 +2170,7 @@ export function SessionPane({
       onOpenFileLink,
       onOpenSubagentSession: onOpenSubagentSession ? handleOpenSubagentSession : undefined,
       onOpenPlanDetail: onOpenPlanDetail ? handleOpenPlanDetail : undefined,
+      onOpenSources,
       onOpenWorkflowRun: onOpenWorkflowRun ? handleOpenWorkflowRun : undefined,
       onOpenWorkflowActor: onOpenWorkflowActorSession ? handleOpenWorkflowActorSession : undefined,
       onOpenWorkflowWorkspace: onOpenWorkflowWorkspace ? handleOpenWorkflowWorkspace : undefined,
@@ -2235,6 +2230,7 @@ export function SessionPane({
       onOpenSubagentSession,
       handleOpenSubagentSession,
       onOpenPlanDetail,
+      onOpenSources,
       handleOpenPlanDetail,
       onOpenWorkflowRun,
       handleOpenWorkflowRun,
@@ -2317,18 +2313,11 @@ export function SessionPane({
         return;
       }
 
-      const fromProvider = resolveProviderLabel(fromProviderId, modelSelectionView);
-      const toProvider = resolveProviderLabel(targetModel.provider, modelSelectionView);
-      const fromModel = formatModelChangeLabel(fromProviderId, fromProvider, fromModelId, intl);
-      const toModel = formatModelChangeLabel(
-        targetModel.provider,
-        toProvider,
-        targetModel.model,
-        intl,
-      );
+      const fromModel = formatModelChangeLabel(fromModelId);
+      const toModel = formatModelChangeLabel(targetModel.model);
       toast(intl.formatMessage({ id: "chat.modelChangeNotice.changed" }, { fromModel, toModel }));
     },
-    [intl, modelSelectionView, sessionId],
+    [intl, sessionId],
   );
 
   const handleOnlineModelTransition = useCallback(
@@ -2512,14 +2501,6 @@ export function SessionPane({
       options: ConversationComposerSendOptions | undefined,
       createSourceAtSend: SessionCreateSource,
     ) => {
-      let onAcceptedSelection: (() => void) | undefined;
-      const dispatchSubmissionCommand = async (...args: Parameters<typeof dispatchCommand>) => {
-        const ack = await dispatchCommand(...args);
-        // 在原 accepted 边界写回推荐选择，早于新 Session 的草稿转移；失败不改用户意图。
-        if (ack.status === "accepted" && submissionConfigFromCommand(args[0], args[1]))
-          onAcceptedSelection?.();
-        return ack;
-      };
       // 进入 barrier 前已经冻结；等待配置/附件期间不再回读 Composer 或 Session。
       let submission = options?.submission ?? null;
       const heldQueueDisposition = options?.heldQueueDisposition;
@@ -2604,15 +2585,6 @@ export function SessionPane({
         // resumeGoal 等控制命令也不应被发送消息确认框截获。
         return "confirmationRequired" as const;
       }
-      if (slashCommand === null || slashCommand.kind === "sendGoalCommand") {
-        const original = submission.modelSelection;
-        const chosen = await recommendStartPlan(original);
-        if (!chosen) return "blocked" as const;
-        if (chosen !== original) {
-          onAcceptedSelection = captureAcceptedModelSelection(chosen, original);
-          submission = { ...submission, modelSelection: chosen };
-        }
-      }
       const prewarmTargetBeforeSend =
         sessionId === null ? prewarmBindingRef.current?.sessionId : null;
       if (prewarmTargetBeforeSend) {
@@ -2634,7 +2606,6 @@ export function SessionPane({
         );
         if (consumed === "confirmationRequired") return consumed;
         if (consumed) {
-          onAcceptedSelection?.();
           return;
         }
       }
@@ -2674,7 +2645,6 @@ export function SessionPane({
             );
             if (consumed === "confirmationRequired") return consumed;
             if (consumed) {
-              onAcceptedSelection?.();
               prewarm.promote();
               handleDraftSessionCreated(
                 prewarm.sessionId,
@@ -2697,7 +2667,7 @@ export function SessionPane({
           { ...draftConfigRef.current, modelSelection: submission.modelSelection },
           appFollowupMode,
         );
-        const createAck = await dispatchSubmissionCommand(
+        const createAck = await dispatchCommand(
           "createSession",
           { workspaceId: workspaceKey, ...draftConfigPayload },
           null,
@@ -2728,7 +2698,7 @@ export function SessionPane({
         const prewarm = prewarmBindingRef.current;
         if (prewarm?.beginPromotion()) {
           try {
-            const ack = await dispatchSubmissionCommand(
+            const ack = await dispatchCommand(
               "sendText",
               {
                 text: effectiveText,
@@ -2779,7 +2749,7 @@ export function SessionPane({
           appFollowupMode,
         );
         if (readyAttachments.length === 0 && !sharedContextRefs?.length) {
-          const ack = await dispatchSubmissionCommand(
+          const ack = await dispatchCommand(
             "createSession",
             {
               workspaceId: workspaceKey,
@@ -2811,7 +2781,7 @@ export function SessionPane({
         // 本地 desktop localPath 是零拷贝 ready，不依赖 attachment transaction；极短窗口内
         // 预热 session 可能还未返回。此时仍可先创建空 session，再提交现成 ref，发送点击内
         // 不做任何附件上传，也不会让非 ready 附件绕过 composer 门禁。
-        const createAck = await dispatchSubmissionCommand(
+        const createAck = await dispatchCommand(
           "createSession",
           { workspaceId: workspaceKey, ...draftConfigPayload },
           null,
@@ -2824,7 +2794,7 @@ export function SessionPane({
           throw new Error("createSession 缺少 sessionId");
         }
         const newSessionId = createResult.sessionId;
-        const sendAck = await dispatchSubmissionCommand(
+        const sendAck = await dispatchCommand(
           "sendText",
           {
             text: effectiveText,
@@ -2849,7 +2819,7 @@ export function SessionPane({
         return;
       }
       // 附件 ref 已在 composer 预传状态机中收口。
-      const ack = await dispatchSubmissionCommand(
+      const ack = await dispatchCommand(
         "sendText",
         {
           text: effectiveText,
@@ -2884,7 +2854,6 @@ export function SessionPane({
     },
     [
       dispatchCommand,
-      recommendStartPlan,
       captureAcceptedModelSelection,
       dispatchSlashCommand,
       ensureDraftModelReadyForSend,
@@ -3816,16 +3785,48 @@ export function SessionPane({
     setSelectionSideChatBlocked(sessionId, Boolean(blockingInteractionId));
     return () => setSelectionSideChatBlocked(sessionId, false);
   }, [blockingInteractionId, selectionSideChat, sessionId]);
-  const isOfficeMode = useIsOfficeMode();
+  const inventoryModel = useMemo(
+    () =>
+      buildConversationInventory(
+        snapshot?.rows.window ?? [],
+        workspacePath,
+        workspaceHomePath,
+        lease ? getConversationSourceNameResolver(lease.store) : undefined,
+      ),
+    [snapshot?.rows.window, workspacePath, workspaceHomePath, lease],
+  );
+  const handleLocateInventoryRow = useCallback((rowId: number) => {
+    const units = buildConversationTurnRenderUnits(snapshotRef.current?.rows.window ?? []);
+    const unitIndex = units.findIndex((unit) => unit.renderRows.some((row) => row.rowId === rowId));
+    if (unitIndex >= 0) timelineScrollToQueryRef.current?.({ unitIndex, rowId });
+  }, []);
+  const inventory = useMemo(
+    () => ({
+      model: inventoryModel,
+      context: rowContext,
+      onAddSource: handleAddInventorySource,
+      rows: snapshot?.rows.window ?? [],
+      hasOlder: hasOlderRows(snapshot),
+      onLoadAll: handleLoadAllOlder,
+      onLocate: handleLocateInventoryRow,
+    }),
+    [
+      inventoryModel,
+      rowContext,
+      snapshot,
+      handleLoadAllOlder,
+      handleLocateInventoryRow,
+      handleAddInventorySource,
+    ],
+  );
   const statusPanelModel = useMemo(
     () =>
       buildConversationStatusPanelModel({
-        isOfficeMode,
         workspacePath,
         gitSummary,
         gitDirtyFileCount,
         gitWorktreeChangeSummary,
-        goal: selectionSideChat ? null : (snapshot?.goal ?? null),
+        goal: snapshot?.goal ?? null,
         sessionPlans: state.sessionPlans,
         plan: snapshot?.plan ?? null,
         backgroundWorks: snapshot?.backgroundWorks ?? [],
@@ -3833,7 +3834,6 @@ export function SessionPane({
         workflowRuns: snapshot?.workflowRuns?.runs ?? [],
       }),
     [
-      isOfficeMode,
       gitDirtyFileCount,
       gitSummary,
       gitWorktreeChangeSummary,
@@ -3903,15 +3903,15 @@ export function SessionPane({
     runningWorkflowCount,
     soleRunningWorkflowRunTarget,
   ]);
-  const statusPanelVariant: ChatViewSummaryPanelVariant = isAssistantAnswering
-    ? "panel"
-    : (effectiveSummaryPanelVariantOverride ?? "mini");
+  const statusPanelVariant = resolveConversationSummaryPanelVariant(
+    effectiveSummaryPanelVariantOverride,
+  );
   // 若只有 status panel 内部知道自动展开态，而 timeline/composer 未同步调整布局，
   // 宽屏下就会出现面板覆盖内容。因此外层布局也必须使用同一展开状态。
   const shouldUseStatusPanelInlineLayout =
     !isDraft &&
     shouldUseConversationStatusPanelInlineLayout({
-      hasContent: statusPanelModel.hasContent,
+      hasContent: true,
       variant: statusPanelVariant,
     });
   const statusPanelLayout = shouldUseStatusPanelInlineLayout ? "inline" : "none";
@@ -4320,7 +4320,11 @@ export function SessionPane({
       workspacePath={workspacePath}
       workspaceIdentity={workspaceIdentity}
       remoteSessionId={remoteSessionId ?? undefined}
-      modelSelectionView={modelSelectionView}
+      modelSelectionView={
+        modelSelectionRead.state.status === "refreshing"
+          ? modelSelectionRead.state.view
+          : modelSelectionView
+      }
       modelSelectionState={modelSelectionRead.state}
       modelSelectionReload={modelSelectionRead.reload}
       attachmentSessionId={effectiveSessionId}
@@ -4332,6 +4336,7 @@ export function SessionPane({
       telemetryVisible={telemetryVisible && conversationTelemetryForegroundEnabled}
       onSendText={handleSendText}
       onDraftStateChange={handleComposerDraftStateChange}
+      attachmentPickerRef={inventoryAttachmentPickerRef}
       composerRestoreRequest={composerRestoreRequest}
       onComposerRestoreApplied={handleComposerRestoreApplied}
       onStop={handleStopFromButton}
@@ -4352,7 +4357,6 @@ export function SessionPane({
       onDismissError={handleDismissComposerError}
       onOpenModelSettings={handleOpenModelSettings}
       onOpenCodeViewer={onOpenCodeViewer}
-      suppressGoalCommands={selectionSideChat}
       appSlashCommands={appSlashCommands}
       onDropTargetControllerChange={handleDropTargetControllerChange}
     />
@@ -4460,11 +4464,10 @@ export function SessionPane({
         />
       ) : null}
       {composerNode}
-      {/* 办公模式显示主动任务推荐；编程模式保留原有小型场景入口。 */}
-      {isDraft && (!isOfficeMode || sharedSettings?.proactiveSuggestionsEnabled === true) ? (
+      {/* 普通草稿推荐复用 Client Scenes，不引入独立模式或推荐开关。 */}
+      {isDraft ? (
         <ConversationDraftSuggestedPromptsContainer
-          className={isOfficeMode ? "mt-4" : "mt-6"}
-          proactive={isOfficeMode}
+          className={"mt-6"}
           onOpenAutomations={
             onOpenAutomationsMain
               ? (automationTab) => onOpenAutomationsMain(undefined, automationTab)
@@ -4529,7 +4532,7 @@ export function SessionPane({
 
       <div
         ref={conversationLayoutContainerRef}
-        className="@container/conversation relative flex min-h-0 flex-1 flex-col"
+        className="conversation-reference-surface @container/conversation relative flex min-h-0 flex-1 flex-col"
       >
         <ConversationShareSelectionScrim
           visible={shareSelectionPanelVisible}
@@ -4555,7 +4558,7 @@ export function SessionPane({
             gitWorktreeReviewSourceId={gitWorktreeReviewSourceId}
             gitWorktreeChangeSummary={gitWorktreeChangeSummary}
             activeTaskChangeSummary={activeTaskChangeSummary}
-            goal={selectionSideChat ? null : (snapshot?.goal ?? null)}
+            goal={snapshot?.goal ?? null}
             sessionPlans={state.sessionPlans}
             plan={snapshot?.plan ?? null}
             backgroundWorks={snapshot?.backgroundWorks ?? []}
@@ -4567,6 +4570,8 @@ export function SessionPane({
             layoutMode={statusPanelLayout}
             summaryPanelVariantOverride={statusPanelVariant}
             onVariantChange={handleSummaryPanelVariantChange}
+            inventory={inventory}
+            showEmpty={statusPanelVariant === "panel"}
             terminalSectionOpen={terminalSectionOpen}
             onTerminalSectionOpenChange={setTerminalSectionOpen}
             agentSectionOpen={agentSectionOpen}
@@ -4576,14 +4581,10 @@ export function SessionPane({
             onRefreshGit={onRefreshGit}
             onOpenGitReview={onOpenGitReview}
             onPauseGoal={
-              !readOnly && !selectionSideChat && snapshot?.availability.pauseGoal.allowed
-                ? handlePauseGoal
-                : undefined
+              !readOnly && snapshot?.availability.pauseGoal.allowed ? handlePauseGoal : undefined
             }
             onResumeGoal={
-              !readOnly && !selectionSideChat && snapshot?.availability.resumeGoal.allowed
-                ? handleResumeGoal
-                : undefined
+              !readOnly && snapshot?.availability.resumeGoal.allowed ? handleResumeGoal : undefined
             }
             onOpenPlanDetail={onOpenPlanDetail ? handleOpenPlanDetail : undefined}
             onOpenBackgroundBash={
@@ -4663,7 +4664,7 @@ export function SessionPane({
               onLoadAllOlder={handleLoadAllOlder}
               turnNavigatorDirectoryRevision={state.turnNavigatorDirectoryRevision}
               bottomDock={conversationBottomDock}
-              hideTurnNavigator={shareActive && shareInSelectionStage}
+              hideTurnNavigator
               backgroundScrollLocked={resolveConversationShareBackgroundScrollLocked({
                 partialShareActive: shareActive,
                 stage: shareDraft?.stage ?? "selection",

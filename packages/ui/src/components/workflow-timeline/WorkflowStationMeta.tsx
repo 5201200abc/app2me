@@ -1,4 +1,4 @@
-import { Repeat2Icon } from "lucide-react";
+import { Repeat2Icon } from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type { TimelineStation } from "./timeline-model.js";
 

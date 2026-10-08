@@ -136,7 +136,7 @@ if (process.platform === "darwin" && existsSync(electronBinary)) {
   });
   electronCommand = macLaunch.command;
   electronArgs = macLaunch.args;
-  console.log(`[dev] Prepared macOS MyCode Dev bundle: ${devBundle.appPath}`);
+  console.log(`[dev] Prepared macOS app2me Dev bundle: ${devBundle.appPath}`);
   console.log(`[dev] App output: ${macLaunch.logPath}`);
 }
 

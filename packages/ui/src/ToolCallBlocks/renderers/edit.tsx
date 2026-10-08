@@ -1,5 +1,7 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
+import { PencilIcon } from "@/components/icons/tabler.js";
 /* eslint-disable max-lines -- Edit 工具块同时维护单文件、多文件子块和 diff 预览引用稳定性；当前变更先保持同文件收口，避免为行数拆分引入展示回归。 */
-import { PencilIcon } from "lucide-react";
+
 import { useCallback, useMemo } from "react";
 import { ToolCallBody } from "@/ToolCallBlocks/ToolCallBody.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";
@@ -18,8 +20,6 @@ import {
 } from "../shared.js";
 import type { CodeViewerSource } from "@/lib/codeViewer.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
-
-const EDIT_TOOL_ICON = <PencilIcon className="size-4 shrink-0 text-foreground-subtle" />;
 
 const EDIT_SINGLE_LAYOUT = {
   canToggle: true,
@@ -88,6 +88,8 @@ export function EditToolCallBlock(context: ToolCallBlockRenderContext) {
     context;
   const { toolCall } = toolCallNode;
   const hasMultipleFiles = rawFileSummaries.length > 1;
+  const fileSentence =
+    rawFileSummaries.length === 1 && rawFileSummaries[0]?.actionLabel !== "Deleted";
   const isFailed =
     toolCall.status === "failed" || isRawToolCallFailed(toolCall.raw) || Boolean(errorText);
   const effectiveStatusLabel = isFailed
@@ -106,14 +108,22 @@ export function EditToolCallBlock(context: ToolCallBlockRenderContext) {
 
   const primaryText = useMemo(
     () =>
-      rawFileSummaries.length > 0
-        ? renderJoinedFileChips(rawFileSummaries, {
+      fileSentence
+        ? renderFileChip({
+            summary: rawFileSummaries[0]!,
+            sentence: true,
             clickable: Boolean(onOpenCodeViewer),
             basePath: context.workspacePath,
-            onClick: openFilePreview,
+            onClick: () => openFilePreview(rawFileSummaries[0]!),
           })
-        : null,
-    [context.workspacePath, onOpenCodeViewer, openFilePreview, rawFileSummaries],
+        : rawFileSummaries.length > 0
+          ? renderJoinedFileChips(rawFileSummaries, {
+              clickable: Boolean(onOpenCodeViewer),
+              basePath: context.workspacePath,
+              onClick: openFilePreview,
+            })
+          : null,
+    [context.workspacePath, onOpenCodeViewer, openFilePreview, rawFileSummaries, fileSentence],
   );
   const secondaryText = useMemo(
     () =>
@@ -141,10 +151,14 @@ export function EditToolCallBlock(context: ToolCallBlockRenderContext) {
   );
   const diffCount = useMemo(
     () =>
-      renderDiffCount(totalChangeStat, {
-        animateInitial: context.animateDiffCountOnMount,
-      }),
-    [context.animateDiffCountOnMount, totalChangeStat],
+      renderDiffCount(
+        rawFileSummaries.some((summary) => summary.changeStat) ? totalChangeStat : undefined,
+        {
+          animateInitial: context.animateDiffCountOnMount,
+          sentence: fileSentence,
+        },
+      ),
+    [context.animateDiffCountOnMount, totalChangeStat, rawFileSummaries, fileSentence],
   );
   const kindLabel = intl.formatMessage({
     id: getEditKindLabelMessageId(
@@ -311,24 +325,44 @@ export function EditToolCallBlock(context: ToolCallBlockRenderContext) {
     <>
       <ToolLayout
         toolId={toolCall.toolId}
-        icon={EDIT_TOOL_ICON}
+        icon={
+          fileSentence ? (
+            <PencilIcon className="size-4.5 shrink-0 text-foreground-subtle" />
+          ) : (
+            <WriteIcon failed={isFailed} className="size-3.5 shrink-0 text-foreground-subtle" />
+          )
+        }
+        fileSentence={fileSentence}
+        preserveIcon
         showIcon={context.showIcon !== false}
         // edit 的 diff 预览挂在 content 里；单文件和子文件如果不可展开，
         // 用户只能看到摘要行，无法在消息流里直接查看变更。
         {...layoutConfig}
-        canToggle={!context.isOfficeMode && layoutConfig.canToggle}
-        forceOpen={!context.isOfficeMode && layoutConfig.forceOpen}
-        kindLabel={context.kindLabelOverride ?? kindLabel}
+        canToggle={layoutConfig.canToggle}
+        forceOpen={layoutConfig.forceOpen}
+        kindLabel={
+          fileSentence
+            ? intl.formatMessage({
+                id: isRunning
+                  ? rawFileSummaries[0]?.actionLabel === "Created"
+                    ? "chat.toolCall.edit.writing"
+                    : "chat.toolCall.edit.editing"
+                  : rawFileSummaries[0]?.actionLabel === "Created"
+                    ? "chat.toolCall.edit.created"
+                    : "chat.toolCall.edit.edited",
+              })
+            : (context.kindLabelOverride ?? kindLabel)
+        }
         sourceLabel={context.sourceLabel}
         primaryText={primaryText}
         prioritizePrimaryText
         expandedPrimaryText={expandedPrimaryText}
         secondaryText={secondaryText}
-        diffCount={context.isOfficeMode ? undefined : diffCount}
+        diffCount={diffCount}
         hideDiffCountWhenOpen={hasMultipleFiles}
         statusLabel={effectiveStatusLabel}
         statusTooltip={isFailed ? errorText : undefined}
-        showFailureStatus={isFailed}
+        showFailureStatus={false}
         isRunning={isRunning}
         title={toolCall.title}
         renderContent={renderContent}
@@ -378,6 +412,7 @@ function EditFileSummaryBlock({
   animateDiffCountOnMount?: boolean;
 }) {
   const { intl } = useMyCodeIntl();
+  const fileSentence = summary.actionLabel !== "Deleted";
   const kindLabel = intl.formatMessage({
     id: getEditKindLabelMessageId([summary.operationKind], [summary.actionLabel], isRunning),
   });
@@ -396,8 +431,9 @@ function EditFileSummaryBlock({
         clickable: Boolean(onOpenCodeViewer),
         basePath: workspacePath,
         onClick: openFilePreview,
+        sentence: fileSentence,
       }),
-    [onOpenCodeViewer, openFilePreview, summary, workspacePath],
+    [onOpenCodeViewer, openFilePreview, summary, workspacePath, fileSentence],
   );
   const secondaryText = useMemo(
     () => renderFilePath(summary.filePath, workspacePath),
@@ -407,8 +443,9 @@ function EditFileSummaryBlock({
     () =>
       renderDiffCount(summary.changeStat, {
         animateInitial: animateDiffCountOnMount,
+        sentence: fileSentence,
       }),
-    [animateDiffCountOnMount, summary.changeStat],
+    [animateDiffCountOnMount, summary.changeStat, fileSentence],
   );
   const title = useMemo(
     () => getFileDisplayPath(summary.filePath ?? summary.path, workspacePath),
@@ -458,11 +495,31 @@ function EditFileSummaryBlock({
     <>
       <ToolLayout
         toolId={toolId}
-        icon={EDIT_TOOL_ICON}
+        icon={
+          fileSentence ? (
+            <PencilIcon className="size-4.5 shrink-0 text-foreground-subtle" />
+          ) : (
+            <WriteIcon failed={isFailed} className="size-3.5 shrink-0 text-foreground-subtle" />
+          )
+        }
+        fileSentence={fileSentence}
+        preserveIcon
         showIcon={showIcon !== false}
         // 多文件 edit 的每个子文件都有自己的 diff content，必须允许单独展开查看。
         {...EDIT_CHILD_LAYOUT}
-        kindLabel={kindLabel}
+        kindLabel={
+          fileSentence
+            ? intl.formatMessage({
+                id: isRunning
+                  ? summary.actionLabel === "Created"
+                    ? "chat.toolCall.edit.writing"
+                    : "chat.toolCall.edit.editing"
+                  : summary.actionLabel === "Created"
+                    ? "chat.toolCall.edit.created"
+                    : "chat.toolCall.edit.edited",
+              })
+            : kindLabel
+        }
         sourceLabel={sourceLabel}
         primaryText={primaryText}
         prioritizePrimaryText
@@ -470,7 +527,7 @@ function EditFileSummaryBlock({
         diffCount={diffCount}
         statusLabel={statusLabel}
         statusTooltip={isFailed ? errorText : undefined}
-        showFailureStatus={isFailed}
+        showFailureStatus={false}
         isRunning={isRunning}
         title={title}
         renderContent={renderContent}

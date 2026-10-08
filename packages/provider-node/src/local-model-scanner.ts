@@ -110,6 +110,8 @@ export async function discoverLocalModels(customDir?: string): Promise<LocalMode
       mmprojPath,
       sizeBytes,
       vision: Boolean(mmprojPath),
+      // Qwen3.8-27B 的 GGUF context_length 为 262144，不能继承通用 500K 声明。
+      ...(isQwen38Model(capabilityName) ? { contextWindow: 262_144 } : {}),
       reasoningControl: isQwen38Model(capabilityName) ? "effort" : "toggle",
       reasoningLevels: reasoning.values,
       defaultReasoningLevel: reasoning.values.at(-1)!,

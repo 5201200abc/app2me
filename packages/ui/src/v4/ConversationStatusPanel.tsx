@@ -1,14 +1,11 @@
 /* oxlint-disable eslint(max-lines) -- 状态面板同时维护收起态摘要、展开态分区、菜单策略和宽度自适应，同文件能保证两种形态共享同一内容优先级。 */
-import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
 import {
-  forwardRef,
   memo,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-  type ComponentPropsWithoutRef,
   type CSSProperties,
   type MouseEvent,
   type ReactNode,
@@ -17,12 +14,10 @@ import {
   ActivityIcon,
   ArrowRightIcon,
   BotIcon,
-  CheckCircle2Icon,
   ChevronDownIcon,
-  ChevronLeftIcon,
   ChevronRightIcon,
+  CheckCircle2Icon,
   CircleCheckBigIcon,
-  CircleIcon,
   FileDiffIcon,
   GoalIcon,
   ListChecksIcon,
@@ -31,7 +26,7 @@ import {
   SquareIcon,
   SquareTerminalIcon,
   Workflow,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import {
   TID_CHAT_SUMMARY_PANEL,
   TID_V4_BACKGROUND_WORK_CANCEL,
@@ -51,6 +46,11 @@ import type {
   ToolCallRow,
   WorkflowRunState,
 } from "@mycode/shared/mycode-protocol-v4";
+import {
+  ConversationInventory,
+  type ConversationInventoryProps,
+} from "@/v4/ConversationInventory.js";
+import { useScrollActivity } from "@/hooks/useScrollActivity.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import {
@@ -63,7 +63,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible.js";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { formatBackgroundTaskElapsedLabel } from "@/BackgroundTaskElapsedLabel.js";
 import { GitActionMenu } from "@/GitActionMenu.js";
@@ -119,6 +118,8 @@ interface ConversationStatusPanelProps {
   layoutMode?: "none" | "auto" | "inline";
   summaryPanelVariantOverride?: ChatViewSummaryPanelVariant | null;
   onVariantChange?: (variant: ChatViewSummaryPanelVariant | null) => void;
+  showEmpty?: boolean;
+  inventory?: ConversationInventoryProps;
   terminalSectionOpen?: boolean;
   onTerminalSectionOpenChange?: (open: boolean) => void;
   agentSectionOpen?: boolean;
@@ -570,229 +571,6 @@ function GoalStatusSection({
   );
 }
 
-function PlanStatusIcon({ status }: { status: PlanState["items"][number]["status"] }) {
-  if (status === "completed") {
-    return (
-      <CheckCircle2Icon
-        aria-hidden
-        className="mt-0.5 size-3.5 shrink-0 text-[var(--color-success)]"
-      />
-    );
-  }
-  if (status === "inProgress") {
-    return (
-      <ArrowRightIcon
-        aria-hidden
-        className="mt-0.5 size-3.5 shrink-0 text-[var(--color-foreground)]"
-      />
-    );
-  }
-  return (
-    <CircleIcon
-      aria-hidden
-      className="mt-0.5 size-3.5 shrink-0 text-[var(--color-foreground-subtlest)]"
-    />
-  );
-}
-
-const COMPACT_TODO_THRESHOLD = 6;
-const TODO_FOCUS_WINDOW_SIZE = 3;
-
-interface StatusPanelTodoFocusWindow {
-  compact: boolean;
-  precedingItems: PlanState["items"];
-  focusItems: PlanState["items"];
-  followingItems: PlanState["items"];
-}
-
-function getStatusPanelTodoFocusWindow(items: PlanState["items"]): StatusPanelTodoFocusWindow {
-  if (items.length <= COMPACT_TODO_THRESHOLD) {
-    return {
-      compact: false,
-      precedingItems: [],
-      focusItems: items,
-      followingItems: [],
-    };
-  }
-
-  const runningIndex = items.findIndex((item) => item.status === "inProgress");
-  const firstUnfinishedIndex = items.findIndex((item) => item.status !== "completed");
-  const focusIndex =
-    runningIndex >= 0
-      ? runningIndex
-      : firstUnfinishedIndex >= 0
-        ? firstUnfinishedIndex
-        : Math.max(0, items.length - TODO_FOCUS_WINDOW_SIZE);
-  // 只取“当前 + 后两条”会让靠近列表末尾的当前项只剩一两条上下文。
-  // 从前面回补可以让精简窗口在项目数足够时始终保持三条，同时不改变 snapshot 原序。
-  const focusStartIndex = Math.max(0, Math.min(focusIndex, items.length - TODO_FOCUS_WINDOW_SIZE));
-  const focusEndIndex = Math.min(items.length, focusStartIndex + TODO_FOCUS_WINDOW_SIZE);
-
-  return {
-    compact: true,
-    precedingItems: items.slice(0, focusStartIndex),
-    focusItems: items.slice(focusStartIndex, focusEndIndex),
-    followingItems: items.slice(focusEndIndex),
-  };
-}
-
-function PlanStatusItemRows({ items }: { items: PlanState["items"] }) {
-  return items.map((item) => (
-    <li
-      key={item.id}
-      data-plan-status={item.status}
-      className="flex min-h-8 items-start gap-2 rounded-lg px-2 py-1.5 text-ui-base hover:bg-[var(--color-hover)]"
-    >
-      <PlanStatusIcon status={item.status} />
-      <span
-        title={item.content}
-        className={cn(
-          "line-clamp-2 min-w-0 flex-1 break-words leading-5",
-          item.status === "completed"
-            ? "text-[var(--color-foreground-subtlest)] line-through"
-            : "text-[var(--color-foreground)]",
-        )}
-      >
-        {item.content}
-      </span>
-    </li>
-  ));
-}
-
-const TodoPreviewTrigger = forwardRef<
-  HTMLButtonElement,
-  ComponentPropsWithoutRef<"button"> & {
-    group: "preceding" | "following";
-    label: string;
-    open: boolean;
-    onTouchOpen: () => void;
-  }
->(function TodoPreviewTrigger({ group, label, onClick, onTouchOpen, open, ...buttonProps }, ref) {
-  return (
-    <button
-      {...buttonProps}
-      ref={ref}
-      type="button"
-      aria-expanded={open}
-      data-status-todo-preview-trigger={group}
-      className="flex h-8 w-full min-w-0 items-center gap-2 rounded-lg px-2 text-left text-ui-base text-[var(--color-foreground-subtle)] hover:bg-[var(--color-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-input-border-focused)]"
-      onClick={(event) => {
-        onClick?.(event);
-        // HoverCard 在桌面由 hover/focus 驱动；仅无 hover 输入补充点击打开，
-        // 避免桌面点击把已经由 hover 打开的预览反向关闭。
-        if (
-          !event.defaultPrevented &&
-          typeof window !== "undefined" &&
-          window.matchMedia?.("(hover: none)").matches
-        ) {
-          onTouchOpen();
-        }
-      }}
-    >
-      <ChevronLeftIcon className="size-3.5 shrink-0" />
-      <span className="min-w-0 truncate">{label}</span>
-    </button>
-  );
-});
-
-type TodoPreviewGroup = "preceding" | "following";
-
-function TodoHiddenGroupPreview({
-  group,
-  items,
-  onOpenChange,
-  open,
-  popoverSide,
-}: {
-  group: TodoPreviewGroup;
-  items: PlanState["items"];
-  onOpenChange: (open: boolean) => void;
-  open: boolean;
-  popoverSide: "bottom" | "left";
-}) {
-  const { intl } = useMyCodeIntl();
-  const messageId =
-    group === "preceding"
-      ? items.every((item) => item.status === "completed")
-        ? "chat.statusPanel.todoCompletedFold"
-        : "chat.statusPanel.todoEarlierFold"
-      : items.every((item) => item.status === "pending")
-        ? "chat.statusPanel.todoWaitingFold"
-        : "chat.statusPanel.todoLaterFold";
-  const label = intl.formatMessage({ id: messageId }, { count: String(items.length) });
-
-  return (
-    <HoverCard closeDelay={80} open={open} openDelay={120} onOpenChange={onOpenChange}>
-      <HoverCardTrigger asChild>
-        <TodoPreviewTrigger
-          group={group}
-          label={label}
-          open={open}
-          onTouchOpen={() => onOpenChange(true)}
-        />
-      </HoverCardTrigger>
-      <HoverCardContent
-        align="start"
-        side={popoverSide}
-        sideOffset={4}
-        data-status-todo-preview-content={group}
-        className="w-80 max-w-[min(20rem,calc(100vw-2rem))] rounded-xl border border-[var(--color-popover-border)] bg-[var(--color-menu)] p-3 shadow-md ring-0"
-      >
-        <div className="flex max-h-[min(24rem,calc(100dvh-2rem))] min-w-0 flex-col">
-          <p className="flex h-8 shrink-0 items-center px-2 text-ui-base text-[var(--color-foreground-subtle)]">
-            {label}
-          </p>
-          <ul className="min-h-0 space-y-0 overflow-y-auto pr-1">
-            <PlanStatusItemRows items={items} />
-          </ul>
-        </div>
-      </HoverCardContent>
-    </HoverCard>
-  );
-}
-
-function PlanStatusItems({
-  plan,
-  popoverSide,
-}: {
-  plan: NonNullable<ConversationStatusPanelModel["plan"]>;
-  popoverSide: "bottom" | "left";
-}) {
-  const [openPreviewGroup, setOpenPreviewGroup] = useState<TodoPreviewGroup | null>(null);
-  const window = getStatusPanelTodoFocusWindow(plan.displayItems);
-  const handlePreviewOpenChange = (group: TodoPreviewGroup, open: boolean) => {
-    setOpenPreviewGroup((current) => (open ? group : current === group ? null : current));
-  };
-
-  return (
-    <ul className="space-y-0 pb-1">
-      {window.compact && window.precedingItems.length > 0 ? (
-        <li>
-          <TodoHiddenGroupPreview
-            group="preceding"
-            items={window.precedingItems}
-            open={openPreviewGroup === "preceding"}
-            onOpenChange={(open) => handlePreviewOpenChange("preceding", open)}
-            popoverSide={popoverSide}
-          />
-        </li>
-      ) : null}
-      <PlanStatusItemRows items={window.focusItems} />
-      {window.compact && window.followingItems.length > 0 ? (
-        <li>
-          <TodoHiddenGroupPreview
-            group="following"
-            items={window.followingItems}
-            open={openPreviewGroup === "following"}
-            onOpenChange={(open) => handlePreviewOpenChange("following", open)}
-            popoverSide={popoverSide}
-          />
-        </li>
-      ) : null}
-    </ul>
-  );
-}
-
 function SessionPlansStatusSection({
   model,
   onOpenPlanDetail,
@@ -855,47 +633,6 @@ function buildSessionPlanOpenRequest(
     markdown: item.markdown,
     ...(item.planFilePath ? { planFilePath: item.planFilePath } : {}),
   };
-}
-
-function PlanStatusSection({
-  model,
-  popoverSide,
-  separated,
-}: {
-  model: ConversationStatusPanelModel;
-  popoverSide: "bottom" | "left";
-  separated: boolean;
-}) {
-  const { intl } = useMyCodeIntl();
-  const plan = model.plan;
-  if (!plan) return null;
-  const isCompleted = plan.totalCount > 0 && plan.completedCount >= plan.totalCount;
-
-  return (
-    <StatusSection
-      section="plan"
-      separated={separated}
-      title={intl.formatMessage({ id: "chat.statusPanel.todo" })}
-      trailing={() => (
-        <span
-          className={cn(
-            "tabular-nums",
-            isCompleted ? "text-[var(--color-success)]" : "text-[var(--color-foreground-subtle)]",
-          )}
-        >
-          {plan.completedCount}/{plan.totalCount}
-        </span>
-      )}
-    >
-      <PlanStatusItems
-        key={plan.displayItems
-          .map((item) => `${item.id}\u0000${item.content}\u0000${item.status}`)
-          .join("\u0001")}
-        plan={plan}
-        popoverSide={popoverSide}
-      />
-    </StatusSection>
-  );
 }
 
 function RunningWorkCancelButton({
@@ -1708,6 +1445,8 @@ function ConversationStatusPanelImpl({
   layoutMode = "none",
   summaryPanelVariantOverride,
   onVariantChange,
+  showEmpty = false,
+  inventory,
   terminalSectionOpen,
   onTerminalSectionOpenChange,
   agentSectionOpen,
@@ -1727,13 +1466,12 @@ function ConversationStatusPanelImpl({
   onOpenWorkflowRunDirectory,
   className,
 }: ConversationStatusPanelProps) {
-  const isOfficeMode = useIsOfficeMode();
   const miniMeasureRef = useRef<HTMLDivElement | null>(null);
+  const { scrolling, onScroll } = useScrollActivity();
   const [miniWidth, setMiniWidth] = useState(320);
   const model = useMemo(
     () =>
       buildConversationStatusPanelModel({
-        isOfficeMode,
         gitSummary,
         gitDirtyFileCount,
         gitWorktreeChangeSummary,
@@ -1746,7 +1484,6 @@ function ConversationStatusPanelImpl({
         workflowRuns,
       }),
     [
-      isOfficeMode,
       backgroundWorks,
       gitDirtyFileCount,
       gitSummary,
@@ -1817,14 +1554,18 @@ function ConversationStatusPanelImpl({
   // 会话会连整个胶囊一起消失——而那正是重启后打开一条旧对话的样子，run 目录的入口于是又没了。
   // 已结束的 run 因此单独开这道门。（Agents 的已结束行有同一个洞：`endedSubagentCount` 也
   // 没进 `hasContent`。那是既有行为，不在本轮一起翻。）
-  if (!model.hasContent && !canRenderEndedWorkflows) {
+  if (
+    !model.hasContent &&
+    !canRenderEndedWorkflows &&
+    (variant === "mini" || (!showEmpty && !inventory))
+  ) {
     return null;
   }
 
   return (
     <div
       className={cn(
-        "pointer-events-none absolute top-0 z-20 pt-4",
+        "conversation-inventory-float pointer-events-none absolute top-0 z-20 pt-4",
         // 旧 ChatView 的 inline 面板直接钉在右侧，正文列通过独立 translate 让位。
         // v4 若继续用 inset-x-0 + justify-end，会让面板容器宽铺满并改变宽屏下的横向对齐。
         // 手机窄视口进入文档流；从 640px 起贴在问答右侧，由 Timeline 同步留出宽度。
@@ -1855,23 +1596,44 @@ function ConversationStatusPanelImpl({
         data-ended-workflow-count={endedWorkflowRunCount}
         style={shellStyle}
         className={cn(
-          "pointer-events-auto relative overflow-hidden rounded-lg border border-[var(--color-popover-border)] bg-[var(--color-popover)] text-[var(--color-foreground)] shadow-sm transition-[border-radius,padding,background-color,box-shadow] duration-300 ease-in-out",
+          inventory && variant !== "mini"
+            ? "pointer-events-auto relative overflow-hidden border-l border-white/[0.08] bg-transparent text-foreground"
+            : "pointer-events-auto relative overflow-hidden rounded-lg border border-[var(--color-popover-border)] bg-[var(--color-popover)] text-[var(--color-foreground)] shadow-sm",
           variant === "mini"
             ? "inline-flex max-h-8.5 w-[var(--chat-summary-panel-mini-width)] max-w-[calc(100vw-1.5rem)] flex-col"
             : variant === "panel"
-              ? "flex max-h-[min(55dvh,22rem)] w-56 max-w-[calc(100vw-1.5rem)] flex-col"
-              : "inline-flex max-h-8.5 w-[var(--chat-summary-panel-mini-width)] max-w-[calc(100vw-1.5rem)] flex-col @min-[1280px]/conversation:max-h-[min(55dvh,22rem)] @min-[1280px]/conversation:w-56",
+              ? "flex max-h-[min(55dvh,22rem)] w-[280px] max-w-[calc(100vw-1.5rem)] flex-col"
+              : "inline-flex max-h-8.5 w-[var(--chat-summary-panel-mini-width)] max-w-[calc(100vw-1.5rem)] flex-col @min-[1280px]/conversation:max-h-[min(55dvh,22rem)] @min-[1280px]/conversation:w-[280px]",
         )}
       >
         {variant !== "mini" ? (
           // 单个区块限高后，多区块同时展开仍可能超过 shell；外层必须提供
           // 第二层兜底滚动，保证后续区块标题和操作始终可达，不能继续直接裁切。
           <div
+            data-scrolling={scrolling}
+            onScroll={onScroll}
             className={cn(
-              "min-h-0 flex-1 flex-col gap-0.5 overflow-x-hidden overflow-y-auto p-1",
+              inventory
+                ? "conversation-inventory-scroll min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto"
+                : "min-h-0 flex-1 flex-col gap-0.5 overflow-x-hidden overflow-y-auto p-1",
               variant === "auto" ? "hidden @min-[1280px]/conversation:flex" : "flex",
             )}
           >
+            {inventory ? (
+              <ConversationInventory
+                key={JSON.stringify([
+                  workspaceIdentity?.trim() || workspacePath,
+                  parentSessionId,
+                  inventory.context.logEpoch,
+                ])}
+                {...inventory}
+              />
+            ) : null}
+            {!model.hasContent && !canRenderEndedWorkflows && !inventory ? (
+              <p className="px-3 py-3 text-center text-ui-caption text-foreground-subtle">
+                {intl.formatMessage({ id: "chat.summaryPanel.empty" })}
+              </p>
+            ) : null}
             {canRenderGit ? (
               <GitStatusSection
                 model={model}
@@ -1902,66 +1664,77 @@ function ConversationStatusPanelImpl({
                 separated={canRenderGit || canRenderGoal}
               />
             ) : null}
-            {canRenderPlan ? (
-              <PlanStatusSection
-                model={model}
-                popoverSide={useVerticalFloatingPanels ? "bottom" : "left"}
-                separated={canRenderGit || canRenderGoal || canRenderSessionPlans}
-              />
-            ) : null}
-            {canRenderTerminals ? (
-              <BackgroundWorkStatusSection
-                onOpenBackgroundBash={onOpenBackgroundBash}
-                section="terminal"
-                title={intl.formatMessage({ id: "chat.statusPanel.terminals" })}
-                works={model.runningBashWorks}
-                open={terminalSectionOpen}
-                onOpenChange={onTerminalSectionOpenChange}
-                separated={canRenderGit || canRenderGoal || canRenderSessionPlans || canRenderPlan}
-                onCancelBackgroundWork={onCancelBackgroundWork}
-              />
-            ) : null}
-            {canRenderWorkflows ? (
-              <WorkflowStatusSection
-                title={intl.formatMessage({ id: "chat.statusPanel.workflows" })}
-                runs={model.runningWorkflowRuns}
-                endedRunCount={canRenderEndedWorkflows ? endedWorkflowRunCount : 0}
-                open={workflowSectionOpen}
-                onOpenChange={onWorkflowSectionOpenChange}
-                separated={
-                  canRenderGit ||
-                  canRenderGoal ||
-                  canRenderSessionPlans ||
-                  canRenderPlan ||
-                  canRenderTerminals
-                }
-                parentSessionId={parentSessionId}
-                onCancelBackgroundWork={onCancelBackgroundWork}
-                onOpenWorkflowRun={onOpenWorkflowRun}
-                onOpenDirectory={onOpenWorkflowRunDirectory}
-              />
-            ) : null}
-            {canRenderAgents ? (
-              <SubagentStatusSection
-                title={intl.formatMessage({ id: "chat.statusPanel.agents" })}
-                subagents={model.runningSubagentWorks}
-                endedSubagentCount={canRenderEndedAgents ? endedSubagentCount : 0}
-                onCancelBackgroundWork={onCancelBackgroundWork}
-                open={agentSectionOpen}
-                onOpenChange={onAgentSectionOpenChange}
-                separated={
-                  canRenderGit ||
-                  canRenderGoal ||
-                  canRenderSessionPlans ||
-                  canRenderPlan ||
-                  canRenderTerminals ||
-                  canRenderWorkflows
-                }
-                parentSessionId={parentSessionId}
-                rootSessionId={rootSessionId}
-                onOpenSubagentSession={onOpenSubagentSession}
-                onOpenSubagentDirectory={onOpenSubagentDirectory}
-              />
+            {canRenderTerminals || canRenderWorkflows || canRenderAgents ? (
+              <details data-inventory-process>
+                <summary className="cursor-pointer text-ui-base font-normal">
+                  进程{" "}
+                  {model.runningBashWorks.length +
+                    model.runningSubagentWorks.length +
+                    model.runningWorkflowRuns.length}
+                  /
+                  {backgroundWorks.filter((work) => work.kind === "bash").length +
+                    model.runningSubagentWorks.length +
+                    endedSubagentCount +
+                    model.runningWorkflowRuns.length +
+                    endedWorkflowRunCount}
+                </summary>
+                {canRenderTerminals ? (
+                  <BackgroundWorkStatusSection
+                    onOpenBackgroundBash={onOpenBackgroundBash}
+                    section="terminal"
+                    title={intl.formatMessage({ id: "chat.statusPanel.terminals" })}
+                    works={model.runningBashWorks}
+                    open={terminalSectionOpen}
+                    onOpenChange={onTerminalSectionOpenChange}
+                    separated={
+                      canRenderGit || canRenderGoal || canRenderSessionPlans || canRenderPlan
+                    }
+                    onCancelBackgroundWork={onCancelBackgroundWork}
+                  />
+                ) : null}
+                {canRenderWorkflows ? (
+                  <WorkflowStatusSection
+                    title={intl.formatMessage({ id: "chat.statusPanel.workflows" })}
+                    runs={model.runningWorkflowRuns}
+                    endedRunCount={canRenderEndedWorkflows ? endedWorkflowRunCount : 0}
+                    open={workflowSectionOpen}
+                    onOpenChange={onWorkflowSectionOpenChange}
+                    separated={
+                      canRenderGit ||
+                      canRenderGoal ||
+                      canRenderSessionPlans ||
+                      canRenderPlan ||
+                      canRenderTerminals
+                    }
+                    parentSessionId={parentSessionId}
+                    onCancelBackgroundWork={onCancelBackgroundWork}
+                    onOpenWorkflowRun={onOpenWorkflowRun}
+                    onOpenDirectory={onOpenWorkflowRunDirectory}
+                  />
+                ) : null}
+                {canRenderAgents ? (
+                  <SubagentStatusSection
+                    title={intl.formatMessage({ id: "chat.statusPanel.agents" })}
+                    subagents={model.runningSubagentWorks}
+                    endedSubagentCount={canRenderEndedAgents ? endedSubagentCount : 0}
+                    onCancelBackgroundWork={onCancelBackgroundWork}
+                    open={agentSectionOpen}
+                    onOpenChange={onAgentSectionOpenChange}
+                    separated={
+                      canRenderGit ||
+                      canRenderGoal ||
+                      canRenderSessionPlans ||
+                      canRenderPlan ||
+                      canRenderTerminals ||
+                      canRenderWorkflows
+                    }
+                    parentSessionId={parentSessionId}
+                    rootSessionId={rootSessionId}
+                    onOpenSubagentSession={onOpenSubagentSession}
+                    onOpenSubagentDirectory={onOpenSubagentDirectory}
+                  />
+                ) : null}
+              </details>
             ) : null}
           </div>
         ) : null}

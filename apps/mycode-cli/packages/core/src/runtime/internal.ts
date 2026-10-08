@@ -144,5 +144,6 @@ export interface AgentRuntimeInternal
   pendingModelChangeTimeline?: PendingModelChangeTimeline;
   sessionStartHookRan: boolean;
   sessionTitleGenerationAttempted: boolean;
+  sessionTitleGenerationWork?: Promise<void>;
   agentTelemetry: RuntimeTelemetryFacade;
 }

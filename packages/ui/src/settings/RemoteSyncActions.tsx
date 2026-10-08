@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
-import { ChevronDown, UploadCloud } from "lucide-react";
+import { ChevronDown, UploadCloud } from "@/components/icons/tabler.js";
 import type { RemoteTarget } from "@mycode/shared";
 import type {
   IMcpSyncService,
@@ -197,7 +197,7 @@ export function RemoteSyncDropdownButton({
           <ChevronDown className="size-3.5 text-foreground-subtle" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
+      <DropdownMenuContent align="end" className="agent-settings-typography w-40">
         <RemoteSyncMenuItems
           canSyncSkills={canSyncSkills}
           canSyncMcp={canSyncMcp}

@@ -1,11 +1,11 @@
-import { WandSparkles } from "lucide-react";
+import { SquareTerminal } from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { ToolSnapshotFieldNotice } from "@/ToolCallBlocks/ToolSnapshotFieldNotice.js";
 import { ToolLayout } from "../ToolLayout.js";
 import type { ToolCallBlockRenderContext } from "../shared.js";
 
-const SKILL_TOOL_ICON = <WandSparkles className="size-4 shrink-0 text-foreground-subtle" />;
+const SKILL_TOOL_ICON = <SquareTerminal className="size-4 shrink-0 text-foreground-subtle" />;
 
 function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -124,43 +124,30 @@ export function SkillToolCallBlock(context: ToolCallBlockRenderContext) {
       : (outputText ?? rawOutputText ?? undefined);
   const skillFallbackLabel = intl.formatMessage({ id: "chat.toolCall.skill.label" });
   const skillUnknownLabel = intl.formatMessage({ id: "chat.toolCall.skill.unknown" });
-  const skillArgsLabel = intl.formatMessage({ id: "chat.toolCall.skill.args" });
   const skillNoOutputLabel = intl.formatMessage({ id: "chat.toolCall.skill.noOutput" });
   const primaryText = useMemo(
     () => (
-      <span className="truncate font-mono text-foreground-subtlest">
-        {skillName ?? toolCall.title ?? skillFallbackLabel}
+      <span className="truncate font-normal text-foreground-subtlest">
+        {skillName?.split(":").at(-1) ?? toolCall.title ?? skillFallbackLabel}
       </span>
     ),
     [skillFallbackLabel, skillName, toolCall.title],
   );
-  const secondaryText = useMemo(
-    () => (skillArgs ? <code className="truncate font-mono">{skillArgs}</code> : null),
-    [skillArgs],
-  );
   const renderContent = useCallback(
     () => (
-      <div className="space-y-3 mb-2 rounded-xl border border-border bg-panel px-4 py-3">
-        <div className="space-y-1">
-          <div className="flex flex-wrap items-center gap-2 text-ui-base text-foreground">
-            <span className="text-foreground-subtle">{skillFallbackLabel}</span>
-            <code className="rounded-md bg-surface px-2 py-1 font-mono text-ui-base text-foreground">
-              {skillName ?? toolCall.title ?? skillUnknownLabel}
-            </code>
-          </div>
-          {skillArgs ? (
-            <div className="flex items-start gap-2 font-mono text-ui-base text-foreground">
-              <span className="shrink-0 text-foreground-subtle">{skillArgsLabel}</span>
-              <pre className="min-w-0 flex-1 whitespace-pre-wrap break-words text-foreground-subtle">
-                {skillArgs}
-              </pre>
-            </div>
-          ) : null}
+      <div data-skill-content>
+        <div className="font-sans font-normal text-foreground-subtle">
+          {skillFallbackLabel} {skillName ?? toolCall.title ?? skillUnknownLabel}
         </div>
+        {skillArgs ? (
+          <pre className="min-w-0 whitespace-pre-wrap break-words font-mono text-foreground-subtle">
+            {skillArgs}
+          </pre>
+        ) : null}
 
         {detailText ? (
           <div className="space-y-1">
-            <pre className="max-h-25 overflow-auto whitespace-pre-wrap break-words font-mono text-ui-base text-foreground-subtle">
+            <pre className="whitespace-pre-wrap break-words font-mono text-ui-base text-foreground-subtle">
               {detailText}
             </pre>
           </div>
@@ -177,7 +164,6 @@ export function SkillToolCallBlock(context: ToolCallBlockRenderContext) {
       context.isRunning,
       detailText,
       skillArgs,
-      skillArgsLabel,
       skillFallbackLabel,
       skillName,
       skillNoOutputLabel,
@@ -191,6 +177,7 @@ export function SkillToolCallBlock(context: ToolCallBlockRenderContext) {
       <ToolLayout
         toolId={toolCall.toolId}
         icon={SKILL_TOOL_ICON}
+        preserveIcon
         showIcon={context.showIcon !== false}
         canToggle={context.canToggle ?? true}
         forceOpen={context.forceOpen ?? false}
@@ -203,7 +190,7 @@ export function SkillToolCallBlock(context: ToolCallBlockRenderContext) {
         }
         sourceLabel={context.sourceLabel}
         primaryText={primaryText}
-        secondaryText={secondaryText}
+        secondaryText={null}
         statusLabel={context.statusLabel}
         statusTooltip={toolCall.status === "failed" ? detailText : undefined}
         showFailureStatus={toolCall.status === "failed"}

@@ -1,25 +1,10 @@
-import {
-  isMyCodeAgentProvider,
-  resolveModelProviderFamilySpecByProviderId,
-  mycodeProviderAccountAccessSchema,
-  type MyCodeProviderAccountAccess,
-  type MyCodeProvider,
-} from "@mycode/shared";
+import { LOCAL_MODEL_PROVIDER_ID } from "@mycode/provider";
+import { isMyCodeAgentProvider, type MyCodeProvider } from "@mycode/shared";
 import type { ModelSelectionView } from "@mycode/services";
 import type { ModelSelectGroup } from "@/ModelConfigSelect.js";
 import { decodeCustomModelValue, encodeCustomModelValue } from "@/lib/mycodeCustomModelValue.js";
 import { shouldShowModelVisionBadge } from "@/lib/modelVisionBadge.js";
-
-export interface ModelProviderGroupLabelOptions {
-  apiKeyLabel?: string;
-  apiKeyBadgeLabel?: string;
-  codingPlanLabel?: string;
-  codingPlanBadgeLabel?: string;
-  startPlanLabel?: string;
-  startPlanBadgeLabel?: string;
-  teamPlanBadgeLabel?: string;
-  teamPlanFallbackLabel?: string;
-}
+import { resolveModelFamilyLogo } from "@/lib/modelFamilyLogo.js";
 
 function supportsRegistryApiFormat(
   selectedProvider: MyCodeProvider,
@@ -33,28 +18,25 @@ function supportsRegistryApiFormat(
 export function buildRegistryModelSelectGroups(
   selectedProvider: MyCodeProvider,
   view: ModelSelectionView,
-  labels: ModelProviderGroupLabelOptions = {},
 ): ModelSelectGroup[] {
   return view.providers.flatMap((provider) => {
     if (!supportsRegistryApiFormat(selectedProvider, provider.config.api?.type)) {
       return [];
     }
 
-    const accountAccess = mycodeProviderAccountAccessSchema.safeParse(provider.config.access);
-    const accountPresentation = accountAccess.success
-      ? getRegistryAccountProviderGroupPresentation(provider.providerId, accountAccess.data, labels)
-      : null;
-
     return [
       {
         key: `registry-provider:${provider.providerId}`,
-        label: accountPresentation?.label || provider.providerName?.trim() || provider.providerId,
-        ...(accountPresentation?.labelBadge ? { labelBadge: accountPresentation.labelBadge } : {}),
-        ...(accountPresentation ? { directItems: true } : {}),
+        label:
+          provider.providerId === LOCAL_MODEL_PROVIDER_ID
+            ? "HuggingFace"
+            : provider.providerName?.trim() || provider.providerId,
         items: provider.models.map(({ modelId, config }) => ({
           key: `registry-provider:${provider.providerId}:${modelId}`,
           value: encodeCustomModelValue(provider.providerId, modelId),
-          name: modelId,
+          // 官方模型 ID 可跨版本复用；显示名来自同一 Registry，提交仍使用原 ID。
+          name: config.properties?.displayName ?? modelId,
+          logo: resolveModelFamilyLogo(modelId, provider.config.logo),
           ...(shouldShowModelVisionBadge(
             modelId,
             config.properties?.inputFormat?.supportsImage,
@@ -66,22 +48,6 @@ export function buildRegistryModelSelectGroups(
       },
     ];
   });
-}
-
-function getRegistryAccountProviderGroupPresentation(
-  providerId: string,
-  access: MyCodeProviderAccountAccess,
-  labels: ModelProviderGroupLabelOptions,
-): Pick<ModelSelectGroup, "label" | "labelBadge"> {
-  const familySpec = resolveModelProviderFamilySpecByProviderId(providerId);
-  const label = familySpec?.label ?? providerId;
-  if (access.mode === "start-plan") {
-    return { label: "Start Plan", labelBadge: labels.startPlanBadgeLabel ?? "Free" };
-  }
-  if (access.mode === "team-coding-plan") {
-    return { label, labelBadge: labels.teamPlanBadgeLabel ?? "Team" };
-  }
-  return { label, labelBadge: labels.codingPlanBadgeLabel ?? "Individual" };
 }
 
 export function resolveModelDisplayName(

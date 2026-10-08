@@ -661,6 +661,18 @@ export const mycodeProtocolMcpServerSchema = z.union([
 ]);
 export type MyCodeProtocolMcpServer = z.infer<typeof mycodeProtocolMcpServerSchema>;
 
+// 运行时初始化反向请求；连接配置只在可信 stdio 上传递，不进入命令账本。
+export const MYCODE_SESSION_MCP_RESOLUTION_ENV_KEY = "MYCODE_HOST_SESSION_MCP_RESOLUTION";
+export const mycodeSessionResolveMcpServersParamsSchema = z
+  .object({
+    workspace: mycodeWorkspaceRefSchema,
+    mcpServers: z.array(mycodeProtocolMcpServerSchema).optional(),
+  })
+  .strict();
+export const mycodeSessionResolveMcpServersResultSchema = z
+  .object({ mcpServers: z.array(mycodeProtocolMcpServerSchema).optional() })
+  .strict();
+
 export const mycodeMcpServerStatusKindSchema = z.enum([
   "connecting",
   "connected",
@@ -817,43 +829,46 @@ export const mycodeModelOptionSchema = z
   .strict();
 export type MyCodeModelOption = z.infer<typeof mycodeModelOptionSchema>;
 
-export const mycodeAccountAccessSchema = z.discriminatedUnion("planKind", [
-  z
-    .object({
-      type: z.literal("zhipu-account"),
-      family: z.enum(["zai", "bigmodel"]),
-      planKind: z.literal("start-plan"),
-    })
-    .strict(),
-  z
-    .object({
-      type: z.literal("zhipu-account"),
-      family: z.enum(["zai", "bigmodel"]),
-      planKind: z.literal("individual-coding-plan"),
-    })
-    .strict(),
-  z
-    .object({
-      type: z.literal("zhipu-account"),
-      family: z.enum(["zai", "bigmodel"]),
-      planKind: z.literal("team-coding-plan"),
-      productId: nonEmptyString,
-      organizationId: nonEmptyString,
-      projectId: nonEmptyString,
-    })
-    .strict(),
-]);
+export const mycodeAccountAccessSchema = z
+  .discriminatedUnion("planKind", [
+    z
+      .object({
+        type: z.literal("retired-account"),
+        family: z.string(),
+        planKind: z.literal("start-plan"),
+      })
+      .strict(),
+    z
+      .object({
+        type: z.literal("retired-account"),
+        family: z.string(),
+        planKind: z.literal("individual-coding-plan"),
+      })
+      .strict(),
+    z
+      .object({
+        type: z.literal("retired-account"),
+        family: z.string(),
+        planKind: z.literal("team-coding-plan"),
+        productId: nonEmptyString,
+        organizationId: nonEmptyString,
+        projectId: nonEmptyString,
+      })
+      .strict(),
+  ])
+  .refine(() => false, "Account access has been removed");
 export type MyCodeAccountAccess = z.infer<typeof mycodeAccountAccessSchema>;
 
 /** Active Model 固定的账号访问类别；当前商品和 Team scope 由账号服务在请求期解析。 */
 export const mycodeProviderAccountAccessSchema = z
   .object({
-    type: z.literal("zhipu-account"),
-    accountType: z.enum(["zai", "bigmodel"]),
+    type: z.literal("retired-account"),
+    accountType: z.string(),
     mode: z.enum(["start-plan", "individual-coding-plan", "team-coding-plan", "off-peak"]),
     entitled: z.boolean(),
   })
-  .strict();
+  .strict()
+  .refine(() => false, "Account access has been removed");
 export type MyCodeProviderAccountAccess = z.infer<typeof mycodeProviderAccountAccessSchema>;
 
 export type MyCodeSessionMode = z.infer<typeof mycodeSessionModeSchema>;
@@ -3036,12 +3051,6 @@ export const mycodePluginStoreListingSchema = z
     heroImage: z.string().optional(),
     examplePrompts: z.array(z.string()).optional(),
     examplePromptsI18n: z.record(z.string(), z.array(z.string())).optional(),
-    /**
-     * 需要付费套餐才好用的插件：市场目录条目声明 `requiresPaidPlan: true`，
-     * UI 在标题右侧展示提示图标。描述的是「使用条件」而非「插件是收费商品」——
-     * 不参与安装门禁与计费，命名也不绑定具体套餐商品名。
-     */
-    requiresPaidPlan: z.boolean().optional(),
   })
   .strict();
 export type MyCodePluginStoreListing = z.infer<typeof mycodePluginStoreListingSchema>;
@@ -3695,6 +3704,7 @@ export const mycodeProtocolMethods = {
   interactionRequestUserInput: "interaction/requestUserInput",
   interactionRequestProviderRuntimeHeaders: "interaction/requestProviderRuntimeHeaders",
   interactionRequestOfficialMcpAuthHeaders: "interaction/requestOfficialMcpAuthHeaders",
+  interactionResolveSessionMcpServers: "interaction/resolveSessionMcpServers",
   // browser-use 反向请求由 agent 发起，host 转给 main 中的 CDP executor。
   interactionBrowserList: "interaction/browserList",
   interactionBrowserExecute: "interaction/browserExecute",
@@ -3708,6 +3718,10 @@ export const mycodeProtocolEmptyResultSchema = z.object({}).strict();
 // 最新 V4 主链已不再依赖旧版全量方法表；这里仅保留仍被兼容测试和 browser broker
 // 消费的最小契约集合，避免重新引入已移除的 legacy 方法。
 export const mycodeProtocolSessionMethodContracts = {
+  [mycodeProtocolMethods.interactionResolveSessionMcpServers]: {
+    params: mycodeSessionResolveMcpServersParamsSchema,
+    result: mycodeSessionResolveMcpServersResultSchema,
+  },
   [mycodeProtocolMethods.workspaceHookTrustGrant]: {
     params: mycodeWorkspaceHookTrustGrantParamsSchema,
     result: mycodeWorkspaceHookTrustGrantResultSchema,

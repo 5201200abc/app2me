@@ -1,8 +1,8 @@
-# MyCode Design System
+# app2me Design System
 
-Portable design system for AI-assisted UI work in this repository.
+Shared design guidance for MyCode, MyChat, and the desktop and Web interfaces in this repository.
 
-This file is meant for coding agents. When generating or editing UI in this repo, follow this file before inventing new visual rules.
+Use this file when editing UI. Token definitions and component defaults are maintained in [styles.css](packages/ui/src/styles.css), [uiFontSize.ts](packages/ui/src/lib/uiFontSize.ts), and the [shared primitives](packages/ui/src/components/ui/). Update this guide when those definitions change.
 
 ## Highest-priority UI constraint
 
@@ -10,7 +10,7 @@ The dedicated `text-ui-*` scale is a mandatory repository-wide constraint for ap
 
 - UI components must use `text-ui-xl`, `text-ui-lg`, `text-ui-base`, `text-ui-caption`, `text-ui-sm`, or `text-ui-xs`.
 - Do not introduce Tailwind's built-in `text-base`, `text-sm`, or `text-xs` for application UI.
-- Do not introduce arbitrary UI font sizes such as `text-[13px]` or inline `font-size` values.
+- Do not introduce arbitrary UI font sizes such as `text-[13px]` or inline `font-size` values. Component-scoped styles may derive their sizes from the shared tokens, as the conversation process rows do.
 - The only content-level exceptions are code, Diff, and terminal rendering that consume their independent numeric font-size settings. Their surrounding controls, labels, headers, and metadata must still use `text-ui-*`.
 - Mobile Web editable inputs that must prevent iOS focus zoom use the fixed `text-mobile-input-safe` compatibility token (16px). Do not use it as a general UI hierarchy token.
 - Never implement interface font scaling by changing `html` or `document.documentElement.style.fontSize`; update only `--ui-font-size`.
@@ -19,7 +19,7 @@ Treat violations of this section as design-system defects, not stylistic prefere
 
 ## Product Character
 
-MyCode is a desktop-first and web-compatible AI workspace. The interface should feel calm, dense, and operational rather than decorative.
+app2me is a desktop-first and web-compatible AI workspace. The interface should feel calm, dense, and operational rather than decorative.
 
 Design for:
 
@@ -30,24 +30,17 @@ Design for:
 - desktop and web parity
 - macOS, Windows, and Linux compatibility
 - internationalization and variable text length
-- light and dark themes, plus Zai variants already supported by the codebase
-
-Avoid:
-
-- oversized marketing-style spacing
-- playful gradients as the default UI language
-- bright full-surface brand fills
-- ambiguous hierarchy between background, card, and popover surfaces
+- light and dark themes
 
 ## Theme Modes
 
 User-facing theme choices are:
 
 - System
-- Light Theme, backed by Zai Light
-- Dark Theme, backed by Zai Dark
+- Light Theme
+- Dark Theme
 
-Default light and dark CSS variables still exist as fallback foundations, but new UI should be validated against Zai Light and Zai Dark as the active light/dark experiences.
+Validate new UI against the active light and dark theme variables.
 
 ## Color Palette
 
@@ -56,7 +49,7 @@ Default light and dark CSS variables still exist as fallback foundations, but ne
 - **Brand**: `--color-brand`
   Use for key emphasis, important links, active indicators, and brand-accented actions. Never use as a full-page background.
 - **Icon Blue**: `--color-icon-blue`
-  Use for browser-style links and blue icon emphasis that follows the Figma `icon/blue` role. Keep file-type icons on their own descriptor colors.
+  Use for browser-style links and blue icon emphasis. Keep file-type icons on their own descriptor colors.
 - **Accent Surface**: `--color-accent`
   Use for weak emphasis blocks, selected highlights, and low-intensity branded surfaces.
 - **Background**: `--color-background`
@@ -183,21 +176,21 @@ The dynamic-workflow timeline draws with a feature-scoped token family:
 ### Font families
 
 - **UI Sans**: use the app's default `font-sans` stack for almost all interface text.
-- **UI Mono**: use `font-mono` for paths, commands, code, identifiers, shortcuts, commit hashes, model IDs, and terminal-like data.
+- **UI Mono**: use `font-mono` for paths, commands, code, identifiers, shortcuts, commit hashes, raw model IDs, and terminal-like data. Model-selector labels and change-summary numbers use the UI sans font.
 
 ### UI font tokens
 
-All interface typography must use the dedicated `text-ui-*` scale. The Appearance setting controls `--ui-font-size`, whose default is `14px`:
+The Appearance setting controls `--ui-font-size`, stored as a rem value. Its default is `1rem` (16px at the standard browser root size); the current setting range is 11–16px. The shared scale uses proportional multipliers:
 
-| Token             | Formula                | Default |
-| ----------------- | ---------------------- | ------: |
-| `text-ui-xl`      | `--ui-font-size + 4px` |    18px |
-| `text-ui-lg`      | `--ui-font-size + 2px` |    16px |
-| `text-ui-base`    | `--ui-font-size`       |    14px |
-| `text-ui-caption` | `--ui-font-size - 1px` |    13px |
-| `text-ui-sm`      | `--ui-font-size - 2px` |    12px |
-| `text-ui-xs`      | `--ui-font-size - 4px` |    10px |
-| `text-ui-2xs`     | `--ui-font-size - 5px` |     9px |
+| Token             | Formula                   | Default at a 16px root |
+| ----------------- | ------------------------- | ---------------------: |
+| `text-ui-xl`      | `--ui-font-size × 1.25`   |                   20px |
+| `text-ui-lg`      | `--ui-font-size × 1.125`  |                   18px |
+| `text-ui-base`    | `--ui-font-size`          |                   16px |
+| `text-ui-caption` | `--ui-font-size × 0.9375` |                   15px |
+| `text-ui-sm`      | `--ui-font-size × 0.8125` |                   13px |
+| `text-ui-xs`      | `--ui-font-size × 0.6875` |                   11px |
+| `text-ui-2xs`     | `--ui-font-size × 0.625`  |                   10px |
 
 `text-ui-2xs` is a restricted exception below the `text-ui-xs` floor: it is permitted
 only for graph **axis furniture** — timebase tick labels, channel codes, and unit
@@ -208,23 +201,21 @@ Treat any other use as a design-system defect.
 reserved for editable controls on mobile Web surfaces where iOS focus zoom must
 be prevented, and therefore does not scale with `--ui-font-size`.
 
-- Changing the interface font size updates only `--ui-font-size`; never mutate the root `html` font size.
-- Icons, spacing, radii, and other `rem`-based geometry must not scale with the interface font setting.
+- Controls that scale with interface typography use the shared `--ui-space` density token (`--ui-font-size × 0.2666666667`). Reuse the existing component tokens for item heights, padding, composer controls, and icon buttons. Fixed geometry and radii do not scale automatically.
 - Code, Diff, and terminal content retain their independent font-size settings; only their surrounding interface controls use `text-ui-*`.
-- Mobile Web inputs that require the iOS 16px focus-zoom floor use `text-mobile-input-safe`.
 
 ### Type roles
 
 The `text-ui-*` scale expresses stable semantic roles. Choose a token by content role rather than by isolated visual preference:
 
-| Token             | Primary roles                                                                                                |
-| ----------------- | ------------------------------------------------------------------------------------------------------------ |
-| `text-ui-xl`      | Markdown `h1` and equivalent first-level reading headings                                                    |
-| `text-ui-lg`      | Markdown `h2` and equivalent second-level reading headings                                                   |
-| `text-ui-base`    | Markdown `h3`-`h6`, body copy, common buttons, workspace and section titles, and other primary UI text       |
-| `text-ui-caption` | Compact supporting copy that must remain one step below body text, such as the New Task feature announcement |
-| `text-ui-sm`      | Secondary copy, supporting information, helper text, Tooltip copy, and Markdown inline code                  |
-| `text-ui-xs`      | Tooltip keyboard shortcuts, badges, compact labels, counters, and very weak metadata                         |
+| Token             | Primary roles                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------ |
+| `text-ui-xl`      | Markdown `h1` and equivalent first-level reading headings                                              |
+| `text-ui-lg`      | Markdown `h2` and equivalent second-level reading headings                                             |
+| `text-ui-base`    | Markdown `h3`-`h6`, body copy, common buttons, workspace and section titles, and other primary UI text |
+| `text-ui-caption` | Conversation titles and compact supporting copy one step below body text                               |
+| `text-ui-sm`      | Secondary copy, supporting information, helper text, Tooltip copy, and Markdown inline code            |
+| `text-ui-xs`      | Tooltip keyboard shortcuts, badges, compact labels, counters, and very weak metadata                   |
 
 - Markdown `h3`-`h6` share `text-ui-base`; distinguish their hierarchy through weight: `h3`-`h4` use `font-semibold`, `h5` uses `font-medium`, and `h6` uses `font-normal`.
 - Body copy and common controls normally use `text-ui-base font-normal`; titles and labels may strengthen weight without changing their semantic size role.
@@ -233,38 +224,19 @@ The `text-ui-*` scale expresses stable semantic roles. Choose a token by content
 - **Code / Command / Path**: use `font-mono`, usually with `text-ui-base`; Markdown inline code uses `text-ui-sm`.
 - When migrating a legacy explicit `13px` UI size without a deliberate compact-caption role, use `text-ui-base`. Use `text-ui-caption` only where the product explicitly requires a stable one-step-below-body caption treatment. Do not collapse either into `text-ui-xs`; `text-ui-xs` is reserved for badge-scale and very weak metadata roles.
 
-### Markdown type scale
-
-Markdown rendered through the shared assistant response uses a reading-oriented hierarchy while the surrounding operational UI remains compact:
-
-- **User and assistant message containers**: `text-ui-base`
-- **Body**: `text-ui-base`
-- **Links**: `text-ui-base`
-- **Inline code**: `font-mono text-ui-sm`
-- **Code block body**: default `14px`, configurable through code preview settings
-- **Code block header**: `text-ui-base`
-- **Tables**: `text-ui-base`
-- **h1**: `text-ui-xl`
-- **h2**: `text-ui-lg`
-- **h3**: `text-ui-base`
-- **h4**: `text-ui-base`
-- **h5**: `text-ui-base`
-- **h6**: `text-ui-base`
-
 ### Typography rules
 
-- Keep UI text compact and readable.
-- Prefer `font-medium` for headings and labels; avoid heavy weights unless there is a strong reason.
+- Reading text uses `text-ui-base` with `--ui-body-line-height` (1.7). Top-level workspace titles use `text-ui-base`; conversation list titles use `text-ui-caption`, and timestamps and other secondary information use `text-ui-sm`. Keep long sidebar titles on one line with ellipsis.
+- Ordinary labels and controls use normal weight. Headings may use the existing stronger treatments; conversation process rows and change statistics retain weight 400.
 - Use monospace only where the content is inherently technical.
-- Use `text-ui-base` as the default compact app text size. Keep `text-ui-base` for workspace titles and stronger title treatments.
 - Respect i18n expansion. Do not hard-code layouts that only work for short English labels.
 - Do not depend on tight truncation as the only way a component survives translation.
 
 ## Spacing
 
-Base spacing unit is `4px`.
+Tailwind spacing uses its existing rem scale. Typography-linked controls derive spacing from `--ui-space`; do not replace their shared density tokens with fixed pixel values.
 
-Recommended rhythm:
+For fixed-density layout regions, the existing spacing rhythm is:
 
 - `4px`: tight icon/text spacing
 - `8px`: compact control padding and inline gaps
@@ -320,7 +292,7 @@ Control size and primary/secondary action emphasis do not independently change r
 ### Dialogs
 
 - Dialog shells, including alert and confirmation dialogs, use `rounded-2xl`.
-- Only chat attachment preview, feedback screenshot preview, and CUA screenshot preview dialogs keep `rounded-xl` shells.
+- Chat attachment preview and CUA screenshot preview dialogs keep `rounded-xl` shells.
 - The dialog shell does not count toward its content hierarchy. The first rounded content container starts again at `rounded-xl`, followed by `rounded-lg` → `rounded-md` → `rounded-sm`.
 - Basic controls inside dialogs follow the control table; a layout wrapper does not introduce an extra level.
 
@@ -347,9 +319,9 @@ Control size and primary/secondary action emphasis do not independently change r
 
 ### Common size baselines
 
-- **Icon sizes**: `size-3`, `size-3.5`, `size-4`, `size-5`, `size-6`
-- **Control heights**: `h-6`, `h-7`, `h-8`, `h-9`
-- **Square icon buttons**: `size-6`, `size-7`, `size-8`, `size-9`
+- **Icon sizes**: reuse the shared icon and button primitives; button variants currently span `size-2.5` through `size-4`.
+- **Button heights**: `xs` = `h-5`, `sm` = `h-6`, `default` = `h-7`, `lg` = `h-8`.
+- **Square icon buttons**: `icon-xs` = `size-5`, `icon-sm` = `size-6`, `icon` / `icon-md` = `size-7`, `icon-lg` = `size-8`.
 
 ### Sizing rules
 
@@ -420,7 +392,7 @@ Card rules:
 - Menus use `border border-popover-border` and typically `p-1`
 - Dropdown menus, context menus, and select popovers should share the same menu surface language
 - Adjacent option rows in dropdown menus, context menus, and select popovers use a fixed `2px` vertical gap (`gap-0.5`) at the shared option-stack layer
-- Popovers and dialogs use `bg-popover` and `border-popover-border`. Ordinary standalone popovers start at `rounded-xl`; dialogs use `rounded-2xl` except the three preview exceptions in the Radius rules.
+- Popovers and dialogs use `bg-popover` and `border-popover-border`. Ordinary standalone popovers start at `rounded-xl`; dialogs use `rounded-2xl` except the preview exceptions in the Radius rules.
 - Toasts use `bg-toast`, compact padding, and stronger shadow
 
 Overlay rules:
@@ -462,7 +434,7 @@ Overlay rules:
 
 ## Elevation and Depth
 
-MyCode should use restrained depth. Layer primarily through background contrast, borders, and radius before relying on heavy shadows.
+app2me should use restrained depth. Layer primarily through background contrast, borders, and radius before relying on heavy shadows.
 
 Recommended elevation levels:
 
@@ -504,7 +476,7 @@ Rules:
 
 - Support keyboard navigation as a first-class interaction path.
 - Preserve visible focus behavior through the repo's established focus styling patterns.
-- Ensure contrast remains safe in light, dark, and Zai modes.
+- Ensure contrast remains safe in light and dark modes.
 - Write layouts that tolerate longer translations.
 - Avoid icon-only meaning when a text label is practical.
 - Use semantic status colors together with readable text, never by color alone.
@@ -516,24 +488,3 @@ Rules:
 - Match current density and component proportions already established in the repo.
 - If a new UI need appears, first decide whether it belongs to structure, surface, interaction, or state. Then choose tokens accordingly.
 - When in doubt, prefer quieter UI and stronger information hierarchy.
-
-## Do
-
-- use semantic color tokens consistently
-- preserve the distinction between page background, card, and overlay surfaces
-- keep controls compact and operational
-- use text hierarchy to express density
-- use monospace for technical values and command-like content
-- support all shipped themes
-- design for desktop, web, and cross-platform rendering constraints
-- account for localization and long labels
-
-## Don't
-
-- use raw one-off colors in ordinary UI work
-- fill large surfaces with brand color
-- add arbitrary radii, shadows, widths, or heights without a stable system reason
-- make menus and dialogs airy when they should be dense
-- use semantic error or success colors for non-semantic decoration
-- create components that only look correct in one theme
-- trade clarity for visual novelty in tool-heavy screens

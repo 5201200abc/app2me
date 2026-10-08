@@ -1,5 +1,5 @@
 import type { Hook } from "@mycode/shared";
-import { CircleAlert } from "lucide-react";
+import { CircleAlert } from "@/components/icons/tabler.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 
 /** 与 HooksList 行内 Trust 按钮保持同一判定，避免风险提示形成第二套审核状态。 */

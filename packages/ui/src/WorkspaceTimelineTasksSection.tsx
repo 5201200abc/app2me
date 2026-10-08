@@ -595,7 +595,7 @@ export function WorkspaceTimelineTasksSection({
 
   if (items.length === 0) {
     return (
-      <div className="px-3 py-2 text-ui-base text-foreground-subtle">
+      <div className="px-3 py-2 text-ui-caption font-normal text-foreground-subtle">
         {emptyMessage ?? intl.formatMessage({ id: "taskList.noTasks" })}
       </div>
     );
@@ -904,7 +904,7 @@ export function WorkspaceTimelineTasksSection({
       {canLoadMore ? (
         <div className="cursor-pointer pl-8.5 pb-4">
           <span
-            className="text-ui-base text-foreground-subtlest hover:text-foreground-subtle"
+            className="text-ui-caption font-normal text-foreground-subtlest hover:text-foreground-subtle"
             onClick={() => {
               // timeline 目标是单向分页，每次点击只增加一个 20 条阶梯。
               // 不再复用“显示更少”的旧展开/收起方案，避免按钮状态和真实分页语义冲突。

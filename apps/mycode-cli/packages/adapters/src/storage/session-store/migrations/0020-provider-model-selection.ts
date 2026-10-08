@@ -15,15 +15,8 @@ function selection(provider: string, model: string, level: string, label = "NULL
 
 function migratedProvider(input: string): string {
   const provider = `trim(${input})`;
-  // 与已裁决的 migrateLegacyModelProviderId 对照测试；不可按当前连接改写。
-  return `case ${provider}
-    when 'builtin:bigmodel' then 'bigmodel-api'
-    when 'builtin:zai' then 'zai-api'
-    when 'builtin:bigmodel-start-plan' then 'account:bigmodel-start-plan'
-    when 'builtin:zai-start-plan' then 'account:zai-start-plan'
-    when 'builtin:bigmodel-coding-plan' then 'account:bigmodel-individual-coding-plan'
-    when 'builtin:zai-coding-plan' then 'account:zai-individual-coding-plan'
-    else case when substr(${provider}, 1, 8) = 'builtin:' then NULL else ${provider} end end`;
+  // 退役内置身份不再映射为账号连接；自定义连接保持原身份。
+  return `case when substr(${provider}, 1, 8) = 'builtin:' or substr(${provider}, 1, 8) = 'account:' then NULL else ${provider} end`;
 }
 
 const legacyUserSelection = selection(

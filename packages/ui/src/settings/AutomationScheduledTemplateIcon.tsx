@@ -1,9 +1,9 @@
-import { Activity, FileText, List, Target, type LucideIcon } from "lucide-react";
+import { Activity, FileText, List, Target, type UiIcon } from "@/components/icons/tabler.js";
 import { ClientSceneLucideIcon } from "@/components/ClientSceneLucideIcon.js";
 
 export type AutomationScheduledTemplateIconName = "target" | "activity" | "file" | "list";
 
-const TEMPLATE_ICONS: Record<AutomationScheduledTemplateIconName, LucideIcon> = {
+const TEMPLATE_ICONS: Record<AutomationScheduledTemplateIconName, UiIcon> = {
   target: Target,
   activity: Activity,
   file: FileText,

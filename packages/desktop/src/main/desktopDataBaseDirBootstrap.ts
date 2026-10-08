@@ -3,7 +3,9 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { setDataBaseDir } from "@mycode/services/node";
 
-function resolveBootstrapSettingsFile(homePath: string = homedir()): string {
+function resolveBootstrapSettingsFile(
+  homePath: string = process.env.MYCODE_DESKTOP_HOME_DIR?.trim() || homedir(),
+): string {
   return join(homePath, ".mycode", "v2", "setting.json");
 }
 

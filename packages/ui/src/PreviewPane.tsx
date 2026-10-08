@@ -19,7 +19,7 @@ import {
   ExternalLinkIcon,
   FileCode2Icon,
   CopyIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { nanoid } from "nanoid";
 import { Button } from "@/components/ui/button.js";
 import { toast } from "@/components/ui/toast.js";
@@ -63,7 +63,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.js";
-import { readLastSelectedEditorId } from "@/lib/editorPreference.js";
+import { usePreferredEditorId } from "@/hooks/usePreferredEditorId.js";
 import { PreviewPaneContent } from "@/previewPaneContent.js";
 import {
   dispatchCodeCommentAddToChat,
@@ -547,7 +547,7 @@ export function PreviewPane({
     useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [installedEditors, setInstalledEditors] = useState<EditorInfo[]>([]);
-  const [preferredEditorId] = useState<string | null>(() => readLastSelectedEditorId());
+  const preferredEditorId = usePreferredEditorId();
   const [markdownViewMode, setMarkdownViewMode] = useState<"preview" | "code">("preview");
   const [svgViewMode, setSvgViewMode] = useState<"preview" | "code">("preview");
   const [wrapLongLinesOverride, setWrapLongLinesOverride] = useState<boolean | null>(null);

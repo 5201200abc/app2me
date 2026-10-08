@@ -58,6 +58,8 @@ export function WorkspaceHeader({
   onRefreshGit,
   onToggleTerminal,
   onToggleSidePane,
+  isSummaryPanelExpanded,
+  onToggleSummaryPanel,
   toggleSidePaneShortcutLabel,
   onReloadSession,
   reloadSessionDisabled,
@@ -103,6 +105,8 @@ export function WorkspaceHeader({
   onToggleTerminal: () => void;
   onToggleBrowser: () => void;
   onToggleSidePane: () => void;
+  isSummaryPanelExpanded?: boolean;
+  onToggleSummaryPanel?: () => void;
   toggleSidePaneShortcutLabel?: string;
   onReloadSession: (options?: {
     resumeTaskId?: string | null;
@@ -188,6 +192,7 @@ export function WorkspaceHeader({
             isMacFullscreen={isMacFullscreen}
             isWindowsDesktop={isWindowsDesktop}
             simplifyForNarrowRemote={simplifyForNarrowRemote}
+            isSidebarVisible={isSidebarVisible}
             selectedEditor={selectedEditor}
             onReloadSession={onReloadSession}
             reloadSessionDisabled={reloadSessionDisabled}
@@ -211,9 +216,10 @@ export function WorkspaceHeader({
           isSidePaneOpen={isSidePaneOpen}
           onToggleTerminal={onToggleTerminal}
           onToggleSidePane={onToggleSidePane}
+          isSummaryPanelExpanded={isSummaryPanelExpanded}
+          onToggleSummaryPanel={onToggleSummaryPanel}
           toggleSidePaneShortcutLabel={toggleSidePaneShortcutLabel}
           simplifyForNarrowRemote={simplifyForNarrowRemote}
-          hideHelpMenu={false}
           showWindowControls={usesInlineWindowControls}
           // 面板操作按钮沿用 macOS 紧凑样式，Windows/Linux 窗控跟随最右侧 Header。
           onSelectedEditorChange={setSelectedEditor}

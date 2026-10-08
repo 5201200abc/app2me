@@ -36,7 +36,6 @@ import {
 } from "./agent.js";
 import { isSubagentDispatchToolName } from "../compat.js";
 import { skillToolEntry } from "./skill.js";
-import { todoReadToolEntry, todoWriteToolEntry } from "./todo.js";
 import {
   cronCreateToolEntry,
   cronDeleteToolEntry,
@@ -83,8 +82,6 @@ export const builtInTools: ToolEntry[] = [
   grepToolEntry,
   webFetchToolEntry,
   webSearchToolEntry,
-  todoReadToolEntry,
-  todoWriteToolEntry,
   cronCreateToolEntry,
   cronListToolEntry,
   cronUpdateToolEntry,

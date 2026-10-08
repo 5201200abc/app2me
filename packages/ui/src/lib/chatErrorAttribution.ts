@@ -281,7 +281,6 @@ export function resolveTelemetryAttribution(params: {
     return resolve(stableAttribution.reason, stableAttribution.source);
   }
 
-  // 修复原因：130x/300x 等业务码是 BigModel/Z.AI 的 provider 局部词表，不能把自定义
   // provider 的同名 code 误归因为套餐到期或配额耗尽；缺少 provider 身份时也只能退回
   // HTTP 状态码/受控文案证据，避免把通用 error.code 当成全局业务码。
   if (trustedProviderReason) {

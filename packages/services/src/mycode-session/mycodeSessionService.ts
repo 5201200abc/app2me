@@ -293,7 +293,7 @@ export function createMyCodeSessionService({
           })
         ) {
           // 恢复历史 task 时，模型已经被切回 task-local 模型，但旧 task config
-          // 仍可能带着上一模型的 thoughtLevel，例如 GLM-5-Turbo 被传入 max。
+          // 仍可能带着上一模型的 thoughtLevel，例如 自定义模型 被传入 max。
           // snapshot.settings.thoughtLevel.available 是当前模型能力事实源，不支持时不能再重放给 agent。
           thoughtLevelOverride = undefined;
           logger.warn(

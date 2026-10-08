@@ -7,7 +7,7 @@ import {
   MinusIcon,
   PlusIcon,
   XIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/components/lib/utils.js";
@@ -527,6 +527,14 @@ export function ImagePreviewDialog({
                 }}
               />
             </div>
+          ) : activeItem.error ? (
+            <p className="text-ui-base text-foreground-subtle" role="status">
+              {intl.formatMessage({ id: "chat.attachments.preview.unavailable" })}
+            </p>
+          ) : activeItem.loading ? (
+            <p className="text-ui-base text-foreground-subtle" role="status">
+              {intl.formatMessage({ id: "chat.attachments.preview.loading" })}
+            </p>
           ) : null
         ) : null}
         {!activeItemIsVideo ? (

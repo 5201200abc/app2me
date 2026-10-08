@@ -1728,7 +1728,7 @@ export function WorkspaceGroupedTasksSection({
             renderNode={renderTopLevelNode}
           />
           {view.nodes.length === 0 && !groupedDraftTask && !loading ? (
-            <div className="px-3 py-2 text-ui-base text-foreground-subtle">
+            <div className="px-3 py-2 text-ui-caption font-normal text-foreground-subtle">
               {intl.formatMessage({ id: "taskList.noTasks" })}
             </div>
           ) : null}

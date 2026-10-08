@@ -202,6 +202,21 @@ export interface OpenPlanDetailSideTabRequest {
   planFilePath?: string;
 }
 
+export interface OpenSourcesSideTabRequest {
+  workspacePath: string;
+  workspaceIdentity?: string;
+  remoteSessionId?: string;
+  parentSessionId: string;
+}
+
+export interface SourcesSidePaneTab extends OpenSourcesSideTabRequest {
+  id: string;
+  type: "sources";
+  ownerTaskId: string;
+  workspaceKey: string;
+  openedAt: number;
+}
+
 /**
  * workflow run 的详情页 tab。
  *
@@ -514,6 +529,7 @@ export interface OpenScopedSubagentSideTabRequest extends OpenSubagentSideTabReq
 }
 
 export type WorkspaceSidePaneTab =
+  | SourcesSidePaneTab
   | BackgroundBashSidePaneTab
   | BrowserSidePaneTab
   | GitSidePaneTab
@@ -1120,6 +1136,7 @@ function getVisibleSidePaneTabsByScope(
     }
     if (
       tab.type === "selection-side-chat" ||
+      tab.type === "sources" ||
       tab.type === "plan-detail" ||
       tab.type === "workflow-run" ||
       tab.type === "workflow-actor-session" ||
@@ -1744,6 +1761,24 @@ export function openPlanDetailSidePane(
   return activateSidePaneTab(current, existing ? { ...existing, ...nextTab } : nextTab);
 }
 
+export function openSourcesSidePane(
+  current: WorkspaceSidePaneState | null,
+  options: OpenSourcesSideTabRequest & { workspaceKey: string },
+): WorkspaceSidePaneState {
+  const id = JSON.stringify(["sources", options.workspaceKey, options.parentSessionId]);
+  const existing = current?.tabs.find((tab) => tab.type === "sources" && tab.id === id);
+  return activateSidePaneTab(
+    current,
+    existing ?? {
+      ...options,
+      id,
+      type: "sources",
+      ownerTaskId: options.parentSessionId,
+      openedAt: Date.now(),
+    },
+  );
+}
+
 /**
  * 打开或复用一个 workflow run 详情 tab。
  *
@@ -1907,6 +1942,7 @@ export function isSidePaneTabVisibleForParent(
   // 归属于某条对话（而非 workspace 全局）的 tab 按 parentSessionId 收窄。
   if (
     tab.type === "selection-side-chat" ||
+    tab.type === "sources" ||
     tab.type === "plan-detail" ||
     tab.type === "workflow-run" ||
     tab.type === "workflow-directory" ||
@@ -1967,6 +2003,7 @@ function selectSidePaneTabsForParent(
         tab.type === "subagent-session" ||
         tab.type === "subagent-directory" ||
         tab.type === "selection-side-chat" ||
+        tab.type === "sources" ||
         tab.type === "plan-detail" ||
         tab.type === "workflow-run" ||
         tab.type === "workflow-actor-session" ||

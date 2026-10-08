@@ -3,7 +3,7 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } f
 import type { MyCodeProvider } from "@mycode/shared";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { createPortal } from "react-dom";
-import { PaletteIcon, WandSparkles } from "lucide-react";
+import { PaletteIcon, WandSparkles } from "@/components/icons/tabler.js";
 import {
   $createTextNode,
   $getSelection,

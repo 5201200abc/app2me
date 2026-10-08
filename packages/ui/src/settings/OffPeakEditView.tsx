@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ModelSelectionView } from "@mycode/services";
 import { completeNewModelSelection } from "@mycode/provider";
-import { FolderOpen } from "lucide-react";
+import { FolderOpen } from "@/components/icons/tabler.js";
 import {
   TID_OFFPEAK_EDIT_SUBMIT,
   TID_OFFPEAK_EDIT_VIEW,

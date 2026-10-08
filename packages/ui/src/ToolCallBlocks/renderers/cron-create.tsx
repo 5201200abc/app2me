@@ -1,4 +1,4 @@
-import { ClockIcon } from "lucide-react";
+import { ClockIcon } from "@/components/icons/tabler.js";
 import { TID_CRON_CREATE_CARD, TID_CRON_CREATE_OPEN } from "@mycode/shared";
 import type { MyCodeAutomationScheduleRule } from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";

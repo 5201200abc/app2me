@@ -1,5 +1,5 @@
 import type { MyCodeTaskGroupColor } from "@mycode/services";
-import { Hash } from "lucide-react";
+import { Hash } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { TASK_GROUP_COLOR_CLASS } from "@/workspace-grouped-tasks/types.js";
 

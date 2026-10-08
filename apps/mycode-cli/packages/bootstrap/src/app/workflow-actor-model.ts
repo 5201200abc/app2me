@@ -24,7 +24,7 @@ interface WorkflowActorModelHost {
   /**
    * 本 run 自己的子代理模型（`CreateWorkflow` / `AmendWorkflow` 的 `subagent_model`，从 journal
    * 的 `run-launched` 事件读回）。**整条选择**，含 reasoning
-   * 档位——用户说「子代理跑 GLM-5.3-Flash$high」时那个档位是选择的一部分，不能在这里掉。
+   * 档位——用户说「子代理跑 自定义模型$high」时那个档位是选择的一部分，不能在这里掉。
    *
    * 位置：**最高**。它是用户对这一次 run 的显式表态；在场时 pin 与父模型都只是它本来要替换的
    * 缺省（见下面的函数注释）。主代理不受它影响——它只描述子代理。

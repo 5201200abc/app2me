@@ -1,20 +1,18 @@
 import type { ProviderConfigObject } from "@mycode/provider";
-import { PackageIcon } from "lucide-react";
+import { PackageIcon } from "@/components/icons/tabler.js";
 import { useState } from "react";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeStoreWithDefault } from "@/store/StoreProvider.js";
 import { resolveTheme, type ResolvedTheme } from "@/useTheme.js";
 import alibabaModelStudioLogo from "@/assets/provider-icons/model-provider-alibaba-cloud.png";
 import anthropicLogo from "@/assets/provider-icons/model-provider-anthropic.png";
-import bigModelLogo from "@/assets/provider-icons/logo-bigmodel.svg";
-import deepSeekLogo from "@/assets/provider-icons/model-provider-deepseek.png";
+import deepSeekLogo from "@/assets/provider-icons/model-provider-deepseek.svg";
+import huggingFaceLogo from "@/assets/provider-icons/model-provider-huggingface.svg";
 import miniMaxLogo from "@/assets/provider-icons/model-provider-minimax.png";
 import moonshotKimiLogo from "@/assets/provider-icons/model-provider-moonshot-kimi.png";
 import openAiLogo from "@/assets/provider-icons/model-provider-openai.png";
 import xAiLogo from "@/assets/provider-icons/model-provider-xai.png";
 import xiaomiMimoLogo from "@/assets/provider-icons/model-provider-xiaomi-mimo.png";
-import startPlanLogo from "@/assets/provider-icons/model-provider-start-plan.png";
-import zaiLogo from "@/assets/mycode-mark.svg";
 import openrouterLight from "@/assets/provider-icons/model-provider-openrouter-light.svg";
 import openrouterDark from "@/assets/provider-icons/model-provider-openrouter-dark.svg";
 import opencodeLight from "@/assets/provider-icons/model-provider-opencode-light.svg";
@@ -30,12 +28,10 @@ interface BuiltinProviderLogoAsset {
 // 这里只负责把 Config 中的资源 key 解析为打包素材；禁止加入 Provider ID、名称或排序逻辑。
 const BUILTIN_PROVIDER_LOGO_ASSETS: Readonly<Record<string, BuiltinProviderLogoAsset>> = {
   // 用户指定 Dock 应用图标；同名旧 SVG 带灰色描边，不能当作同一素材复用。
-  zai: { light: zaiLogo },
-  bigmodel: { light: bigModelLogo },
-  "start-plan": { light: startPlanLogo },
   "moonshot-kimi": { light: moonshotKimiLogo },
   minimax: { light: miniMaxLogo },
   deepseek: { light: deepSeekLogo },
+  huggingface: { light: huggingFaceLogo },
   "alibaba-model-studio": { light: alibabaModelStudioLogo },
   "xiaomi-mimo": { light: xiaomiMimoLogo },
   openai: { light: openAiLogo },

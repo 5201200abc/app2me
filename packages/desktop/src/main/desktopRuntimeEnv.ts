@@ -57,10 +57,10 @@ function isTruthyRuntimeEnvOverride(name: string): boolean {
 export const runtimeApplicationName =
   readRuntimeEnvOverride("MYCODE_DESKTOP_APPLICATION_NAME") ??
   (isLocalDevelopmentRuntime
-    ? "MyCode Dev"
+    ? "app2me Dev"
     : isPreviewPackagedRuntime
-      ? "MyCode Preview"
-      : "MyCode");
+      ? "app2me Preview"
+      : "app2me");
 // Electron 的 app.getPath("home") 不一定跟随测试进程里的 HOME 覆盖。
 // e2e 默认工作区依赖 home 路径，因此提供显式覆盖，避免测试写到开发者真实 ~/MyCodeProject。
 export const runtimeHomePath = readRuntimeEnvOverride("MYCODE_DESKTOP_HOME_DIR");
@@ -68,11 +68,20 @@ export const runtimeHomePath = readRuntimeEnvOverride("MYCODE_DESKTOP_HOME_DIR")
 export const shouldUseElectronDefaultUserDataPath = isTruthyRuntimeEnvOverride(
   "MYCODE_DESKTOP_USE_ELECTRON_DEFAULT_USER_DATA",
 );
+// 重命名外壳不应切换 Electron 数据目录，否则会丢失浏览器登录和现有设置。
+const legacyRuntimeDataName = isLocalDevelopmentRuntime
+  ? "MyCode Dev"
+  : isPreviewPackagedRuntime
+    ? "MyCode Preview"
+    : "MyCode";
 export const runtimeUserDataPath =
   readRuntimeEnvOverride("MYCODE_DESKTOP_USER_DATA_DIR") ??
   (shouldUseElectronDefaultUserDataPath
     ? undefined
-    : join(getElectronAppPath("appData"), runtimeApplicationName));
+    : join(
+        getElectronAppPath("appData"),
+        readRuntimeEnvOverride("MYCODE_DESKTOP_APPLICATION_NAME") ?? legacyRuntimeDataName,
+      ));
 export const runtimeSessionDataPath =
   readRuntimeEnvOverride("MYCODE_DESKTOP_SESSION_DATA_DIR") ??
   (runtimeUserDataPath ? join(runtimeUserDataPath, "session") : undefined);
@@ -278,18 +287,10 @@ function applySelectedMyCodeEnvLinks(env: Record<string, string>): Record<string
     ...readProductEndpointEnv(),
     ...env,
   };
-  const {
-    BIGMODEL_API_BASE_URL: _bigModelBaseUrl,
-    ZAI_OAUTH_ORIGIN: _zaiOAuthOrigin,
-    ZAI_BUSINESS_BASE_URL: _zaiBusinessBaseUrl,
-    ZAI_OAUTH_CLIENT_ID: _zaiOAuthClientId,
-    ZAI_OAUTH_APP_ID: _zaiOAuthAppId,
-    ...activeEnv
-  } = env;
 
   return {
     ...pickProductEndpointEnv(endpointEnv),
-    ...activeEnv,
+    ...env,
   };
 }
 
@@ -549,7 +550,7 @@ export function buildHostProcessEnv(hostProcessLocalEnv: Record<string, string>)
     // 这里显式下发 MYCODE_RUNTIME_ENV，并在继承环境里清掉 NODE_ENV，避免 host/agent/Bash 被污染。
     [MYCODE_RUNTIME_ENV_KEY]: resolveHostProcessNodeEnv(),
     // 显式注入编译期产品身份，保证主进程与 host 的身份语义一致；地址独立解析。
-    // inheritedEnv 从 .env 通用变量补齐 MyCode/ZAI 链接，未覆盖时统一使用线上默认值。
+    // inheritedEnv 从 .env 通用变量补齐 应用链接，未覆盖时统一使用线上默认值。
     MYCODE_ENV,
     // Preview 与生产版共享任务、配置和凭据，但不同版本的 Helper 不能互相覆盖或触发降级保护。
     // 只隔离 computer-use 下的运行组件，不改写 MYCODE_HOME / MYCODE_DATA_BASE_DIR 业务数据根。

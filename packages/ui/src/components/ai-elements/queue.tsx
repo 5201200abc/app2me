@@ -16,7 +16,7 @@ import {
   CircleIcon,
   LoaderIcon,
   PaperclipIcon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 
 export interface QueueMessagePart {

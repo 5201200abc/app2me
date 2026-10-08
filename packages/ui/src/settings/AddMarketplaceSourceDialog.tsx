@@ -1,5 +1,5 @@
 import { useRef, useState, type DragEvent } from "react";
-import { FolderOpen, Loader2, Plus } from "lucide-react";
+import { FolderOpen, Loader2, Plus } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog.js";
 import { Input } from "@/components/ui/input.js";
@@ -77,7 +77,7 @@ export function AddMarketplaceSourceDialog({
       <DialogContent
         data-testid="plugin-store-add-source-dialog"
         className={cn(
-          "w-[min(420px,calc(100vw-2rem))] max-w-none transition-colors",
+          "agent-settings-typography w-[min(420px,calc(100vw-2rem))] max-w-none transition-colors",
           canPickPath && dragActive ? "border-border-hover bg-surface-hover" : "",
         )}
         onDragOver={

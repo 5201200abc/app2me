@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react";
+import { Search, X } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
@@ -22,7 +22,8 @@ export function SettingsSearchInput({
   return (
     <div className={cn("relative", containerClassName)}>
       <Search
-        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground-subtle"
+        className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-foreground-subtle"
+        strokeWidth={1.5}
         aria-hidden="true"
       />
       <Input
@@ -30,7 +31,7 @@ export function SettingsSearchInput({
         type="search"
         size="lg"
         className={cn(
-          "h-9 rounded-xl pl-9 [&::-webkit-search-cancel-button]:appearance-none",
+          "h-7 rounded-md pl-8 text-ui-caption [&::-webkit-search-cancel-button]:appearance-none",
           canClear && "pr-9",
           className,
         )}

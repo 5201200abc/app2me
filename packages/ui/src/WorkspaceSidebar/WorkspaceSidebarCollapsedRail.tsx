@@ -1,5 +1,5 @@
-import { PanelLeftOpen } from "lucide-react";
-import appLogoUrl from "@/assets/mycode-mark.svg";
+import { PanelLeft } from "@/components/icons/tabler.js";
+import appLogoUrl from "@/assets/mycode-mark.png";
 import { Button } from "@/components/ui/button.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
@@ -38,7 +38,10 @@ export function WorkspaceSidebarCollapsedRail({
                 className="size-5 transition-opacity group-hover:opacity-0"
                 draggable={false}
               />
-              <PanelLeftOpen className="absolute size-4 opacity-0 transition-opacity group-hover:opacity-100" />
+              <PanelLeft
+                className="absolute size-3.5 opacity-0 transition-opacity group-hover:opacity-100"
+                strokeWidth={1.5}
+              />
             </Button>
           </ControlHintTooltip>
         </div>

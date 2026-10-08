@@ -1,0 +1,17 @@
+@keyframes reasoning-indicator-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+[data-reasoning-status="streaming"] .reasoning-indicator {
+  animation: reasoning-indicator-breathe 1.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reasoning-status="streaming"] .reasoning-indicator {
+    animation: none;
+  }
+}

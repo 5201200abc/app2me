@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "..
 import { Badge } from "../ui/badge.js";
 import { cn } from "../lib/utils.js";
 import type { Tool } from "ai";
-import { BotIcon } from "lucide-react";
+import { BotIcon } from "@/components/icons/tabler.js";
 import type { ComponentProps } from "react";
 import { memo } from "react";
 

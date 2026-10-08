@@ -9,9 +9,9 @@ test("retired OAuth RPCs cannot start login or recover a cached session", async 
   assert.equal(await service.getActiveProvider(), null);
   assert.deepEqual(await service.restoreCachedSessionState(), { status: "signed-out" });
   assert.equal(await service.restoreSession(), null);
-  await assert.rejects(service.startOAuth("zai"), /OAuth integration has been removed/);
+  await assert.rejects(service.startOAuth("retired-account"), /OAuth integration has been removed/);
   await assert.rejects(
-    service.startOAuthWithPolling("bigmodel"),
+    service.startOAuthWithPolling("retired-plan"),
     /OAuth integration has been removed/,
   );
   await assert.rejects(service.refreshToken(), /OAuth integration has been removed/);

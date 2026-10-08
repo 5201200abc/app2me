@@ -1,3 +1,4 @@
+import { stripDisplayEmoji } from "@/lib/compactConversationDisplay.js";
 import { memo, useState } from "react";
 import {
   Bot,
@@ -7,7 +8,7 @@ import {
   ScrollText,
   SquareSlash,
   WandSparkles,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { FileDisplayInline } from "@/lib/fileDisplay.js";
 import { isTrustedPluginIconSource } from "@/lib/pluginIconSource.js";
@@ -65,8 +66,8 @@ function mentionClassName(category: Parameters<typeof getPromptMentionVariantCla
   return cn(
     "mx-0.5 max-w-full",
     PROMPT_MENTION_BASE_CLASS_NAME,
-    // userInput 正文使用 text-ui-base，与 assistant 消息体保持一致。
-    "text-ui-base leading-6",
+    // 引用芯片与提问正文共用紧凑 caption 字号，避免芯片把行高重新撑大。
+    "text-ui-caption leading-5",
     getPromptMentionVariantClassName(category),
   );
 }
@@ -84,12 +85,12 @@ function V4UserInputMention({
     return (
       <span className={mentionClassName("files")}>
         <FileDisplayInline
-          path={part.label}
+          path={stripDisplayEmoji(part.label)}
           options={{
             className: "inline-flex min-w-0 max-w-full items-center gap-1 align-middle",
-            iconSize: 16,
+            iconSize: 14,
             kind: part.type === "directory" ? "directory" : "file",
-            fileNameClassName: "truncate text-ui-base leading-6 font-medium text-current",
+            fileNameClassName: "truncate text-ui-caption leading-5 font-medium text-current",
           }}
         />
       </span>
@@ -99,7 +100,7 @@ function V4UserInputMention({
   if (part.type === "skill") {
     return (
       <span className={mentionClassName("skills")}>
-        <WandSparkles aria-hidden="true" className="size-4 shrink-0" />
+        <WandSparkles aria-hidden="true" className="size-3.5 shrink-0" />
         {formatSkillMentionDisplayLabel(part.label)}
       </span>
     );
@@ -108,8 +109,8 @@ function V4UserInputMention({
   if (part.type === "session") {
     return (
       <span className={mentionClassName("sessions")}>
-        <MessagesSquare aria-hidden="true" className="size-4 shrink-0" />
-        {part.label}
+        <MessagesSquare aria-hidden="true" className="size-3.5 shrink-0" />
+        {stripDisplayEmoji(part.label)}
       </span>
     );
   }
@@ -119,7 +120,7 @@ function V4UserInputMention({
     return (
       <span className={mentionClassName("plugins")} data-plugin-mention-id={part.pluginId}>
         <PluginUserMessageIcon src={pluginIcon} />
-        {part.label}
+        {stripDisplayEmoji(part.label)}
       </span>
     );
   }
@@ -127,8 +128,8 @@ function V4UserInputMention({
   if (part.type === "subagent") {
     return (
       <span className={mentionClassName("subagents")}>
-        <Bot aria-hidden="true" className="size-4 shrink-0" strokeWidth={1.5} />
-        {part.label}
+        <Bot aria-hidden="true" className="size-3.5 shrink-0" strokeWidth={1.5} />
+        {stripDisplayEmoji(part.label)}
       </span>
     );
   }
@@ -137,7 +138,7 @@ function V4UserInputMention({
   if ((commandName === "goal" || commandName === "target") && !authoritativeGoal) {
     // 旧版纯文本嗅探会把带附件的 `/goal` 普通 prompt 也画成控制命令。
     // V4 只允许发送入口确认的首个 goal token 使用特殊 UI，其余情况必须保持用户原文。
-    return `/${part.label}`;
+    return `/${stripDisplayEmoji(part.label)}`;
   }
 
   return (
@@ -146,15 +147,15 @@ function V4UserInputMention({
       className={mentionClassName("commands")}
     >
       {commandName === "goal" || commandName === "target" ? (
-        <GoalIcon aria-hidden="true" className="size-4 shrink-0" />
+        <GoalIcon aria-hidden="true" className="size-3.5 shrink-0" />
       ) : commandName === "compact" ? (
-        <ScrollText aria-hidden="true" className="size-4 shrink-0" />
+        <ScrollText aria-hidden="true" className="size-3.5 shrink-0" />
       ) : (
-        <SquareSlash aria-hidden="true" className="size-4 shrink-0" />
+        <SquareSlash aria-hidden="true" className="size-3.5 shrink-0" />
       )}
       {/* authoritative goal 使用原始 slash token 回显，导致用户气泡重复暴露
           控制语法。标签保留 Goal 语义，只省略 `/`；复制、编辑和协议仍使用原始 row.text。 */}
-      {part.label}
+      {stripDisplayEmoji(part.label)}
     </span>
   );
 }
@@ -164,7 +165,7 @@ function PluginUserMessageIcon({ src }: { src?: string }) {
   const showImage = isTrustedPluginIconSource(src) && failedSrc !== src;
 
   if (!showImage) {
-    return <Cable aria-hidden="true" className="size-4 shrink-0" />;
+    return <Cable aria-hidden="true" className="size-3.5 shrink-0" />;
   }
 
   return (
@@ -204,7 +205,7 @@ export const ConversationUserInputContent = memo(function ConversationUserInputC
     <>
       {parts.map((part, index) => {
         if (part.type === "text") {
-          return part.text;
+          return stripDisplayEmoji(part.text);
         }
 
         return (

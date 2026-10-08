@@ -1,4 +1,4 @@
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "@/components/icons/tabler.js";
 import { useCallback, useEffect, useRef, useState, type ReactElement } from "react";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import type { RemoteConnectionLogEntry } from "@/hooks/useRemoteConnectionLogs.js";

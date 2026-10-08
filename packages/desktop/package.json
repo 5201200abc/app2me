@@ -1,8 +1,8 @@
 {
-  "name": "@mycode/desktop",
+  "name": "@app2me/desktop",
   "private": true,
-  "description": "MyCode Desktop App",
-  "author": "MyCode",
+  "description": "app2me Desktop App — MyCode and MyChat",
+  "author": "app2me",
   "type": "module",
   "main": "out/main/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "prepare:macos-window-bounds": "node scripts/build-macos-window-bounds.mjs",
     "build:no-runtime-assets": "pnpm prepare:build-meta && node scripts/run-production-build.mjs",
     "build": "pnpm prepare:runtime-assets && pnpm prepare:remote-assets && pnpm run build:no-runtime-assets",
-    "bundle": "node scripts/bundle.mjs",
+    "bundle": "node ../../scripts/app2me-release.mjs",
     "audit:bundle-size": "node scripts/audit-bundle-size.mjs",
     "postinstall": "node scripts/node-pty-rebuild.mjs",
     "lint": "oxlint",
@@ -86,5 +86,6 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.2"
   },
-  "productName": "MyCode"
+  "productName": "app2me",
+  "version": "2026.1008.55200"
 }

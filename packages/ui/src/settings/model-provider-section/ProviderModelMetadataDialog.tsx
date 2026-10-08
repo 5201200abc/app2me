@@ -1,5 +1,6 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 import { useId, useRef, useState, type FocusEvent, type KeyboardEvent } from "react";
-import { Loader2Icon, Pencil } from "lucide-react";
+import { Loader2Icon } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import {
   Dialog,
@@ -137,7 +138,7 @@ export function ProviderModelMetadataDialog({
             aria-label={editModelLabel}
             title={editModelLabel}
           >
-            <Pencil className="size-3.5 text-foreground-subtle" />
+            <WriteIcon className="size-3.5 text-foreground-subtle" />
           </Button>
         </DialogTrigger>
       ) : null}

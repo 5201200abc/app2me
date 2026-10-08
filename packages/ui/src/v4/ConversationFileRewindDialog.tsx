@@ -1,4 +1,4 @@
-import { Loader2Icon, Undo2Icon } from "lucide-react";
+import { Loader2Icon, Undo2Icon } from "@/components/icons/tabler.js";
 import {
   TID_V4_EDIT_WORKSPACE_CONFLICT_CONVERSATION_ONLY,
   TID_V4_EDIT_WORKSPACE_CONFLICT_DIALOG,

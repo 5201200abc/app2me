@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { ArrowUpRightIcon, ChevronDownIcon, CircleXIcon } from "lucide-react";
+import { ArrowUpRightIcon, ChevronDownIcon, CircleXIcon } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { laneDisplayName } from "@/components/workflow-graph/lane-name.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

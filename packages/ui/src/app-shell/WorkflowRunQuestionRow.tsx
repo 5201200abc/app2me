@@ -1,4 +1,4 @@
-import { MessageCircleQuestionIcon } from "lucide-react";
+import { MessageCircleQuestionIcon } from "@/components/icons/tabler.js";
 import type { WorkflowRunPendingQuestion } from "@mycode/shared/mycode-protocol-v4";
 import { cn } from "@/components/lib/utils.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

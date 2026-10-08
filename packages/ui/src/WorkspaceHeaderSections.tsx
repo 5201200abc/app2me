@@ -1,3 +1,4 @@
+import "./desktop-toolbar.css";
 import { WorkspaceContextPath } from "@/WorkspaceHeaderSections/WorkspaceContextPath.js";
 import { WorkspaceLastActivity } from "@/WorkspaceHeaderSections/WorkspaceLastActivity.js";
 /* eslint-disable max-lines -- Header 标题区当前同时承载 task 菜单、路径上下文和 workspace 级状态提示，先保持单文件收口，避免菜单链路迁移时再引入回归。 */
@@ -12,7 +13,7 @@ import { useMemo, useRef, useState } from "react";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
-import { Cloud, Ellipsis, Folder, GitBranch, LoaderIcon } from "lucide-react";
+import { Cloud, Ellipsis, Folder, GitBranch, LoaderIcon } from "@/components/icons/tabler.js";
 import { useConfirmDialog } from "@/hooks/useConfirmDialog.js";
 import { useGlobalTaskList } from "@/hooks/useGlobalTaskList.js";
 import { useBaseWorkspaceServices, useWorkspaceServices } from "@/hooks/useWorkspaceServices.js";
@@ -102,6 +103,7 @@ export function WorkspaceHeaderTitleSection({
   selectedEditor: _selectedEditor,
   simplifyForNarrowRemote = false,
   compact = false,
+  isSidebarVisible = false,
 }: WorkspaceHeaderTitleSectionProps) {
   const { intl } = useMyCodeIntl();
   const openFeedbackSubmit = useFeedbackStore((state) => state.openSubmit);
@@ -408,19 +410,19 @@ export function WorkspaceHeaderTitleSection({
           onOpenChange={setWorkspaceContextOpen}
           side="bottom"
           align="start"
-          className="w-72 items-start border-popover-border bg-popover p-3 text-popover-foreground shadow-md [&>span:first-child]:min-w-0 [&>span:first-child]:flex-1 [&>span:first-child]:text-ui-base [&>span:first-child]:text-popover-foreground"
+          className="w-64 items-start rounded-lg border-popover-border bg-popover p-2.5 text-popover-foreground shadow-sm [&>span:first-child]:min-w-0 [&>span:first-child]:flex-1 [&>span:first-child]:text-ui-caption [&>span:first-child]:text-popover-foreground"
           title={
             <span
               data-workspace-header-context-info=""
-              className="flex w-full min-w-0 flex-col gap-3 text-left"
+              className="flex w-full min-w-0 flex-col gap-2 text-left"
             >
-              <span className="flex min-w-0 items-start gap-2">
+              <span className="flex min-w-0 items-start gap-1.5">
                 {isRemoteWorkspace ? (
-                  <Cloud className="size-4 shrink-0" />
+                  <Cloud className="size-3.5 shrink-0" strokeWidth={1.5} />
                 ) : (
-                  <Folder className="size-4 shrink-0" />
+                  <Folder className="size-3.5 shrink-0" strokeWidth={1.5} />
                 )}
-                <span className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <span className="min-w-0 break-words [overflow-wrap:anywhere]">
                     {workspaceContextLabel}
                   </span>
@@ -439,8 +441,8 @@ export function WorkspaceHeaderTitleSection({
                 />
               ) : null}
               {workspaceBranchLabel ? (
-                <span className="flex min-w-0 items-center gap-2 border-t border-border/50 pt-3 font-normal">
-                  <GitBranch className="size-4 shrink-0" />
+                <span className="flex min-w-0 items-center gap-1.5 border-t border-border/50 pt-2 text-ui-sm font-normal">
+                  <GitBranch className="size-3.5 shrink-0" strokeWidth={1.5} />
                   <span className="min-w-0 break-words [overflow-wrap:anywhere]">
                     {workspaceBranchLabel}
                   </span>
@@ -453,6 +455,7 @@ export function WorkspaceHeaderTitleSection({
             type="button"
             variant="ghost"
             size={compact ? "icon-sm" : "icon-md"}
+            data-desktop-toolbar-action={!isSidebarVisible ? true : undefined}
             data-testid={TID_WORKSPACE_PATH}
             aria-label={[workspaceContextLabel, workspaceBranchLabel].filter(Boolean).join(" · ")}
             onClick={() => setWorkspaceContextOpen(true)}
@@ -470,7 +473,7 @@ export function WorkspaceHeaderTitleSection({
         className={cn(
           "flex min-w-12 max-w-100 shrink items-center gap-2 truncate font-semibold text-foreground @max-[560px]/workspace-header:max-w-[30vw] @max-[420px]/workspace-header:max-w-[22vw]",
           simplifyForNarrowRemote && "max-md:max-w-[42vw]",
-          compact ? "text-[0.92rem]" : "text-ui-base",
+          compact ? "text-ui-caption" : "text-ui-base",
         )}
         title={activeTaskTitle}
       >
@@ -491,7 +494,7 @@ export function WorkspaceHeaderTitleSection({
         ) : null} */}
       </h1>
       <div className="flex min-w-0 shrink-0 items-center gap-1">
-        {!isDraftNewTask ? (
+        {!isDraftNewTask && (!isSidebarVisible || simplifyForNarrowRemote || remoteTarget) ? (
           <DropdownMenu open={taskMenuOpen} onOpenChange={setTaskMenuOpen}>
             <DropdownMenuTrigger asChild>
               <Button
@@ -504,7 +507,11 @@ export function WorkspaceHeaderTitleSection({
                 <Ellipsis className="size-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuContent
+              align="start"
+              data-workspace-task-menu=""
+              className="w-44 gap-0.5 rounded-lg [&_[data-slot=dropdown-menu-item]]:min-h-6.5 [&_[data-slot=dropdown-menu-item]]:px-2 [&_[data-slot=dropdown-menu-item]]:py-1 [&_[data-slot=dropdown-menu-item]]:text-ui-caption [&_[data-slot=dropdown-menu-item]]:leading-4"
+            >
               {showRemoteSkillSyncAction && remoteTarget ? (
                 <>
                   <RemoteSyncMenuItems

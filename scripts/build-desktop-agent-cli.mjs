@@ -47,11 +47,11 @@ const cliWorkspaceBuilds = [
   { packageName: "@mycode/bootstrap", packageDir: "bootstrap" },
 ];
 // 官方插件 manifest 可以在 server.js 缺失时被 filesystem seed，直到 session
-// 连接 MCP 才报错，造成“Helper ready 但 CUA 工具不存在”的半启动状态。所有普通 Dev 必需的
+// 连接 MCP 才报错，造成插件已发现但工具不存在的半启动状态。所有普通 Dev 必需的
 // 独立 MCP runtime 必须集中登记，并在构建后验证真实入口文件，再允许 Agent bundle 启动。
 const requiredDevPluginRuntimeBuilds = [
   {
-    // node_repl 宿主：Browser Use 与 Computer Use 共用，产物归属独立包。
+    // Browser Use 的 node_repl 宿主，产物归属独立包。
     packageName: "@mycode/node-repl-host",
     artifactPath: "node-repl-host/dist/mcp/server.js",
   },
@@ -91,8 +91,8 @@ async function verifyRequiredDevPluginRuntimeArtifacts() {
  *
  * dev 只跑宿主平台，所以 platformKey 直接取 process；打包链的跨平台 target 由它自己解析。
  */
-function stageDevAgentBundle() {
-  stageAgentBundle({
+async function stageDevAgentBundle() {
+  await stageAgentBundle({
     repoRoot,
     platformKey: `${process.platform}-${process.arch}`,
   });
@@ -138,7 +138,24 @@ async function runBootstrapWithRemoteBuild() {
 
 if (useBootstrapWithRemoteBuild) {
   await runBootstrapWithRemoteBuild();
-  stageDevAgentBundle();
+  // 暂存现在同时校验插件资源；bootstrap 复用 CLI 时也必须先补齐缺失 runtime。
+  for (const runtime of requiredDevPluginRuntimeBuilds) {
+    const artifactPath = resolve(repoRoot, "apps/mycode-cli/packages", runtime.artifactPath);
+    try {
+      await access(artifactPath);
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+      const packageDir = runtime.artifactPath.split("/")[0];
+      const cwd = `apps/mycode-cli/packages/${packageDir}`;
+      runCommand(process.execPath, ["../../node_modules/typescript/bin/tsc"], {
+        cwd,
+        env: pnpmRunEnv,
+      });
+      runCommand(process.execPath, ["scripts/build.mjs"], { cwd, env: pnpmRunEnv });
+    }
+  }
+  await verifyRequiredDevPluginRuntimeArtifacts();
+  await stageDevAgentBundle();
   process.exit(0);
 }
 
@@ -159,7 +176,7 @@ if (!useTurboBuild) {
     env: pnpmRunEnv,
     stdio: "inherit",
   });
-  stageDevAgentBundle();
+  await stageDevAgentBundle();
   process.exit(0);
 }
 
@@ -180,4 +197,4 @@ runCommand(
     stdio: "inherit",
   },
 );
-stageDevAgentBundle();
+await stageDevAgentBundle();

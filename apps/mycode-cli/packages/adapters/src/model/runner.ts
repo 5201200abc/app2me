@@ -13,7 +13,6 @@ import type {
   ModelOptions,
   ModelRequestAuth,
   ModelRequestDependencies,
-  ModelRequestAuthSourceInput,
   ModelStatusSink,
   ModelStreamEvent,
   ModelTextResult,
@@ -79,13 +78,10 @@ export interface CreateAiSdkModelOptions {
 
 function rejectRemovedAccountModel(config: RegistryProviderConfig): void {
   // 旧会话可能持有账号模型配置；在执行入口拒绝，避免绕过已移除的账号来源联网。
-  if (
-    config.access.type === "zhipu-account" ||
-    config.access.type === "zhipu-coding-plan-api-key"
-  ) {
+  if (config.access.type !== "api-key") {
     throw new ModelProtocolError(
       ModelErrorCode.ModelRequestAuthMissing,
-      "z.ai and BigModel account models have been removed",
+      "Unsupported model access type",
     );
   }
 }
@@ -161,46 +157,16 @@ export class AiSdkModelAdapter {
     const resolved = {
       ...boundResolution.resolved,
       properties,
-      ...(options.providerConfig.access.type === "zhipu-account"
-        ? { accountAccess: options.providerConfig.access }
-        : {}),
     };
     const optionSpecs = options.modelConfig.optionSpecs;
     const toLegacyRequest = (request: ModelExecutionRequest): AiSdkModelTextRequest => {
       const context = getCurrentModelInvocationContext();
       const {
-        refreshRuntimeHeadersBeforeAttempt: contextRefreshRuntimeHeadersBeforeAttempt,
+        refreshRuntimeHeadersBeforeAttempt: _contextRefreshRuntimeHeadersBeforeAttempt,
         ...invocationContext
       } = context ?? {};
       const shouldAttachReasoningTelemetry = request.options.reasoningLevel !== undefined;
       const selectedReasoningLevel = request.options.reasoningLevel;
-      const requestAuthDependency = options.requestDependencies?.requestAuth;
-      const requestAuthRequired =
-        options.providerConfig.access.type === "zhipu-account" &&
-        options.providerConfig.access.mode === "off-peak";
-      // 调用级 runtime header Port 只服务绑定完整 Account Access 的账号型 Model；
-      // 普通 API-key Model 若也消费该 Port，会把静态鉴权误送到 Host 刷新并在请求前失败。
-      // Off-Peak Model 始终使用创建时注入的执行作用域 Source，不依赖账号服务。
-      const refreshRuntimeHeadersBeforeAttempt = requestAuthRequired
-        ? async (input: ModelRequestAuthSourceInput) => {
-            const requestAuth = await requestAuthDependency?.source?.resolve(input);
-            if (!hasRequestAuth(requestAuth)) {
-              throw new ModelProtocolError(
-                ModelErrorCode.ModelRequestAuthMissing,
-                `Model request auth is unavailable: ${resolved.providerId}/${resolved.modelId}`,
-              );
-            }
-            return { headersApplied: true, requestAuth };
-          }
-        : options.providerConfig.access.type === "zhipu-account"
-          ? (contextRefreshRuntimeHeadersBeforeAttempt ??
-            (async () => {
-              throw new ModelProtocolError(
-                ModelErrorCode.ModelRequestAuthMissing,
-                `Account model request auth is unavailable: ${resolved.providerId}/${resolved.modelId}`,
-              );
-            }))
-          : undefined;
       return {
         messages: request.messages,
         tools: request.tools,
@@ -219,17 +185,6 @@ export class AiSdkModelAdapter {
                   ...(selectedReasoningLevel ? { requestedLevel: selectedReasoningLevel } : {}),
                 },
               },
-            }
-          : {}),
-        ...(refreshRuntimeHeadersBeforeAttempt
-          ? {
-              refreshRuntimeHeadersBeforeAttempt: (input) =>
-                refreshRuntimeHeadersBeforeAttempt({
-                  ...input,
-                  ...(options.providerConfig.access.type === "zhipu-account"
-                    ? { accountAccess: options.providerConfig.access }
-                    : {}),
-                }),
             }
           : {}),
       };
@@ -252,9 +207,6 @@ export class AiSdkModelAdapter {
               }),
             ),
             properties,
-            ...(options.providerConfig.access.type === "zhipu-account"
-              ? { accountAccess: options.providerConfig.access }
-              : {}),
           })
         : () => ({
             ...boundResolution.resolveRequest({
@@ -264,9 +216,6 @@ export class AiSdkModelAdapter {
               },
             }),
             properties,
-            ...(options.providerConfig.access.type === "zhipu-account"
-              ? { accountAccess: options.providerConfig.access }
-              : {}),
           });
     };
     return createModel({
@@ -350,13 +299,6 @@ function requireMaxOutputTokens(options: ModelOptions): number {
     );
   }
   return options.maxOutputTokens;
-}
-
-function hasRequestAuth(
-  requestAuth: ModelRequestAuth | undefined,
-): requestAuth is ModelRequestAuth {
-  if (requestAuth?.apiKey?.trim()) return true;
-  return Object.values(requestAuth?.headers ?? {}).some((value) => value.trim().length > 0);
 }
 
 function assertSameBoundModel(

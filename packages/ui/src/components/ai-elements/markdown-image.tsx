@@ -2,7 +2,7 @@
 
 import type { FileMediaPreview } from "@mycode/shared";
 import { decodeMarkdownArtifactImageSource } from "@mycode/shared";
-import { ImageIcon, ImageOffIcon } from "lucide-react";
+import { ImageIcon, ImageOffIcon } from "@/components/icons/tabler.js";
 import { Children, isValidElement } from "react";
 import type { ComponentProps, MouseEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";

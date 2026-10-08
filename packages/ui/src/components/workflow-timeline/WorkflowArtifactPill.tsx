@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { ArrowUpRightIcon } from "lucide-react";
+import { ArrowUpRightIcon } from "@/components/icons/tabler.js";
 import type { WorkflowRunArtifactKind } from "@mycode/shared/mycode-protocol-v4";
 import {
   ArtifactKindIcon,

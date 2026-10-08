@@ -1,13 +1,13 @@
+import { WriteIcon } from "@/components/ui/write-icon.js";
 import { useCallback, useEffect, useRef, useState, type PointerEventHandler } from "react";
 import {
   EraserIcon,
   ImagePlusIcon,
   PaletteIcon,
-  PencilIcon,
   Redo2Icon,
   Trash2Icon,
   Undo2Icon,
-} from "lucide-react";
+} from "@/components/icons/tabler.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";
@@ -257,7 +257,7 @@ export function WhiteboardPane({
               aria-label={intl.formatMessage({ id: "whiteboard.tool.pen" })}
               onClick={() => setTool("pen")}
             >
-              <PencilIcon className="size-4" />
+              <WriteIcon className="size-4" />
             </Button>
           </ControlHintTooltip>
           <ControlHintTooltip title={intl.formatMessage({ id: "whiteboard.tool.eraser" })}>

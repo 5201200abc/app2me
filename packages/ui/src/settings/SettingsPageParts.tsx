@@ -30,7 +30,7 @@ export function ThemeSelect({
 }) {
   return (
     <Select value={value} onValueChange={(nextValue) => onValueChange(nextValue as BundledTheme)}>
-      <SelectTrigger size="lg" className="w-64 min-w-0 justify-between">
+      <SelectTrigger size="sm" className="w-auto min-w-0 gap-2 px-2">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -46,7 +46,6 @@ export function ThemeSelect({
 
 export function ThemePreviewCard({
   mode,
-  title,
   themeName,
   theme,
   isActive,
@@ -55,7 +54,6 @@ export function ThemePreviewCard({
   fontSizePx,
 }: {
   mode: "light" | "dark";
-  title: string;
   themeName: string;
   theme: BundledTheme;
   isActive: boolean;
@@ -73,11 +71,8 @@ export function ThemePreviewCard({
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-        <div>
-          <div className="text-ui-base font-semibold text-foreground">{title}</div>
-          <div className="text-ui-base text-foreground-subtle">{themeName}</div>
-        </div>
+      <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-2">
+        <div className="text-ui-caption font-medium text-foreground-subtle">{themeName}</div>
         <span
           className={`rounded-md px-2.5 py-1 text-ui-xs font-medium ${
             isActive ? "bg-selected text-foreground" : "bg-surface text-foreground-subtle"
@@ -120,19 +115,21 @@ export function SettingsRow({
   controlLayout?: "default" | "wide";
 }) {
   return (
-    <div className="border-t border-border px-4 py-3 first:border-t-0">
+    <div className="border-t border-border px-3.5 py-2.5 first:border-t-0">
       <div
         className={cn(
-          "grid items-center gap-4",
+          "grid items-center gap-x-3 gap-y-2",
           controlLayout === "wide"
             ? "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_280px]"
-            : "grid-cols-[minmax(0,1fr)_192px]",
+            : "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_176px]",
         )}
       >
         <div className="min-w-0">
-          <div className="text-ui-base font-medium text-foreground">{label}</div>
+          <div className="text-ui-caption font-medium text-foreground">{label}</div>
           {description ? (
-            <div className="mt-1 text-ui-base leading-6 text-foreground-subtle">{description}</div>
+            <div className="mt-0.5 text-ui-sm leading-relaxed text-foreground-subtle">
+              {description}
+            </div>
           ) : null}
         </div>
         <div className="flex w-full flex-nowrap items-center justify-end gap-2">
@@ -147,7 +144,7 @@ export function SettingsRow({
 
 export function SettingsGroupCard({ children }: { children: ReactNode }) {
   return (
-    <Card className="overflow-hidden rounded-xl border border-border bg-card py-0 shadow-none">
+    <Card className="overflow-hidden rounded-lg border border-card-border bg-card py-0 shadow-none">
       <CardContent className="space-y-0 px-0">{children}</CardContent>
     </Card>
   );
@@ -155,7 +152,7 @@ export function SettingsGroupCard({ children }: { children: ReactNode }) {
 
 export function SettingsBadge({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-md bg-surface px-2.5 py-1 text-ui-base font-medium text-foreground-subtle">
+    <span className="rounded-md bg-surface px-2.5 py-1 text-ui-caption font-medium text-foreground-subtle">
       {children}
     </span>
   );

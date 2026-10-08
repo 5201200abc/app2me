@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CircleHelp } from "lucide-react";
+import { CircleHelp } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

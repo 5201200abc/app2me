@@ -1,7 +1,12 @@
 /* eslint-disable max-lines -- Hooks 页面聚合 Scope、插件投影、搜索与配置写入流程。 */
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
-import { Plus } from "lucide-react";
-import type { Hook, HookConfig, MyCodeInstalledPluginSummary, MyCodePluginInfo } from "@mycode/shared";
+import { Plus } from "@/components/icons/tabler.js";
+import type {
+  Hook,
+  HookConfig,
+  MyCodeInstalledPluginSummary,
+  MyCodePluginInfo,
+} from "@mycode/shared";
 import { Button } from "@/components/ui/button.js";
 import { toast } from "@/components/ui/toast.js";
 import { useConfirmDialog } from "@/hooks/useConfirmDialog.js";
@@ -48,15 +53,10 @@ function isEditableHook(hook: Hook): boolean {
 }
 
 // workspace-hook-trust：editable=false 且 source=mycode 的行是「上游/祖先 mycode.json
-// 里的只读工作区 Hook」。它们不是外部格式兼容导入源，塞进 Legacy 会让 Import 按钮
-// 必然失败（importHook 拒绝 source=mycode），也违反「只读但可逐条 Trust」的约定。
+// 里的只读工作区 Hook」，不能随外部格式兼容项隐藏，否则会丢失逐条 Trust 的入口。
 // 这类行应留在 Installed 分组，由信任状态门控 Switch，走行内 Trust 流程。
 function isReadOnlyMyCodeHook(hook: Hook): boolean {
   return hook.editable === false && (hook.location?.source ?? "mycode") === "mycode";
-}
-
-function isInCompatibilitySection(hook: Hook): boolean {
-  return !isEditableHook(hook) && !isReadOnlyMyCodeHook(hook);
 }
 
 /**
@@ -212,14 +212,6 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
       ),
     [activeScope, hooksState.hooks],
   );
-  const compatibilityHooks = useMemo(
-    () =>
-      hooksState.hooks.filter(
-        (hook) =>
-          isInCompatibilitySection(hook) && (hook.location?.scope ?? "user") === activeScope,
-      ),
-    [activeScope, hooksState.hooks],
-  );
   const pluginHooks = useMemo(
     () => buildPluginHookRows(plugins, installedPlugins, marketplaceAvailabilityKnown),
     [installedPlugins, marketplaceAvailabilityKnown, plugins],
@@ -243,10 +235,6 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
   const filteredEditableHooks = useMemo(
     () => editableHooks.filter((hook) => hookMatchesQuery(hook, normalizedQuery)),
     [editableHooks, normalizedQuery],
-  );
-  const filteredCompatibilityHooks = useMemo(
-    () => compatibilityHooks.filter((hook) => hookMatchesQuery(hook, normalizedQuery)),
-    [compatibilityHooks, normalizedQuery],
   );
   const filteredPluginHooks = useMemo(
     () =>
@@ -420,19 +408,6 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
     [hooksService, hooksState.toggleHook, invalidateDraft],
   );
 
-  const handleImport = useCallback(
-    async (hook: Hook) => {
-      try {
-        await hooksState.importHook(hook.id, hooksService);
-        await invalidateDraft("hook-imported");
-        toast(intl.formatMessage({ id: "settings.hooks.imported" }));
-      } catch (error) {
-        toast(error instanceof Error ? error.message : String(error));
-      }
-    },
-    [hooksService, hooksState.importHook, intl, invalidateDraft],
-  );
-
   if (viewMode === "form" && targetServiceResolution.rpcReady) {
     return (
       <>
@@ -468,9 +443,8 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
 
   const loading = hooksState.loading || pluginsLoading;
   const error = hooksState.error || pluginsError;
-  const visibleCount =
-    filteredEditableHooks.length + filteredCompatibilityHooks.length + filteredPluginHooks.length;
-  const totalCount = editableHooks.length + compatibilityHooks.length + scopedPluginHooks.length;
+  const visibleCount = filteredEditableHooks.length + filteredPluginHooks.length;
+  const totalCount = editableHooks.length + scopedPluginHooks.length;
   const hasSearchResultEmpty = Boolean(normalizedQuery) && visibleCount === 0;
   const showWorkspaceHookTrustNotice = shouldShowWorkspaceHookTrustNotice({
     hooks: editableHooks,
@@ -479,7 +453,7 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
     targetWorkspaceKey,
   });
   return (
-    <div className="space-y-6" data-testid="hooks-settings-section">
+    <div className="space-y-4" data-testid="hooks-settings-section">
       <div className="flex min-w-0 flex-wrap items-center gap-3">
         <div className="flex min-w-0 flex-wrap items-center gap-3">
           <PluginScopeMenu
@@ -490,11 +464,10 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
           />
           <div className="hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
           <div
-            data-independent-capability-count="true"
-            className="flex h-7 items-center gap-1 px-3 text-ui-base font-medium text-foreground"
+            data-settings-resource-title
+            className="flex h-7 items-center gap-1 px-3 text-ui-caption font-medium text-foreground"
           >
             <span>{intl.formatMessage({ id: "settings.hooks.title" })}</span>
-            <span className="text-ui-sm text-foreground-subtle">{visibleCount}</span>
           </div>
         </div>
         <SettingsSearchInput
@@ -525,7 +498,6 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
         <PluginSearchEmptyState label={intl.formatMessage({ id: "settings.hooks.searchEmpty" })} />
       ) : (
         <HooksList
-          compatibilityHooks={filteredCompatibilityHooks}
           editableHooks={filteredEditableHooks}
           operatingHookId={hooksState.operatingHookId}
           pluginHooks={filteredPluginHooks}
@@ -564,7 +536,6 @@ export function HooksSection({ workspacePath, workspaceIdentity }: HooksSectionP
             setEditingHook(target);
             setViewMode("form");
           }}
-          onImport={handleImport}
           onTrust={trustHook}
           trustActionAvailable={trustActionAvailable}
           trustingHookId={trustingHookId}

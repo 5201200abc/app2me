@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Loader2, RefreshCcw, TriangleAlert } from "lucide-react";
+import { Loader2, RefreshCcw, TriangleAlert } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import {
   Card,

@@ -1,4 +1,4 @@
-import { FileTextIcon, GlobeIcon } from "lucide-react";
+import { FileTextIcon, GlobeIcon } from "@/components/icons/tabler.js";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { MessageFileLinkTarget } from "@/components/ai-elements/message.js";
 import { useWorkspaceServices } from "@/hooks/useWorkspaceServices.js";
@@ -226,7 +226,7 @@ export function AssistantPreviewCards({
   }
 
   return (
-    <div className="flex w-full flex-col gap-3">
+    <div className="flex w-full min-w-0 flex-col gap-2">
       {visibleCards.map((card, index) => (
         <AssistantPreviewCardRow
           key={card.id}
@@ -285,7 +285,8 @@ function AssistantPreviewCardRow({
       : null;
   return (
     <div
-      className="flex w-full items-center gap-3 rounded-xl border border-card-border bg-card p-3 pr-4 text-foreground"
+      className="flex w-full min-w-0 items-center gap-2 rounded-xl border border-card-border/60 bg-card/70 px-3 py-2 text-foreground"
+      data-assistant-preview-card="true"
       data-mycode-stream-animate="true"
       style={
         {
@@ -293,20 +294,21 @@ function AssistantPreviewCardRow({
         } as CSSProperties
       }
     >
-      <div className="flex size-11 shrink-0 items-center justify-center rounded-md bg-background text-foreground-subtle">
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background/70 text-foreground-subtle">
         {!renderAsFile && card.type === "website" ? (
-          <GlobeIcon className="size-6" />
+          <GlobeIcon className="size-5" strokeWidth={1.5} />
         ) : descriptor ? (
-          <FileDisplayIcon src={descriptor.fileIconSrc} size={24} />
+          <FileDisplayIcon src={descriptor.fileIconSrc} size={18} />
         ) : (
-          <FileTextIcon className="size-6" />
+          <FileTextIcon className="size-5" strokeWidth={1.5} />
         )}
       </div>
-      <div className="min-w-0 flex flex-1 flex-col gap-1">
+      <div className="min-w-0 flex flex-1 flex-col gap-0.5">
         <div className="truncate text-ui-base font-medium leading-5">{card.title}</div>
-        <div className="truncate text-ui-base leading-5 text-foreground-subtlest">{subtitle}</div>
+        <div className="truncate text-ui-sm leading-4 text-foreground-subtlest">{subtitle}</div>
       </div>
       <OpenSplitButton
+        compact
         target={
           !renderAsFile && card.type === "website"
             ? {

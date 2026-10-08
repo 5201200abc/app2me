@@ -1,4 +1,4 @@
-import { AlertTriangle, InfoIcon } from "lucide-react";
+import { AlertTriangle, InfoIcon } from "@/components/icons/tabler.js";
 import { Button } from "@/components/ui/button.js";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";
 import { setPendingSettingsSection } from "@/lib/settingsNavigation.js";

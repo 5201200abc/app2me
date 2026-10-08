@@ -331,7 +331,7 @@ export function useCodingPlanUsageStats(
         });
       }
       setState((current) => ({
-        // 切换 Z.AI/BigModel 时不能保留上一家 Coding Plan 的 monitor 快照；
+
         // 但同一 provider 切换 today/7d/30d 时保留旧快照，避免 Quota Remaining 和趋势区域闪空。
         snapshot: keepPreviousSnapshot ? current.snapshot : null,
         loading: true,

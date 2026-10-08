@@ -1,4 +1,4 @@
-import { Terminal } from "lucide-react";
+import { Terminal } from "@/components/icons/tabler.js";
 import type { UserCommand, MyCodeCommand } from "@mycode/shared";
 import { isPluginCommand, isUserCommand } from "@mycode/shared";
 import { useMyCodeIntl } from "@/i18n/IntlProvider.js";

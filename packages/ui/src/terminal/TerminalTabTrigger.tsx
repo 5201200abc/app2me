@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { X } from "@/components/icons/tabler.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import { TabsTrigger } from "@/components/ui/tabs.js";

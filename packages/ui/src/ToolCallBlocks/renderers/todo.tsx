@@ -1,4 +1,9 @@
-import { ArrowRightIcon, CircleCheckIcon, CircleIcon, ListTodoIcon } from "lucide-react";
+import {
+  ArrowRightIcon,
+  CircleCheckIcon,
+  CircleIcon,
+  ListTodoIcon,
+} from "@/components/icons/tabler.js";
 import { useCallback, useMemo } from "react";
 import { extractPlanStepsFromToolInput, extractPlanStepsFromToolOutput } from "@mycode/shared";
 import type { MyCodePlanStep } from "@mycode/shared";
