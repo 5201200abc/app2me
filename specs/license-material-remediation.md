@@ -35,3 +35,9 @@ Replace only the two Windows Microsoft ripgrep archives that contain an unavaila
 PDF preview runs in the browser renderer using DOM canvas; desktop packaging already excludes the optional Node-only canvas binaries. Remove only `pdfjs-dist>@napi-rs/canvas` through a root dependency override, retaining PDF preview and all other optional native dependencies. Regenerate the installed lock graph and remove Skia evidence that no remaining component references. Keep the existing packaging exclusion as a regression guard.
 
 QuickJS remains required for PAC proxy evaluation. Validate its exact source and submodule revisions, WASI SDK 32 library notices and compiler revision against the producer sections of every original publisher WASM binary. Missing source, notices or mismatched binary identities must remain blocking.
+
+Windows source extraction must use the existing bounded archive reader rather than an external tar executable: Git Bash tar treats a drive-letter path as a remote hostname. Require the exact immutable source prefix and reject path traversal or drive paths before writing into the build temporary directory.
+
+Initialize the installed MSVC developer environment explicitly on both Windows architectures before dependency installation and compilation. The hosted images now use Visual Studio 2026, which older automatic compiler discovery does not recognize; discover its installation using vswhere, export only compiler/search environment variables, and invoke cl/lib from that environment. Fail if no C++ tools are present.
+
+The source archive contains one HomebrewFormula symlink used only by macOS packaging. Windows extraction skips symbolic links without creating them; the default publisher archive validator continues rejecting links. Compiler source and Cargo.lock are extracted as regular files.

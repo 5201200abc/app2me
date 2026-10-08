@@ -8,7 +8,7 @@ const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const noticePattern = /copyright|licen[sc]e|©/iu;
 
 // 只读原始发布归档，不提取文件、不执行包脚本；避免许可扫描引入路径写入风险。
-export function originalTarMembers(gzip) {
+export function originalTarMembers(gzip, { skipSymbolicLinks = false } = {}) {
   const bytes = gunzipSync(gzip, { maxOutputLength: 128 * 1024 * 1024 });
   const members = new Map();
   let longName;
@@ -32,7 +32,7 @@ export function originalTarMembers(gzip) {
       if (type === "0" || type === "") {
         if (members.has(name)) throw new Error(`Duplicate original tar member: ${name}`);
         members.set(name, content);
-      } else if (!["5", "g"].includes(type))
+      } else if (!(skipSymbolicLinks && type === "2") && !["5", "g"].includes(type))
         throw new Error(`Unsupported original tar type: ${type}`);
     }
     offset += 512 + Math.ceil(size / 512) * 512;

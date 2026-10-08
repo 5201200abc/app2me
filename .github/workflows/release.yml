@@ -76,6 +76,24 @@ jobs:
       - name: Linux packaging tools
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
+      - name: Initialize Windows C++ tools
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $installation) { throw 'MSVC C++ tools are unavailable' }
+          $devcmd = Join-Path $installation 'Common7/Tools/VsDevCmd.bat'
+          $targetArch = '${{ matrix.arch }}'
+          $environment = & cmd /d /s /c "`"$devcmd`" -no_logo -arch=$targetArch -host_arch=x64 && set"
+          if ($LASTEXITCODE -ne 0) { throw 'MSVC environment initialization failed' }
+          $allowed = @('PATH', 'INCLUDE', 'LIB', 'LIBPATH', 'VCINSTALLDIR', 'VCToolsInstallDir', 'WindowsSdkDir', 'WindowsSDKVersion', 'VSCMD_ARG_TGT_ARCH', 'VSCMD_ARG_HOST_ARCH')
+          foreach ($line in $environment) {
+            $parts = $line -split '=', 2
+            if ($parts.Length -eq 2 -and $allowed -contains $parts[0]) {
+              "$($parts[0])=$($parts[1])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+            }
+          }
       - run: pnpm install --frozen-lockfile
       - name: Verify Windows search source build
         if: runner.os == 'Windows'

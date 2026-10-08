@@ -18,6 +18,8 @@ for (const arch of ["x64", "arm64"]) {
     await buildWindowsRipgrep(artifact, plan, async (command, args, options) => {
       calls.push([command, args]);
       assert.equal(options.env.PCRE2_SYS_STATIC, "1");
+      assert.match(await readFile(join(options.cwd, "Cargo.toml"), "utf8"), /name = "ripgrep"/);
+      assert.match(await readFile(join(options.cwd, "Cargo.lock"), "utf8"), /name = "pcre2-sys"/);
       if (args.includes("--verbose"))
         return { stdout: `commit-hash: ${artifact.compilerRevision}` };
       if (args.includes("build")) {
@@ -30,7 +32,7 @@ for (const arch of ["x64", "arm64"]) {
       }
       return { stdout: "" };
     });
-    assert.equal(calls.length, 4);
+    assert.equal(calls.length, 3);
     assert.equal(await readFile(artifact.binaryPath, "utf8"), "fixture");
     await assert.rejects(
       buildWindowsRipgrep(artifact, plan, async () => ({ stdout: "commit-hash: unknown" })),

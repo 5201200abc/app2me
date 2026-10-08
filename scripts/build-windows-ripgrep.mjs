@@ -1,8 +1,9 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { mkdtemp, mkdir, copyFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, copyFile, readFile, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
+import { originalTarMembers } from "./license-publisher-reviews.mjs";
 
 const execute = promisify(execFile);
 export async function buildWindowsRipgrep(artifact, plan, run = execute) {
@@ -13,14 +14,26 @@ export async function buildWindowsRipgrep(artifact, plan, run = execute) {
   const options = {
     cwd: directory,
     maxBuffer: 32 * 1024 * 1024,
-    env: { ...process.env, PCRE2_SYS_STATIC: "1" },
+    env: { ...process.env, PCRE2_SYS_STATIC: "1", CC: "cl", AR: "lib" },
   };
   try {
-    await run(
-      "tar",
-      ["-xzf", artifact.archivePath, "-C", directory, "--strip-components=1"],
-      options,
-    );
+    const prefix = `ripgrep-${artifact.sourceRevision}/`;
+    for (const [path, bytes] of originalTarMembers(await readFile(artifact.archivePath), {
+      skipSymbolicLinks: true,
+    })) {
+      if (!path.startsWith(prefix)) throw new Error("Unexpected ripgrep archive root");
+      const member = path.slice(prefix.length);
+      if (
+        !member ||
+        member.includes("\\") ||
+        member.includes(":") ||
+        member.split("/").some((part) => !part || part === "." || part === "..")
+      )
+        throw new Error("Unsafe ripgrep archive member");
+      const output = join(directory, member);
+      await mkdir(dirname(output), { recursive: true });
+      await writeFile(output, bytes);
+    }
     await run(
       "rustup",
       ["toolchain", "install", artifact.toolchain, "--profile", "minimal", "--target", target],
